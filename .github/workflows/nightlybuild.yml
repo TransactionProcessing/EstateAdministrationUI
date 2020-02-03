@@ -1,13 +1,12 @@
-name: Build and Test Pull Requests
+name: Nightly Build
 
 on:
-  pull_request:
-    branches:
-    - master
+  schedule:
+  - cron: "45 22 * * *"
 
 jobs:
   build:
-    name: "Build and Test Pull Requests"
+    name: "Nightly Build"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
 
