@@ -1,13 +1,13 @@
-﻿namespace GolfClubAdminWebSite.TokenManagement
+﻿namespace EstateAdministrationUI.TokenManagement
 {
-        using System;
-        using System.Diagnostics.CodeAnalysis;
-        using Microsoft.AspNetCore.Authentication;
-        using Microsoft.AspNetCore.Authentication.Cookies;
-        using Microsoft.Extensions.DependencyInjection;
-        using Microsoft.Extensions.Options;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
 
-        /// <summary>
+    /// <summary>
         /// 
         /// </summary>
         [ExcludeFromCodeCoverage]

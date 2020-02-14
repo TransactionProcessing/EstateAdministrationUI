@@ -1,4 +1,4 @@
-﻿namespace GolfClubAdminWebSite.TokenManagement
+﻿namespace EstateAdministrationUI.TokenManagement
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

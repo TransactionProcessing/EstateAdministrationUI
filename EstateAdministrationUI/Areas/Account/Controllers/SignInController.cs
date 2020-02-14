@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GolfClubAdminWebSite.Areas.Account.Controllers
+﻿namespace EstateAdministrationUI.Areas.Account.Controllers
 {
     using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    
+
     [Area("Account")]
     public class SignInController : Controller
     {
@@ -38,7 +34,7 @@ namespace GolfClubAdminWebSite.Areas.Account.Controllers
                                                      "Home",
                                                      new
                                                      {
-                                                         //Area = "EstateAdministrator"
+                                                         Area = "Estate"
                                                      });
             }
             else
