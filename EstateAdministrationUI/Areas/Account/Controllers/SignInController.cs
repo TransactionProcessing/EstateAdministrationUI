@@ -1,10 +1,15 @@
 ﻿namespace EstateAdministrationUI.Areas.Account.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Shared.General;
 
     [Area("Account")]
     public class SignInController : Controller
@@ -28,18 +33,48 @@
         {
             IActionResult actionResult = null;
 
-            if (this.User.IsInRole("Estate"))
+            Boolean isTestMode = Boolean.Parse(ConfigurationReader.GetValue("IsIntegrationTest"));
+
+            if (isTestMode)
             {
-                actionResult = this.RedirectToAction("Index",
-                                                     "Home",
-                                                     new
-                                                     {
-                                                         Area = "Estate"
-                                                     });
+                Boolean hasRole = this.User.HasClaim(c => c.Type == "role");
+                List<Claim> roleNames = this.User.Claims.Where(c => c.Type == "role").ToList();
+
+                foreach (Claim role in roleNames)
+                {
+                    if (role.Value.Contains("Merchant"))
+                    {
+                        // Merchant user
+                        break;
+                    }
+                    if (role.Value.Contains("Estate"))
+                    {
+                        // Estate user
+                        actionResult = this.RedirectToAction("Index",
+                                                             "Home",
+                                                             new
+                                                             {
+                                                                 Area = "Estate"
+                                                             });
+                        break;
+                    }
+                }
             }
             else
             {
-                // TODO: This should throw some kind of error as not supported
+                if (this.User.IsInRole("Estate"))
+                {
+                    actionResult = this.RedirectToAction("Index",
+                                                         "Home",
+                                                         new
+                                                         {
+                                                             Area = "Estate"
+                                                         });
+                }
+                else
+                {
+                    // TODO: This should throw some kind of error as not supported
+                }
             }
 
             return actionResult;

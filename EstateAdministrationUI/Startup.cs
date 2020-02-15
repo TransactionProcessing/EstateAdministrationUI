@@ -16,17 +16,23 @@ namespace EstateAdministrationUI
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
     using Microsoft.IdentityModel.Tokens;
+    using Shared.General;
     using TokenManagement;
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public static IConfigurationRoot Configuration { get; set; }
+
+        public Startup(IWebHostEnvironment webHostEnvironment)
         {
-            Configuration = configuration;
+            IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(webHostEnvironment.ContentRootPath)
+                                                                      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                                                                      .AddJsonFile($"appsettings.{webHostEnvironment.EnvironmentName}.json", optional: true).AddEnvironmentVariables();
+
+            Startup.Configuration = builder.Build();
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -52,13 +58,13 @@ namespace EstateAdministrationUI
                                                                                                       options =>
                                                                                                       {
                                                                                                           options.SignInScheme = "Cookies";
-                                                                                                          options.Authority = Configuration.GetValue<String>("Authority");
+                                                                                                          options.Authority = ConfigurationReader.GetValue("Authority");
 
                                                                                                           options.RequireHttpsMetadata = false;
 
                                                                                                           options.ClientSecret =
-                                                                                                              Configuration.GetValue<String>("ClientSecret");
-                                                                                                          options.ClientId = Configuration.GetValue<String>("ClientId");
+                                                                                                              ConfigurationReader.GetValue("ClientSecret");
+                                                                                                          options.ClientId = ConfigurationReader.GetValue("ClientId");
 
                                                                                                           options.ResponseType = "code id_token";
 
@@ -91,6 +97,8 @@ namespace EstateAdministrationUI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            ConfigurationReader.Initialise(Startup.Configuration);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -114,6 +122,8 @@ namespace EstateAdministrationUI
 
 
             });
+
+            
         }
     }
 }

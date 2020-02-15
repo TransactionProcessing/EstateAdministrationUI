@@ -6,6 +6,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
+COPY ["NuGet.Config", ""]
 COPY ["EstateAdministrationUI.csproj", ""]
 RUN dotnet restore "./EstateAdministrationUI.csproj"
 COPY . .

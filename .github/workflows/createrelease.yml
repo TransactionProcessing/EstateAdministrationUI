@@ -10,7 +10,7 @@ jobs:
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
 
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
@@ -19,6 +19,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+
+    - name: Install ChromeDriver
+      uses: nanasess/setup-chromedriver@master
+      with:
+        # Optional: do not specify to match Chrome's version
+        chromedriver-version: '78.0.3904.105'
 
     - name: Restore Nuget Packages
       run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
@@ -31,11 +37,11 @@ jobs:
     #    echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
     #    dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"   
 
-    #- name: Build Docker Image
-    #  run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
+    - name: Build Docker Image
+      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
                 
-    #- name: Run Integration Tests
-    #  run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj"
+    - name: Run Integration Tests
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj"
     
     - name: Publish Images to Docker Hub
       run: |
