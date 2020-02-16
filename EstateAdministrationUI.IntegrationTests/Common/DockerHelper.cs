@@ -279,7 +279,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         public async Task BeforeScenario()
         {
             ChromeOptions option = new ChromeOptions();
-            //option.AddArgument("--headless");
+            option.AddArgument("--headless");
             this.WebDriver = new ChromeDriver(option);
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
