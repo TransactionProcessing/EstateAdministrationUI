@@ -38,7 +38,7 @@ jobs:
     #    dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"   
 
     - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
+      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest --tag stuartferguson/estateadministrationui:latest --tag stuartferguson/estateadministrationui:${{ steps.get_version.outputs.VERSION }}
                 
     - name: Run Integration Tests
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj"
