@@ -82,8 +82,8 @@ jobs:
     - name: Push Package to Octopus
       run: >-
         /opt/octo/Octo push
-        --server http://sferguson.ddns.net:9001
-        --apiKey API-UTN58QCF8HSATACNUBY41XPUC
+        --server https://stuartferguson.octopus.app
+        --apiKey ${{ secrets.OCTOPUS_APIKEY }}
         --package /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/EstateAdministrationUI.${{ steps.get_version.outputs.VERSION }}.zip
         --overwrite-mode IgnoreIfExists
     
@@ -105,8 +105,8 @@ jobs:
     - name: Create & Deploy Release in Octopus
       run: >-
         /opt/octo/Octo create-release
-        --server http://sferguson.ddns.net:9001
-        --apiKey API-UTN58QCF8HSATACNUBY41XPUC
+        --server https://stuartferguson.octopus.app
+        --apiKey ${{ secrets.OCTOPUS_APIKEY }}
         --project "Estate Administration UI"
         --version ${{ steps.get_version.outputs.VERSION }}
         --channel Default
