@@ -5,12 +5,12 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["NuGet.Config", "."]
-COPY ["EstateAdministrationUI.csproj", "."]
+COPY ["EstateAdministrationUI/NuGet.Config", "."]
+COPY ["EstateAdministrationUI/EstateAdministrationUI.csproj", "."]
 
 RUN dotnet restore "EstateAdministrationUI.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/EstateAdministrationUI"
 RUN dotnet build "EstateAdministrationUI.csproj" -c Release -o /app/build
 
 FROM build AS publish
