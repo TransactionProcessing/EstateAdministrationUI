@@ -73,7 +73,7 @@ jobs:
         /opt/octo/Octo pack
         --outFolder /home/runner/work/EstateAdministrationUI/EstateAdministrationUI
         --basePath /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/publishOutput
-        --id EstateManagement
+        --id EstateAdministrationUI
         --version ${{ steps.get_version.outputs.VERSION }}
         --format zip
         --verbose
