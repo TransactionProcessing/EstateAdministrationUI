@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["EstateAdministrationUI/NuGet.Config", ""]
 COPY ["EstateAdministrationUI/EstateAdministrationUI.csproj", ""]
-RUN dotnet restore "EstateAdministrationUI/EstateAdministrationUI.csproj"
+RUN dotnet restore "EstateAdministrationUI.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "EstateAdministrationUI.csproj" -c Release -o /app/build
