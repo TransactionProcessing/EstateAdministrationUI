@@ -1,14 +1,12 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.2-bionic AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.102-bionic AS build
 WORKDIR /src
 COPY ["EstateAdministrationUI/NuGet.Config", "."]
-COPY ["EstateAdministrationUI/EstateAdministrationUI.csproj", "."]
-
-RUN dotnet restore "EstateAdministrationUI.csproj"
+COPY ["EstateAdministrationUI/EstateAdministrationUI.csproj", "EstateAdministrationUI/"]
+COPY ["EstateAdministrationUI.BusinessLogic/EstateAdministrationUI.BusinessLogic.csproj", "EstateAdministrationUI.BusinessLogic/"]
+RUN dotnet restore "EstateAdministrationUI/EstateAdministrationUI.csproj"
 COPY . .
 WORKDIR "/src/EstateAdministrationUI"
 RUN dotnet build "EstateAdministrationUI.csproj" -c Release -o /app/build

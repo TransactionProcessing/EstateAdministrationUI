@@ -11,16 +11,28 @@ using Microsoft.Extensions.Hosting;
 namespace EstateAdministrationUI
 {
     using System.IdentityModel.Tokens.Jwt;
+    using System.IO;
+    using System.Net.Http;
+    using BusinessLogic.Factories;
+    using EstateManagement.Client;
+    using Factories;
     using IdentityModel;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
+    using NLog.Extensions.Logging;
+    using Services;
     using Shared.General;
+    using Shared.Logger;
     using TokenManagement;
 
     public class Startup
     {
+        private static IWebHostEnvironment WebHostEnvironment;
+
         public static IConfigurationRoot Configuration { get; set; }
 
         public Startup(IWebHostEnvironment webHostEnvironment)
@@ -30,6 +42,7 @@ namespace EstateAdministrationUI
                                                                       .AddJsonFile($"appsettings.{webHostEnvironment.EnvironmentName}.json", optional: true).AddEnvironmentVariables();
 
             Startup.Configuration = builder.Build();
+            Startup.WebHostEnvironment = webHostEnvironment;
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
@@ -74,6 +87,11 @@ namespace EstateAdministrationUI
                                                                                                           options.Scope.Add("email");
                                                                                                           options.Scope.Add("offline_access");
 
+                                                                                                          String? estateManagementScope =
+                                                                                                              Environment.GetEnvironmentVariable("EstateManagementScope");
+
+                                                                                                          options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
+
                                                                                                           options.ClaimActions.MapAllExcept("iss",
                                                                                                                                             "nbf",
                                                                                                                                             "exp",
@@ -92,11 +110,36 @@ namespace EstateAdministrationUI
                                                                                                                                                   ValidateIssuer = false
                                                                                                                                               };
                                                                                                       });
+            IdentityModelEventSource.ShowPII = true;
+
+            services.AddSingleton<IApiClient, ApiClient>();
+            services.AddSingleton<IModelFactory, ModelFactory>();
+            services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+            services.AddSingleton<IEstateClient, EstateClient>();
+            services.AddSingleton<Func<String, String>>(container => (serviceName) =>
+                                                                     {
+                                                                         return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
+                                                                     });
+            services.AddSingleton<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+                              ILoggerFactory loggerFactory)
         {
+            String nlogConfigFilename = "nlog.config";
+            if (string.Compare(Startup.WebHostEnvironment.EnvironmentName, "Development", true) == 0)
+            {
+                nlogConfigFilename = $"nlog.{Startup.WebHostEnvironment.EnvironmentName}.config";
+            }
+
+            loggerFactory.ConfigureNLog(Path.Combine(Startup.WebHostEnvironment.ContentRootPath, nlogConfigFilename));
+            loggerFactory.AddNLog();
+
+            Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("EstateAdministrationUI");
+
+            Logger.Initialise(logger);
+
             ConfigurationReader.Initialise(Startup.Configuration);
 
             if (env.IsDevelopment())

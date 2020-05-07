@@ -27,66 +27,57 @@
         @if (User.Identity.IsAuthenticated)
         {
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-                <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
-                    </div>
-                    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            </a>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" id="dashboardLink" asp-action="Index" asp-area="Estate" asp-controller="Home">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
                 </a>
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
+            </li>
 
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item">
-                    <a class="nav-link" id="dashboardLink" asp-action="Index" asp-area="Estate" asp-controller="Home">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
 
-                <!-- Divider -->
-                @*<hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a class="nav-link" id="estateDetailsLink" asp-action="ManageEstate" asp-area="Estate" asp-controller="Home">
+                    <i class="fas fa-fw fa-golf-ball"></i>
+                    <span>My Estate</span>
+                </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="golfClubDetailsLink" asp-action="ManageGolfClub" asp-area="GolfClubAdministrator" asp-controller="Home">
-                        <i class="fas fa-fw fa-golf-ball"></i>
-                        <span>Golf Club Details</span>
-                    </a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link" id="merchantsLink" asp-action="GetMerchantList" asp-area="Estate" asp-controller="Home">
+                    <i class="fas fa-fw fa-ruler"></i>
+                    <span>My Merchants</span>
+                </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="measuredCoursesLink" asp-action="GetMeasuredCourseList" asp-area="GolfClubAdministrator" asp-controller="Home">
-                        <i class="fas fa-fw fa-ruler"></i>
-                        <span>Measured Courses</span>
-                    </a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link" id="operatorsLink" href="index.html">
+                    <i class="fas fa-fw fa-trophy"></i>
+                    <span>Manage Operators</span>
+                </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="tournamentDivisionsLink" href="index.html">
-                        <i class="fas fa-fw fa-trophy"></i>
-                        <span>Tournament Divisions</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" id="membersLink" asp-action="GetMembersList" asp-area="GolfClubAdministrator" asp-controller="Home">
-                        <i class="fas fa-fw fa-users"></i>
-                        <span>Members</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" id="usersLink" asp-action="GetUsersList" asp-area="GolfClubAdministrator" asp-controller="Home">
-                        <i class="fas fa-fw fa-users"></i>
-                        <span>Users</span>
-                    </a>
-                </li>*@
-
-
-            </ul>
+            <li class="nav-item">
+                <a class="nav-link" id="usersLink" asp-action="GetUsersList" asp-area="Estate" asp-controller="Home">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+        </ul>
 
             <!-- End of Sidebar -->
         }
@@ -264,7 +255,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>&copy; 2019 - Estate Administration- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></span>
+                        <span>&copy; 2020 - Estate Administration- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></span>
                     </div>
                 </div>
             </footer>
