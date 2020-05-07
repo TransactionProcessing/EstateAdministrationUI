@@ -4,15 +4,17 @@ using System.Text;
 
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Coypu;
+    using EstateManagement.DataTransferObjects.Requests;
+    using EstateManagement.DataTransferObjects.Responses;
     using OpenQA.Selenium;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
-    using Shared.Logger;
+    using Shared.IntegrationTesting;
     using Shouldly;
     using TechTalk.SpecFlow;
 
@@ -48,6 +50,186 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
+        [Given(@"I have a token to access the estate management resource")]
+        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String clientId = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+
+                ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
+
+                if (clientDetails.GrantTypes.Contains("client_credentials"))
+                {
+                    TokenResponse tokenResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.GetToken(clientId, clientDetails.ClientSecret, CancellationToken.None).ConfigureAwait(false);
+
+                    this.TestingContext.AccessToken = tokenResponse.AccessToken;
+                }
+            }
+        }
+
+        [Given(@"I have created the following estates")]
+        public async Task GivenIHaveCreatedTheFollowingEstates(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+
+                CreateEstateRequest createEstateRequest = new CreateEstateRequest
+                                                          {
+                                                              EstateId = Guid.NewGuid(),
+                                                              EstateName = estateName
+                                                          };
+
+                CreateEstateResponse response = await this.TestingContext.DockerHelper.EstateClient.CreateEstate(this.TestingContext.AccessToken, createEstateRequest, CancellationToken.None).ConfigureAwait(false);
+
+                response.ShouldNotBeNull();
+                response.EstateId.ShouldNotBe(Guid.Empty);
+
+                // Cache the estate id
+                this.TestingContext.AddEstateDetails(response.EstateId, estateName);
+
+                this.TestingContext.Logger.LogInformation($"Estate {estateName} created with Id {response.EstateId}");
+            }
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                EstateResponse estate = null;
+                await Retry.For(async () =>
+                                {
+                                    estate = await this.TestingContext.DockerHelper.EstateClient
+                                                       .GetEstate(this.TestingContext.AccessToken, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
+                                    estate.ShouldNotBeNull();
+                                }).ConfigureAwait(false);
+
+
+                estate.EstateName.ShouldBe(estateDetails.EstateName);
+            }
+        }
+
+        [Given(@"I have created the following operators")]
+        public async Task GivenIHaveCreatedTheFollowingOperators(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                Boolean requireCustomMerchantNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
+                Boolean requireCustomTerminalNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
+
+                CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
+                                                              {
+                                                                  Name = operatorName,
+                                                                  RequireCustomMerchantNumber = requireCustomMerchantNumber,
+                                                                  RequireCustomTerminalNumber = requireCustomTerminalNumber
+                                                              };
+
+                // lookup the estate id based on the name in the table
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                CreateOperatorResponse response = await this.TestingContext.DockerHelper.EstateClient.CreateOperator(this.TestingContext.AccessToken, estateDetails.EstateId, createOperatorRequest, CancellationToken.None).ConfigureAwait(false);
+
+                response.ShouldNotBeNull();
+                response.EstateId.ShouldNotBe(Guid.Empty);
+                response.OperatorId.ShouldNotBe(Guid.Empty);
+
+                // Cache the estate id
+                estateDetails.AddOperator(response.OperatorId, operatorName);
+
+                this.TestingContext.Logger.LogInformation($"Operator {operatorName} created with Id {response.OperatorId} for Estate {estateDetails.EstateName}");
+            }
+        }
+
+        [Given(@"I have created the following security users")]
+        public async Task GivenIHaveCreatedTheFollowingSecurityUsers(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // lookup the estate id based on the name in the table
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                if (tableRow.ContainsKey("EstateName") && tableRow.ContainsKey("MerchantName") == false)
+                {
+                    // Creating an Estate User
+                    CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
+                    {
+                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
+                        FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                        GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                        MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                        Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+                    };
+
+                    CreateEstateUserResponse createEstateUserResponse =
+                        await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(this.TestingContext.AccessToken, estateDetails.EstateId, createEstateUserRequest, CancellationToken.None);
+
+                    createEstateUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                    createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+                    estateDetails.SetEstateUser(createEstateUserRequest.EmailAddress, createEstateUserRequest.Password);
+
+                    this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateDetails.EstateName}");
+                }
+                else if (tableRow.ContainsKey("MerchantName"))
+                {
+                    // Creating a merchant user
+                    String token = this.TestingContext.AccessToken;
+                    if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                    {
+                        token = estateDetails.AccessToken;
+                    }
+                    // lookup the merchant id based on the name in the table
+                    String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                    Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                    CreateMerchantUserRequest createMerchantUserRequest = new CreateMerchantUserRequest
+                    {
+                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
+                        FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
+                        GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
+                        MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
+                        Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+                    };
+
+                    CreateMerchantUserResponse createMerchantUserResponse =
+                        await this.TestingContext.DockerHelper.EstateClient.CreateMerchantUser(token, estateDetails.EstateId, merchantId, createMerchantUserRequest, CancellationToken.None);
+
+                    createMerchantUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                    createMerchantUserResponse.MerchantId.ShouldBe(merchantId);
+                    createMerchantUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+                    estateDetails.AddMerchantUser(merchantName, createMerchantUserRequest.EmailAddress, createMerchantUserRequest.Password);
+
+                    this.TestingContext.Logger.LogInformation($"Security user {createMerchantUserRequest.EmailAddress} assigned to Merchant {merchantName}");
+                }
+            }
+        }
+
+        [Given(@"I click on the My Estate sidebar option")]
+        public void GivenIClickOnTheMyEstateSidebarOption()
+        {
+            this.WebDriver.ClickButtonById("estateDetailsLink");
+        }
+
+        [Then(@"I am presented with the Estate Details Screen")]
+        public void ThenIAmPresentedWithTheEstateDetailsScreen()
+        {
+            this.WebDriver.Title.ShouldBe("Edit Golf Club");
+        }
+
+        [Then(@"My Estate Details will be shown")]
+        public void ThenMyEstateDetailsWillBeShown(Table table)
+        {
+            TableRow tableRow = table.Rows.Single();
+
+            IWebElement element = this.WebDriver.FindElement(By.Id("EstateName"));
+            element.ShouldNotBeNull();
+            String elementValue = element.GetProperty("value");
+            elementValue.ShouldBe(SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+        }
+
+
         private async Task<CreateRoleResponse> CreateRole(CreateRoleRequest createRoleRequest,
                                                           CancellationToken cancellationToken)
         {
@@ -68,6 +250,62 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             CreateClientResponse createClientResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateClient(createClientRequest, cancellationToken).ConfigureAwait(false);
             return createClientResponse;
+        }
+
+        [Given(@"I create the following identity resources")]
+        public async Task GivenICreateTheFollowingIdentityResources(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // Get the scopes
+                String userClaims = SpecflowTableHelper.GetStringRowValue(tableRow, "UserClaims");
+
+                CreateIdentityResourceRequest createIdentityResourceRequest = new CreateIdentityResourceRequest
+                {
+                    Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name"),
+                    Claims = string.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
+                    Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
+                    DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
+                };
+
+                await this.CreateIdentityResource(createIdentityResourceRequest, CancellationToken.None).ConfigureAwait(false);
+            }
+        }
+
+        private async Task CreateIdentityResource(CreateIdentityResourceRequest createIdentityResourceRequest,
+                                                                             CancellationToken cancellationToken)
+        {
+            CreateIdentityResourceResponse createIdentityResourceResponse = null;
+
+            List<IdentityResourceDetails> identityResourceList = await this.TestingContext.DockerHelper.SecurityServiceClient.GetIdentityResources(cancellationToken);
+
+            if (identityResourceList == null || identityResourceList.Any() == false)
+            {
+                createIdentityResourceResponse = await this
+                                                                                 .TestingContext.DockerHelper.SecurityServiceClient
+                                                                                 .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
+                                                                                 .ConfigureAwait(false);
+                createIdentityResourceResponse.ShouldNotBeNull();
+                createIdentityResourceResponse.IdentityResourceName.ShouldNotBeNullOrEmpty();
+
+                this.TestingContext.IdentityResources.Add(createIdentityResourceResponse.IdentityResourceName);
+            }
+            else
+            {
+                if (identityResourceList.Where(i => i.Name == createIdentityResourceRequest.Name).Any())
+                {
+                    return;
+                }
+
+                createIdentityResourceResponse = await this
+                                                       .TestingContext.DockerHelper.SecurityServiceClient
+                                                       .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
+                                                       .ConfigureAwait(false);
+                createIdentityResourceResponse.ShouldNotBeNull();
+                createIdentityResourceResponse.IdentityResourceName.ShouldNotBeNullOrEmpty();
+
+                this.TestingContext.IdentityResources.Add(createIdentityResourceResponse.IdentityResourceName);
+            }
         }
 
         [Given(@"I create the following api resources")]
@@ -202,7 +440,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 createClientResponse.ShouldNotBeNull();
                 createClientResponse.ClientId.ShouldNotBeNullOrEmpty();
 
-                this.TestingContext.Clients.Add(createClientResponse.ClientId);
+                this.TestingContext.Clients.Add(ClientDetails.Create(createClientResponse.ClientId, createClientRequest.Secret, createClientRequest.AllowedGrantTypes));
             }
         }
 
@@ -240,167 +478,5 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.WebDriver.Title.ShouldBe("Dashboard");
         }
 
-    }
-
-    public static class Extensions
-    {
-        public static void FillIn(this IWebDriver webDriver,
-                                  String elementName,
-                                  String value)
-        {
-            IWebElement webElement = webDriver.FindElement(By.Name(elementName));
-            webElement.ShouldNotBeNull();
-            webElement.SendKeys(value);
-        }
-
-        public static IWebElement FindButtonById(this IWebDriver webDriver,
-                                                   String buttonId)
-        {
-            IWebElement element = webDriver.FindElement(By.Id(buttonId));
-
-            element.ShouldNotBeNull();
-
-            return element;
-        }
-
-        public static IWebElement FindButtonByText(this IWebDriver webDriver,
-                                             String buttonText)
-        {
-            ReadOnlyCollection<IWebElement> elements = webDriver.FindElements(By.TagName("button"));
-
-            List<IWebElement> e = elements.Where(e => e.GetAttribute("innerText") == buttonText).ToList();
-
-            e.ShouldHaveSingleItem();
-
-            return e.Single();
-        }
-
-        public static void ClickLink(this IWebDriver webDriver,
-                                     String linkText)
-        {
-            IWebElement webElement = webDriver.FindElement(By.LinkText(linkText));
-            webElement.ShouldNotBeNull();
-            webElement.Click();
-        }
-
-        public static void ClickButtonById(this IWebDriver webDriver,
-                                       String buttonId)
-        {
-            IWebElement webElement = webDriver.FindButtonById(buttonId);
-            webElement.ShouldNotBeNull();
-            webElement.Click();
-        }
-
-        public static void ClickButtonByText(this IWebDriver webDriver,
-                                           String buttonText)
-        {
-            IWebElement webElement = webDriver.FindButtonByText(buttonText);
-            webElement.ShouldNotBeNull();
-            webElement.Click();
-        }
-    }
-
-    public class TestingContext
-    {
-        public DockerHelper DockerHelper { get; set; }
-
-        public NlogLogger Logger { get; set; }
-
-        public Dictionary<String, Guid> Users;
-        public Dictionary<String, Guid> Roles;
-
-        public List<String> Clients;
-
-        public List<String> ApiResources;
-
-        public TokenResponse TokenResponse;
-
-        public TestingContext()
-        {
-            this.Users = new Dictionary<String, Guid>();
-            this.Roles = new Dictionary<String, Guid>();
-            this.Clients = new List<String>();
-            this.ApiResources = new List<String>();
-        }
-    }
-
-    public static class SpecflowTableHelper
-    {
-        #region Methods
-
-        public static Decimal GetDecimalValue(TableRow row,
-                                              String key)
-        {
-            String field = SpecflowTableHelper.GetStringRowValue(row, key);
-
-            return Decimal.TryParse(field, out Decimal value) ? value : -1;
-        }
-
-        public static Boolean GetBooleanValue(TableRow row,
-                                              String key)
-        {
-            String field = SpecflowTableHelper.GetStringRowValue(row, key);
-
-            return Boolean.TryParse(field, out Boolean value) && value;
-        }
-
-        public static Int32 GetIntValue(TableRow row,
-                                        String key)
-        {
-            String field = SpecflowTableHelper.GetStringRowValue(row, key);
-
-            return Int32.TryParse(field, out Int32 value) ? value : -1;
-        }
-
-        public static Int16 GetShortValue(TableRow row,
-                                          String key)
-        {
-            String field = SpecflowTableHelper.GetStringRowValue(row, key);
-
-            if (Int16.TryParse(field, out Int16 value))
-            {
-                return value;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-        public static String GetStringRowValue(TableRow row,
-                                               String key)
-        {
-            return row.TryGetValue(key, out String value) ? value : "";
-        }
-
-        /// <summary>
-        /// Gets the date for date string.
-        /// </summary>
-        /// <param name="dateString">The date string.</param>
-        /// <param name="today">The today.</param>
-        /// <returns></returns>
-        public static DateTime GetDateForDateString(String dateString,
-                                                    DateTime today)
-        {
-            switch (dateString.ToUpper())
-            {
-                case "TODAY":
-                    return today.Date;
-                case "YESTERDAY":
-                    return today.AddDays(-1).Date;
-                case "LASTWEEK":
-                    return today.AddDays(-7).Date;
-                case "LASTMONTH":
-                    return today.AddMonths(-1).Date;
-                case "LASTYEAR":
-                    return today.AddYears(-1).Date;
-                case "TOMORROW":
-                    return today.AddDays(1).Date;
-                default:
-                    return DateTime.Parse(dateString);
-            }
-        }
-
-        #endregion
     }
 }

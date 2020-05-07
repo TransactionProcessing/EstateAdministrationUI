@@ -7,20 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateManagement.Client" Version="0.0.8" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="SecurityService.Client" Version="0.0.8.1" />
+    <PackageReference Include="Coypu" Version="3.1.1" />
+    <PackageReference Include="EstateManagement.Client" Version="0.0.12" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="SecurityService.Client" Version="0.0.10" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Shared.IntegrationTesting" Version="0.0.9" />
-    <PackageReference Include="TransactionProcessor.Client" Version="0.0.5" />
+    <PackageReference Include="Shared.IntegrationTesting" Version="0.0.13" />
+    <PackageReference Include="TransactionProcessor.Client" Version="0.0.7" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="coverlet.collector" Version="1.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Ductus.FluentDocker" Version="2.7.3" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
-    <PackageReference Include="SpecFlow" Version="3.1.82" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.82" />
-    <PackageReference Include="SpecFlow.xUnit" Version="3.1.82" />
+    <PackageReference Include="SpecFlow" Version="3.1.97" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.97" />
+    <PackageReference Include="SpecFlow.xUnit" Version="3.1.97" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,12 +33,26 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Login.feature</DependentUpon>
     </Compile>
+    <Compile Update="Tests\MyEstate.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <SpecFlowFeatureFiles Update="Tests\Login.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Login.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Tests\MyEstate.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>MyEstate.feature.cs</LastGenOutput>
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 
