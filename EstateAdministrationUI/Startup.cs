@@ -118,7 +118,6 @@ namespace EstateAdministrationUI
             services.AddSingleton<IEstateClient, EstateClient>();
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
                                                                      {
-                                                                         var x = ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
                                                                          return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
                                                                      });
             services.AddSingleton<HttpClient>();
