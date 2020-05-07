@@ -11,15 +11,21 @@
     [Binding]
     public class Setup
     {
-        public static IContainerService DatabaseServerContainer;
-        private static String DbConnectionStringWithNoDatabase;
+        protected Setup()
+        {
+
+        }
+
+        protected static IContainerService DatabaseServerContainer;
+
         public static INetworkService DatabaseServerNetwork;
 
         public static String SqlServerContainerName = "shareddatabasesqlserver";
 
-        public const String SqlUserName = "sa";
+        public static String SqlUserName = "sa";
 
-        public const String SqlPassword = "thisisalongpassword123!";
+        public static String SqlPassword = "thisisalongpassword123!";
+
         [BeforeTestRun]
         protected static void GlobalSetup()
         {

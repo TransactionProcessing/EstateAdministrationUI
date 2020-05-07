@@ -240,31 +240,24 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
 
-            await using (SqlConnection connection = new SqlConnection(connectionString))
+            await using(SqlConnection connection = new SqlConnection(connectionString))
             {
-                try
-                {
-                    await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
+                await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
 
-                    // Create an Event Store Server
-                    await this.InsertEventStoreServer(connection, this.EventStoreContainerName).ConfigureAwait(false);
+                // Create an Event Store Server
+                await this.InsertEventStoreServer(connection, this.EventStoreContainerName).ConfigureAwait(false);
 
-                    String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
-                    // Add Route for Estate Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
+                String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
+                // Add Route for Estate Aggregate Events
+                await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
-                    // Add Route for Merchant Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
+                // Add Route for Merchant Aggregate Events
+                await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
-                    // Add Route for Transaction Aggregate Events
-                    await this.InsertSubscription(connection, "$ce-TransactionAggregate", "Reporting", endPointUri).ConfigureAwait(false);
+                // Add Route for Transaction Aggregate Events
+                await this.InsertSubscription(connection, "$ce-TransactionAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
-                    await connection.CloseAsync().ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
+                await connection.CloseAsync().ConfigureAwait(false);
             }
         }
 
