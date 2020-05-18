@@ -36,6 +36,9 @@
     <Compile Update="Tests\MyEstate.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Tests\MyMerchants.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +55,11 @@
     <SpecFlowFeatureFiles Update="Tests\MyEstate.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MyEstate.feature.cs</LastGenOutput>
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Tests\MyMerchants.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>MyMerchants.feature.cs</LastGenOutput>
       <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
   </ItemGroup>

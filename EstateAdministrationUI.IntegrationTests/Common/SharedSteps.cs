@@ -141,8 +141,112 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
-        [Given(@"I have created the following security users")]
-        public async Task GivenIHaveCreatedTheFollowingSecurityUsers(Table table)
+        [Given("I create the following merchants")]
+        [When(@"I create the following merchants")]
+        public async Task WhenICreateTheFollowingMerchants(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                // lookup the estate id based on the name in the table
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
+                {
+                    Name = merchantName,
+                    Contact = new Contact
+                    {
+                        ContactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName"),
+                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress")
+                    },
+                    Address = new Address
+                    {
+                        AddressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1"),
+                        Town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town"),
+                        Region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region"),
+                        Country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country")
+                    }
+                };
+
+                CreateMerchantResponse response = await this.TestingContext.DockerHelper.EstateClient
+                                                            .CreateMerchant(token, estateDetails.EstateId, createMerchantRequest, CancellationToken.None).ConfigureAwait(false);
+
+                response.ShouldNotBeNull();
+                response.EstateId.ShouldBe(estateDetails.EstateId);
+                response.MerchantId.ShouldNotBe(Guid.Empty);
+
+                // Cache the merchant id
+                estateDetails.AddMerchant(response.MerchantId, merchantName);
+
+                this.TestingContext.Logger.LogInformation($"Merchant {merchantName} created with Id {response.MerchantId} for Estate {estateDetails.EstateName}");
+            }
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+
+                merchant.MerchantName.ShouldBe(merchantName);
+            }
+        }
+
+        [When(@"I assign the following  operator to the merchants")]
+        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                // Lookup the operator id
+                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                Guid operatorId = estateDetails.GetOperatorId(operatorName);
+
+                AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
+                {
+                    OperatorId = operatorId,
+                    MerchantNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
+                    TerminalNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
+                };
+
+                AssignOperatorResponse assignOperatorResponse = await this.TestingContext.DockerHelper.EstateClient.AssignOperatorToMerchant(token, estateDetails.EstateId, merchantId, assignOperatorRequest, CancellationToken.None).ConfigureAwait(false);
+
+                assignOperatorResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                assignOperatorResponse.MerchantId.ShouldBe(merchantId);
+                assignOperatorResponse.OperatorId.ShouldBe(operatorId);
+
+                this.TestingContext.Logger.LogInformation($"Operator {operatorName} assigned to Estate {estateDetails.EstateName}");
+            }
+        }
+
+        [When(@"I create the following security users")]
+        [Given("I have created the following security users")]
+        public async Task WhenICreateTheFollowingSecurityUsers(Table table)
         {
             foreach (TableRow tableRow in table.Rows)
             {
@@ -180,7 +284,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                         token = estateDetails.AccessToken;
                     }
                     // lookup the merchant id based on the name in the table
-                    String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                    String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
                     Guid merchantId = estateDetails.GetMerchantId(merchantName);
 
                     CreateMerchantUserRequest createMerchantUserRequest = new CreateMerchantUserRequest
@@ -206,17 +310,112 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
+        [When(@"I add the following devices to the merchant")]
+        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
+
+                String token = this.TestingContext.AccessToken;
+                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
+                {
+                    token = estateDetails.AccessToken;
+                }
+
+                // Lookup the merchant id
+                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+                Guid merchantId = estateDetails.GetMerchantId(merchantName);
+
+                String deviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
+
+                AddMerchantDeviceRequest addMerchantDeviceRequest = new AddMerchantDeviceRequest
+                {
+                    DeviceIdentifier = deviceIdentifier
+                };
+
+                AddMerchantDeviceResponse addMerchantDeviceResponse = await this
+                                                                            .TestingContext.DockerHelper.EstateClient
+                                                                            .AddDeviceToMerchant(token,
+                                                                                                 estateDetails.EstateId,
+                                                                                                 merchantId,
+                                                                                                 addMerchantDeviceRequest,
+                                                                                                 CancellationToken.None).ConfigureAwait(false);
+
+                addMerchantDeviceResponse.EstateId.ShouldBe(estateDetails.EstateId);
+                addMerchantDeviceResponse.MerchantId.ShouldBe(merchantId);
+                addMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
+
+                this.TestingContext.Logger.LogInformation($"Device {deviceIdentifier} assigned to Merchant {merchantName}");
+            }
+        }
+
         [Given(@"I click on the My Estate sidebar option")]
         public void GivenIClickOnTheMyEstateSidebarOption()
         {
             this.WebDriver.ClickButtonById("estateDetailsLink");
         }
 
+        [Given(@"I click on the My Merchants sidebar option")]
+        public void GivenIClickOnTheMyMerchantsSidebarOption()
+        {
+            this.WebDriver.ClickButtonById("merchantsLink");
+        }
+
+
         [Then(@"I am presented with the Estate Details Screen")]
         public void ThenIAmPresentedWithTheEstateDetailsScreen()
         {
-            this.WebDriver.Title.ShouldBe("Edit Golf Club");
+            this.WebDriver.Title.ShouldBe("Estate Details");
         }
+
+        [Then(@"I am presented with the Merchants List Screen")]
+        public void ThenIAmPresentedWithTheMerchantsListScreen()
+        {
+            this.WebDriver.Title.ShouldBe("Merchants");
+        }
+
+        [Then(@"the following merchants details are in the list")]
+        public void ThenTheFollowingMerchantsDetailsAreInTheList(Table table)
+        {
+            Int32 foundRowCount = 0;
+            IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
+            IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+            rows.Count.ShouldBe(table.RowCount + 1);
+            foreach (TableRow tableRow in table.Rows)
+            {
+                IList<IWebElement> rowTD;
+                foreach (IWebElement row in rows)
+                {
+                    var rowTH = row.FindElements(By.TagName("th"));
+
+                    if (rowTH.Any())
+                    {
+                        // header row so skip
+                        continue;
+                    }
+                    rowTD = row.FindElements(By.TagName("td"));
+
+                    if (rowTD[0].Text == tableRow["MerchantName"])
+                    {
+                        // Compare other fields
+                        rowTD[0].Text.ShouldBe(tableRow["MerchantName"]);
+                        rowTD[1].Text.ShouldBe(tableRow["ContactName"]);
+                        rowTD[2].Text.ShouldBe(tableRow["AddressLine1"]);
+                        rowTD[3].Text.ShouldBe(tableRow["Town"]);
+                        rowTD[4].Text.ShouldBe(tableRow["NumberOfUsers"]);
+                        //rowTD[5].Text.ShouldBe(tableRow["NumberOfDevices"]);
+                        //rowTD[6].Text.ShouldBe(tableRow["NumberOfOperators"]);
+
+                        // We have found the row
+                        foundRowCount++;
+                        break;
+                    }
+                }
+            }
+            foundRowCount.ShouldBe(table.RowCount);
+        }
+
 
         [Then(@"My Estate Details will be shown")]
         public void ThenMyEstateDetailsWillBeShown(Table table)
