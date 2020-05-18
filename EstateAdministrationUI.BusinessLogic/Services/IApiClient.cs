@@ -1,65 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Services
+﻿namespace EstateAdministrationUI.Services
 {
-    using System.ComponentModel;
+    using System;
+    using System.Collections.Generic;
     using System.Security.Claims;
     using System.Threading;
-    using BusinessLogic.Factories;
+    using System.Threading.Tasks;
     using BusinessLogic.Models;
-    using EstateManagement.Client;
-    using EstateManagement.DataTransferObjects.Responses;
-    using Shared.Logger;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IApiClient
     {
-        Task<EstateModel> GetEstate(String accessToken, ClaimsIdentity claimsIdentity, CancellationToken cancellationToken);
-    }
-
-    public class ApiClient : IApiClient
-    {
-        private readonly IEstateClient EstateClient;
-
-        private readonly IModelFactory ModelFactory;
-
-        public ApiClient(IEstateClient estateClient, IModelFactory modelFactory)
-        {
-            this.EstateClient = estateClient;
-            this.ModelFactory = modelFactory;
-        }
-
-        public async Task<EstateModel> GetEstate(String accessToken, ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
-        {
-            Logger.LogInformation($"Access Token is [{accessToken}]");
-
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
-
-            EstateResponse estate = await this.EstateClient.GetEstate(accessToken, estateId, cancellationToken);
-
-            return this.ModelFactory.ConvertFrom(estate);
-        }
+        #region Methods
 
         /// <summary>
-        /// Gets the claim value.
+        /// Gets the estate.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="accessToken">The access token.</param>
         /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="claimType">Type of the claim.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">User {claimsIdentity.Name} does not have Claim [{claimType}]</exception>
-        private static T GetClaimValue<T>(ClaimsIdentity claimsIdentity,
-                                          String claimType)
-        {
-            if (!claimsIdentity.HasClaim(x => x.Type == claimType))
-            {
-                throw new InvalidOperationException($"User {claimsIdentity.Name} does not have Claim [{claimType}]");
-            }
+        Task<EstateModel> GetEstate(String accessToken,
+                                    ClaimsIdentity claimsIdentity,
+                                    CancellationToken cancellationToken);
 
-            Claim claim = claimsIdentity.Claims.Single(x => x.Type == claimType);
-            return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(claim.Value);
-        }
+        /// <summary>
+        /// Gets the merchants.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantModel>> GetMerchants(String accessToken,
+                                               ClaimsIdentity claimsIdentity,
+                                               CancellationToken cancellationToken);
+
+        #endregion
     }
 }

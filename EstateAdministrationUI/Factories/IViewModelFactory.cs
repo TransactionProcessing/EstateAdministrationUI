@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Factories
+﻿namespace EstateAdministrationUI.Factories
 {
+    using System.Collections.Generic;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IViewModelFactory
     {
+        #region Methods
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="estateModel">The estate model.</param>
+        /// <returns></returns>
         EstateViewModel ConvertFrom(EstateModel estateModel);
-    }
 
-    public class ViewModelFactory : IViewModelFactory
-    {
-        public EstateViewModel ConvertFrom(EstateModel estateModel)
-        {
-            if (estateModel == null)
-            {
-                throw  new ArgumentNullException(nameof(estateModel));
-            }
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantModels">The merchant models.</param>
+        /// <returns></returns>
+        List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels);
 
-            EstateViewModel viewModel = new EstateViewModel
-                                        {
-                                            EstateName = estateModel.EstateName,
-                                            EstateId = estateModel.EstateId
-                                        };
-
-            return viewModel;
-        }
+        #endregion
     }
 }

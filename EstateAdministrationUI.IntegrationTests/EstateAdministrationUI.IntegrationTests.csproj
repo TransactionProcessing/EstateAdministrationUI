@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Coypu" Version="3.1.1" />
-    <PackageReference Include="EstateManagement.Client" Version="0.0.12" />
+    <PackageReference Include="EstateManagement.Client" Version="0.0.12.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="SecurityService.Client" Version="0.0.10" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
@@ -36,6 +36,9 @@
     <Compile Update="Tests\MyEstate.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Tests\MyMerchants.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +55,11 @@
     <SpecFlowFeatureFiles Update="Tests\MyEstate.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MyEstate.feature.cs</LastGenOutput>
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Tests\MyMerchants.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>MyMerchants.feature.cs</LastGenOutput>
       <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
   </ItemGroup>
