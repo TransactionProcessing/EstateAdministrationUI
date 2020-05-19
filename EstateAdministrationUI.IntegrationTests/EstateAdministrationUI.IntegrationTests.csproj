@@ -28,11 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Tests\Login.feature.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Login.feature</DependentUpon>
-    </Compile>
     <Compile Update="Tests\MyEstate.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -45,13 +40,12 @@
     <None Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="Tests\Login.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Login.feature.cs</LastGenOutput>
-    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Tests\MyEstate.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MyEstate.feature.cs</LastGenOutput>

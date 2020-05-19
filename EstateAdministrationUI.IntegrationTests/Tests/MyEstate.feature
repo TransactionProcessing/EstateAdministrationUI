@@ -48,6 +48,7 @@ Background:
 	
 	Then I am presented with the Estate Administrator Dashboard
 
+@PRTest
 Scenario: View Estate
 	Given I click on the My Estate sidebar option
 	Then I am presented with the Estate Details Screen

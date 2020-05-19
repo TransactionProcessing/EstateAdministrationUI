@@ -376,44 +376,50 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         [Then(@"the following merchants details are in the list")]
-        public void ThenTheFollowingMerchantsDetailsAreInTheList(Table table)
+        public async Task ThenTheFollowingMerchantsDetailsAreInTheList(Table table)
         {
-            Int32 foundRowCount = 0;
-            IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
-            IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-            rows.Count.ShouldBe(table.RowCount + 1);
-            foreach (TableRow tableRow in table.Rows)
-            {
-                IList<IWebElement> rowTD;
-                foreach (IWebElement row in rows)
-                {
-                    var rowTH = row.FindElements(By.TagName("th"));
+            await Retry.For(async () =>
+                            {
+                                Int32 foundRowCount = 0;
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
 
-                    if (rowTH.Any())
-                    {
-                        // header row so skip
-                        continue;
-                    }
-                    rowTD = row.FindElements(By.TagName("td"));
+                                rows.Count.ShouldBe(table.RowCount + 1);
+                                foreach (TableRow tableRow in table.Rows)
+                                {
+                                    IList<IWebElement> rowTD;
+                                    foreach (IWebElement row in rows)
+                                    {
+                                        var rowTH = row.FindElements(By.TagName("th"));
 
-                    if (rowTD[0].Text == tableRow["MerchantName"])
-                    {
-                        // Compare other fields
-                        rowTD[0].Text.ShouldBe(tableRow["MerchantName"]);
-                        rowTD[1].Text.ShouldBe(tableRow["ContactName"]);
-                        rowTD[2].Text.ShouldBe(tableRow["AddressLine1"]);
-                        rowTD[3].Text.ShouldBe(tableRow["Town"]);
-                        rowTD[4].Text.ShouldBe(tableRow["NumberOfUsers"]);
-                        //rowTD[5].Text.ShouldBe(tableRow["NumberOfDevices"]);
-                        //rowTD[6].Text.ShouldBe(tableRow["NumberOfOperators"]);
+                                        if (rowTH.Any())
+                                        {
+                                            // header row so skip
+                                            continue;
+                                        }
 
-                        // We have found the row
-                        foundRowCount++;
-                        break;
-                    }
-                }
-            }
-            foundRowCount.ShouldBe(table.RowCount);
+                                        rowTD = row.FindElements(By.TagName("td"));
+
+                                        if (rowTD[0].Text == tableRow["MerchantName"])
+                                        {
+                                            // Compare other fields
+                                            rowTD[0].Text.ShouldBe(tableRow["MerchantName"]);
+                                            rowTD[1].Text.ShouldBe(tableRow["ContactName"]);
+                                            rowTD[2].Text.ShouldBe(tableRow["AddressLine1"]);
+                                            rowTD[3].Text.ShouldBe(tableRow["Town"]);
+                                            rowTD[4].Text.ShouldBe(tableRow["NumberOfUsers"]);
+                                            //rowTD[5].Text.ShouldBe(tableRow["NumberOfDevices"]);
+                                            //rowTD[6].Text.ShouldBe(tableRow["NumberOfOperators"]);
+
+                                            // We have found the row
+                                            foundRowCount++;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foundRowCount.ShouldBe(table.RowCount);
+                            });
         }
 
 

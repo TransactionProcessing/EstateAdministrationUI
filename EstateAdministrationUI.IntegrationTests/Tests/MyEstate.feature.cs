@@ -85,52 +85,52 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         {
 #line 4
 #line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Role Name"});
-            table5.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "Estate[id]"});
 #line 6
- testRunner.Given("I create the following roles", ((string)(null)), table5, "Given ");
+ testRunner.Given("I create the following roles", ((string)(null)), table1, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
                         "DisplayName",
                         "Secret",
                         "Scopes",
                         "UserClaims"});
-            table6.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "estateManagement[id]",
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement[id]",
                         "MerchantId,EstateId,role"});
 #line 10
- testRunner.Given("I create the following api resources", ((string)(null)), table6, "Given ");
+ testRunner.Given("I create the following api resources", ((string)(null)), table2, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
                         "DisplayName",
                         "Description",
                         "UserClaims"});
-            table7.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "openid",
                         "Your user identifier",
                         "",
                         "sub"});
-            table7.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "profile",
                         "User profile",
                         "Your user profile information (first name, last name, etc.)",
                         "name,role,email,given_name,middle_name,family_name,EstateId,MerchantId"});
-            table7.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "email",
                         "Email",
                         "Email and Email Verified Flags",
                         "email_verified,email"});
 #line 14
- testRunner.Given("I create the following identity resources", ((string)(null)), table7, "Given ");
+ testRunner.Given("I create the following identity resources", ((string)(null)), table3, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId",
                         "Name",
                         "Secret",
@@ -140,7 +140,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "PostLogoutRedirectUris",
                         "RequireConsent",
                         "AllowOfflineAccess"});
-            table8.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "serviceClient[id]",
                         "Service Client",
                         "Secret1",
@@ -150,7 +150,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "",
                         "",
                         ""});
-            table8.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "estateUIClient[id]",
                         "Merchant Client",
                         "Secret1",
@@ -161,49 +161,49 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "false",
                         "true"});
 #line 20
- testRunner.Given("I create the following clients", ((string)(null)), table8, "Given ");
+ testRunner.Given("I create the following clients", ((string)(null)), table4, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId"});
-            table9.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "serviceClient[id]"});
 #line 25
- testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table9, "Given ");
+ testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table5, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
-            table10.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Test Estate [id]"});
 #line 29
- testRunner.Given("I have created the following estates", ((string)(null)), table10, "Given ");
+ testRunner.Given("I have created the following estates", ((string)(null)), table6, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName",
                         "OperatorName",
                         "RequireCustomMerchantNumber",
                         "RequireCustomTerminalNumber"});
-            table11.AddRow(new string[] {
+            table7.AddRow(new string[] {
                         "Test Estate [id]",
                         "Test Operator [id]",
                         "True",
                         "True"});
 #line 33
- testRunner.And("I have created the following operators", ((string)(null)), table11, "And ");
+ testRunner.And("I have created the following operators", ((string)(null)), table7, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "EstateName"});
-            table12.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "estateuser[id]@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate [id]"});
 #line 37
- testRunner.And("I have created the following security users", ((string)(null)), table12, "And ");
+ testRunner.And("I have created the following security users", ((string)(null)), table8, "And ");
 #line hidden
 #line 41
  testRunner.Given("I am on the application home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
@@ -264,12 +264,12 @@ this.FeatureBackground();
 #line 53
  testRunner.Then("I am presented with the Estate Details Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName"});
-                table13.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Test Estate [id]"});
 #line 54
- testRunner.And("My Estate Details will be shown", ((string)(null)), table13, "And ");
+ testRunner.And("My Estate Details will be shown", ((string)(null)), table9, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
