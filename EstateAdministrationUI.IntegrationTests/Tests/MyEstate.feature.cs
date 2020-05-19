@@ -231,11 +231,14 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         [Xunit.SkippableFactAttribute(DisplayName="View Estate")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "View Estate")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void ViewEstate()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Estate", null, ((string[])(null)));
-#line 51
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Estate", null, new string[] {
+                        "PRTest"});
+#line 52
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -258,17 +261,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 52
+#line 53
  testRunner.Given("I click on the My Estate sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 53
+#line 54
  testRunner.Then("I am presented with the Estate Details Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName"});
                 table9.AddRow(new string[] {
                             "Test Estate [id]"});
-#line 54
+#line 55
  testRunner.And("My Estate Details will be shown", ((string)(null)), table9, "And ");
 #line hidden
             }
