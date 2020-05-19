@@ -354,17 +354,13 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Given(@"I click on the My Estate sidebar option")]
         public async Task GivenIClickOnTheMyEstateSidebarOption()
         {
-
-            this.WebDriver.ClickButtonById("estateDetailsLink");
+            await this.WebDriver.ClickButtonById("estateDetailsLink");
         }
 
         [Given(@"I click on the My Merchants sidebar option")]
         public async Task GivenIClickOnTheMyMerchantsSidebarOption()
         {
-            await Retry.For(async () =>
-                            {
-                                this.WebDriver.ClickButtonById("merchantsLink");
-                            }, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5));
+            await this.WebDriver.ClickButtonById("merchantsLink");
         }
 
 
