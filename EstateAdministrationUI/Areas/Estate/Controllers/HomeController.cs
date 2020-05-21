@@ -70,6 +70,44 @@
             return this.View("MerchantList");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetMerchantOperatorListAsJson([FromQuery] Guid merchantId, CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetMerchantOperatorListAsJson");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+            
+            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+
+            DataTablesResult<MerchantOperatorViewModel> dataTableResult = this.GetDataForDataTable(viewModel.Operators);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(this.GetDataForDataTable(viewModel.Operators));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMerchantDeviceListAsJson([FromQuery] Guid merchantId, CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetMerchantDeviceListAsJson");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+
+            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+
+            DataTablesResult<KeyValuePair<String, String>> dataTableResult = this.GetDataForDataTable(viewModel.Devices);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(this.GetDataForDataTable(viewModel.Devices));
+        }
+
         /// <summary>
         /// Gets the merchant list as json.
         /// </summary>
@@ -104,6 +142,23 @@
             return this.Json(this.GetDataForDataTable(merchantViewModels, whereClause));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetMerchant([FromQuery]Guid merchantId, CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+            
+            return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMerchant(MerchantViewModel viewModel,
+                                                        CancellationToken cancellationToken)
+        {
+            return this.View("MerchantDetails", viewModel);
+        }
+
         /// <summary>
         /// Indexes this instance.
         /// </summary>
@@ -120,13 +175,13 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> ManageEstate(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEstate(CancellationToken cancellationToken)
         {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
             EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
 
-            return this.View(this.ViewModelFactory.ConvertFrom(estateDetails));
+            return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
         }
 
         /// <summary>
@@ -136,10 +191,12 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> ManageEstate(EstateViewModel viewModel,
-                                                      CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEstate(EstateViewModel viewModel,
+                                                   CancellationToken cancellationToken)
         {
-            return this.View(viewModel);
+            // TODO: Update the estate information
+
+            return this.View("EstateDetails", viewModel);
         }
 
         /// <summary>
@@ -200,7 +257,11 @@
                 }
 
                 //Paging   
-                queryData = queryData.Skip(skip).Take(pageSize).ToList();
+                if (pageSize > 0)
+                {
+                    // paging is enabled
+                    queryData = queryData.Skip(skip).Take(pageSize).ToList();
+                }
 
                 Logger.LogInformation($"querydata count is {queryData.Count()}");
                 // Build the result 

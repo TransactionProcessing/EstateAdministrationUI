@@ -25,6 +25,13 @@
         /// <returns></returns>
         List<MerchantModel> ConvertFrom(List<MerchantResponse> source);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        MerchantModel ConvertFrom(MerchantResponse source);
+
         #endregion
     }
 }

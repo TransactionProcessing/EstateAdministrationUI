@@ -20,9 +20,11 @@
         [BeforeScenario(Order = 0)]
         public async Task BeforeScenario()
         {
-            ChromeOptions option = new ChromeOptions();
-            option.AddArgument("--headless");
-            this.WebDriver = new ChromeDriver(option);
+            ChromeOptions options = new ChromeOptions();
+            options.AddArguments("--window-size=1920,1080");
+            options.AddArguments("--start-maximized");
+            options.AddArguments("--headless");
+            this.WebDriver = new ChromeDriver(options);
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
 
