@@ -92,6 +92,28 @@
         }
 
         /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<MerchantModel> GetMerchant(String accessToken,
+                                                     ClaimsIdentity claimsIdentity,
+                                                     Guid merchantId,
+                                                     CancellationToken cancellationToken)
+        {
+            Logger.LogInformation($"Access Token is [{accessToken}]");
+
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(merchant);
+        }
+
+        /// <summary>
         /// Gets the claim value.
         /// </summary>
         /// <typeparam name="T"></typeparam>

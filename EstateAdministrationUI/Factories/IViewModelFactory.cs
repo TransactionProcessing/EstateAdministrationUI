@@ -25,6 +25,13 @@
         /// <returns></returns>
         List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantModel">The merchant model.</param>
+        /// <returns></returns>
+        MerchantViewModel ConvertFrom(MerchantModel merchantModel);
+
         #endregion
     }
 }

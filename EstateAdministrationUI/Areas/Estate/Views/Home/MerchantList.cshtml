@@ -59,8 +59,10 @@
                 { "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
                 { "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta)
-                        { return '<a class="btn btn-info" href="/DemoGrid/Edit/' + full.CustomerID + '">Edit</a>'; }
+                    "render": function(data, type, full, meta)
+                    {
+                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '">Edit</a>';
+                    }
                 }
             ],
             "order": [[2, "asc"]]

@@ -36,6 +36,19 @@
                                                ClaimsIdentity claimsIdentity,
                                                CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MerchantModel> GetMerchant(String accessToken,
+                                        ClaimsIdentity claimsIdentity,
+                                        Guid merchantId,
+                                        CancellationToken cancellationToken);
+
         #endregion
     }
 }

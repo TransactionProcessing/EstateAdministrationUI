@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -367,7 +368,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Then(@"I am presented with the Estate Details Screen")]
         public void ThenIAmPresentedWithTheEstateDetailsScreen()
         {
-            this.WebDriver.Title.ShouldBe("Estate Details");
+            this.WebDriver.Title.ShouldContain("Estate Details");
         }
 
         [Then(@"I am presented with the Merchants List Screen")]
@@ -423,6 +424,59 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                             }, TimeSpan.FromSeconds(120));
         }
 
+        [When(@"I select '(.*)' from the merchant list")]
+        public async Task WhenISelectFromTheMerchantList(String merchantName)
+        {
+            Boolean foundRow = false;
+            IWebElement merchantRow = null;
+            await Retry.For(async () =>
+                            {
+
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                                IList<IWebElement> rowTD;
+                                foreach (IWebElement row in rows)
+                                {
+                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                                    if (rowTH.Any())
+                                    {
+                                        // header row so skip
+                                        continue;
+                                    }
+
+                                    rowTD = row.FindElements(By.TagName("td"));
+
+                                    if (rowTD[0].Text == merchantName)
+                                    {
+                                        merchantRow = row;
+                                        foundRow = true;
+                                        break;
+                                    }
+                                }
+                            },
+                            TimeSpan.FromSeconds(120));
+
+            foundRow.ShouldBeTrue();
+            merchantRow.ShouldNotBeNull();
+
+            await Retry.For(async () =>
+                            {
+                                IWebElement editButton = merchantRow.FindElement(By.Id("editMerchantLink"));
+                                editButton.Click();
+                            },
+                            TimeSpan.FromSeconds(120));
+        }
+
+        [Then(@"I am presented the merchant details screen for '(.*)'")]
+        public void ThenIAmPresentedTheMerchantDetailsScreenFor(String merchantName)
+        {
+            IWebElement element = this.WebDriver.FindElement(By.Id("MerchantName"));
+            element.ShouldNotBeNull();
+            String elementValue = element.GetProperty("value");
+            elementValue.ShouldBe(merchantName);
+        }
 
         [Then(@"My Estate Details will be shown")]
         public void ThenMyEstateDetailsWillBeShown(Table table)

@@ -349,14 +349,11 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         [Xunit.SkippableFactAttribute(DisplayName="View My Merchants")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "View My Merchants")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void ViewMyMerchants()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View My Merchants", null, new string[] {
-                        "PRTest"});
-#line 77
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View My Merchants", null, ((string[])(null)));
+#line 76
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -379,10 +376,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 78
+#line 77
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 79
+#line 78
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
@@ -417,8 +414,92 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 80
+#line 79
  testRunner.And("the following merchants details are in the list", ((string)(null)), table22, "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="View Single Merchant")]
+        [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
+        [Xunit.TraitAttribute("Description", "View Single Merchant")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void ViewSingleMerchant()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Single Merchant", null, new string[] {
+                        "PRTest"});
+#line 86
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 87
+ testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 88
+ testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "ContactName",
+                            "AddressLine1",
+                            "Town",
+                            "NumberOfUsers",
+                            "NumberOfDevices",
+                            "NumberOfOperators"});
+                table23.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+                table23.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+                table23.AddRow(new string[] {
+                            "Test Merchant 3",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+#line 89
+ testRunner.And("the following merchants details are in the list", ((string)(null)), table23, "And ");
+#line hidden
+#line 94
+ testRunner.When("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 95
+ testRunner.Then("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
