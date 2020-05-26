@@ -1,0 +1,211 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.CreateMerchantViewModel
+
+@{
+    ViewBag.Title = "New Merchant Details";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-createnewmerchant-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create New Merchant</h1>
+                        </div>
+                        <form id="createMerchantForm" asp-action="CreateMerchant" asp-area="Estate" asp-controller="Home" method="post" class="user">
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="MerchantName" class="control-label">Merchant Name</label>
+                                <input asp-for="MerchantName" class="form-control form-control-user" name="merchantName" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <h4 class="h4 text-gray-900 mb-4">Address</h4>
+                                <label asp-for="AddressLine1" class="control-label">Address Line 1</label>
+                                <input asp-for="AddressLine1" class="form-control form-control-user" name="addressLine1" autofocus />
+                                <div class="form-row">
+                                    <label asp-for="AddressLine2" class="control-label">Address Line 2</label>
+                                    <input asp-for="AddressLine2" class="form-control form-control-user" name="addressLine2" autofocus />
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label asp-for="Town" class="control-label">Town</label>
+                                        <input asp-for="Town" class="form-control form-control-user" name="town" autofocus />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Region" class="control-label">Region</label>
+                                        <input asp-for="Region" class="form-control form-control-user" name="region" autofocus />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label asp-for="PostalCode" class="control-label">Post Code</label>
+                                        <input asp-for="PostalCode" class="form-control form-control-user" name="postalCode" autofocus />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Country" class="control-label">Country</label>
+                                        <input asp-for="Country" class="form-control form-control-user" name="country" autofocus />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h4 class="h4 text-gray-900 mb-4">Contact</h4>
+                                <div class="form-row">
+                                    <label asp-for="ContactName" class="control-label">Name</label>
+                                    <input asp-for="ContactName" class="form-control form-control-user" name="contactName" autofocus />
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label asp-for="ContactEmailAddress" class="control-label">Email Address</label>
+                                        <input asp-for="ContactEmailAddress" class="form-control form-control-user" name="contactEmailAddress" autofocus />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ContactPhoneNumber" class="control-label">Phone Number</label>
+                                        <input asp-for="ContactPhoneNumber" class="form-control form-control-user" name="contactPhoneNumber" autofocus />
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="createMerchantButton" type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-plus"></i> Create Merchant</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function()
+    {
+        // initialize tooltipster on text input elements
+        $('#createMerchantForm input[type="text"]').tooltipster({
+            trigger: 'hover',
+            position: 'right',
+            animation: 'grow'
+        });
+
+        var merchantNameRuleSet = {
+            required: true
+        };
+
+        var addressLine1RuleSet = {
+            required: true
+        };
+
+        var townRuleSet = {
+            required: true
+        };
+        var regionRuleSet = {
+            required: true
+        };
+        var postalCodeRuleSet = {
+            required: true
+        };
+        var countryRuleSet = {
+            required: true
+        };
+
+        var contactNameRuleSet = {
+            required: true
+        };
+
+        var contactEmailAddressRuleSet = {
+            required: true
+        };
+
+        var contactPhoneNumberRuleSet = {
+            required: true
+        };
+
+        var merchantNameMessages = {
+            required: "Merchant name is a required field"
+        };
+
+        var addressLine1Messages = {
+            required: "Address line 1 is a required field"
+        };
+
+        var townMessages = {
+            required: "Town is a required field"
+        };
+
+        var regionMessages = {
+            required: "Region is a required field"
+        };
+
+        var postalCodeMessages = {
+            required: "Post code is a required field"
+        };
+
+        var countryMessages = {
+            required: "Country is a required field"
+        };
+
+        var contactNameMessages = {
+            required: "Contact name is a required field"
+        };
+
+        var contactEmailAddressMessages = {
+            required: "Contact email address is a required field"
+        };
+
+        var contactPhoneNumberMessages = {
+            required: "Contact phone number is a required field"
+        };
+
+        // just for the demos, avoids form submit
+        jQuery.validator.setDefaults({
+            //debug: true
+        });
+
+        $("#createMerchantForm").validate({
+            rules: {
+                merchantName: merchantNameRuleSet,
+
+                addressLine1: addressLine1RuleSet,
+                town: townRuleSet,
+                region: regionRuleSet,
+                postalCode: postalCodeRuleSet,
+                country: countryRuleSet,
+
+                contactName: contactNameRuleSet,
+                contactEmailAddress: contactEmailAddressRuleSet,
+                contactPhoneNumber: contactPhoneNumberRuleSet,
+                },
+            messages: {
+                merchantName: merchantNameMessages,
+
+                addressLine1: addressLine1Messages,
+                town: townMessages,
+                region: regionMessages,
+                postalCode: postalCodeMessages,
+                country: countryMessages,
+
+                contactName: contactNameMessages,
+                contactEmailAddress: contactEmailAddressMessages,
+                contactPhoneNumber: contactPhoneNumberMessages
+            },
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorPlacement: function(error, element)
+            {
+                var ele = $(element),
+                    err = $(error),
+                    msg = err.text();
+
+                console.log(msg);
+
+                if (msg != null && msg !== '')
+                {
+                    ele.tooltipster('content', msg);
+                }
+            }//,
+            //highlight: function(element, errorClass, validClass) { $(element).addClass(errorClass).removeClass(validClass); },
+            //unhighlight: function(element, errorClass, validClass) { $(element).removeClass(errorClass).addClass(validClass).tooltipster('close'); }
+        });
+    });
+        </script>

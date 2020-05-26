@@ -10,6 +10,7 @@
     using BusinessLogic.Factories;
     using BusinessLogic.Models;
     using EstateManagement.Client;
+    using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using Shared.Logger;
 
@@ -50,6 +51,29 @@
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Creates the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createMerchantModel">The create merchant model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task<CreateMerchantResponseModel> CreateMerchant(String accessToken,
+                                                                     ClaimsIdentity claimsIdentity,
+                                                                     CreateMerchantModel createMerchantModel,
+                                                                     CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            CreateMerchantRequest apiRequest = this.ModelFactory.ConvertFrom(createMerchantModel);
+
+            CreateMerchantResponse apiResponse = await this.EstateClient.CreateMerchant(accessToken, estateId, apiRequest, cancellationToken);
+
+            CreateMerchantResponseModel createMerchantResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return createMerchantResponseModel;
+        }
 
         /// <summary>
         /// Gets the estate.

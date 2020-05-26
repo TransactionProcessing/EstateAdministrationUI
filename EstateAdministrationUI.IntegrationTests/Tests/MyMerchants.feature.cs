@@ -505,6 +505,119 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Create New Merchant")]
+        [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
+        [Xunit.TraitAttribute("Description", "Create New Merchant")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
+        public virtual void CreateNewMerchant()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Merchant", null, new string[] {
+                        "PRTest"});
+#line 98
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 99
+ testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 100
+ testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "ContactName",
+                            "AddressLine1",
+                            "Town",
+                            "NumberOfUsers",
+                            "NumberOfDevices",
+                            "NumberOfOperators"});
+                table24.AddRow(new string[] {
+                            "Test Merchant 1",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+                table24.AddRow(new string[] {
+                            "Test Merchant 2",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+                table24.AddRow(new string[] {
+                            "Test Merchant 3",
+                            "Test Contact 1",
+                            "Address Line 1",
+                            "TestTown",
+                            "0",
+                            "1",
+                            "1"});
+#line 101
+ testRunner.And("the following merchants details are in the list", ((string)(null)), table24, "And ");
+#line hidden
+#line 106
+ testRunner.When("I click the Add New Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 107
+ testRunner.Then("I am presented the new merchant screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+                            "MerchantName",
+                            "AddressLine1",
+                            "Town",
+                            "Region",
+                            "PostCode",
+                            "Country",
+                            "ContactName",
+                            "ContactEmail",
+                            "ContactPhoneNumber"});
+                table25.AddRow(new string[] {
+                            "Test Merchant 4",
+                            "Address Line 1",
+                            "TestTown",
+                            "TestRegion",
+                            "TE57 1NG",
+                            "United Kingdom",
+                            "Test Contact 4",
+                            "testcontact@testmerchant4.co.uk",
+                            "0123456789"});
+#line 108
+ testRunner.When("I enter the following new merchant details", ((string)(null)), table25, "When ");
+#line hidden
+#line 111
+ testRunner.When("I click the Create Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 112
+ testRunner.Then("I am presented the merchant details screen for \'Test Merchant 4\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

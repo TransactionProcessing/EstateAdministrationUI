@@ -1,6 +1,7 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Factories
 {
     using System.Collections.Generic;
+    using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using Models;
 
@@ -31,6 +32,20 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         MerchantModel ConvertFrom(MerchantResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        CreateMerchantRequest ConvertFrom(CreateMerchantModel source);
 
         #endregion
     }

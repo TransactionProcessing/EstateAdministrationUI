@@ -37,6 +37,38 @@
             return viewModel;
         }
 
+        public CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)
+        {
+            if (createMerchantViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(createMerchantViewModel));
+            }
+
+            CreateMerchantModel createMerchantModel = new CreateMerchantModel
+                                                      {
+                                                          Address = new AddressModel
+                                                                    {
+                                                                        AddressLine1 = createMerchantViewModel.AddressLine1,
+                                                                        AddressLine2 = createMerchantViewModel.AddressLine2,
+                                                                        AddressLine3 = createMerchantViewModel.AddressLine3,
+                                                                        AddressLine4 = createMerchantViewModel.AddressLine4,
+                                                                        Country = createMerchantViewModel.Country,
+                                                                        PostalCode = createMerchantViewModel.PostalCode,
+                                                                        Region = createMerchantViewModel.Region,
+                                                                        Town = createMerchantViewModel.Town,
+                                                                    },
+                                                          Contact = new ContactModel
+                                                                    {
+                                                                        ContactPhoneNumber = createMerchantViewModel.ContactPhoneNumber,
+                                                                        ContactName = createMerchantViewModel.ContactName,
+                                                                        ContactEmailAddress = createMerchantViewModel.ContactEmailAddress
+                                                                    },
+                                                          MerchantName = createMerchantViewModel.MerchantName
+                                                      };
+
+            return createMerchantModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -63,7 +95,7 @@
                                    MerchantName = merchantModel.MerchantName,
                                    EstateId = merchantModel.EstateId,
                                    NumberOfDevices = merchantModel.Devices != null && merchantModel.Devices.Any() ? merchantModel.Devices.Count : 0,
-                                   NumberOfOperators = merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
+                                   NumberOfOperators = merchantModel.Operators != null && merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
                                    NumberOfUsers = 0
                                });
             }

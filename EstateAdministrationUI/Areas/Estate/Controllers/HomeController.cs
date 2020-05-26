@@ -70,6 +70,40 @@
             return this.View("MerchantList");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CreateMerchant(CancellationToken cancellationToken)
+        {
+            CreateMerchantViewModel viewModel = new CreateMerchantViewModel();
+
+            return this.View("CreateMerchant", viewModel);
+        }
+
+        private Boolean ValidateModel(CreateMerchantViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMerchant(CreateMerchantViewModel viewModel, CancellationToken cancellationToken)
+        {
+            // Validate the model
+            if (this.ValidateModel(viewModel))
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
+
+                // All good with model, call the client to create the golf club
+                var creteMerchantResponse = await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
+
+                // Merchant Created, redirect to the Merchant List screen
+                return this.RedirectToAction("GetMerchant", "Home", new {merchantId = creteMerchantResponse.MerchantId });
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View("CreateMerchant", viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetMerchantOperatorListAsJson([FromQuery] Guid merchantId, CancellationToken cancellationToken)
         {
