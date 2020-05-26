@@ -5,24 +5,47 @@
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
 
-    <table id="merchantList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Estate Id</th>
-                <th>Merchant Id</th>
-                <th>Merchant Name</th>
-                <th>Contact Name</th>
-                <th>Address Line 1</th>
-                <th>Town</th>
-                <th>Number Of Users</th>
-                <th>Number Of Devices</th>
-                <th>Number Of Operators</th>
-                <th></th>
-            </tr>
-        </thead>
-    </table>
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-3">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-2 d-none d-lg-block bg-merchantlist-image"></div>
+                <div class="col-lg-10">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">My Merchants</h1>
+                        </div>
+
+                        <a class="btn btn-primary btn-circle btn-sm" asp-action="CreateMerchant" asp-controller="Home" asp-area="Estate" id="newMerchantButton"><i class="fa fa-plus"></i></a>
+                        <table id="merchantList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Estate Id</th>
+                                <th>Merchant Id</th>
+                                <th>Merchant Name</th>
+                                <th>Contact Name</th>
+                                <th>Address Line 1</th>
+                                <th>Town</th>
+                                <th>Users</th>
+                                <th>Devices</th>
+                                <th>Operators</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -61,12 +84,11 @@
                 {
                     "render": function(data, type, full, meta)
                     {
-                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '">Edit</a>';
+                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>';
                     }
                 }
             ],
             "order": [[2, "asc"]]
-
         });
     });
 </script>

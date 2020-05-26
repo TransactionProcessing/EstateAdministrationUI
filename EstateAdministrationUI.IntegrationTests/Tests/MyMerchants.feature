@@ -93,3 +93,20 @@ Scenario: View Single Merchant
 	| Test Merchant 3 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
 	When I select 'Test Merchant 1' from the merchant list
 	Then I am presented the merchant details screen for 'Test Merchant 1' 
+
+@PRTest
+Scenario: Create New Merchant
+	Given I click on the My Merchants sidebar option
+	Then I am presented with the Merchants List Screen
+	And the following merchants details are in the list
+	| MerchantName    | ContactName    | AddressLine1   | Town     | NumberOfUsers | NumberOfDevices | NumberOfOperators |
+	| Test Merchant 1 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	| Test Merchant 2 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	| Test Merchant 3 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	When I click the Add New Merchant button
+	Then I am presented the new merchant screen
+	When I enter the following new merchant details
+	| MerchantName    | AddressLine1   | Town     | Region     | PostCode | Country        | ContactName    | ContactEmail                    | ContactPhoneNumber |
+	| Test Merchant 4 | Address Line 1 | TestTown | TestRegion | TE57 1NG | United Kingdom | Test Contact 4 | testcontact@testmerchant4.co.uk | 0123456789         |
+	When I click the Create Merchant button
+	Then I am presented the merchant details screen for 'Test Merchant 4' 

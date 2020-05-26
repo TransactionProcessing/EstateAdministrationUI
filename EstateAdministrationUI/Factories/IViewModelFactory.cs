@@ -21,6 +21,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchantModels">The merchant models.</param>
         /// <returns></returns>
         List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels);

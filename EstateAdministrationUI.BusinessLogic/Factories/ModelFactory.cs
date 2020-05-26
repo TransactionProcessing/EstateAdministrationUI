@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
@@ -122,6 +123,60 @@
             }
 
             return merchantModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
+        {
+            return new CreateMerchantResponseModel
+            {
+                AddressId = source.AddressId,
+                ContactId = source.ContactId,
+                MerchantId = source.MerchantId,
+                EstateId = source.EstateId
+            };
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public CreateMerchantRequest ConvertFrom(CreateMerchantModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            CreateMerchantRequest apiRequest = new CreateMerchantRequest
+                                               {
+                                                   Address = new Address
+                                                             {
+                                                                 AddressLine1 = source.Address.AddressLine1,
+                                                                 AddressLine2 = source.Address.AddressLine2,
+                                                                 AddressLine3 = source.Address.AddressLine3,
+                                                                 AddressLine4 = source.Address.AddressLine4,
+                                                                 Country = source.Address.Country,
+                                                                 PostalCode = source.Address.PostalCode,
+                                                                 Region = source.Address.Region,
+                                                                 Town = source.Address.Town
+                                                             },
+                                                   Contact = new Contact
+                                                             {
+                                                                 ContactName = source.Contact.ContactName,
+                                                                 EmailAddress = source.Contact.ContactEmailAddress,
+                                                                 PhoneNumber = source.Contact.ContactPhoneNumber
+                                                             },
+                                                   Name = source.MerchantName
+                                               };
+
+            return apiRequest;
         }
 
         /// <summary>

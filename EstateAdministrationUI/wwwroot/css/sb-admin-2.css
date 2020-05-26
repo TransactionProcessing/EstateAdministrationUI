@@ -11594,10 +11594,28 @@ a:focus {
   background-size: cover;
 }
 
-.bg-register-image {
-  background: url("https://source.unsplash.com/600x800/?transaction");
-  background-position: center;
-  background-size: cover;
+.bg-estatedetails-image {
+    background: url("https://source.unsplash.com/600x800/?transaction");
+    background-position: center;
+    background-size: cover;
+}
+
+.bg-createnewmerchant-image {
+    background: url("https://source.unsplash.com/600x800/?transaction");
+    background-position: center;
+    background-size: cover;
+}
+
+.bg-merchantdetails-image {
+    background: url("https://source.unsplash.com/600x800/?transaction");
+    background-position: center;
+    background-size: cover;
+}
+
+.bg-merchantlist-image {
+    background: url("https://source.unsplash.com/600x800/?transaction");
+    background-position: center;
+    background-size: cover;
 }
 
 .bg-password-image {

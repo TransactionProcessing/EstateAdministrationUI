@@ -392,7 +392,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                     IList<IWebElement> rowTD;
                                     foreach (IWebElement row in rows)
                                     {
-                                        var rowTH = row.FindElements(By.TagName("th"));
+                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
 
                                         if (rowTH.Any())
                                         {
@@ -424,6 +424,58 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                             }, TimeSpan.FromSeconds(120));
         }
 
+        [When(@"I click the Add New Merchant button")]
+        public async Task  WhenIClickTheAddNewMerchantButton()
+        {
+            await this.WebDriver.ClickButtonById("newMerchantButton");
+        }
+
+        [Then(@"I am presented the new merchant screen")]
+        public void ThenIAmPresentedTheNewMerchantScreen()
+        {
+            this.WebDriver.Title.ShouldBe("New Merchant Details");
+        }
+
+
+        [When(@"I enter the following new merchant details")]
+        public async Task WhenIEnterTheFollowingNewMerchantDetails(Table table)
+        {
+            TableRow tableRow = table.Rows.Single();
+
+            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            await this.WebDriver.FillIn("merchantName", merchantName);
+
+            String addressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1");
+            await this.WebDriver.FillIn("addressLine1", addressLine1);
+
+            String town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town");
+            await this.WebDriver.FillIn("town", town);
+
+            String region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region");
+            await this.WebDriver.FillIn("region", region);
+
+            String postCode= SpecflowTableHelper.GetStringRowValue(tableRow, "PostCode");
+            await this.WebDriver.FillIn("postalCode", postCode);
+            
+            String country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country");
+            await this.WebDriver.FillIn("country", country);
+            
+            String contactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName");
+            await this.WebDriver.FillIn("contactName", contactName);
+            
+            String contactEmail = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactEmail");
+            await this.WebDriver.FillIn("contactEmailAddress", contactEmail);
+            
+            String contactPhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
+            await this.WebDriver.FillIn("contactPhoneNumber", contactPhoneNumber);
+        }
+
+        [When(@"I click the Create Merchant button")]
+        public async Task WhenIClickTheCreateMerchantButton()
+        {
+            await this.WebDriver.ClickButtonById("createMerchantButton");
+        }
+        
         [When(@"I select '(.*)' from the merchant list")]
         public async Task WhenISelectFromTheMerchantList(String merchantName)
         {
@@ -727,8 +779,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [When(@"I login with the username '(.*)' and password '(.*)'")]
         public async Task WhenILoginWithTheUsernameAndPassword(String userName, String password)
         {
-            this.WebDriver.FillIn("Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
-            this.WebDriver.FillIn("Password", password);
+            await this.WebDriver.FillIn("Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+            await this.WebDriver.FillIn("Password", password);
             await this.WebDriver.ClickButtonByText("Login");
         }
 

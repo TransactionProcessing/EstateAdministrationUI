@@ -49,6 +49,18 @@
                                         Guid merchantId,
                                         CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Creates the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createMerchantModel">The create merchant model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateMerchantResponseModel> CreateMerchant(String accessToken,
+                                                        ClaimsIdentity claimsIdentity,
+                                                        CreateMerchantModel createMerchantModel,
+                                                        CancellationToken cancellationToken);
         #endregion
     }
 }
