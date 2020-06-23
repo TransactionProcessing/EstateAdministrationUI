@@ -1,0 +1,126 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.MakeMerchantDepositViewModel
+
+@{
+    ViewBag.Title = "Make Merchant Deposit";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-makemerchantdeposit-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Make Merchant Deposit</h1>
+                        </div>
+                        <form id="makeMerchantDepositForm" asp-action="MakeMerchantDeposit" asp-area="Estate" asp-controller="Home" method="post" class="user">
+                            @Html.HiddenFor(model => model.MerchantId)
+                            @Html.HiddenFor(model => model.MerchantName)
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="Amount" class="control-label">Deposit Amount (KES)</label>
+                                <input asp-for="Amount" class="form-control form-control-user" name="amount" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DepositDate" class="control-label">Deposit Date</label>
+                                <input asp-for="DepositDate" class="form-control form-control-user" name="depositdate" autofocus data-provide="datepicker" data-date-format="dd/mm/yyyy" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Reference" class="control-label">Deposit Reference</label>
+                                <input asp-for="Reference" class="form-control form-control-user" name="reference" autofocus />
+                            </div>
+                            <button id="makeMerchantDepositButton" type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-plus"></i> Make Deposit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function()
+    {
+        $('#makeMerchantDepositForm input[name="depositdate"]').datepicker({
+            autoClose: true,
+            clearBtn: true,
+            showOnFocus: true,
+            todayBtn: true,
+            todayHighlight: true
+        });
+
+        $('#makeMerchantDepositForm input[name="amount"]').keyup(function (event)
+        {
+            if (!this.value.match(/^([0-9]{0,2})$/)) {
+                this.value = this.value.replace(/[^0-9]/g, '').substring(0,2);
+                }});
+
+        // initialize tooltipster on text input elements
+        $('#makeMerchantDepositForm input[type="text"]').tooltipster({
+            trigger: 'hover',
+            position: 'right',
+            animation: 'grow'
+        });
+        
+        var depositAmountRuleSet = {
+            required: true
+        };
+
+        var depositDateRuleSet = {
+            required: true
+        };
+
+        var depositReferenceRuleSet = {
+            required: true
+        };
+        
+        var depositAmountMessages = {
+            required: "Deposit amount is a required field"
+        };
+
+        var depositDateMessages = {
+            required: "Deposit Date is a required field"
+        };
+
+        var depositReferenceMessages = {
+            required: "Deposit Reference is a required field"
+        };
+
+        // just for the demos, avoids form submit
+        jQuery.validator.setDefaults({
+            //debug: true
+        });
+
+        $("#makeMerchantDepositForm").validate({
+            rules: {
+                amount: depositAmountRuleSet,
+                depositdate: depositDateRuleSet,
+                reference: depositReferenceRuleSet
+                },
+            messages: {
+                amount: depositAmountMessages,
+                depositdate: depositDateMessages,
+                reference: depositReferenceMessages
+            },
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorPlacement: function(error, element)
+            {
+                var ele = $(element),
+                    err = $(error),
+                    msg = err.text();
+
+                console.log(msg);
+
+                if (msg != null && msg !== '')
+                {
+                    ele.tooltipster('content', msg);
+                }
+            }
+        });
+    });
+</script>

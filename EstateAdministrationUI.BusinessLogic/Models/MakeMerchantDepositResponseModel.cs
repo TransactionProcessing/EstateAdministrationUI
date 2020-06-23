@@ -5,33 +5,33 @@
     /// <summary>
     /// 
     /// </summary>
-    public class CreateMerchantModel
+    public class MakeMerchantDepositResponseModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the address.
+        /// Gets or sets the deposit identifier.
         /// </summary>
         /// <value>
-        /// The address.
+        /// The deposit identifier.
         /// </value>
-        public AddressModel Address { get; set; }
+        public Guid DepositId { get; set; }
 
         /// <summary>
-        /// Gets or sets the contact.
+        /// Gets or sets the estate identifier.
         /// </summary>
         /// <value>
-        /// The contact.
+        /// The estate identifier.
         /// </value>
-        public ContactModel Contact { get; set; }
+        public Guid EstateId { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the merchant.
+        /// Gets or sets the merchant identifier.
         /// </summary>
         /// <value>
-        /// The name of the merchant.
+        /// The merchant identifier.
         /// </value>
-        public String MerchantName { get; set; }
+        public Guid MerchantId { get; set; }
 
         #endregion
     }

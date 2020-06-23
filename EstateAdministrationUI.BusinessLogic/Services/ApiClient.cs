@@ -76,6 +76,32 @@
         }
 
         /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositModel">The make merchant deposit model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
+                                                                                ClaimsIdentity claimsIdentity,
+                                                                                Guid merchantId,
+                                                                                MakeMerchantDepositModel makeMerchantDepositModel,
+                                                                                CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            MakeMerchantDepositRequest apiRequest = this.ModelFactory.ConvertFrom(makeMerchantDepositModel);
+
+            MakeMerchantDepositResponse apiResponse = await this.EstateClient.MakeMerchantDeposit(accessToken, estateId, merchantId, apiRequest, cancellationToken);
+
+            MakeMerchantDepositResponseModel makeMerchantDepositResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return makeMerchantDepositResponseModel;
+        }
+
+        /// <summary>
         /// Gets the estate.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -86,8 +112,6 @@
                                                  ClaimsIdentity claimsIdentity,
                                                  CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"Access Token is [{accessToken}]");
-
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
 
             EstateResponse estate = await this.EstateClient.GetEstate(accessToken, estateId, cancellationToken);
@@ -106,8 +130,6 @@
                                                             ClaimsIdentity claimsIdentity,
                                                             CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"Access Token is [{accessToken}]");
-
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
 
             List<MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
@@ -128,8 +150,6 @@
                                                      Guid merchantId,
                                                      CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"Access Token is [{accessToken}]");
-
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
 
             MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);

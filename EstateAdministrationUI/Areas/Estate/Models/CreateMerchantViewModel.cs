@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Areas.Estate.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
+    using System;
+
     public class CreateMerchantViewModel
     {
-        public String MerchantName { get; set; }
+        #region Properties
 
         /// <summary>
         /// Gets or sets the address line1.
@@ -42,12 +39,44 @@ namespace EstateAdministrationUI.Areas.Estate.Models
         public String AddressLine4 { get; set; }
 
         /// <summary>
+        /// Gets or sets the contact email address.
+        /// </summary>
+        /// <value>
+        /// The contact email address.
+        /// </value>
+        public String ContactEmailAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the contact.
+        /// </summary>
+        /// <value>
+        /// The name of the contact.
+        /// </value>
+        public String ContactName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the contact phone number.
+        /// </summary>
+        /// <value>
+        /// The contact phone number.
+        /// </value>
+        public String ContactPhoneNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the country.
         /// </summary>
         /// <value>
         /// The country.
         /// </value>
         public String Country { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the merchant.
+        /// </summary>
+        /// <value>
+        /// The name of the merchant.
+        /// </value>
+        public String MerchantName { get; set; }
 
         /// <summary>
         /// Gets or sets the postal code.
@@ -73,35 +102,6 @@ namespace EstateAdministrationUI.Areas.Estate.Models
         /// </value>
         public String Town { get; set; }
 
-        /// <summary>
-        /// Gets or sets the contact email address.
-        /// </summary>
-        /// <value>
-        /// The contact email address.
-        /// </value>
-        public String ContactEmailAddress { get; set; }
-
-        /// <summary>
-        /// Gets or sets the contact identifier.
-        /// </summary>
-        /// <value>
-        /// The contact identifier.
-        /// </value>
-
-        /// <summary>
-        /// Gets or sets the name of the contact.
-        /// </summary>
-        /// <value>
-        /// The name of the contact.
-        /// </value>
-        public String ContactName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the contact phone number.
-        /// </summary>
-        /// <value>
-        /// The contact phone number.
-        /// </value>
-        public String ContactPhoneNumber { get; set; }
+        #endregion
     }
 }

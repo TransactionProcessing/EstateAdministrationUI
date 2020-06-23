@@ -95,6 +95,22 @@ Scenario: View Single Merchant
 	Then I am presented the merchant details screen for 'Test Merchant 1' 
 
 @PRTest
+Scenario: Make Merchant Deposit
+	Given I click on the My Merchants sidebar option
+	Then I am presented with the Merchants List Screen
+	And the following merchants details are in the list
+	| MerchantName    | ContactName    | AddressLine1   | Town     | NumberOfUsers | NumberOfDevices | NumberOfOperators |
+	| Test Merchant 1 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	| Test Merchant 2 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	| Test Merchant 3 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
+	When I click the Make Deposit button for 'Test Merchant 1' from the merchant list
+	Then I am presented the make merchant deposit screen
+	When I make the following deposit
+	| DepositAmount | DepositDate | DepositReference |
+	| 1000.00       | Today       | Test Deposit 1   |
+	Then I am presented with the Merchants List Screen
+
+@PRTest
 Scenario: Create New Merchant
 	Given I click on the My Merchants sidebar option
 	Then I am presented with the Merchants List Screen

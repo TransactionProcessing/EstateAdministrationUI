@@ -84,7 +84,8 @@
                 {
                     "render": function(data, type, full, meta)
                     {
-                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>';
+                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>' + 
+                               '<a class="btn btn-info" id="makeDepositLink" href="MakeMerchantDeposit?merchantId=' + full.merchantId + '&merchantName=' + full.merchantName + '"><i class="fa fa-money-bill"></i></a>';
                     }
                 }
             ],

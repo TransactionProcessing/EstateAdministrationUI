@@ -68,6 +68,11 @@
         "dist/Chart.min.css",
         "dist/Chart.min.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-datepicker@1.9.0",
+      "destination": "wwwroot/lib/bootstrap-datepicker"
     }
   ]
 }

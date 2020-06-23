@@ -5,7 +5,9 @@ using System.Text;
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Data;
+    using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
@@ -15,6 +17,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
+    using EventStore.ClientAPI.Common.Log;
+    using EventStore.ClientAPI.Projections;
+    using EventStore.ClientAPI.SystemData;
     using Microsoft.Data.SqlClient;
     using SecurityService.Client;
     using Shared.Logger;
@@ -213,6 +218,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             Func<String, String> securityServiceBaseAddressResolver = api => $"http://sferguson.ddns.net:55001";
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
 
+            await LoadEventStoreProjections().ConfigureAwait(false);
+
             await PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
 
             IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(this.SubscriptionServiceContainerName,
@@ -234,6 +241,45 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             true);
 
             this.Containers.Add(subscriptionServiceContainer);
+        }
+
+        private async Task LoadEventStoreProjections()
+        {
+            //Start our Continous Projections - we might decide to do this at a different stage, but now lets try here
+            String projectionsFolder = "../../../projections/continuous";
+            IPAddress[] ipAddresses = Dns.GetHostAddresses("127.0.0.1");
+            IPEndPoint endpoint = new IPEndPoint(ipAddresses.First(), this.EventStoreHttpPort);
+
+            if (!String.IsNullOrWhiteSpace(projectionsFolder))
+            {
+                DirectoryInfo di = new DirectoryInfo(projectionsFolder);
+
+                if (di.Exists)
+                {
+                    FileInfo[] files = di.GetFiles();
+
+                    // TODO: possibly need to change timeout and logger here
+                    ProjectionsManager projectionManager = new ProjectionsManager(new ConsoleLogger(), endpoint, TimeSpan.FromSeconds(30));
+
+                    foreach (FileInfo file in files)
+                    {
+                        String projection = File.ReadAllText(file.FullName);
+                        String projectionName = file.Name.Replace(".js", String.Empty);
+
+                        try
+                        {
+                            Logger.LogInformation($"Creating projection [{projectionName}]");
+                            await projectionManager.CreateContinuousAsync(projectionName, projection, new UserCredentials("admin", "changeit")).ConfigureAwait(false);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogError(new Exception($"Projection [{projectionName}] error", e));
+                        }
+                    }
+                }
+            }
+
+            Logger.LogInformation("Loaded projections");
         }
 
         protected async Task PopulateSubscriptionServiceConfiguration()

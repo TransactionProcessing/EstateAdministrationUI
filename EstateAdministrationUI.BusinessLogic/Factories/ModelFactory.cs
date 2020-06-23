@@ -179,6 +179,34 @@
             return apiRequest;
         }
 
+        public MakeMerchantDepositRequest ConvertFrom(MakeMerchantDepositModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            MakeMerchantDepositRequest apiRequest = new MakeMerchantDepositRequest
+                                                    {
+                                                        DepositDateTime = source.DepositDateTime,
+                                                        Reference = source.Reference,
+                                                        Amount = source.Amount,
+                                                        Source = MerchantDepositSource.Manual // Hard code this currently
+                                                    };
+
+            return apiRequest;
+        }
+
+        public MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
+        {
+            return new MakeMerchantDepositResponseModel
+                   {
+                       MerchantId = source.MerchantId,
+                       DepositId = source.DepositId,
+                       EstateId = source.EstateId
+                   };
+        }
+
         /// <summary>
         /// Converts the operators.
         /// </summary>
