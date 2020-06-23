@@ -19,6 +19,22 @@
         public List<AddressViewModel> Addresses { get; set; }
 
         /// <summary>
+        /// Gets or sets the available balance.
+        /// </summary>
+        /// <value>
+        /// The available balance.
+        /// </value>
+        public Decimal AvailableBalance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the balance.
+        /// </summary>
+        /// <value>
+        /// The balance.
+        /// </value>
+        public Decimal Balance { get; set; }
+
+        /// <summary>
         /// Gets or sets the contacts.
         /// </summary>
         /// <value>

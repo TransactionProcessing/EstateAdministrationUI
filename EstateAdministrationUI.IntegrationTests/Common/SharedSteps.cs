@@ -484,7 +484,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             DateTime depositDate = SpecflowTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
             String depositReference = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositReference");
 
-            await this.WebDriver.FillIn("amount", depositAmount.ToString());
+            await this.WebDriver.FillIn("amount", "1000");
             await this.WebDriver.FillIn("depositdate", depositDate.Date.ToString("dd/MM/yyyy"));
             await this.WebDriver.FillIn("reference", depositReference);
 
@@ -596,6 +596,17 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String elementValue = element.GetProperty("value");
             elementValue.ShouldBe(merchantName);
         }
+
+        [Then(@"the available balance for the merchant should be (.*)")]
+        public void ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance)
+        {
+            IWebElement element = this.WebDriver.FindElement(By.Id("AvailableBalance"));
+            element.ShouldNotBeNull();
+            String elementValue = element.GetProperty("value");
+            Decimal actualBalance = Decimal.Parse(elementValue);
+            actualBalance.ShouldBe(availableBalance);
+        }
+
 
         [Then(@"My Estate Details will be shown")]
         public void ThenMyEstateDetailsWillBeShown(Table table)

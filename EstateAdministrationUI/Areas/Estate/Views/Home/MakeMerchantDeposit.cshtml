@@ -55,8 +55,8 @@
 
         $('#makeMerchantDepositForm input[name="amount"]').keyup(function (event)
         {
-            if (!this.value.match(/^([0-9]{0,2})$/)) {
-                this.value = this.value.replace(/[^0-9]/g, '').substring(0,2);
+            if (!this.value.match(/^([0-9]{0,6})$/)) {
+                this.value = this.value.replace(/[^0-9]/g, '').substring(0,6);
                 }});
 
         // initialize tooltipster on text input elements

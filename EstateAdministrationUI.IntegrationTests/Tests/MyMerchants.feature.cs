@@ -508,11 +508,14 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Make Merchant Deposit")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "Make Merchant Deposit")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void MakeMerchantDeposit()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Deposit", null, ((string[])(null)));
-#line 97
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Deposit", null, new string[] {
+                        "PRTest"});
+#line 98
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -535,10 +538,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 98
+#line 99
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 99
+#line 100
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
@@ -573,13 +576,13 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 100
+#line 101
  testRunner.And("the following merchants details are in the list", ((string)(null)), table24, "And ");
 #line hidden
-#line 105
+#line 106
  testRunner.When("I click the Make Deposit button for \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 106
+#line 107
  testRunner.Then("I am presented the make merchant deposit screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
@@ -587,14 +590,23 @@ this.FeatureBackground();
                             "DepositDate",
                             "DepositReference"});
                 table25.AddRow(new string[] {
-                            "1000.00",
+                            "1000",
                             "Today",
                             "Test Deposit 1"});
-#line 107
+#line 108
  testRunner.When("I make the following deposit", ((string)(null)), table25, "When ");
 #line hidden
-#line 110
+#line 111
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 112
+ testRunner.When("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 113
+ testRunner.Then("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 114
+ testRunner.And("the available balance for the merchant should be 1000.00", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -610,7 +622,7 @@ this.FeatureBackground();
                     "PRTest"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Merchant", null, new string[] {
                         "PRTest"});
-#line 113
+#line 117
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -633,10 +645,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 114
+#line 118
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 115
+#line 119
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
@@ -671,13 +683,13 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 116
+#line 120
  testRunner.And("the following merchants details are in the list", ((string)(null)), table26, "And ");
 #line hidden
-#line 121
+#line 125
  testRunner.When("I click the Add New Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 122
+#line 126
  testRunner.Then("I am presented the new merchant screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
@@ -700,13 +712,13 @@ this.FeatureBackground();
                             "Test Contact 4",
                             "testcontact@testmerchant4.co.uk",
                             "0123456789"});
-#line 123
+#line 127
  testRunner.When("I enter the following new merchant details", ((string)(null)), table27, "When ");
 #line hidden
-#line 126
+#line 130
  testRunner.When("I click the Create Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 127
+#line 131
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 4\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

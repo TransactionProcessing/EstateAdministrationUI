@@ -127,6 +127,8 @@
             viewModel.EstateId = merchantModel.EstateId;
             viewModel.MerchantId = merchantModel.MerchantId;
             viewModel.MerchantName = merchantModel.MerchantName;
+            viewModel.Balance = merchantModel.Balance;
+            viewModel.AvailableBalance = merchantModel.AvailableBalance;
             viewModel.Addresses = this.ConvertFrom(merchantModel.Addresses);
             viewModel.Contacts = this.ConvertFrom(merchantModel.Contacts);
             viewModel.Operators = this.ConvertFrom(merchantModel.Operators);

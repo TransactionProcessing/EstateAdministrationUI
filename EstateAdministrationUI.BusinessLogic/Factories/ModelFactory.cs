@@ -63,14 +63,21 @@
             return models;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public MerchantModel ConvertFrom(MerchantResponse source)
         {
             MerchantModel merchantModel = new MerchantModel
-            {
-                EstateId = source.EstateId,
-                MerchantId = source.MerchantId,
-                MerchantName = source.MerchantName,
-            };
+                                          {
+                                              EstateId = source.EstateId,
+                                              MerchantId = source.MerchantId,
+                                              MerchantName = source.MerchantName,
+                                              Balance = source.Balance,
+                                              AvailableBalance = source.AvailableBalance
+                                          };
 
             if (source.Addresses != null && source.Addresses.Any())
             {
@@ -133,12 +140,12 @@
         public CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
         {
             return new CreateMerchantResponseModel
-            {
-                AddressId = source.AddressId,
-                ContactId = source.ContactId,
-                MerchantId = source.MerchantId,
-                EstateId = source.EstateId
-            };
+                   {
+                       AddressId = source.AddressId,
+                       ContactId = source.ContactId,
+                       MerchantId = source.MerchantId,
+                       EstateId = source.EstateId
+                   };
         }
 
         /// <summary>
@@ -179,6 +186,12 @@
             return apiRequest;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public MakeMerchantDepositRequest ConvertFrom(MakeMerchantDepositModel source)
         {
             if (source == null)
@@ -197,6 +210,11 @@
             return apiRequest;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
         {
             return new MakeMerchantDepositResponseModel
