@@ -9,6 +9,7 @@
     using System.Threading.Tasks;
     using BusinessLogic.Common;
     using BusinessLogic.Models;
+    using Common;
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -60,16 +61,10 @@
         #region Methods
 
         /// <summary>
-        /// Gets the merchant list.
+        /// Creates the merchant.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetMerchantList(CancellationToken cancellationToken)
-        {
-            return this.View("MerchantList");
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateMerchant(CancellationToken cancellationToken)
         {
@@ -78,13 +73,15 @@
             return this.View("CreateMerchant", viewModel);
         }
 
-        private Boolean ValidateModel(CreateMerchantViewModel viewModel)
-        {
-            return this.ModelState.IsValid;
-        }
-
+        /// <summary>
+        /// Creates the merchant.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateMerchant(CreateMerchantViewModel viewModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateMerchant(CreateMerchantViewModel viewModel,
+                                                        CancellationToken cancellationToken)
         {
             // Validate the model
             if (this.ValidateModel(viewModel))
@@ -94,37 +91,78 @@
                 CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
                 // All good with model, call the client to create the golf club
-                var creteMerchantResponse = await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
+                var creteMerchantResponse =
+                    await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
 
                 // Merchant Created, redirect to the Merchant List screen
-                return this.RedirectToAction("GetMerchant", "Home", new {merchantId = creteMerchantResponse.MerchantId });
+                return this.RedirectToAction("GetMerchant",
+                                             "Home",
+                                             new
+                                             {
+                                                 merchantId = creteMerchantResponse.MerchantId
+                                             });
             }
 
             // If we got this far, something failed, redisplay form
             return this.View("CreateMerchant", viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetMerchantOperatorListAsJson([FromQuery] Guid merchantId, CancellationToken cancellationToken)
+        /// <summary>
+        /// Manages the estate.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetEstate(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetMerchantOperatorListAsJson");
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
+            EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+
+            return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
+        }
+
+        /// <summary>
+        /// Manages the estate.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetEstate(EstateViewModel viewModel,
+                                                   CancellationToken cancellationToken)
+        {
+            // TODO: Update the estate information
+
+            return this.View("EstateDetails", viewModel);
+        }
+
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetMerchant([FromQuery] Guid merchantId,
+                                                     CancellationToken cancellationToken)
+        {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
             MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
-            
-            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
 
-            DataTablesResult<MerchantOperatorViewModel> dataTableResult = this.GetDataForDataTable(viewModel.Operators);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(this.GetDataForDataTable(viewModel.Operators));
+            return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
         }
 
+        /// <summary>
+        /// Gets the merchant device list as json.
+        /// </summary>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> GetMerchantDeviceListAsJson([FromQuery] Guid merchantId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMerchantDeviceListAsJson([FromQuery] Guid merchantId,
+                                                                     CancellationToken cancellationToken)
         {
             Logger.LogDebug("In method GetMerchantDeviceListAsJson");
 
@@ -140,6 +178,17 @@
             Logger.LogDebug(jsonResult);
 
             return this.Json(this.GetDataForDataTable(viewModel.Devices));
+        }
+
+        /// <summary>
+        /// Gets the merchant list.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetMerchantList(CancellationToken cancellationToken)
+        {
+            return this.View("MerchantList");
         }
 
         /// <summary>
@@ -176,21 +225,30 @@
             return this.Json(this.GetDataForDataTable(merchantViewModels, whereClause));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetMerchant([FromQuery]Guid merchantId, CancellationToken cancellationToken)
+        /// <summary>
+        /// Gets the merchant operator list as json.
+        /// </summary>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetMerchantOperatorListAsJson([FromQuery] Guid merchantId,
+                                                                       CancellationToken cancellationToken)
         {
+            Logger.LogDebug("In method GetMerchantOperatorListAsJson");
+
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
             MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
-            
-            return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateMerchant(MerchantViewModel viewModel,
-                                                        CancellationToken cancellationToken)
-        {
-            return this.View("MerchantDetails", viewModel);
+            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+
+            DataTablesResult<MerchantOperatorViewModel> dataTableResult = this.GetDataForDataTable(viewModel.Operators);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(this.GetDataForDataTable(viewModel.Operators));
         }
 
         /// <summary>
@@ -203,34 +261,59 @@
             return this.View();
         }
 
-        /// <summary>
-        /// Manages the estate.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetEstate(CancellationToken cancellationToken)
+        public async Task<IActionResult> MakeMerchantDeposit([FromQuery] Guid merchantId,
+                                                             [FromQuery] String merchantName,
+                                                             CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            MakeMerchantDepositViewModel viewModel = new MakeMerchantDepositViewModel();
+            viewModel.MerchantId = merchantId.ToString();
+            viewModel.MerchantName = merchantName;
 
-            EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
-
-            return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
+            return this.View("MakeMerchantDeposit", viewModel);
         }
 
         /// <summary>
-        /// Manages the estate.
+        /// Creates the merchant.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> GetEstate(EstateViewModel viewModel,
-                                                   CancellationToken cancellationToken)
+        public async Task<IActionResult> MakeMerchantDeposit(MakeMerchantDepositViewModel viewModel,
+                                                             CancellationToken cancellationToken)
         {
-            // TODO: Update the estate information
+            // Validate the model
+            if (this.ValidateModel(viewModel))
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            return this.View("EstateDetails", viewModel);
+                MakeMerchantDepositModel makeMerchantDepositModel = this.ViewModelFactory.ConvertFrom(viewModel);
+
+                // All good with model, call the client to create the golf club
+                MakeMerchantDepositResponseModel makeMerchantDepositResponseModel =
+                    await this.ApiClient.MakeMerchantDeposit(accessToken, this.User.Identity as ClaimsIdentity, Guid.Parse(viewModel.MerchantId), makeMerchantDepositModel, cancellationToken);
+
+                // Merchant Created, redirect to the Merchant List screen
+                return this.RedirectToAction("GetMerchantList",
+                                             "Home").WithSuccess("Deposit Successful", $"Deposit made successfully for Merchant - {viewModel.MerchantName}");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View("MakeMerchantDeposit", viewModel);
+        }
+
+        /// <summary>
+        /// Updates the merchant.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> UpdateMerchant(MerchantViewModel viewModel,
+                                                        CancellationToken cancellationToken)
+        {
+            return this.View("MerchantDetails", viewModel);
         }
 
         /// <summary>
@@ -311,52 +394,25 @@
             return result;
         }
 
-        #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class DataTablesResult<T>
-    {
-        #region Properties
+        /// <summary>
+        /// Validates the model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(CreateMerchantViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
+        }
 
         /// <summary>
-        /// Gets or sets the data.
+        /// Validates the model.
         /// </summary>
-        /// <value>
-        /// The data.
-        /// </value>
-        [JsonProperty("data")]
-        public IEnumerable<T> Data { get; set; }
-
-        /// <summary>
-        /// Gets or sets the draw.
-        /// </summary>
-        /// <value>
-        /// The draw.
-        /// </value>
-        [JsonProperty("draw")]
-        public Int32 Draw { get; set; }
-
-        /// <summary>
-        /// Gets or sets the records filtered.
-        /// </summary>
-        /// <value>
-        /// The records filtered.
-        /// </value>
-        [JsonProperty("recordsFiltered")]
-        public Int32 RecordsFiltered { get; set; }
-
-        /// <summary>
-        /// Gets or sets the records total.
-        /// </summary>
-        /// <value>
-        /// The records total.
-        /// </value>
-        [JsonProperty("recordsTotal")]
-        public Int32 RecordsTotal { get; set; }
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(MakeMerchantDepositViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
+        }
 
         #endregion
     }

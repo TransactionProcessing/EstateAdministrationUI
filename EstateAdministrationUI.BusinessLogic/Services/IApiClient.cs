@@ -61,6 +61,22 @@
                                                         ClaimsIdentity claimsIdentity,
                                                         CreateMerchantModel createMerchantModel,
                                                         CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositModel">The make merchant deposit model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
+                                                                   ClaimsIdentity claimsIdentity,
+                                                                   Guid merchantId,
+                                                                   MakeMerchantDepositModel makeMerchantDepositModel,
+                                                                   CancellationToken cancellationToken);
+
         #endregion
     }
 }

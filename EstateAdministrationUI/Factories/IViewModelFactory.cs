@@ -39,6 +39,13 @@
         /// <returns></returns>
         MerchantViewModel ConvertFrom(MerchantModel merchantModel);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="makeMerchantDepositViewModel">The make merchant deposit view model.</param>
+        /// <returns></returns>
+        MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel);
+
         #endregion
     }
 }

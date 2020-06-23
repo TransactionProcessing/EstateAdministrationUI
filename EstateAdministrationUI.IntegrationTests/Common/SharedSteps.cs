@@ -424,6 +424,73 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                             }, TimeSpan.FromSeconds(120));
         }
 
+        [When(@"I click the Make Deposit button for '(.*)' from the merchant list")]
+        public async Task WhenIClickTheMakeDepositButtonForFromTheMerchantList(String merchantName)
+        {
+            Boolean foundRow = false;
+            IWebElement merchantRow = null;
+            await Retry.For(async () =>
+                            {
+
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                                IList<IWebElement> rowTD;
+                                foreach (IWebElement row in rows)
+                                {
+                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                                    if (rowTH.Any())
+                                    {
+                                        // header row so skip
+                                        continue;
+                                    }
+
+                                    rowTD = row.FindElements(By.TagName("td"));
+
+                                    if (rowTD[0].Text == merchantName)
+                                    {
+                                        merchantRow = row;
+                                        foundRow = true;
+                                        break;
+                                    }
+                                }
+                            },
+                            TimeSpan.FromSeconds(120));
+
+            foundRow.ShouldBeTrue();
+            merchantRow.ShouldNotBeNull();
+
+            await Retry.For(async () =>
+                            {
+                                IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
+                                makeDepositButton.Click();
+                            },
+                            TimeSpan.FromSeconds(120));
+        }
+
+        [Then(@"I am presented the make merchant deposit screen")]
+        public void ThenIAmPresentedTheMakeMerchantDepositScreen()
+        {
+            this.WebDriver.Title.ShouldBe("Make Merchant Deposit");
+        }
+
+        [When(@"I make the following deposit")]
+        public async Task WhenIMakeTheFollowingDeposit(Table table)
+        {
+            TableRow depositDetails = table.Rows.Single();
+            Decimal depositAmount = SpecflowTableHelper.GetDecimalValue(depositDetails, "DepositAmount");
+            String depositDateString = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositDate");
+            DateTime depositDate = SpecflowTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
+            String depositReference = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositReference");
+
+            await this.WebDriver.FillIn("amount", depositAmount.ToString());
+            await this.WebDriver.FillIn("depositdate", depositDate.Date.ToString("dd/MM/yyyy"));
+            await this.WebDriver.FillIn("reference", depositReference);
+
+            await this.WebDriver.ClickButtonById("makeMerchantDepositButton");
+        }
+        
         [When(@"I click the Add New Merchant button")]
         public async Task  WhenIClickTheAddNewMerchantButton()
         {

@@ -37,6 +37,12 @@
             return viewModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createMerchantViewModel"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">createMerchantViewModel</exception>
         public CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)
         {
             if (createMerchantViewModel == null)
@@ -127,6 +133,29 @@
             viewModel.Devices = this.ConvertFrom(merchantModel.Devices);
 
             return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="makeMerchantDepositViewModel">The make merchant deposit view model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">makeMerchantDepositViewModel</exception>
+        public MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel)
+        {
+            if (makeMerchantDepositViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(makeMerchantDepositViewModel));
+            }
+
+            MakeMerchantDepositModel makeMerchantDepositModel = new MakeMerchantDepositModel();
+
+            makeMerchantDepositModel.DepositDateTime = DateTime.ParseExact(makeMerchantDepositViewModel.DepositDate, "dd/MM/yyyy", null);
+            makeMerchantDepositModel.Amount = Decimal.Parse(makeMerchantDepositViewModel.Amount);
+            makeMerchantDepositModel.Reference = makeMerchantDepositViewModel.Reference;
+            makeMerchantDepositModel.MerchantId = Guid.Parse(makeMerchantDepositViewModel.MerchantId);
+
+            return makeMerchantDepositModel;
         }
 
         /// <summary>
