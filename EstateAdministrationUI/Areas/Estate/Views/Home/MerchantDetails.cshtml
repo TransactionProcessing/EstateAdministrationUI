@@ -23,6 +23,9 @@
                                     <a class="nav-link active" id="merchantdetails-tab" data-toggle="tab" href="#merchantdetails" role="tab" aria-controls="merchantdetails" aria-selected="true">Merchant Details</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">Address</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" id="operators-tab" data-toggle="tab" href="#operators" role="tab" aria-controls="operators" aria-selected="false">Operators</a>
                                 </li>
                                 <li class="nav-item">
@@ -31,37 +34,48 @@
                             </ul>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="merchantdetails" role="tabpanel" aria-labelledby="merchantdetails-tab">
-                                    <br/>
+                                    <br />
                                     <div class="form-group">
                                         <label asp-for="MerchantName" class="control-label">Merchant Name</label>
-                                        <input asp-for="MerchantName" class="form-control form-control-user" required autofocus/>
+                                        <input asp-for="MerchantName" class="form-control form-control-user" required autofocus />
                                     </div>
                                     <div class="form-group">
+                                        <label asp-for="Balance" class="control-label">Balance (KES)</label>
+                                        <input asp-for="Balance" class="form-control form-control-user" readonly />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AvailableBalance" class="control-label">Available Balance (KES)</label>
+                                        <input asp-for="AvailableBalance" class="form-control form-control-user" readonly />
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                    <br />
+                                    <div class="form-group">
                                         <label asp-for="Addresses.First().AddressLine1" class="control-label">Address Line 1</label>
-                                        <input asp-for="Addresses.First().AddressLine1" class="form-control form-control-user" required autofocus/>
+                                        <input asp-for="Addresses.First().AddressLine1" class="form-control form-control-user" required autofocus />
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Addresses.First().AddressLine2" class="control-label">Address Line 2</label>
-                                        <input asp-for="Addresses.First().AddressLine2" class="form-control form-control-user" autofocus/>
+                                        <input asp-for="Addresses.First().AddressLine2" class="form-control form-control-user" autofocus />
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label asp-for="Addresses.First().Town" class="control-label">Town</label>
-                                            <input asp-for="Addresses.First().Town" class="form-control form-control-user" required autofocus/>
+                                            <input asp-for="Addresses.First().Town" class="form-control form-control-user" required autofocus />
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label asp-for="Addresses.First().Region" class="control-label">Region</label>
-                                            <input asp-for="Addresses.First().Region" class="form-control form-control-user" required autofocus/>
+                                            <input asp-for="Addresses.First().Region" class="form-control form-control-user" required autofocus />
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label asp-for="Addresses.First().PostalCode" class="control-label">Post Code</label>
-                                            <input asp-for="Addresses.First().PostalCode" class="form-control form-control-user" required autofocus/>
+                                            <input asp-for="Addresses.First().PostalCode" class="form-control form-control-user" required autofocus />
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label asp-for="Addresses.First().Country" class="control-label">Country</label>
-                                            <input asp-for="Addresses.First().Country" class="form-control form-control-user" required autofocus/>
+                                            <input asp-for="Addresses.First().Country" class="form-control form-control-user" required autofocus />
                                         </div>
                                     </div>
                                 </div>
