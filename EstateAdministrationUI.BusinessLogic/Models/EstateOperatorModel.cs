@@ -7,17 +7,9 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class MerchantOperatorModel
+    public class EstateOperatorModel
     {
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the merchant number.
-        /// </summary>
-        /// <value>
-        /// The merchant number.
-        /// </value>
-        public String MerchantNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -36,12 +28,20 @@
         public Guid OperatorId { get; set; }
 
         /// <summary>
-        /// Gets or sets the terminal number.
+        /// Gets or sets a value indicating whether [require custom merchant number].
         /// </summary>
         /// <value>
-        /// The terminal number.
+        ///   <c>true</c> if [require custom merchant number]; otherwise, <c>false</c>.
         /// </value>
-        public String TerminalNumber { get; set; }
+        public Boolean RequireCustomMerchantNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [require custom terminal number].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [require custom terminal number]; otherwise, <c>false</c>.
+        /// </value>
+        public Boolean RequireCustomTerminalNumber { get; set; }
 
         #endregion
     }

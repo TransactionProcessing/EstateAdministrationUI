@@ -1,10 +1,12 @@
 ﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class MerchantOperatorViewModel
     {
         #region Properties

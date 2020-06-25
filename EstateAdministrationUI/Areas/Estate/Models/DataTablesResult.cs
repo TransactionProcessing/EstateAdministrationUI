@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
 
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [ExcludeFromCodeCoverage]
     public class DataTablesResult<T>
     {
         #region Properties

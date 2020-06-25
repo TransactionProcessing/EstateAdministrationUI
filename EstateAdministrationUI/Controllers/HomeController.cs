@@ -1,37 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using EstateAdministrationUI.Models;
-
-namespace EstateAdministrationUI.Controllers
+﻿namespace EstateAdministrationUI.Controllers
 {
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Models;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
+    [ExcludeFromCodeCoverage]
     public class HomeController : Controller
     {
+        #region Fields
+
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger<HomeController> _logger;
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            this._logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        #endregion
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        #region Methods
 
+        /// <summary>
+        /// Errors this instance.
+        /// </summary>
+        /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel
+                             {
+                                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier
+                             });
         }
+
+        /// <summary>
+        /// Indexes this instance.
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Index()
+        {
+            return this.View();
+        }
+
+        /// <summary>
+        /// Privacies this instance.
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Privacy()
+        {
+            return this.View();
+        }
+
+        #endregion
     }
 }

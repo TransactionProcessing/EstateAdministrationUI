@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading;
@@ -18,6 +19,7 @@
     /// 
     /// </summary>
     /// <seealso cref="EstateAdministrationUI.Services.IApiClient" />
+    [ExcludeFromCodeCoverage]
     public class ApiClient : IApiClient
     {
         #region Fields

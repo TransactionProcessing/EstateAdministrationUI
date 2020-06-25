@@ -1,6 +1,7 @@
 ﻿namespace EstateAdministrationUI.Common
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -10,12 +11,13 @@
     /// 
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.IActionResult" />
+    [ExcludeFromCodeCoverage]
     public class AlertDecoratorResult : IActionResult
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AlertDecoratorResult"/> class.
+        /// Initializes a new instance of the <see cref="AlertDecoratorResult" /> class.
         /// </summary>
         /// <param name="result">The result.</param>
         /// <param name="type">The type.</param>

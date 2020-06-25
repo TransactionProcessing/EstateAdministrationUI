@@ -21,7 +21,7 @@
         /// <summary>
         /// Converts from.
         /// </summary>
-        /// <param name="viewModel">The view model.</param>
+        /// <param name="createMerchantViewModel">The create merchant view model.</param>
         /// <returns></returns>
         CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel);
 

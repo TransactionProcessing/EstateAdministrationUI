@@ -4,10 +4,12 @@ using System.Text;
 
 namespace EstateAdministrationUI.BusinessLogic.Common
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
     using System.Linq;
     using System.Reflection;
 
+    [ExcludeFromCodeCoverage]
     public static class Extensions
     {
         #region Methods

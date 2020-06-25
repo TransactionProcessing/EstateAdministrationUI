@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Security.Claims;
@@ -24,6 +25,7 @@
     /// 
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
+    [ExcludeFromCodeCoverage]
     [Authorize]
     [Area("Estate")]
     public class HomeController : Controller

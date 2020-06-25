@@ -1,4 +1,4 @@
-﻿namespace EstateAdministrationUI.Areas.Estate.Models
+﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -7,25 +7,25 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class EstateViewModel
+    public class SecurityUserModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the estate identifier.
+        /// Gets or sets the email address.
         /// </summary>
         /// <value>
-        /// The estate identifier.
+        /// The email address.
         /// </value>
-        public Guid EstateId { get; set; }
+        public String EmailAddress { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the estate.
+        /// Gets or sets the security user identifier.
         /// </summary>
         /// <value>
-        /// The name of the estate.
+        /// The security user identifier.
         /// </value>
-        public String EstateName { get; set; }
+        public Guid SecurityUserId { get; set; }
 
         #endregion
     }
