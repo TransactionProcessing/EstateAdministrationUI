@@ -178,7 +178,7 @@
             new MakeMerchantDepositModel
             {
                 MerchantId = TestData.MerchantId,
-                DepositDateTime = DateTime.Parse(TestData.DepositDate),
+                DepositDateTime = DateTime.ParseExact(TestData.DepositDate, "dd/MM/yyyy",null),
                 Reference = TestData.DepositReference,
                 Amount = Decimal.Parse(TestData.DepositAmount)
             };
