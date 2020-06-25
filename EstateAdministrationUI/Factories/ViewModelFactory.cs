@@ -94,14 +94,14 @@
             {
                 viewModels.Add(new MerchantListViewModel
                                {
-                                   AddressLine1 = merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().AddressLine1,
+                                   AddressLine1 = merchantModel.Addresses ==null ? String.Empty : merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().AddressLine1,
                                    MerchantId = merchantModel.MerchantId,
-                                   ContactName = merchantModel.Contacts.FirstOrDefault() == null ? string.Empty : merchantModel.Contacts.First().ContactName,
-                                   Town = merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().Town,
+                                   ContactName = merchantModel.Contacts == null ? String.Empty : merchantModel.Contacts.FirstOrDefault() == null ? string.Empty : merchantModel.Contacts.First().ContactName,
+                                   Town = merchantModel.Addresses == null ? String.Empty : merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().Town,
                                    MerchantName = merchantModel.MerchantName,
                                    EstateId = merchantModel.EstateId,
                                    NumberOfDevices = merchantModel.Devices != null && merchantModel.Devices.Any() ? merchantModel.Devices.Count : 0,
-                                   NumberOfOperators = merchantModel.Operators != null && merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
+                                   NumberOfOperators = merchantModel.Operators == null ? 0 : merchantModel.Operators != null && merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
                                    NumberOfUsers = 0
                                });
             }
@@ -169,7 +169,7 @@
         {
             Dictionary<String, String> viewModels = new Dictionary<String, String>();
 
-            if (deviceModels == null)
+            if (deviceModels == null || deviceModels.Any() == false)
             {
                 return viewModels;
             }
@@ -191,7 +191,7 @@
         {
             List<AddressViewModel> viewModels = new List<AddressViewModel>();
 
-            if (addressModels == null)
+            if (addressModels == null || addressModels.Any() == false)
             {
                 return viewModels;
             }
@@ -272,7 +272,7 @@
         {
             List<MerchantOperatorViewModel> viewModels = new List<MerchantOperatorViewModel>();
 
-            if (operatorModels == null)
+            if (operatorModels == null || operatorModels.Any() == false)
             {
                 return viewModels;
             }

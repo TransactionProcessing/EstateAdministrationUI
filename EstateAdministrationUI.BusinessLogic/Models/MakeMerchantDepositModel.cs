@@ -1,7 +1,9 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class MakeMerchantDepositModel
     {
         #region Properties

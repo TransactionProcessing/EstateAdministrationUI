@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace EstateAdministrationUI
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.IdentityModel.Tokens.Jwt;
     using System.IO;
     using System.Net.Http;
@@ -29,6 +30,7 @@ namespace EstateAdministrationUI
     using Shared.Logger;
     using TokenManagement;
 
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private static IWebHostEnvironment WebHostEnvironment;

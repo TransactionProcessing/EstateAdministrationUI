@@ -1,10 +1,12 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CreateMerchantResponseModel
     {
         #region Properties

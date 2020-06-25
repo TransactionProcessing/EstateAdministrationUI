@@ -1,11 +1,13 @@
 ﻿namespace EstateAdministrationUI.Common
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// 
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class AlertExtensions
     {
         #region Methods

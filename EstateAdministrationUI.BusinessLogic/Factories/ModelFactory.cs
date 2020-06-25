@@ -70,6 +70,11 @@
         /// <returns></returns>
         public MerchantModel ConvertFrom(MerchantResponse source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             MerchantModel merchantModel = new MerchantModel
                                           {
                                               EstateId = source.EstateId,
@@ -139,6 +144,11 @@
         /// <returns></returns>
         public CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             return new CreateMerchantResponseModel
                    {
                        AddressId = source.AddressId,
@@ -217,6 +227,11 @@
         /// <returns></returns>
         public MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             return new MakeMerchantDepositResponseModel
                    {
                        MerchantId = source.MerchantId,
@@ -233,9 +248,9 @@
         /// <exception cref="ArgumentNullException">estateResponseOperators</exception>
         private List<EstateOperatorModel> ConvertOperators(List<EstateOperatorResponse> estateResponseOperators)
         {
-            if (estateResponseOperators == null)
+            if (estateResponseOperators == null || estateResponseOperators.Any()==false)
             {
-                throw new ArgumentNullException(nameof(estateResponseOperators));
+                return null;
             }
 
             List<EstateOperatorModel> models = new List<EstateOperatorModel>();
@@ -261,9 +276,9 @@
         /// <exception cref="ArgumentNullException">estateResponseSecurityUsers</exception>
         private List<SecurityUserModel> ConvertSecurityUsers(List<SecurityUserResponse> estateResponseSecurityUsers)
         {
-            if (estateResponseSecurityUsers == null)
+            if (estateResponseSecurityUsers == null || estateResponseSecurityUsers.Any() == false)
             {
-                throw new ArgumentNullException(nameof(estateResponseSecurityUsers));
+                return null;
             }
 
             List<SecurityUserModel> models = new List<SecurityUserModel>();

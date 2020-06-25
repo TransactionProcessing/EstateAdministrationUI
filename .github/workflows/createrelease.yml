@@ -30,10 +30,11 @@ jobs:
     - name: Build Code
       run: dotnet build EstateAdministrationUI.sln --configuration Release
 
-    #- name: Run Unit Tests
-    #  run: |
-    #    echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-    #    dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"   
+    - name: Run Unit Tests
+      run: |
+        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
+        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest --tag stuartferguson/estateadministrationui:latest --tag stuartferguson/estateadministrationui:${{ steps.get_version.outputs.VERSION }}

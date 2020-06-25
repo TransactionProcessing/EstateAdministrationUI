@@ -546,14 +546,17 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [When(@"I select '(.*)' from the merchant list")]
         public async Task WhenISelectFromTheMerchantList(String merchantName)
         {
+            await Task.Delay(20000).ConfigureAwait(false);
+
             Boolean foundRow = false;
             IWebElement merchantRow = null;
             await Retry.For(async () =>
                             {
-
                                 IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
                                 IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
+                                
+                                rows.ShouldNotBeNull();
+                                rows.Any().ShouldBeTrue();
                                 IList<IWebElement> rowTD;
                                 foreach (IWebElement row in rows)
                                 {
@@ -575,7 +578,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                     }
                                 }
                             },
-                            TimeSpan.FromSeconds(120));
+                            TimeSpan.FromSeconds(120)).ConfigureAwait(false);
 
             foundRow.ShouldBeTrue();
             merchantRow.ShouldNotBeNull();

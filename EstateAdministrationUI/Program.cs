@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 namespace EstateAdministrationUI
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Hosting;
 
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         #region Methods
@@ -20,8 +17,8 @@ namespace EstateAdministrationUI
             Console.Title = "Estate Administration UI";
 
             //At this stage, we only need our hosting file for ip and ports
-            IConfigurationRoot config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("hosting.json", optional: true)
-                                                                  .AddJsonFile("hosting.development.json", optional: true).AddEnvironmentVariables().Build();
+            IConfigurationRoot config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("hosting.json", optional:true)
+                                                                  .AddJsonFile("hosting.development.json", optional:true).AddEnvironmentVariables().Build();
 
             IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
             hostBuilder.ConfigureWebHostDefaults(webBuilder =>
