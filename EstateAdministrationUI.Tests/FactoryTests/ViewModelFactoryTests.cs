@@ -913,7 +913,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MakeMerchantDepositModel model = viewModelFactory.ConvertFrom(viewModel);
 
             model.MerchantId.ShouldBe(Guid.Parse(viewModel.MerchantId));
-            model.DepositDateTime.ShouldBe(DateTime.Parse(viewModel.DepositDate));
+            model.DepositDateTime.ShouldBe(DateTime.ParseExact(viewModel.DepositDate, "dd/MM/yyyy", null));
             model.Reference.ShouldBe(viewModel.Reference);
             model.Amount.ShouldBe(Decimal.Parse(viewModel.Amount));
         }
