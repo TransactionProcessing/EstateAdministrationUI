@@ -55,3 +55,29 @@ Scenario: View Estate
 	And My Estate Details will be shown
 	| EstateName       |
 	| Test Estate [id] |
+
+Scenario: View My Operators
+	Given I click on the My Operators sidebar option
+	Then I am presented with the Operators List Screen
+	And the following operator details are in the list
+	| OperatorName       |
+	| Test Operator [id] |
+
+@PRTest
+Scenario: Create New Operator
+	Given I click on the My Operators sidebar option
+	Then I am presented with the Operators List Screen
+	And the following operator details are in the list
+	| OperatorName       |
+	| Test Operator [id] |
+	When I click the Add New Operator button
+	Then I am presented the new operator screen
+	When I enter the following new operator details
+	| OperatorName    |
+	| Test New Operator |
+	When I click the Create Operator button
+	Then I am presented with the Operators List Screen
+	And the following operator details are in the list
+	| OperatorName       |
+	| Test Operator [id] |
+	| Test New Operator |

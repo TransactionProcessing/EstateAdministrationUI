@@ -44,6 +44,45 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
+        public CreateOperatorRequest ConvertFrom(CreateOperatorModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            CreateOperatorRequest apiRequest = new CreateOperatorRequest
+                                               {
+                                                   Name = source.OperatorName,
+                                                   RequireCustomTerminalNumber = source.RequireCustomTerminalNumber,
+                                                   RequireCustomMerchantNumber = source.RequireCustomMerchantNumber
+                                               };
+
+            return apiRequest;
+        }
+
+        public CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            CreateOperatorResponseModel createOperatorResponseModel = new CreateOperatorResponseModel
+                                                                      {
+                                                                          OperatorId = source.OperatorId,
+                                                                          EstateId = source.EstateId
+                                                                      };
+
+            return createOperatorResponseModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {
             if (source == null || source.Any() == false)

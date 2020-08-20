@@ -835,5 +835,58 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                                     modelFactory.ConvertFrom(response);
                                                 });
         }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateOperatorModel_ModelIsConverted()
+        {
+            CreateOperatorModel model = TestData.CreateOperatorModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            CreateOperatorRequest request = modelFactory.ConvertFrom(model);
+
+            request.RequireCustomTerminalNumber.ShouldBe(model.RequireCustomTerminalNumber);
+            request.RequireCustomMerchantNumber.ShouldBe(model.RequireCustomMerchantNumber);
+            request.Name.ShouldBe(model.OperatorName);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateOperatorModel_NullModel_ErrorThrown()
+        {
+            CreateOperatorModel model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateOperatorResponse_ModelIsConverted()
+        {
+            CreateOperatorResponse response = TestData.CreateOperatorResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            CreateOperatorResponseModel model = modelFactory.ConvertFrom(response);
+
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.EstateId.ShouldBe(response.EstateId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateOperatorResponse_NullResponse_ErrorThrown()
+        {
+            CreateOperatorResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
+                                                });
+        }
     }
 }

@@ -165,6 +165,37 @@
                 MerchantId = TestData.MerchantId.ToString()
             };
 
+        public static CreateOperatorViewModel CreateOperatorViewModel =>
+            new CreateOperatorViewModel
+            {
+                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                OperatorName = TestData.OperatorName
+            };
+
+        public static EstateOperatorModel EstateOperatorModel =>
+            new EstateOperatorModel
+            {
+                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                OperatorId = TestData.OperatorId,
+                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                Name = TestData.OperatorName
+            };
+
+        public static CreateOperatorModel CreateOperatorModel =>
+            new CreateOperatorModel
+            {
+                RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber,
+                RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                OperatorName = TestData.OperatorName
+            };
+
+        public static CreateOperatorResponse CreateOperatorResponse =>
+            new CreateOperatorResponse
+            {
+                OperatorId = TestData.OperatorId,
+                EstateId = TestData.EstateId
+            };
 
         public static String DepositAmount = "1000";
 

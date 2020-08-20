@@ -352,6 +352,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
+        [Given(@"I click on the My Operators sidebar option")]
+        public async Task GivenIClickOnTheMyOperatorsSidebarOption()
+        {
+            await this.WebDriver.ClickButtonById("operatorsLink");
+        }
+
         [Given(@"I click on the My Estate sidebar option")]
         public async Task GivenIClickOnTheMyEstateSidebarOption()
         {
@@ -362,6 +368,82 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         public async Task GivenIClickOnTheMyMerchantsSidebarOption()
         {
             await this.WebDriver.ClickButtonById("merchantsLink");
+        }
+
+        [Then(@"I am presented with the Operators List Screen")]
+        public void ThenIAmPresentedWithTheOperatorsListScreen()
+        {
+            this.WebDriver.Title.ShouldContain("Operators");
+        }
+
+        [When(@"I click the Add New Operator button")]
+        public async Task WhenIClickTheAddNewOperatorButton()
+        {
+            await this.WebDriver.ClickButtonById("newOperatorButton");
+        }
+
+        [Then(@"I am presented the new operator screen")]
+        public void ThenIAmPresentedTheNewOperatorScreen()
+        {
+            this.WebDriver.Title.ShouldBe("New Operator Details");
+        }
+
+        [When(@"I enter the following new operator details")]
+        public async Task WhenIEnterTheFollowingNewOperatorDetails(Table table)
+        {
+            TableRow tableRow = table.Rows.Single();
+
+            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            await this.WebDriver.FillIn("operatorName", operatorName);
+        }
+
+        [When(@"I click the Create Operator button")]
+        public async Task WhenIClickTheCreateOperatorButton()
+        {
+            await this.WebDriver.ClickButtonById("createOperatorButton");
+        }
+
+        [Then(@"the following operator details are in the list")]
+        public async Task ThenTheFollowingOperatorDetailsAreInTheList(Table table)
+        {
+            await Retry.For(async () =>
+            {
+                Int32 foundRowCount = 0;
+                IWebElement tableElement = this.WebDriver.FindElement(By.Id("operatorList"));
+                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                rows.Count.ShouldBe(table.RowCount + 1);
+                foreach (TableRow tableRow in table.Rows)
+                {
+                    IList<IWebElement> rowTD;
+                    foreach (IWebElement row in rows)
+                    {
+                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                        if (rowTH.Any())
+                        {
+                            // header row so skip
+                            continue;
+                        }
+
+                        rowTD = row.FindElements(By.TagName("td"));
+
+                        String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+
+                        if (rowTD[0].Text == operatorName)
+                        {
+                            // Compare other fields
+                            rowTD[0].Text.ShouldBe(operatorName);
+
+                            // We have found the row
+                            foundRowCount++;
+                            break;
+                        }
+                    }
+                }
+
+                foundRowCount.ShouldBe(table.RowCount);
+            }, TimeSpan.FromSeconds(120));
         }
 
 

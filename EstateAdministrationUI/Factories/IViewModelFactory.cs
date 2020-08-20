@@ -1,5 +1,6 @@
 ﻿namespace EstateAdministrationUI.Factories
 {
+    using System;
     using System.Collections.Generic;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
@@ -17,6 +18,29 @@
         /// <param name="estateModel">The estate model.</param>
         /// <returns></returns>
         EstateViewModel ConvertFrom(EstateModel estateModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createOperatorViewModel">The create operator view model.</param>
+        /// <returns></returns>
+        CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="estateOperatorModels">The estate operator models.</param>
+        /// <returns></returns>
+        List<OperatorListViewModel> ConvertFrom(Guid estateId, List<EstateOperatorModel> estateOperatorModels);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="estateOperatorModel">The estate operator model.</param>
+        /// <returns></returns>
+        OperatorListViewModel ConvertFrom(Guid estateId, EstateOperatorModel estateOperatorModel);
 
         /// <summary>
         /// Converts from.
