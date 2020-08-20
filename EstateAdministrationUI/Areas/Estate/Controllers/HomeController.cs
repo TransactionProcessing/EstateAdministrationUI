@@ -78,6 +78,47 @@
         /// <summary>
         /// Creates the merchant.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> CreateOperator(CancellationToken cancellationToken)
+        {
+            CreateOperatorViewModel viewModel = new CreateOperatorViewModel();
+
+            return this.View("CreateOperator", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOperator(CreateOperatorViewModel viewModel,
+                                                        CancellationToken cancellationToken)
+        {
+            // Validate the model
+            if (this.ValidateModel(viewModel))
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                CreateOperatorModel createOperatorModel = this.ViewModelFactory.ConvertFrom(viewModel);
+
+                // All good with model, call the client to create the operator
+                var createOperatorResponse =
+                    await this.ApiClient.CreateOperator(accessToken, this.User.Identity as ClaimsIdentity, createOperatorModel, cancellationToken);
+
+                // Operator Created, redirect to the Operator List screen
+                return this.RedirectToAction("GetOperatorList",
+                                             "Home",
+                                             new
+                                             {
+                                                 Area = "Estate"
+                                             });
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View("CreateOperator", viewModel);
+        }
+
+        /// <summary>
+        /// Creates the merchant.
+        /// </summary>
         /// <param name="viewModel">The view model.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
@@ -191,6 +232,45 @@
         public async Task<IActionResult> GetMerchantList(CancellationToken cancellationToken)
         {
             return this.View("MerchantList");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOperatorList(CancellationToken cancellationToken)
+        {
+            return this.View("OperatorList");
+        }
+
+        /// <summary>
+        /// Gets the merchant list as json.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetOperatorListAsJson");
+
+            // Search Value from (Search box)  
+            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+            Logger.LogDebug($"searchvalue is {searchValue}");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            Logger.LogDebug("got access token");
+
+            EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+
+            List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+            
+            Logger.LogDebug($"operator list count is {operatorViewModels.Count}");
+
+            Expression<Func<OperatorListViewModel, Boolean>> whereClause = m => m.OperatorName.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
+
+            DataTablesResult<OperatorListViewModel> dataTableResult = this.GetDataForDataTable(operatorViewModels, whereClause);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(this.GetDataForDataTable(operatorViewModels, whereClause));
         }
 
         /// <summary>
@@ -394,6 +474,16 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Validates the model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(CreateOperatorViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
         }
 
         /// <summary>

@@ -78,6 +78,30 @@
         }
 
         /// <summary>
+        /// Creates the operator.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createOperatorModel">The create operator model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<CreateOperatorResponseModel> CreateOperator(String accessToken,
+                                                                      ClaimsIdentity claimsIdentity,
+                                                                      CreateOperatorModel createOperatorModel,
+                                                                      CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            CreateOperatorRequest apiRequest = this.ModelFactory.ConvertFrom(createOperatorModel);
+
+            CreateOperatorResponse apiResponse = await this.EstateClient.CreateOperator(accessToken, estateId, apiRequest, cancellationToken);
+
+            CreateOperatorResponseModel createOperatorResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return createOperatorResponseModel;
+        }
+
+        /// <summary>
         /// Makes the merchant deposit.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

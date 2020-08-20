@@ -40,6 +40,63 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="createOperatorViewModel">The create operator view model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">createOperatorViewModel</exception>
+        public CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel)
+        {
+            if (createOperatorViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(createOperatorViewModel));
+            }
+
+            CreateOperatorModel createOperatorModel = new CreateOperatorModel
+                                                      {
+                                                          RequireCustomMerchantNumber = createOperatorViewModel.RequireCustomMerchantNumber,
+                                                          RequireCustomTerminalNumber = createOperatorViewModel.RequireCustomTerminalNumber,
+                                                          OperatorName = createOperatorViewModel.OperatorName
+                                                      };
+
+            return createOperatorModel;
+        }
+
+        public List<OperatorListViewModel> ConvertFrom(Guid estateId, List<EstateOperatorModel> estateOperatorModels)
+        {
+            if (estateOperatorModels == null || EnumerableExtensions.Any(estateOperatorModels) == false)
+            {
+                throw new ArgumentNullException(nameof(estateOperatorModels));
+            }
+
+            List<OperatorListViewModel> viewModels = new List<OperatorListViewModel>();
+
+            estateOperatorModels.ForEach(eo => viewModels.Add(this.ConvertFrom(estateId, eo)));
+
+            return viewModels;
+
+        }
+
+        public OperatorListViewModel ConvertFrom(Guid estateId, EstateOperatorModel estateOperatorModel)
+        {
+            if (estateOperatorModel == null)
+            {
+                throw new ArgumentNullException(nameof(estateOperatorModel));
+            }
+
+            OperatorListViewModel viewModel = new OperatorListViewModel
+                                              {
+                EstateId = estateId,
+                OperatorId = estateOperatorModel.OperatorId,
+                OperatorName = estateOperatorModel.Name,
+                RequireCustomMerchantNumber = estateOperatorModel.RequireCustomMerchantNumber,
+                RequireCustomTerminalNumber = estateOperatorModel.RequireCustomTerminalNumber
+                                              };
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="createMerchantViewModel"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">createMerchantViewModel</exception>

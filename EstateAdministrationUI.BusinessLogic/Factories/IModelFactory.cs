@@ -24,6 +24,20 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        CreateOperatorRequest ConvertFrom(CreateOperatorModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         List<MerchantModel> ConvertFrom(List<MerchantResponse> source);
 
         /// <summary>

@@ -927,5 +927,103 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
         }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateOperatorViewModel_ModelIsConverted()
+        {
+            CreateOperatorViewModel viewModel = TestData.CreateOperatorViewModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            CreateOperatorModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.OperatorName.ShouldBe(viewModel.OperatorName);
+            model.RequireCustomTerminalNumber.ShouldBe(viewModel.RequireCustomTerminalNumber);
+            model.RequireCustomMerchantNumber.ShouldBe(viewModel.RequireCustomMerchantNumber);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateOperatorViewModel_NullModel_ErrorThrown()
+        {
+            CreateOperatorViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_EstateOperatorModel_ModelIsConverted()
+        {
+            EstateOperatorModel model = TestData.EstateOperatorModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            OperatorListViewModel viewModel = viewModelFactory.ConvertFrom(TestData.EstateId, model);
+
+            viewModel.EstateId.ShouldBe(TestData.EstateId);
+            viewModel.OperatorName.ShouldBe(model.Name);
+            viewModel.RequireCustomTerminalNumber.ShouldBe(model.RequireCustomTerminalNumber);
+            viewModel.RequireCustomMerchantNumber.ShouldBe(model.RequireCustomMerchantNumber);
+            viewModel.OperatorId.ShouldBe(model.OperatorId);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_EstateOperatorModel_NullModel_ErrorThrown()
+        {
+            EstateOperatorModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(TestData.EstateId, model); });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_EstateOperatorModelList_ModelIsConverted()
+        {
+            List<EstateOperatorModel> modelList = new List<EstateOperatorModel>
+                                                  {
+                                                      TestData.EstateOperatorModel
+                                                  };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<OperatorListViewModel> viewModelList = viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+
+            viewModelList.ShouldNotBeNull();
+            viewModelList.ShouldNotBeEmpty();
+            viewModelList.ShouldHaveSingleItem();
+            viewModelList.Single().EstateId.ShouldBe(TestData.EstateId);
+            viewModelList.Single().OperatorName.ShouldBe(TestData.EstateOperatorModel.Name);
+            viewModelList.Single().RequireCustomTerminalNumber.ShouldBe(TestData.EstateOperatorModel.RequireCustomTerminalNumber);
+            viewModelList.Single().RequireCustomMerchantNumber.ShouldBe(TestData.EstateOperatorModel.RequireCustomMerchantNumber);
+            viewModelList.Single().OperatorId.ShouldBe(TestData.EstateOperatorModel.OperatorId);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_EstateOperatorModelList_EmptyList_ErrorThrown()
+        {
+            List<EstateOperatorModel> modelList = new List<EstateOperatorModel>();
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_EstateOperatorModelList_NullList_ErrorThrown()
+        {
+            List<EstateOperatorModel> modelList = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+                                                });
+        }
     }
 }
