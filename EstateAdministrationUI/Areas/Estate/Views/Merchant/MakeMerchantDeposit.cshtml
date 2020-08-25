@@ -16,7 +16,7 @@
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Make Merchant Deposit</h1>
                         </div>
-                        <form id="makeMerchantDepositForm" asp-action="MakeMerchantDeposit" asp-area="Estate" asp-controller="Home" method="post" class="user">
+                        <form id="makeMerchantDepositForm" asp-action="MakeMerchantDeposit" asp-area="Estate" asp-controller="Merchant" method="post" class="user">
                             @Html.HiddenFor(model => model.MerchantId)
                             @Html.HiddenFor(model => model.MerchantName)
                             <br />

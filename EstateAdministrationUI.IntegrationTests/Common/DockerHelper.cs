@@ -317,6 +317,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 // Add Route for Transaction Aggregate Events
                 await this.InsertSubscription(connection, "$ce-TransactionAggregate", "Reporting", endPointUri).ConfigureAwait(false);
 
+                // Add Route for Transaction Aggregate Events
+                await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
+
                 await connection.CloseAsync().ConfigureAwait(false);
             }
         }

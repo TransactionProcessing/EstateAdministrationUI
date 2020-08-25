@@ -9,10 +9,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Threading;
     using System.Threading.Tasks;
     using Coypu;
+    using Coypu.Drivers.Selenium;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using NLog.Targets.Wrappers;
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
@@ -358,6 +360,13 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await this.WebDriver.ClickButtonById("operatorsLink");
         }
 
+        [Given(@"I click on the My Contracts sidebar option")]
+        public async Task GivenIClickOnTheMyContractsSidebarOption()
+        {
+            await this.WebDriver.ClickButtonById("contractsLink");
+        }
+
+
         [Given(@"I click on the My Estate sidebar option")]
         public async Task GivenIClickOnTheMyEstateSidebarOption()
         {
@@ -376,17 +385,38 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.WebDriver.Title.ShouldContain("Operators");
         }
 
+        [Then(@"I am presented with the Contracts List Screen")]
+        public void ThenIAmPresentedWithTheContractsListScreen()
+        {
+            this.WebDriver.Title.ShouldContain("Contracts");
+        }
+
+
         [When(@"I click the Add New Operator button")]
         public async Task WhenIClickTheAddNewOperatorButton()
         {
             await this.WebDriver.ClickButtonById("newOperatorButton");
         }
 
+        [When(@"I click the Add New Contract button")]
+        public async Task WhenIClickTheAddNewContractButton()
+        {
+            await this.WebDriver.ClickButtonById("newContractButton");
+        }
+
+
         [Then(@"I am presented the new operator screen")]
         public void ThenIAmPresentedTheNewOperatorScreen()
         {
             this.WebDriver.Title.ShouldBe("New Operator Details");
         }
+
+        [Then(@"I am presented the new contract screen")]
+        public void ThenIAmPresentedTheNewContractScreen()
+        {
+            this.WebDriver.Title.ShouldBe("New Contract Details");
+        }
+
 
         [When(@"I enter the following new operator details")]
         public async Task WhenIEnterTheFollowingNewOperatorDetails(Table table)
@@ -397,12 +427,31 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await this.WebDriver.FillIn("operatorName", operatorName);
         }
 
+        [When(@"I enter the following new contract details")]
+        public async Task WhenIEnterTheFollowingNewContractDetails(Table table)
+        {
+            TableRow tableRow = table.Rows.Single();
+
+            String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            await this.WebDriver.FillIn("contractDescription", contractDescription);
+
+            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+            await this.WebDriver.SelectDropDownItemByText("operatorList", operatorName);
+        }
+
+
         [When(@"I click the Create Operator button")]
         public async Task WhenIClickTheCreateOperatorButton()
         {
             await this.WebDriver.ClickButtonById("createOperatorButton");
         }
 
+        [When(@"I click the Create Contract button")]
+        public async Task WhenIClickTheCreateContractButton()
+        {
+            await this.WebDriver.ClickButtonById("createContractButton");
+        }
+        
         [Then(@"the following operator details are in the list")]
         public async Task ThenTheFollowingOperatorDetailsAreInTheList(Table table)
         {
@@ -445,6 +494,50 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 foundRowCount.ShouldBe(table.RowCount);
             }, TimeSpan.FromSeconds(120));
         }
+
+        [Then(@"the following contract details are in the list")]
+        public async Task ThenTheFollowingContractDetailsAreInTheList(Table table)
+        {
+            await Retry.For(async () =>
+                            {
+                                Int32 foundRowCount = 0;
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractList"));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                                rows.Count.ShouldBe(table.RowCount + 1);
+                                foreach (TableRow tableRow in table.Rows)
+                                {
+                                    IList<IWebElement> rowTD;
+                                    foreach (IWebElement row in rows)
+                                    {
+                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                                        if (rowTH.Any())
+                                        {
+                                            // header row so skip
+                                            continue;
+                                        }
+
+                                        rowTD = row.FindElements(By.TagName("td"));
+
+                                        String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+
+                                        if (rowTD[0].Text == contractDescription)
+                                        {
+                                            // Compare other fields
+                                            rowTD[0].Text.ShouldBe(contractDescription);
+
+                                            // We have found the row
+                                            foundRowCount++;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foundRowCount.ShouldBe(table.RowCount);
+                            }, TimeSpan.FromSeconds(120));
+        }
+
 
 
         [Then(@"I am presented with the Estate Details Screen")]

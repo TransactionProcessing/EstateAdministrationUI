@@ -60,7 +60,30 @@
             return createOperatorModel;
         }
 
-        public List<OperatorListViewModel> ConvertFrom(Guid estateId, List<EstateOperatorModel> estateOperatorModels)
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createContractViewModel">The create contract view model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">createContractViewModel</exception>
+        public CreateContractModel ConvertFrom(CreateContractViewModel createContractViewModel)
+        {
+            if (createContractViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(createContractViewModel));
+            }
+
+            CreateContractModel createContractModel = new CreateContractModel
+                                                      {
+                                                          OperatorId = createContractViewModel.OperatorId,
+                                                          Description = createContractViewModel.ContractDescription
+                                                      };
+
+            return createContractModel;
+        }
+
+        public List<OperatorListViewModel> ConvertFrom(Guid estateId,
+                                                       List<EstateOperatorModel> estateOperatorModels)
         {
             if (estateOperatorModels == null || EnumerableExtensions.Any(estateOperatorModels) == false)
             {
@@ -72,10 +95,10 @@
             estateOperatorModels.ForEach(eo => viewModels.Add(this.ConvertFrom(estateId, eo)));
 
             return viewModels;
-
         }
 
-        public OperatorListViewModel ConvertFrom(Guid estateId, EstateOperatorModel estateOperatorModel)
+        public OperatorListViewModel ConvertFrom(Guid estateId,
+                                                 EstateOperatorModel estateOperatorModel)
         {
             if (estateOperatorModel == null)
             {
@@ -84,11 +107,11 @@
 
             OperatorListViewModel viewModel = new OperatorListViewModel
                                               {
-                EstateId = estateId,
-                OperatorId = estateOperatorModel.OperatorId,
-                OperatorName = estateOperatorModel.Name,
-                RequireCustomMerchantNumber = estateOperatorModel.RequireCustomMerchantNumber,
-                RequireCustomTerminalNumber = estateOperatorModel.RequireCustomTerminalNumber
+                                                  EstateId = estateId,
+                                                  OperatorId = estateOperatorModel.OperatorId,
+                                                  OperatorName = estateOperatorModel.Name,
+                                                  RequireCustomMerchantNumber = estateOperatorModel.RequireCustomMerchantNumber,
+                                                  RequireCustomTerminalNumber = estateOperatorModel.RequireCustomTerminalNumber
                                               };
 
             return viewModel;
@@ -151,15 +174,50 @@
             {
                 viewModels.Add(new MerchantListViewModel
                                {
-                                   AddressLine1 = merchantModel.Addresses ==null ? String.Empty : merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().AddressLine1,
+                                   AddressLine1 = merchantModel.Addresses == null ? string.Empty :
+                                       merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().AddressLine1,
                                    MerchantId = merchantModel.MerchantId,
-                                   ContactName = merchantModel.Contacts == null ? String.Empty : merchantModel.Contacts.FirstOrDefault() == null ? string.Empty : merchantModel.Contacts.First().ContactName,
-                                   Town = merchantModel.Addresses == null ? String.Empty : merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().Town,
+                                   ContactName = merchantModel.Contacts == null ? string.Empty :
+                                       merchantModel.Contacts.FirstOrDefault() == null ? string.Empty : merchantModel.Contacts.First().ContactName,
+                                   Town = merchantModel.Addresses == null ? string.Empty :
+                                       merchantModel.Addresses.FirstOrDefault() == null ? string.Empty : merchantModel.Addresses.First().Town,
                                    MerchantName = merchantModel.MerchantName,
                                    EstateId = merchantModel.EstateId,
                                    NumberOfDevices = merchantModel.Devices != null && merchantModel.Devices.Any() ? merchantModel.Devices.Count : 0,
-                                   NumberOfOperators = merchantModel.Operators == null ? 0 : merchantModel.Operators != null && merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
+                                   NumberOfOperators = merchantModel.Operators == null ? 0 :
+                                       merchantModel.Operators != null && merchantModel.Operators.Any() ? merchantModel.Operators.Count : 0,
                                    NumberOfUsers = 0
+                               });
+            }
+
+            return viewModels;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contractModels">The contract models.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">contractModels</exception>
+        public List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels)
+        {
+            if (contractModels == null)
+            {
+                throw new ArgumentNullException(nameof(contractModels));
+            }
+
+            List<ContractListViewModel> viewModels = new List<ContractListViewModel>();
+
+            foreach (ContractModel contractModel in contractModels)
+            {
+                viewModels.Add(new ContractListViewModel
+                               {
+                                   EstateId = contractModel.EstateId,
+                                   OperatorName = contractModel.OperatorName,
+                                   ContractId = contractModel.ContractId,
+                                   Description = contractModel.Description,
+                                   OperatorId = contractModel.OperatorId,
+                                   NumberOfProducts = contractModel.NumberOfProducts
                                });
             }
 
@@ -210,7 +268,7 @@
             MakeMerchantDepositModel makeMerchantDepositModel = new MakeMerchantDepositModel();
 
             makeMerchantDepositModel.DepositDateTime = DateTime.ParseExact(makeMerchantDepositViewModel.DepositDate, "dd/MM/yyyy", null);
-            makeMerchantDepositModel.Amount = Decimal.Parse(makeMerchantDepositViewModel.Amount);
+            makeMerchantDepositModel.Amount = decimal.Parse(makeMerchantDepositViewModel.Amount);
             makeMerchantDepositModel.Reference = makeMerchantDepositViewModel.Reference;
             makeMerchantDepositModel.MerchantId = Guid.Parse(makeMerchantDepositViewModel.MerchantId);
 

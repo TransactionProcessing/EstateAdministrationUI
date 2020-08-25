@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Gherkin;
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Support.UI;
     using Shared.IntegrationTesting;
     using Shouldly;
 
@@ -76,6 +77,20 @@
             IWebElement webElement = await webDriver.FindButtonByText(buttonText);
             webElement.ShouldNotBeNull();
             webElement.Click();
+        }
+
+        public static async Task SelectDropDownItemByText(this IWebDriver webDriver, String dropdownId, String textToSelect)
+        {
+            IWebElement element = null;
+            await Retry.For(async () =>
+                            {
+                                element = webDriver.FindElement(By.Id(dropdownId));
+
+                                element.ShouldNotBeNull();
+
+                                SelectElement dropdown = new SelectElement(element);
+                                dropdown.SelectByText(textToSelect);
+                            });
         }
     }
 }

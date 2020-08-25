@@ -61,6 +61,28 @@
             return apiRequest;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public CreateContractRequest ConvertFrom(CreateContractModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            CreateContractRequest apiRequest = new CreateContractRequest
+                                               {
+                                                   Description = source.Description,
+                                                   OperatorId = source.OperatorId
+                                               };
+
+            return apiRequest;
+        }
+
         public CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source)
         {
             if (source == null)
@@ -77,6 +99,23 @@
             return createOperatorResponseModel;
         }
 
+        public CreateContractResponseModel ConvertFrom(CreateContractResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            CreateContractResponseModel createOperatorResponseModel = new CreateContractResponseModel
+            {
+                                                                          OperatorId = source.OperatorId,
+                                                                          EstateId = source.EstateId,
+                                                                          ContractId = source.ContractId
+                                                                      };
+
+            return createOperatorResponseModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -85,7 +124,7 @@
         /// <exception cref="ArgumentNullException">source</exception>
         public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {
-            if (source == null || source.Any() == false)
+            if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
@@ -100,6 +139,45 @@
             }
 
             return models;
+        }
+
+        public List<ContractModel> ConvertFrom(List<ContractResponse> source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            List<ContractModel> models = new List<ContractModel>();
+
+            foreach (ContractResponse contractResponse in source)
+            {
+                ContractModel contractModel = this.ConvertFrom(contractResponse);
+
+                models.Add(contractModel);
+            }
+
+            return models;
+        }
+
+        public ContractModel ConvertFrom(ContractResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            ContractModel contractModel = new ContractModel
+                                          {
+                                              EstateId = source.EstateId,
+                                              OperatorName = source.OperatorName,
+                                              OperatorId = source.OperatorId,
+                                              ContractId = source.ContractId,
+                                              Description = source.Description,
+                                              NumberOfProducts = source.Products?.Count ?? 0
+                                          };
+
+            return contractModel;
         }
 
         /// <summary>

@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
+    using EstateManagement.DataTransferObjects.Responses;
 
     /// <summary>
     /// 
@@ -36,6 +37,17 @@
                                                ClaimsIdentity claimsIdentity,
                                                CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Gets the contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<ContractModel>> GetContracts(String accessToken,
+                                               ClaimsIdentity claimsIdentity,
+                                               CancellationToken cancellationToken);
+        
         /// <summary>
         /// Gets the merchant.
         /// </summary>
@@ -73,6 +85,19 @@
         Task<CreateOperatorResponseModel> CreateOperator(String accessToken,
                                                          ClaimsIdentity claimsIdentity,
                                                          CreateOperatorModel createOperatorModel,
+                                                         CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createContractModel">The create contract model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<CreateContractResponseModel> CreateContract(String accessToken,
+                                                         ClaimsIdentity claimsIdentity,
+                                                         CreateContractModel createContractModel,
                                                          CancellationToken cancellationToken);
 
         /// <summary>

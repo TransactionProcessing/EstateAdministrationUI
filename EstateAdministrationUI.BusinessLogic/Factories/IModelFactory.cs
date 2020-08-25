@@ -31,6 +31,13 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        CreateContractRequest ConvertFrom(CreateContractModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source);
 
         /// <summary>
@@ -39,6 +46,20 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         List<MerchantModel> ConvertFrom(List<MerchantResponse> source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        List<ContractModel> ConvertFrom(List<ContractResponse> source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        ContractModel ConvertFrom(ContractResponse source);
 
         /// <summary>
         /// Converts from.
@@ -74,6 +95,13 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        CreateContractResponseModel ConvertFrom(CreateContractResponse source);
 
         #endregion
     }
