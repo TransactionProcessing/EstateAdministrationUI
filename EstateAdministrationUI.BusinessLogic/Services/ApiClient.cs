@@ -102,6 +102,30 @@
         }
 
         /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createContractModel">The create contract model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<CreateContractResponseModel> CreateContract(String accessToken,
+                                                                      ClaimsIdentity claimsIdentity,
+                                                                      CreateContractModel createContractModel,
+                                                                      CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            CreateContractRequest apiRequest = this.ModelFactory.ConvertFrom(createContractModel);
+
+            CreateContractResponse apiResponse = await this.EstateClient.CreateContract(accessToken, estateId, apiRequest, cancellationToken);
+
+            CreateContractResponseModel createContractResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return createContractResponseModel;
+        }
+
+        /// <summary>
         /// Makes the merchant deposit.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -162,7 +186,18 @@
 
             return this.ModelFactory.ConvertFrom(merchants);
         }
+        
+        public async Task<List<ContractModel>> GetContracts(String accessToken,
+                                                            ClaimsIdentity claimsIdentity,
+                                                            CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
 
+            List<ContractResponse> contracts = await this.EstateClient.GetContracts(accessToken, estateId, cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(contracts);
+        }
+        
         /// <summary>
         /// Gets the merchant.
         /// </summary>

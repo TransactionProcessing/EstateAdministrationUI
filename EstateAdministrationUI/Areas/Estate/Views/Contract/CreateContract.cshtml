@@ -1,0 +1,66 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.CreateContractViewModel
+
+@{
+    ViewBag.Title = "New Contract Details";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-createnewmerchant-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create New Contract</h1>
+                        </div>
+                        <form id="createMerchantForm" asp-action="CreateContract" asp-area="Estate" asp-controller="Contract" method="post" class="user">
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="ContractDescription" class="control-label">Description</label>
+                                <input asp-for="ContractDescription" class="form-control form-control-user" name="contractDescription" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="OperatorId" class="control-label">Operator</label>
+                                <select asp-for="OperatorId" id="operatorList" class="form-control" required>
+                                    <option value="" disabled selected>Select an Operator</option>
+                                </select>
+                            </div>
+                            
+                            <button id="createContractButton" type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-plus"></i> Create Contact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        $.get("GetOperatorListAsJson",
+            function(data)
+            {
+                var operatorListSelect = $('#operatorList');
+                var operatorList = data;
+
+                operatorList.forEach(function(element)
+                {
+                    operatorListSelect.append(
+                        $('<option></option>').val(element.operatorId).html(element.operatorName));
+                    console.log(element);
+                });
+
+            });
+    });
+</script>

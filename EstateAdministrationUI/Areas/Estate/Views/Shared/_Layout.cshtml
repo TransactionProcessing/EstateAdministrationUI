@@ -51,32 +51,39 @@
             <hr class="sidebar-divider my-0">
 
             <li class="nav-item">
-                <a class="nav-link" id="estateDetailsLink" asp-action="GetEstate" asp-area="Estate" asp-controller="Home">
+                <a class="nav-link" id="estateDetailsLink" asp-action="GetEstate" asp-area="Estate" asp-controller="Estate">
                     <i class="fas fa-fw fa-golf-ball"></i>
                     <span>My Estate</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" id="merchantsLink" asp-action="GetMerchantList" asp-area="Estate" asp-controller="Home">
+                <a class="nav-link" id="merchantsLink" asp-action="GetMerchantList" asp-area="Estate" asp-controller="Merchant">
                     <i class="fas fa-fw fa-ruler"></i>
                     <span>My Merchants</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" id="operatorsLink" asp-action="GetOperatorList" asp-area="Estate" asp-controller="Home">
+                <a class="nav-link" id="operatorsLink" asp-action="GetOperatorList" asp-area="Estate" asp-controller="Operator">
                     <i class="fas fa-fw fa-trophy"></i>
                     <span>Manage Operators</span>
                 </a>
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" id="contractsLink" asp-action="GetContractList" asp-area="Estate" asp-controller="Contract">
+                    <i class="fas fa-fw fa-trophy"></i>
+                    <span>Manage Contracts</span>
+                </a>
+            </li>
+
+            @*<li class="nav-item">
                 <a class="nav-link" id="usersLink" asp-action="GetUsersList" asp-area="Estate" asp-controller="Home">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Users</span>
                 </a>
-            </li>
+            </li>*@
         </ul>
 
             <!-- End of Sidebar -->

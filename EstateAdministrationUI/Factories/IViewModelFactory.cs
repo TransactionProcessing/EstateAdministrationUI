@@ -29,6 +29,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="createContractViewModel">The create contract view model.</param>
+        /// <returns></returns>
+        CreateContractModel ConvertFrom(CreateContractViewModel createContractViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="estateOperatorModels">The estate operator models.</param>
         /// <returns></returns>
@@ -56,6 +63,13 @@
         /// <returns></returns>
         List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contractModels">The contract models.</param>
+        /// <returns></returns>
+        List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels);
+        
         /// <summary>
         /// Converts from.
         /// </summary>

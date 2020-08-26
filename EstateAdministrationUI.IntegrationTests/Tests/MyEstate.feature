@@ -81,3 +81,18 @@ Scenario: Create New Operator
 	| OperatorName       |
 	| Test Operator [id] |
 	| Test New Operator |
+
+@PRTest
+Scenario: Create New Contract
+	Given I click on the My Contracts sidebar option
+	Then I am presented with the Contracts List Screen
+	When I click the Add New Contract button
+	Then I am presented the new contract screen
+	When I enter the following new contract details
+	| OperatorName       | ContractDescription |
+	| Test Operator [id] | Test Contract       |
+	When I click the Create Contract button
+	Then I am presented with the Contracts List Screen
+	And the following contract details are in the list
+	| ContractDescription |
+	| Test Contract       |
