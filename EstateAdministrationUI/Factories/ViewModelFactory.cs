@@ -40,6 +40,87 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="contractModel">The contract model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">contractModel</exception>
+        public ContractProductListViewModel ConvertFrom(ContractModel contractModel)
+        {
+            if (contractModel == null)
+            {
+                throw new ArgumentNullException(nameof(contractModel));
+            }
+
+            ContractProductListViewModel viewModel = new ContractProductListViewModel
+                                                     {
+                                                         Description = contractModel.Description,
+                                                         ContractId = contractModel.ContractId,
+                                                         ContractProducts = new List<ContractProductViewModel>()
+                                                     };
+
+            if (contractModel.ContractProducts != null && contractModel.ContractProducts.Any())
+            {
+                contractModel.ContractProducts.ForEach(c =>
+                                                       {
+                                                           viewModel.ContractProducts.Add(new ContractProductViewModel
+                                                                                          {
+                                                                                              EstateId = contractModel.EstateId,
+                                                                                              ContractId = contractModel.ContractId,
+                                                                                              ContractProductId = c.ContractProductId,
+                                                                                              DisplayText = c.DisplayText,
+                                                                                              ProductName = c.ProductName,
+                                                                                              Value = c.Value.HasValue ? c.Value.Value.ToString() : "Variable",
+                                                                                              NumberOfTransactionFees = c.ContractProductTransactionFees.Count
+                                                                                          });
+                                                       });
+            }
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contractProduct">The contract product.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">contractProduct</exception>
+        public ContractProductTransactionFeesListViewModel ConvertFrom(ContractProductModel contractProduct)
+        {
+            if (contractProduct == null)
+            {
+                throw new ArgumentNullException(nameof(contractProduct));
+            }
+
+            ContractProductTransactionFeesListViewModel viewModel = new ContractProductTransactionFeesListViewModel
+                                                                    {
+                                                                        ContractProductId = contractProduct.ContractProductId,
+                                                                        ProductName = contractProduct.ProductName,
+                                                                        Description = contractProduct.Description,
+                                                                        Value = contractProduct.Value.HasValue ? contractProduct.Value.Value.ToString() : "Variable",
+                                                                        ContractId = contractProduct.ContractId,
+                                                                        TransactionFees = new List<ContractProductTransactionFeesViewModel>(),
+                                                                    };
+
+            foreach (ContractProductTransactionFeeModel transactionFee in contractProduct.ContractProductTransactionFees)
+            {
+                viewModel.TransactionFees.Add(new ContractProductTransactionFeesViewModel
+                                              {
+                                                  Description = transactionFee.Description,
+                                                  Value = transactionFee.Value,
+                                                  CalculationType = transactionFee.CalculationType,
+                                                  FeeType = transactionFee.FeeType,
+                                                  ContractId = contractProduct.ContractId,
+                                                  ContractProductId = contractProduct.ContractProductId,
+                                                  TransactionFeeId = transactionFee.TransactionFeeId,
+                                                  EstateId = contractProduct.EstateId
+                                              });
+            }
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="createOperatorViewModel">The create operator view model.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">createOperatorViewModel</exception>
@@ -82,6 +163,13 @@
             return createContractModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="estateOperatorModels">The estate operator models.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">estateOperatorModels</exception>
         public List<OperatorListViewModel> ConvertFrom(Guid estateId,
                                                        List<EstateOperatorModel> estateOperatorModels)
         {
@@ -97,6 +185,13 @@
             return viewModels;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="estateId">The estate identifier.</param>
+        /// <param name="estateOperatorModel">The estate operator model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">estateOperatorModel</exception>
         public OperatorListViewModel ConvertFrom(Guid estateId,
                                                  EstateOperatorModel estateOperatorModel)
         {
@@ -120,7 +215,7 @@
         /// <summary>
         /// Converts from.
         /// </summary>
-        /// <param name="createMerchantViewModel"></param>
+        /// <param name="createMerchantViewModel">The create merchant view model.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">createMerchantViewModel</exception>
         public CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)

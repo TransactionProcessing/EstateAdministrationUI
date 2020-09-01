@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Areas.Estate.Controllers
+﻿namespace EstateAdministrationUI.Areas.Estate.Controllers
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Security.Claims;
     using System.Threading;
+    using System.Threading.Tasks;
     using BusinessLogic.Models;
     using Common;
     using Factories;
@@ -20,6 +19,10 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
     using Services;
     using Shared.Logger;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     [ExcludeFromCodeCoverage]
     [Authorize]
     [Area("Estate")]
@@ -53,6 +56,15 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             this.ViewModelFactory = viewModelFactory;
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> CreateContract(CancellationToken cancellationToken)
         {
@@ -62,17 +74,14 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         }
 
         /// <summary>
-        /// Validates the model.
+        /// Creates the contract.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        private Boolean ValidateModel(CreateContractViewModel viewModel)
-        {
-            return this.ModelState.IsValid;
-        }
-
         [HttpPost]
-        public async Task<IActionResult> CreateContract(CreateContractViewModel viewModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateContract(CreateContractViewModel viewModel,
+                                                        CancellationToken cancellationToken)
         {
             // Validate the model
             if (this.ValidateModel(viewModel))
@@ -86,8 +95,8 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
                     await this.ApiClient.CreateContract(accessToken, this.User.Identity as ClaimsIdentity, createContractModel, cancellationToken);
 
                 // Merchant Created, redirect to the Merchant List screen
-                return this.RedirectToAction("GetContractList",
-                                             "Contract").WithSuccess("Contract Created Successful", $"Contract {viewModel.ContractDescription} successfully created");
+                return this.RedirectToAction("GetContractList", "Contract")
+                           .WithSuccess("Contract Created Successful", $"Contract {viewModel.ContractDescription} successfully created");
             }
 
             // If we got this far, something failed, redisplay form
@@ -139,6 +148,131 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractViewModels, whereClause));
         }
 
+        /// <summary>
+        /// Gets the contract products list.
+        /// </summary>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetContractProductsList([FromQuery] Guid contractId,
+                                                                 CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
+
+            ContractProductListViewModel viewModel = this.ViewModelFactory.ConvertFrom(contract);
+
+            return this.View("ContractProductsList", viewModel);
+        }
+
+        /// <summary>
+        /// Gets the contract list as json.
+        /// </summary>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetContractProductsListAsJson([FromQuery] Guid contractId,
+                                                                       CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetContractProductsListAsJson");
+
+            // Search Value from (Search box)  
+            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+            Logger.LogDebug($"searchvalue is {searchValue}");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            Logger.LogDebug("got access token");
+
+            ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
+
+            ContractProductListViewModel contractProductListViewModel = this.ViewModelFactory.ConvertFrom(contract);
+
+            Logger.LogDebug($"contract product list count is {contractProductListViewModel.ContractProducts.Count}");
+
+            Expression<Func<ContractProductViewModel, Boolean>> whereClause = c => c.ProductName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                                                                                   c.DisplayText.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
+
+            DataTablesResult<ContractProductViewModel> dataTableResult =
+                Helpers.GetDataForDataTable(this.Request.Form, contractProductListViewModel.ContractProducts, whereClause);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductListViewModel.ContractProducts, whereClause));
+        }
+
+        /// <summary>
+        /// Gets the contract product transaction fees list.
+        /// </summary>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetContractProductTransactionFeesList([FromQuery] Guid contractId,
+                                                                               [FromQuery] Guid contractProductId,
+                                                                               CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            ContractProductModel contractProduct =
+                await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
+
+            ContractProductTransactionFeesListViewModel viewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
+
+            return this.View("ContractProductTransactionFeesList", viewModel);
+        }
+
+        /// <summary>
+        /// Gets the contract product transaction fees list as json.
+        /// </summary>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetContractProductTransactionFeesListAsJson([FromQuery] Guid contractId,
+                                                                                     [FromQuery] Guid contractProductId,
+                                                                                     CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetContractProductTransactionFeeListAsJson");
+
+            // Search Value from (Search box)  
+            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+            Logger.LogDebug($"searchvalue is {searchValue}");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            Logger.LogDebug("got access token");
+
+            ContractProductModel contractProduct =
+                await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
+
+            ContractProductTransactionFeesListViewModel contractProductTransactionFeesViewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
+
+            Logger.LogDebug($"contract product transaction fee list count is {contractProductTransactionFeesViewModel.TransactionFees.Count}");
+
+            Expression<Func<ContractProductTransactionFeesViewModel, Boolean>> whereClause =
+                c => c.Description.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                     c.CalculationType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) || c.FeeType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                     c.Value.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
+
+            DataTablesResult<ContractProductTransactionFeesViewModel> dataTableResult =
+                Helpers.GetDataForDataTable(this.Request.Form, contractProductTransactionFeesViewModel.TransactionFees, whereClause);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductTransactionFeesViewModel.TransactionFees, whereClause));
+        }
+
+        /// <summary>
+        /// Gets the operator list as json.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
         {
@@ -152,6 +286,16 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
 
             return this.Json(operatorViewModels);
+        }
+
+        /// <summary>
+        /// Validates the model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(CreateContractViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
         }
 
         #endregion

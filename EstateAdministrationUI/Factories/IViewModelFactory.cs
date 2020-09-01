@@ -22,6 +22,20 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="contractModel">The contract model.</param>
+        /// <returns></returns>
+        ContractProductListViewModel ConvertFrom(ContractModel contractModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="contractProduct">The contract product.</param>
+        /// <returns></returns>
+        ContractProductTransactionFeesListViewModel ConvertFrom(ContractProductModel contractProduct);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="createOperatorViewModel">The create operator view model.</param>
         /// <returns></returns>
         CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel);
@@ -39,7 +53,8 @@
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="estateOperatorModels">The estate operator models.</param>
         /// <returns></returns>
-        List<OperatorListViewModel> ConvertFrom(Guid estateId, List<EstateOperatorModel> estateOperatorModels);
+        List<OperatorListViewModel> ConvertFrom(Guid estateId,
+                                                List<EstateOperatorModel> estateOperatorModels);
 
         /// <summary>
         /// Converts from.
@@ -47,7 +62,8 @@
         /// <param name="estateId">The estate identifier.</param>
         /// <param name="estateOperatorModel">The estate operator model.</param>
         /// <returns></returns>
-        OperatorListViewModel ConvertFrom(Guid estateId, EstateOperatorModel estateOperatorModel);
+        OperatorListViewModel ConvertFrom(Guid estateId,
+                                          EstateOperatorModel estateOperatorModel);
 
         /// <summary>
         /// Converts from.
@@ -69,7 +85,7 @@
         /// <param name="contractModels">The contract models.</param>
         /// <returns></returns>
         List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels);
-        
+
         /// <summary>
         /// Converts from.
         /// </summary>
