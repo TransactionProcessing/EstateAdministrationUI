@@ -198,7 +198,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "EstateName"});
             table8.AddRow(new string[] {
                         "estateuser[id]@testestate1.co.uk",
-                        "123456",
+                        "Pa55word",
                         "TestEstate",
                         "User1",
                         "Test Estate [id]"});
@@ -215,8 +215,8 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  testRunner.Then("I am presented with a login screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 47
- testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'123456" +
-                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'Pa55wo" +
+                    "rd\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 49
  testRunner.Then("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

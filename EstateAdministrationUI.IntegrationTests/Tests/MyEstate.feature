@@ -36,7 +36,7 @@ Background:
 
 	And I have created the following security users
 	| EmailAddress                     | Password | GivenName  | FamilyName | EstateName       |
-	| estateuser[id]@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate [id] |
+	| estateuser[id]@testestate1.co.uk | Pa55word   | TestEstate | User1      | Test Estate [id] |
 
 	Given I am on the application home page
 
@@ -44,7 +44,7 @@ Background:
 	
 	Then I am presented with a login screen
 	
-	When I login with the username 'estateuser[id]@testestate1.co.uk' and password '123456'
+	When I login with the username 'estateuser[id]@testestate1.co.uk' and password 'Pa55word'
 	
 	Then I am presented with the Estate Administrator Dashboard
 
