@@ -33,7 +33,7 @@
             options.AcceptInsecureCertificates = true;
             options.UnhandledPromptBehavior = UnhandledPromptBehavior.Accept;
             options.LogLevel = FirefoxDriverLogLevel.Debug;
-            
+
             this.WebDriver = new FirefoxDriver(options);
 
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
@@ -42,7 +42,7 @@
         [AfterScenario(Order = 0)]
         public void AfterScenario()
         {
-            this.WebDriver.Dispose();
+            this.WebDriver.Quit();//.Dispose();
         }
     }
 }

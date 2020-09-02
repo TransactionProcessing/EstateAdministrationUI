@@ -198,7 +198,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "EstateName"});
             table8.AddRow(new string[] {
                         "estateuser[id]@testestate1.co.uk",
-                        "Pa55word",
+                        "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate [id]"});
@@ -215,8 +215,8 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  testRunner.Then("I am presented with a login screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 47
- testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'Pa55wo" +
-                    "rd\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'123456" +
+                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 49
  testRunner.Then("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -231,11 +231,9 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         [Xunit.SkippableFactAttribute(DisplayName="View Estate")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "View Estate")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void ViewEstate()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Estate", null, tagsOfScenario, argumentsOfScenario);
 #line 52
@@ -329,11 +327,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create New Operator")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "Create New Operator")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateNewOperator()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Operator", null, tagsOfScenario, argumentsOfScenario);
 #line 67
