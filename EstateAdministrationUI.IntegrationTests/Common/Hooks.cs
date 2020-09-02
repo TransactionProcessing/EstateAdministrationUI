@@ -29,7 +29,7 @@
             //this.WebDriver = new ChromeDriver(options);
             
             FirefoxOptions options = new FirefoxOptions();
-            options.AddArguments("--headless");
+            //options.AddArguments("--headless");
             options.LogLevel = FirefoxDriverLogLevel.Debug;
             
             this.WebDriver = new FirefoxDriver(options);
