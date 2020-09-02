@@ -29,7 +29,9 @@
             //this.WebDriver = new ChromeDriver(options);
             
             FirefoxOptions options = new FirefoxOptions();
-            //options.AddArguments("--headless");
+            options.AddArguments("--headless");
+            options.AcceptInsecureCertificates = true;
+            options.UnhandledPromptBehavior = UnhandledPromptBehavior.Accept;
             options.LogLevel = FirefoxDriverLogLevel.Debug;
             
             this.WebDriver = new FirefoxDriver(options);
