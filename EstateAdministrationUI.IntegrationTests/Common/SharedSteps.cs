@@ -1043,6 +1043,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Then(@"I am presented with the Estate Administrator Dashboard")]
         public void ThenIAmPresentedWithTheEstateAdministratorDashboard()
         {
+            if (this.WebDriver.Title != "Dashboard")
+            {
+                Console.WriteLine(this.WebDriver.PageSource);
+            }
             this.WebDriver.Title.ShouldBe("Dashboard");
         }
 
