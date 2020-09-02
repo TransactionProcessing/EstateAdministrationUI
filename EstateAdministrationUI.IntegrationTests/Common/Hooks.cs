@@ -32,6 +32,7 @@
             options.AddArguments("--headless");
             options.AcceptInsecureCertificates = true;
             options.UnhandledPromptBehavior = UnhandledPromptBehavior.Accept;
+            options.UseLegacyImplementation = true;
             options.LogLevel = FirefoxDriverLogLevel.Debug;
 
             this.WebDriver = new FirefoxDriver(options);
