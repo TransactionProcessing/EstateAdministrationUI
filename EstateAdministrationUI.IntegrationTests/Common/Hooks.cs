@@ -28,10 +28,9 @@
             //options.AddArguments("--headless");
             //this.WebDriver = new ChromeDriver(options);
             FirefoxOptions options = new FirefoxOptions();
-            options.UseLegacyImplementation = true;
             //options.AddArguments("--window-size=1920,1080");
             //options.AddArguments("--start-maximized");
-            options.AddArguments("-headless");
+            options.AddArguments("--headless");
             
             this.WebDriver = new FirefoxDriver(options);
 
