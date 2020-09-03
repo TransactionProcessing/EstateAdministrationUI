@@ -425,11 +425,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="View Single Merchant")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "View Single Merchant")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void ViewSingleMerchant()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Single Merchant", null, tagsOfScenario, argumentsOfScenario);
 #line 86
@@ -509,11 +507,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Make Merchant Deposit")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "Make Merchant Deposit")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void MakeMerchantDeposit()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Deposit", null, tagsOfScenario, argumentsOfScenario);
 #line 98
@@ -616,11 +612,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create New Merchant")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "Create New Merchant")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateNewMerchant()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Merchant", null, tagsOfScenario, argumentsOfScenario);
 #line 117

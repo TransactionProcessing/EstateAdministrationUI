@@ -1,7 +1,7 @@
-﻿@model List<EstateAdministrationUI.Areas.Estate.Models.ContractListViewModel>
+﻿@model EstateAdministrationUI.Areas.Estate.Models.ContractProductListViewModel
 
 @{
-    ViewBag.Title = "Contracts";
+    ViewBag.Title = "Products for Contract - @Model.Description";
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
@@ -21,20 +21,20 @@
                 <div class="col-lg-10">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">My Contracts</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Products for Contract - @Model.Description</h1>
                         </div>
 
-                        <a class="btn btn-primary btn-circle btn-sm" asp-action="CreateContract" asp-controller="Contract" asp-area="Estate" id="newContractButton"><i class="fa fa-plus"></i></a>
-                        <table id="contractList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
+                        @*<a class="btn btn-primary btn-circle btn-sm" asp-action="CreateContract" asp-controller="Contract" asp-area="Estate" id="newContractButton"><i class="fa fa-plus"></i></a>*@
+                        <table id="contractProductList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Estate Id</th>
-                                    <th>Operator Id</th>
                                     <th>Contract Id</th>
-                                    <th>Contract Description</th>
-                                    <th>Operator</th>
-                                    <th>Products</th>
-                                    <th></th>
+                                    <th>Product Id</th>
+                                    <th>Product</th>
+                                    <th>Display Text</th>
+                                    <th>Value</th>
+                                    <th>Transaction Fees</th>
                                 </tr>
                             </thead>
                         </table>
@@ -48,13 +48,13 @@
 <script>
     $(document).ready(function ()
     {
-        $("#contractList").DataTable({
+        $("#contractProductList").DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
             "ajax": {
-                "url": "GetContractListAsJson",
+                "url": "GetContractProductsListAsJson?contractId=@Model.ContractId",
                 "type": "POST",
                 "datatype": "json"
             },
@@ -74,28 +74,20 @@
                     "searchable": false  }],
             "columns": [
                 { "data": "estateId", "name": "estateId", "autoWidth": true },
-                { "data": "operatorId", "name": "operatorId", "autoWidth": true },
                 { "data": "contractId", "name": "contractId", "autoWidth": true },
-                { "data": "description", "name": "description", "autoWidth": true },
-                { "data": "operatorName", "name": "operatorName", "autoWidth": true },
+                { "data": "contractProductId", "name": "contractProductId", "autoWidth": true },
+                { "data": "productName", "name": "productName", "autoWidth": true },
+                { "data": "displayText", "name": "displayText", "autoWidth": true },
+                { "data": "value", "name": "value", "autoWidth": true },
                 {
-                    "data": "numberOfProducts",
+                    "data": "numberOfTransactionFees",
                     "render": function(data, type, full, meta){
-                        //if(type === 'display'){
-                            return '<a href="GetContractProductsList?contractId=' + full.contractId + '">' + data + '</a>';
-                        //}
-
-                        //return data;
-                    }
-                },
-                {
-                    "render": function(data, type, full, meta)
-                    {
-                        return '<a class="btn btn-info" id="editContractLink" href="GetContract?contractId=' + full.contractId + '"><i class="fa fa-edit-circle"></i></a>';
+                        return '<a href="GetContractProductTransactionFeesList?contractId=' + full.contractId + '&contractProductId=' + full.contractProductId + '">' + data + '</a>';
+                        
                     }
                 }
             ],
-            "order": [[3, "asc"]]
+            "order": [[4, "asc"]]
         });
     });
 </script>

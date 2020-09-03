@@ -1,35 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Areas.Estate.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
+    using System;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class ContractListViewModel
     {
-        /// <summary>
-        /// Gets or sets the estate identifier.
-        /// </summary>
-        /// <value>
-        /// The estate identifier.
-        /// </value>
-        public Guid EstateId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator identifier.
-        /// </summary>
-        /// <value>
-        /// The operator identifier.
-        /// </value>
-        public Guid OperatorId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the operator.
-        /// </summary>
-        /// <value>
-        /// The name of the operator.
-        /// </value>
-        public String OperatorName { get; set; }
+        #region Properties
 
         /// <summary>
         /// Gets or sets the contract identifier.
@@ -47,7 +25,38 @@ namespace EstateAdministrationUI.Areas.Estate.Models
         /// </value>
         public String Description { get; set; }
 
-        
+        /// <summary>
+        /// Gets or sets the estate identifier.
+        /// </summary>
+        /// <value>
+        /// The estate identifier.
+        /// </value>
+        public Guid EstateId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of products.
+        /// </summary>
+        /// <value>
+        /// The number of products.
+        /// </value>
         public Int32 NumberOfProducts { get; set; }
+
+        /// <summary>
+        /// Gets or sets the operator identifier.
+        /// </summary>
+        /// <value>
+        /// The operator identifier.
+        /// </value>
+        public Guid OperatorId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the operator.
+        /// </summary>
+        /// <value>
+        /// The name of the operator.
+        /// </value>
+        public String OperatorName { get; set; }
+
+        #endregion
     }
 }

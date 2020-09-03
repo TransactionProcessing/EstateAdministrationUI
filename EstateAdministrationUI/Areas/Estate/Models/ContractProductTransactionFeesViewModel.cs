@@ -1,16 +1,21 @@
-﻿namespace EstateAdministrationUI.BusinessLogic.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// 
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class ContractModel
+    public class ContractProductTransactionFeesViewModel
     {
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the type of the calculation.
+        /// </summary>
+        /// <value>
+        /// The type of the calculation.
+        /// </value>
+        public String CalculationType { get; set; }
 
         /// <summary>
         /// Gets or sets the contract identifier.
@@ -21,12 +26,12 @@
         public Guid ContractId { get; set; }
 
         /// <summary>
-        /// Gets or sets the contract products.
+        /// Gets or sets the contract product identifier.
         /// </summary>
         /// <value>
-        /// The contract products.
+        /// The contract product identifier.
         /// </value>
-        public List<ContractProductModel> ContractProducts { get; set; }
+        public Guid ContractProductId { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -45,28 +50,28 @@
         public Guid EstateId { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of products.
+        /// Gets or sets the type of the fee.
         /// </summary>
         /// <value>
-        /// The number of products.
+        /// The type of the fee.
         /// </value>
-        public Int32 NumberOfProducts { get; set; }
+        public String FeeType { get; set; }
 
         /// <summary>
-        /// Gets or sets the operator identifier.
+        /// Gets or sets the transaction fee identifier.
         /// </summary>
         /// <value>
-        /// The operator identifier.
+        /// The transaction fee identifier.
         /// </value>
-        public Guid OperatorId { get; set; }
+        public Guid TransactionFeeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the operator.
+        /// Gets or sets the value.
         /// </summary>
         /// <value>
-        /// The name of the operator.
+        /// The value.
         /// </value>
-        public String OperatorName { get; set; }
+        public String Value { get; set; }
 
         #endregion
     }

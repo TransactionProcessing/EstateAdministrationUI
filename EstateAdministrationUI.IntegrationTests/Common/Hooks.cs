@@ -4,6 +4,7 @@
     using BoDi;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
+    using OpenQA.Selenium.Firefox;
     using TechTalk.SpecFlow;
 
     [Binding]
@@ -21,17 +22,27 @@
         public async Task BeforeScenario()
         {
             ChromeOptions options = new ChromeOptions();
+
             options.AddArguments("--window-size=1920,1080");
             options.AddArguments("--start-maximized");
             options.AddArguments("--headless");
             this.WebDriver = new ChromeDriver(options);
+
+            //FirefoxOptions options = new FirefoxOptions();
+            //options.AddArguments("--headless");
+            //options.AcceptInsecureCertificates = true;
+            //options.UnhandledPromptBehavior = UnhandledPromptBehavior.Accept;
+            //options.LogLevel = FirefoxDriverLogLevel.Trace;
+
+            //this.WebDriver = new FirefoxDriver(options);
+
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
 
         [AfterScenario(Order = 0)]
         public void AfterScenario()
         {
-            this.WebDriver.Dispose();
+            this.WebDriver.Quit();//.Dispose();
         }
     }
 }

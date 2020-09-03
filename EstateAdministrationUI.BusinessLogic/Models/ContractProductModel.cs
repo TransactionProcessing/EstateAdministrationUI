@@ -2,13 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// 
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class ContractModel
+    public class ContractProductModel
     {
         #region Properties
 
@@ -21,12 +19,20 @@
         public Guid ContractId { get; set; }
 
         /// <summary>
-        /// Gets or sets the contract products.
+        /// Gets or sets the contract product identifier.
         /// </summary>
         /// <value>
-        /// The contract products.
+        /// The contract product identifier.
         /// </value>
-        public List<ContractProductModel> ContractProducts { get; set; }
+        public Guid ContractProductId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the contract product transaction fees.
+        /// </summary>
+        /// <value>
+        /// The contract product transaction fees.
+        /// </value>
+        public List<ContractProductTransactionFeeModel> ContractProductTransactionFees { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -37,6 +43,14 @@
         public String Description { get; set; }
 
         /// <summary>
+        /// Gets or sets the display text.
+        /// </summary>
+        /// <value>
+        /// The display text.
+        /// </value>
+        public String DisplayText { get; set; }
+
+        /// <summary>
         /// Gets or sets the estate identifier.
         /// </summary>
         /// <value>
@@ -45,28 +59,28 @@
         public Guid EstateId { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of products.
+        /// Gets or sets the number of transaction fees.
         /// </summary>
         /// <value>
-        /// The number of products.
+        /// The number of transaction fees.
         /// </value>
-        public Int32 NumberOfProducts { get; set; }
+        public Int32 NumberOfTransactionFees { get; set; }
 
         /// <summary>
-        /// Gets or sets the operator identifier.
+        /// Gets or sets the name of the product.
         /// </summary>
         /// <value>
-        /// The operator identifier.
+        /// The name of the product.
         /// </value>
-        public Guid OperatorId { get; set; }
+        public String ProductName { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the operator.
+        /// Gets or sets the value.
         /// </summary>
         /// <value>
-        /// The name of the operator.
+        /// The value.
         /// </value>
-        public String OperatorName { get; set; }
+        public Decimal? Value { get; set; }
 
         #endregion
     }

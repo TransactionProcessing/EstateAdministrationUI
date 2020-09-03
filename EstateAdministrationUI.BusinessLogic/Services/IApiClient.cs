@@ -6,7 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
-    using EstateManagement.DataTransferObjects.Responses;
 
     /// <summary>
     /// 
@@ -16,50 +15,17 @@
         #region Methods
 
         /// <summary>
-        /// Gets the estate.
+        /// Creates the contract.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="createContractModel">The create contract model.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<EstateModel> GetEstate(String accessToken,
-                                    ClaimsIdentity claimsIdentity,
-                                    CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the merchants.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<List<MerchantModel>> GetMerchants(String accessToken,
-                                               ClaimsIdentity claimsIdentity,
-                                               CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the contracts.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<List<ContractModel>> GetContracts(String accessToken,
-                                               ClaimsIdentity claimsIdentity,
-                                               CancellationToken cancellationToken);
-        
-        /// <summary>
-        /// Gets the merchant.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<MerchantModel> GetMerchant(String accessToken,
-                                        ClaimsIdentity claimsIdentity,
-                                        Guid merchantId,
-                                        CancellationToken cancellationToken);
+        Task<CreateContractResponseModel> CreateContract(String accessToken,
+                                                         ClaimsIdentity claimsIdentity,
+                                                         CreateContractModel createContractModel,
+                                                         CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates the merchant.
@@ -70,9 +36,9 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<CreateMerchantResponseModel> CreateMerchant(String accessToken,
-                                                        ClaimsIdentity claimsIdentity,
-                                                        CreateMerchantModel createMerchantModel,
-                                                        CancellationToken cancellationToken);
+                                                         ClaimsIdentity claimsIdentity,
+                                                         CreateMerchantModel createMerchantModel,
+                                                         CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates the operator.
@@ -88,17 +54,78 @@
                                                          CancellationToken cancellationToken);
 
         /// <summary>
-        /// Creates the contract.
+        /// Gets the contract.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="createContractModel">The create contract model.</param>
+        /// <param name="contractId">The contract identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<CreateContractResponseModel> CreateContract(String accessToken,
-                                                         ClaimsIdentity claimsIdentity,
-                                                         CreateContractModel createContractModel,
-                                                         CancellationToken cancellationToken);
+        Task<ContractModel> GetContract(String accessToken,
+                                        ClaimsIdentity claimsIdentity,
+                                        Guid contractId,
+                                        CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the contract product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ContractProductModel> GetContractProduct(String accessToken,
+                                                      ClaimsIdentity claimsIdentity,
+                                                      Guid contractId,
+                                                      Guid contractProductId,
+                                                      CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the contracts.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<ContractModel>> GetContracts(String accessToken,
+                                               ClaimsIdentity claimsIdentity,
+                                               CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the estate.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<EstateModel> GetEstate(String accessToken,
+                                    ClaimsIdentity claimsIdentity,
+                                    CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MerchantModel> GetMerchant(String accessToken,
+                                        ClaimsIdentity claimsIdentity,
+                                        Guid merchantId,
+                                        CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchants.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantModel>> GetMerchants(String accessToken,
+                                               ClaimsIdentity claimsIdentity,
+                                               CancellationToken cancellationToken);
 
         /// <summary>
         /// Makes the merchant deposit.

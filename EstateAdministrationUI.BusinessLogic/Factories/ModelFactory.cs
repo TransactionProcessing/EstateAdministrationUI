@@ -83,6 +83,12 @@
             return apiRequest;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source)
         {
             if (source == null)
@@ -99,6 +105,12 @@
             return createOperatorResponseModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public CreateContractResponseModel ConvertFrom(CreateContractResponse source)
         {
             if (source == null)
@@ -107,7 +119,7 @@
             }
 
             CreateContractResponseModel createOperatorResponseModel = new CreateContractResponseModel
-            {
+                                                                      {
                                                                           OperatorId = source.OperatorId,
                                                                           EstateId = source.EstateId,
                                                                           ContractId = source.ContractId
@@ -141,6 +153,12 @@
             return models;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public List<ContractModel> ConvertFrom(List<ContractResponse> source)
         {
             if (source == null)
@@ -160,6 +178,12 @@
             return models;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public ContractModel ConvertFrom(ContractResponse source)
         {
             if (source == null)
@@ -174,8 +198,46 @@
                                               OperatorId = source.OperatorId,
                                               ContractId = source.ContractId,
                                               Description = source.Description,
-                                              NumberOfProducts = source.Products?.Count ?? 0
+                                              NumberOfProducts = source.Products?.Count ?? 0,
+                                              ContractProducts = new List<ContractProductModel>()
                                           };
+
+            if (source.Products != null && source.Products.Any())
+            {
+                source.Products.ForEach(p =>
+                                        {
+                                            ContractProductModel contractProductModel = new ContractProductModel
+                                                                                        {
+                                                                                            Description = source.Description,
+                                                                                            ContractId = source.ContractId,
+                                                                                            EstateId = source.EstateId,
+                                                                                            DisplayText = p.DisplayText,
+                                                                                            Value = p.Value,
+                                                                                            ProductName = p.Name,
+                                                                                            ContractProductId = p.ProductId,
+                                                                                            ContractProductTransactionFees =
+                                                                                                new List<ContractProductTransactionFeeModel>()
+                                                                                        };
+
+                                            if (p.TransactionFees != null && p.TransactionFees.Any())
+                                            {
+                                                p.TransactionFees.ForEach(f =>
+                                                                          {
+                                                                              contractProductModel
+                                                                                  .ContractProductTransactionFees.Add(new ContractProductTransactionFeeModel
+                                                                                                                      {
+                                                                                                                          Description = f.Description,
+                                                                                                                          Value = f.Value.ToString(),
+                                                                                                                          CalculationType = f.CalculationType.ToString(),
+                                                                                                                          FeeType = f.FeeType.ToString(),
+                                                                                                                          TransactionFeeId = f.TransactionFeeId
+                                                                                                                      });
+                                                                          });
+                                            }
+
+                                            contractModel.ContractProducts.Add(contractProductModel);
+                                        });
+            }
 
             return contractModel;
         }
@@ -185,6 +247,7 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public MerchantModel ConvertFrom(MerchantResponse source)
         {
             if (source == null)
@@ -259,6 +322,7 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
         {
             if (source == null)
@@ -342,6 +406,7 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
         {
             if (source == null)
@@ -365,7 +430,7 @@
         /// <exception cref="ArgumentNullException">estateResponseOperators</exception>
         private List<EstateOperatorModel> ConvertOperators(List<EstateOperatorResponse> estateResponseOperators)
         {
-            if (estateResponseOperators == null || estateResponseOperators.Any()==false)
+            if (estateResponseOperators == null || estateResponseOperators.Any() == false)
             {
                 return null;
             }

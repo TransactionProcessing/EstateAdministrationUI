@@ -231,11 +231,9 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         [Xunit.SkippableFactAttribute(DisplayName="View Estate")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "View Estate")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void ViewEstate()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Estate", null, tagsOfScenario, argumentsOfScenario);
 #line 52
@@ -329,11 +327,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create New Operator")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "Create New Operator")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateNewOperator()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Operator", null, tagsOfScenario, argumentsOfScenario);
 #line 67
@@ -404,15 +400,17 @@ this.FeatureBackground();
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Create new Contract")]
+        [Xunit.SkippableFactAttribute(DisplayName="Create New Contract")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
-        [Xunit.TraitAttribute("Description", "Create new Contract")]
+        [Xunit.TraitAttribute("Description", "Create New Contract")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateNewContract()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create new Contract", null, tagsOfScenario, argumentsOfScenario);
-#line 85
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Contract", null, tagsOfScenario, argumentsOfScenario);
+#line 86
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -435,16 +433,16 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 86
+#line 87
  testRunner.Given("I click on the My Contracts sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 87
+#line 88
  testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 88
+#line 89
  testRunner.When("I click the Add New Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 89
+#line 90
  testRunner.Then("I am presented the new contract screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
@@ -453,20 +451,20 @@ this.FeatureBackground();
                 table14.AddRow(new string[] {
                             "Test Operator [id]",
                             "Test Contract"});
-#line 90
+#line 91
  testRunner.When("I enter the following new contract details", ((string)(null)), table14, "When ");
 #line hidden
-#line 93
+#line 94
  testRunner.When("I click the Create Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 94
+#line 95
  testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "ContractDescription"});
                 table15.AddRow(new string[] {
                             "Test Contract"});
-#line 95
+#line 96
  testRunner.And("the following contract details are in the list", ((string)(null)), table15, "And ");
 #line hidden
             }

@@ -58,7 +58,8 @@ namespace EstateAdministrationUI
                                                     {
                                                         // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                                                         options.CheckConsentNeeded = context => true;
-                                                        options.MinimumSameSitePolicy = SameSiteMode.None;
+                                                        options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                                                        options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                                                     });
 
             services.AddAuthentication(options =>
@@ -69,49 +70,52 @@ namespace EstateAdministrationUI
             {
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
                 options.Cookie.Name = "mvchybridautorefresh";
+                options.Cookie.SameSite = SameSiteMode.Unspecified;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             }).AddAutomaticTokenManagement().AddOpenIdConnect("oidc",
-                                                                                                      options =>
+                                                              options =>
+                                                              {
+                                                                  options.SignInScheme = "Cookies";
+                                                                  options.Authority = ConfigurationReader.GetValue("Authority");
+
+                                                                  options.RequireHttpsMetadata = false;
+
+                                                                  options.ClientSecret =
+                                                                      ConfigurationReader.GetValue("ClientSecret");
+                                                                  options.ClientId = ConfigurationReader.GetValue("ClientId");
+
+                                                                  options.ResponseType = "code id_token";
+
+                                                                  options.Scope.Clear();
+                                                                  options.Scope.Add("openid");
+                                                                  options.Scope.Add("profile");
+                                                                  options.Scope.Add("email");
+                                                                  options.Scope.Add("offline_access");
+
+                                                                  String? estateManagementScope =
+                                                                      Environment.GetEnvironmentVariable("EstateManagementScope");
+
+                                                                  options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
+
+                                                                  options.ClaimActions.MapAllExcept("iss",
+                                                                                                    "nbf",
+                                                                                                    "exp",
+                                                                                                    "aud",
+                                                                                                    "nonce",
+                                                                                                    "iat",
+                                                                                                    "c_hash");
+
+                                                                  options.GetClaimsFromUserInfoEndpoint = true;
+                                                                  options.SaveTokens = true;
+
+                                                                  options.TokenValidationParameters = new TokenValidationParameters
                                                                                                       {
-                                                                                                          options.SignInScheme = "Cookies";
-                                                                                                          options.Authority = ConfigurationReader.GetValue("Authority");
-
-                                                                                                          options.RequireHttpsMetadata = false;
-
-                                                                                                          options.ClientSecret =
-                                                                                                              ConfigurationReader.GetValue("ClientSecret");
-                                                                                                          options.ClientId = ConfigurationReader.GetValue("ClientId");
-
-                                                                                                          options.ResponseType = "code id_token";
-
-                                                                                                          options.Scope.Clear();
-                                                                                                          options.Scope.Add("openid");
-                                                                                                          options.Scope.Add("profile");
-                                                                                                          options.Scope.Add("email");
-                                                                                                          options.Scope.Add("offline_access");
-
-                                                                                                          String? estateManagementScope =
-                                                                                                              Environment.GetEnvironmentVariable("EstateManagementScope");
-
-                                                                                                          options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
-
-                                                                                                          options.ClaimActions.MapAllExcept("iss",
-                                                                                                                                            "nbf",
-                                                                                                                                            "exp",
-                                                                                                                                            "aud",
-                                                                                                                                            "nonce",
-                                                                                                                                            "iat",
-                                                                                                                                            "c_hash");
-
-                                                                                                          options.GetClaimsFromUserInfoEndpoint = true;
-                                                                                                          options.SaveTokens = true;
-
-                                                                                                          options.TokenValidationParameters = new TokenValidationParameters
-                                                                                                                                              {
-                                                                                                                                                  NameClaimType = JwtClaimTypes.Name,
-                                                                                                                                                  RoleClaimType = JwtClaimTypes.Role,
-                                                                                                                                                  ValidateIssuer = false
-                                                                                                                                              };
-                                                                                                      });
+                                                                                                          NameClaimType = JwtClaimTypes.Name,
+                                                                                                          RoleClaimType = JwtClaimTypes.Role,
+                                                                                                          ValidateIssuer = false
+                                                                                                      };
+                                                              });
             IdentityModelEventSource.ShowPII = true;
 
             services.AddSingleton<IApiClient, ApiClient>();
