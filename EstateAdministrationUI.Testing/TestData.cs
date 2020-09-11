@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
+    using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
 
     public class TestData
@@ -329,6 +330,271 @@
 
                                     }
                                 }
+            };
+
+        public static String ContractDescription = "Test Contract 1";
+        public static String ContractProductDescription = "Test Product 1";
+        public static String ContractProductName = "Product 1";
+        public static String ContractProductDisplayText = "Product1";
+
+        public static Decimal ContractProductValue = 100.00m;
+        public static Guid ContractProductId = Guid.Parse("6CAE4549-6334-4CC4-82CD-A915BDE559D3");
+
+        public static String TransactionFeeDescription = "Test Fee 1";
+        public static Decimal TransactionFeeValue = 1.00m;
+
+        public static Decimal? ContractProductValueNull = null;
+
+        public static Guid TransactionFeeId = Guid.Parse("982CB7C9-2383-4361-BA44-FF7BAE3B03E6");
+
+        public static ContractResponse ContractResponse =>
+            new ContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                Products = new List<ContractProduct>
+                           {
+                    new ContractProduct
+                    {
+                        Value = TestData.ContractProductValue,
+                        TransactionFees = new List<ContractProductTransactionFee>
+                                          {
+                                              new ContractProductTransactionFee
+                                              {
+                                                  Description = TestData.TransactionFeeDescription,
+                                                  Value = TestData.TransactionFeeValue,
+                                                  FeeType = FeeType.Merchant,
+                                                  TransactionFeeId = TestData.TransactionFeeId,
+                                                  CalculationType = CalculationType.Fixed
+                                              }
+                                          },
+                        ProductId = TestData.ContractProductId,
+                        Name = TestData.ContractProductName,
+                        DisplayText = TestData.ContractProductDisplayText
+                    }
+                           },
+                Description = TestData.ContractDescription,
+                ContractId = TestData.ContactId
+            };
+
+        public static ContractResponse ContractResponseProductWithNullFees =>
+            new ContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                Products = new List<ContractProduct>
+                           {
+                               new ContractProduct
+                               {
+                                   Value = TestData.ContractProductValue,
+                                   TransactionFees = null,
+                                   ProductId = TestData.ContractProductId,
+                                   Name = TestData.ContractProductName,
+                                   DisplayText = TestData.ContractProductDisplayText
+                               }
+                           },
+                Description = TestData.ContractDescription,
+                ContractId = TestData.ContactId
+            };
+
+        public static ContractResponse ContractResponseProductWithEmptyFees =>
+            new ContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                Products = new List<ContractProduct>
+                           {
+                               new ContractProduct
+                               {
+                                   Value = TestData.ContractProductValue,
+                                   TransactionFees = new List<ContractProductTransactionFee>(),
+                                   ProductId = TestData.ContractProductId,
+                                   Name = TestData.ContractProductName,
+                                   DisplayText = TestData.ContractProductDisplayText
+                               }
+                           },
+                Description = TestData.ContractDescription,
+                ContractId = TestData.ContactId
+            };
+
+        public static ContractResponse ContractResponseNullProducts =>
+            new ContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                Products = null,
+                Description = TestData.ContractDescription,
+                ContractId = TestData.ContactId
+            };
+
+        public static ContractResponse ContractResponseEmptyProducts =>
+            new ContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                Products = new List<ContractProduct>
+                           {
+
+                           },
+                Description = TestData.ContractDescription,
+                ContractId = TestData.ContactId
+            };
+
+        public static CreateContractResponse CreateContractResponse =>
+            new CreateContractResponse
+            {
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                ContractId = TestData.ContactId
+            };
+
+        public static CreateContractModel CreateContractModel =>
+            new CreateContractModel
+            {
+                OperatorId = TestData.OperatorId,
+                Description = TestData.ContractDescription
+            };
+
+        public static CreateContractViewModel CreateContractViewModel =>
+            new CreateContractViewModel
+            {
+                OperatorId = TestData.OperatorId,
+                ContractDescription = TestData.ContractDescription
+            };
+
+        public static String TransactionFeeType = "Merchant";
+
+        public static String TransactionFeeCalculationType = "Fixed";
+
+        public static ContractProductTransactionFeeModel ContractProductTransactionFeeModel =>
+            new ContractProductTransactionFeeModel
+            {
+                Description = TestData.TransactionFeeDescription,
+                Value = TestData.TransactionFeeValue.ToString(),
+                FeeType = TestData.TransactionFeeType,
+                CalculationType = TestData.TransactionFeeCalculationType,
+                TransactionFeeId = TestData.TransactionFeeId
+            };
+
+        public static ContractProductModel ContractProductModel =>
+            new ContractProductModel
+            {
+                EstateId = TestData.EstateId,
+                Description = TestData.ContractProductDescription,
+                Value = TestData.ContractProductValue,
+                ContractId = TestData.ContactId,
+                ContractProductId = TestData.ContractProductId,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                NumberOfTransactionFees = 1,
+                ContractProductTransactionFees = new List<ContractProductTransactionFeeModel>
+                                                 {
+                                                     TestData.ContractProductTransactionFeeModel
+                                                 }
+            };
+
+        public static ContractProductModel ContractProductModelNullValue =>
+            new ContractProductModel
+            {
+                EstateId = TestData.EstateId,
+                Description = TestData.ContractProductDescription,
+                Value = TestData.ContractProductValueNull,
+                ContractId = TestData.ContactId,
+                ContractProductId = TestData.ContractProductId,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                NumberOfTransactionFees = 1,
+                ContractProductTransactionFees = new List<ContractProductTransactionFeeModel>
+                                                 {
+                                                     TestData.ContractProductTransactionFeeModel
+                                                 }
+            };
+
+        public static ContractProductModel ContractProductModelNullFees =>
+            new ContractProductModel
+            {
+                EstateId = TestData.EstateId,
+                Description = TestData.ContractProductDescription,
+                Value = TestData.ContractProductValue,
+                ContractId = TestData.ContactId,
+                ContractProductId = TestData.ContractProductId,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                NumberOfTransactionFees = 0,
+                ContractProductTransactionFees = null
+            };
+
+        public static ContractProductModel ContractProductModelEmptyFeeList =>
+            new ContractProductModel
+            {
+                EstateId = TestData.EstateId,
+                Description = TestData.ContractProductDescription,
+                Value = TestData.ContractProductValue,
+                ContractId = TestData.ContactId,
+                ContractProductId = TestData.ContractProductId,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                NumberOfTransactionFees = 0,
+                ContractProductTransactionFees = new List<ContractProductTransactionFeeModel>()
+            };
+
+        public static ContractModel ContractModel =>
+            new ContractModel
+            {
+                ContractId = TestData.ContactId,
+                Description = TestData.ContractDescription,
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                ContractProducts = new List<ContractProductModel>
+                                   {
+                                       TestData.ContractProductModel
+                                   },
+                NumberOfProducts = 1
+            };
+
+        public static ContractModel ContractModelWithNullValueProduct =>
+            new ContractModel
+            {
+                ContractId = TestData.ContactId,
+                Description = TestData.ContractDescription,
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                ContractProducts = new List<ContractProductModel>
+                                   {
+                                       TestData.ContractProductModelNullValue
+                                   },
+                NumberOfProducts = 1
+            };
+
+        public static ContractModel ContractModelNullProducts =>
+            new ContractModel
+            {
+                ContractId = TestData.ContactId,
+                Description = TestData.ContractDescription,
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                ContractProducts = null,
+                NumberOfProducts = 0
+            };
+
+        public static ContractModel ContractModelEmptyProducts =>
+            new ContractModel
+            {
+                ContractId = TestData.ContactId,
+                Description = TestData.ContractDescription,
+                EstateId = TestData.EstateId,
+                OperatorId = TestData.OperatorId,
+                OperatorName = TestData.OperatorName,
+                ContractProducts = new List<ContractProductModel>(),
+                NumberOfProducts = 0
             };
     }
 }

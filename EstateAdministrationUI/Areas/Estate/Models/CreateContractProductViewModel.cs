@@ -8,33 +8,17 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class ContractProductTransactionFeesListViewModel
+    public class CreateContractProductViewModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the contract identifier.
+        /// Gets or sets the display text.
         /// </summary>
         /// <value>
-        /// The contract identifier.
+        /// The display text.
         /// </value>
-        public Guid ContractId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the contract product identifier.
-        /// </summary>
-        /// <value>
-        /// The contract product identifier.
-        /// </value>
-        public Guid ContractProductId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the description.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
-        public String Description { get; set; }
+        public String DisplayText { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the product.
@@ -50,7 +34,7 @@
         /// <value>
         /// The transaction fees.
         /// </value>
-        public List<ContractProductTransactionFeesViewModel> TransactionFees { get; set; }
+        public List<CreateContractProductTransactionFeeViewModel> TransactionFees { get; set; }
 
         /// <summary>
         /// Gets or sets the value.
@@ -58,7 +42,7 @@
         /// <value>
         /// The value.
         /// </value>
-        public String Value { get; set; }
+        public Decimal? Value { get; set; }
 
         #endregion
     }

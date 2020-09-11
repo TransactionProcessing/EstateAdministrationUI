@@ -888,5 +888,192 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                                     modelFactory.ConvertFrom(response);
                                                 });
         }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateContractModel_IsConverted()
+        {
+            CreateContractModel model = TestData.CreateContractModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            CreateContractRequest request = modelFactory.ConvertFrom(model);
+
+            request.Description.ShouldBe(model.Description);
+            request.OperatorId.ShouldBe(model.OperatorId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateContractModel_NullModel_ErrorThrown()
+        {
+            CreateContractModel model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateContractResponse_IsConverted()
+        {
+            CreateContractResponse response = TestData.CreateContractResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            CreateContractResponseModel model = modelFactory.ConvertFrom(response);
+
+            model.EstateId.ShouldBe(response.EstateId);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.ContractId.ShouldBe(response.ContractId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CreateContractResponse_NullResponse_ErrorThrown()
+        {
+            CreateContractResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_IsConverted()
+        {
+            ContractResponse response = TestData.ContractResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel model = modelFactory.ConvertFrom(response);
+
+            model.Description.ShouldBe(response.Description);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.NumberOfProducts.ShouldBe(response.Products.Count);
+            model.ContractProducts.Count.ShouldBe(response.Products.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_NullProducts_IsConverted()
+        {
+            ContractResponse response = TestData.ContractResponseNullProducts;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel model = modelFactory.ConvertFrom(response);
+
+            model.Description.ShouldBe(response.Description);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.NumberOfProducts.ShouldBe(0);
+            model.ContractProducts.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_EmptyProducts_IsConverted()
+        {
+            ContractResponse response = TestData.ContractResponseEmptyProducts;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel model = modelFactory.ConvertFrom(response);
+
+            model.Description.ShouldBe(response.Description);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.NumberOfProducts.ShouldBe(0);
+            model.ContractProducts.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_ProductWithNullFees_IsConverted()
+        {
+            ContractResponse response = TestData.ContractResponseProductWithNullFees;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel model = modelFactory.ConvertFrom(response);
+
+            model.Description.ShouldBe(response.Description);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.NumberOfProducts.ShouldBe(response.Products.Count);
+            model.ContractProducts.Count.ShouldBe(response.Products.Count);
+            model.ContractProducts.Single().NumberOfTransactionFees.ShouldBe(0);
+            model.ContractProducts.Single().ContractProductTransactionFees.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_ProductWithEmptyFees_IsConverted()
+        {
+            ContractResponse response = TestData.ContractResponseProductWithEmptyFees;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            ContractModel model = modelFactory.ConvertFrom(response);
+
+            model.Description.ShouldBe(response.Description);
+            model.OperatorId.ShouldBe(response.OperatorId);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.OperatorName.ShouldBe(response.OperatorName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.NumberOfProducts.ShouldBe(response.Products.Count);
+            model.ContractProducts.Count.ShouldBe(response.Products.Count);
+            model.ContractProducts.Single().NumberOfTransactionFees.ShouldBe(0);
+            model.ContractProducts.Single().ContractProductTransactionFees.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponse_NullResponse_ErrorThrown()
+        {
+            ContractResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponseList_IsConverted()
+        {
+            List<ContractResponse> responseList = new List<ContractResponse>
+                                                  {
+                                                      TestData.ContractResponse
+                                                  };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<ContractModel> model = modelFactory.ConvertFrom(responseList);
+            model.ShouldHaveSingleItem();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ContractResponseList_NullList_ErrorThrown()
+        {
+            List<ContractResponse> responseList = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(responseList);
+                                                });
+        }
     }
 }

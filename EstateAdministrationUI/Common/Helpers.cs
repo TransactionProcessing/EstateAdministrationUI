@@ -4,12 +4,14 @@ using System.Linq;
 
 namespace EstateAdministrationUI.Common
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq.Expressions;
     using Areas.Estate.Models;
     using Microsoft.AspNetCore.Http;
     using Shared.Logger;
     using BusinessLogic.Common;
 
+    [ExcludeFromCodeCoverage]
     public class Helpers
     {
         /// <summary>

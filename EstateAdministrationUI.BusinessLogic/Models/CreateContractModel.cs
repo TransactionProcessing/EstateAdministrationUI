@@ -1,7 +1,9 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage]
     public class CreateContractModel
     {
         #region Properties
@@ -23,14 +25,5 @@
         public Guid OperatorId { get; set; }
 
         #endregion
-    }
-
-    public class CreateContractResponseModel
-    {
-        public Guid ContractId { get; set; }
-
-        public Guid EstateId { get; set; }
-
-        public Guid OperatorId { get; set; }
     }
 }
