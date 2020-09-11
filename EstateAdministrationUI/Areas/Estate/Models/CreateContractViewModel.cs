@@ -1,30 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Areas.Estate.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CreateContractViewModel
     {
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the contract description.
+        /// </summary>
+        /// <value>
+        /// The contract description.
+        /// </value>
         public String ContractDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the operator identifier.
+        /// </summary>
+        /// <value>
+        /// The operator identifier.
+        /// </value>
         public Guid OperatorId { get; set; }
-    }
 
-    public class CreateContractProductViewModel
-    {
-        public String ProductName { get; set; }
-        public String DisplayText { get; set; }
-        public Decimal? Value { get; set; }
-        public List<CreateContractProductTransactionFeeViewModel> TransactionFees { get; set; }
-    }
-
-    public class CreateContractProductTransactionFeeViewModel
-    {
-        public Int32 CalculationType { get; set; }
-        public Int32 FeeType { get; set; }
-        public Decimal Value { get; set; }
-        public String Description { get; set; }
-
+        #endregion
     }
 }

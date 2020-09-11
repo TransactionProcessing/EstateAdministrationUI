@@ -1025,5 +1025,211 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                     viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
                                                 });
         }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractViewModel_IsConverted()
+        {
+            CreateContractViewModel viewModel = TestData.CreateContractViewModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            CreateContractModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.OperatorId.ShouldBe(viewModel.OperatorId);
+            model.Description.ShouldBe(viewModel.ContractDescription);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractViewModel_NullModel_ErrorThrown()
+        {
+            CreateContractViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModel_IsConverted()
+        {
+            ContractModel model = TestData.ContractModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.ContractProducts.Count.ShouldBe(model.ContractProducts.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModel_NullProducts_IsConverted()
+        {
+            ContractModel model = TestData.ContractModelNullProducts;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.ContractProducts.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModel_EmptyProducts_IsConverted()
+        {
+            ContractModel model = TestData.ContractModelEmptyProducts;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.ContractProducts.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModel_ProductWithNullValue_IsConverted()
+        {
+            ContractModel model = TestData.ContractModelWithNullValueProduct;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.ContractProducts.Count.ShouldBe(model.ContractProducts.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModel_NullModel_ErrorThrown()
+        {
+            ContractModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_IsConverted()
+        {
+            ContractProductModel model = TestData.ContractProductModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.Value.ShouldBe(model.Value.ToString());
+            viewModel.ContractProductId.ShouldBe(model.ContractProductId);
+            viewModel.ProductName.ShouldBe(model.ProductName);
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.TransactionFees.Count.ShouldBe(model.ContractProductTransactionFees.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_NullValue_IsConverted()
+        {
+            ContractProductModel model = TestData.ContractProductModelNullValue;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.Value.ShouldBe("Variable");
+            viewModel.ContractProductId.ShouldBe(model.ContractProductId);
+            viewModel.ProductName.ShouldBe(model.ProductName);
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.TransactionFees.Count.ShouldBe(model.ContractProductTransactionFees.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_NullFees_IsConverted()
+        {
+            ContractProductModel model = TestData.ContractProductModelNullFees;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.Value.ShouldBe(model.Value.ToString());
+            viewModel.ContractProductId.ShouldBe(model.ContractProductId);
+            viewModel.ProductName.ShouldBe(model.ProductName);
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.TransactionFees.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_EmptyFees_IsConverted()
+        {
+            ContractProductModel model = TestData.ContractProductModelEmptyFeeList;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.Description.ShouldBe(model.Description);
+            viewModel.Value.ShouldBe(model.Value.ToString());
+            viewModel.ContractProductId.ShouldBe(model.ContractProductId);
+            viewModel.ProductName.ShouldBe(model.ProductName);
+            viewModel.ContractId.ShouldBe(model.ContractId);
+            viewModel.TransactionFees.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_NullModel_ErrorThrown()
+        {
+            ContractProductModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModelList_IsConverted()
+        {
+            List<ContractModel> modelList = new List<ContractModel>
+                                            {
+                                                TestData.ContractModel
+                                            };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<ContractListViewModel> viewModels = viewModelFactory.ConvertFrom(modelList);
+
+            viewModels.ShouldHaveSingleItem();
+            ContractListViewModel viewModel = viewModels.Single();
+            viewModel.ContractId.ShouldBe(TestData.ContractModel.ContractId);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractModelList_NullList_ErrorThrown()
+        {
+            List<ContractModel> modelList = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(modelList);
+                                                }); ;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace EstateAdministrationUI.BusinessLogic.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class ContractProductTransactionFeeModel
+    public class CreateContractProductTransactionFeeViewModel
     {
         #region Properties
 
@@ -17,7 +17,7 @@
         /// <value>
         /// The type of the calculation.
         /// </value>
-        public String CalculationType { get; set; }
+        public Int32 CalculationType { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -33,15 +33,7 @@
         /// <value>
         /// The type of the fee.
         /// </value>
-        public String FeeType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the transaction fee identifier.
-        /// </summary>
-        /// <value>
-        /// The transaction fee identifier.
-        /// </value>
-        public Guid TransactionFeeId { get; set; }
+        public Int32 FeeType { get; set; }
 
         /// <summary>
         /// Gets or sets the value.
@@ -49,7 +41,7 @@
         /// <value>
         /// The value.
         /// </value>
-        public String Value { get; set; }
+        public Decimal Value { get; set; }
 
         #endregion
     }

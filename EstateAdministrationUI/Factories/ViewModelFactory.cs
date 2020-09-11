@@ -100,19 +100,22 @@
                                                                         TransactionFees = new List<ContractProductTransactionFeesViewModel>(),
                                                                     };
 
-            foreach (ContractProductTransactionFeeModel transactionFee in contractProduct.ContractProductTransactionFees)
+            if (contractProduct.ContractProductTransactionFees != null && contractProduct.ContractProductTransactionFees.Any())
             {
-                viewModel.TransactionFees.Add(new ContractProductTransactionFeesViewModel
-                                              {
-                                                  Description = transactionFee.Description,
-                                                  Value = transactionFee.Value,
-                                                  CalculationType = transactionFee.CalculationType,
-                                                  FeeType = transactionFee.FeeType,
-                                                  ContractId = contractProduct.ContractId,
-                                                  ContractProductId = contractProduct.ContractProductId,
-                                                  TransactionFeeId = transactionFee.TransactionFeeId,
-                                                  EstateId = contractProduct.EstateId
-                                              });
+                foreach (ContractProductTransactionFeeModel transactionFee in contractProduct.ContractProductTransactionFees)
+                {
+                    viewModel.TransactionFees.Add(new ContractProductTransactionFeesViewModel
+                                                  {
+                                                      Description = transactionFee.Description,
+                                                      Value = transactionFee.Value,
+                                                      CalculationType = transactionFee.CalculationType,
+                                                      FeeType = transactionFee.FeeType,
+                                                      ContractId = contractProduct.ContractId,
+                                                      ContractProductId = contractProduct.ContractProductId,
+                                                      TransactionFeeId = transactionFee.TransactionFeeId,
+                                                      EstateId = contractProduct.EstateId
+                                                  });
+                }
             }
 
             return viewModel;
