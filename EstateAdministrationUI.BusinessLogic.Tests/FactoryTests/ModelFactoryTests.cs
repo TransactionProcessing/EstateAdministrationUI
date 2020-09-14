@@ -9,6 +9,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using Factories;
+    using Microsoft.AspNetCore.Identity;
     using Models;
     using Shouldly;
     using Testing;
@@ -1073,6 +1074,134 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() =>
                                                 {
                                                     modelFactory.ConvertFrom(responseList);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddProductToContractModel_WithValue_IsConverted()
+        {
+            AddProductToContractModel model = TestData.AddProductToContractModelWithValue;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddProductToContractRequest request = modelFactory.ConvertFrom(model);
+
+            request.Value.ShouldNotBeNull();
+            request.Value.ShouldBe(model.Value);
+            request.ProductName.ShouldBe(model.ProductName);
+            request.DisplayText.ShouldBe(model.DisplayText);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddProductToContractModel_WithNullValue_IsConverted()
+        {
+            AddProductToContractModel model = TestData.AddProductToContractModelWithNullValue;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddProductToContractRequest request = modelFactory.ConvertFrom(model);
+
+            request.Value.ShouldBeNull();
+            request.ProductName.ShouldBe(model.ProductName);
+            request.DisplayText.ShouldBe(model.DisplayText);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddProductToContractModel_NullModel_ErrorThrown()
+        {
+            AddProductToContractModel model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddProductToContractResponse_IsConverted()
+        {
+            AddProductToContractResponse response = TestData.AddProductToContractResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddProductToContractResponseModel model = modelFactory.ConvertFrom(response);
+
+            model.ProductId.ShouldBe(response.ProductId);
+            model.ContractId.ShouldBe(response.ContractId);
+            model.EstateId.ShouldBe(response.EstateId);
+        }
+        
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddProductToContractResponse_NullResponse_ErrorThrown()
+        {
+            AddProductToContractResponse model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddTransactionFeeToContractProductModel_IsConverted()
+        {
+            AddTransactionFeeToContractProductModel model = TestData.AddTransactionFeeToContractProductModel;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddTransactionFeeForProductToContractRequest request = modelFactory.ConvertFrom(model);
+
+            EstateManagement.DataTransferObjects.CalculationType calculationType = Enum.Parse<EstateManagement.DataTransferObjects.CalculationType>(model.CalculationType.ToString(), true);
+            EstateManagement.DataTransferObjects.FeeType feeType = Enum.Parse<EstateManagement.DataTransferObjects.FeeType>(model.FeeType.ToString(), true);
+
+            request.Value.ShouldBe(model.Value);
+            request.Description.ShouldBe(model.Description);
+            request.FeeType.ShouldBe(feeType);
+            request.CalculationType.ShouldBe(calculationType);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddTransactionFeeToContractProductModel_NullModel_ErrorThrown()
+        {
+            AddTransactionFeeToContractProductModel model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddTransactionFeeForProductToContractResponse_IsConverted()
+        {
+            AddTransactionFeeForProductToContractResponse response = TestData.AddTransactionFeeForProductToContractResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddTransactionFeeToContractProductResponseModel model = modelFactory.ConvertFrom(response);
+
+            model.EstateId.ShouldBe(response.EstateId);
+            model.ProductId.ShouldBe(response.ProductId);
+            model.TransactionFeeId.ShouldBe(response.TransactionFeeId);
+            model.ContractId.ShouldBe(response.ContractId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddTransactionFeeForProductToContractResponse_NullResponse_ErrorThrown()
+        {
+            AddTransactionFeeForProductToContractResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
                                                 });
         }
     }

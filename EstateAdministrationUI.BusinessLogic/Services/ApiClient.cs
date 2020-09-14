@@ -54,6 +54,31 @@
         #region Methods
 
         /// <summary>
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="claimsIdentity"></param>
+        /// <param name="contractId"></param>
+        /// <param name="addProductToContractModel"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<AddProductToContractResponseModel> AddProductToContract(String accessToken,
+                                                                                  ClaimsIdentity claimsIdentity,
+                                                                                  Guid contractId,
+                                                                                  AddProductToContractModel addProductToContractModel,
+                                                                                  CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            AddProductToContractRequest apiRequest = this.ModelFactory.ConvertFrom(addProductToContractModel);
+
+            AddProductToContractResponse apiResponse = await this.EstateClient.AddProductToContract(accessToken, estateId, contractId, apiRequest, cancellationToken);
+
+            AddProductToContractResponseModel addProductToContractResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return addProductToContractResponseModel;
+        }
+
+        /// <summary>
         /// Creates the contract.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -267,6 +292,24 @@
             MakeMerchantDepositResponseModel makeMerchantDepositResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
 
             return makeMerchantDepositResponseModel;
+        }
+
+        public async Task<AddTransactionFeeToContractProductResponseModel> AddTransactionFeeToContractProduct(String accessToken,
+                                                                                                              ClaimsIdentity claimsIdentity,
+                                                                                                              Guid contractId,
+                                                                                                              Guid contractProductId,
+                                                                                                              AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel,
+                                                                                                              CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            AddTransactionFeeForProductToContractRequest apiRequest = this.ModelFactory.ConvertFrom(addTransactionFeeToContractProductModel);
+
+            AddTransactionFeeForProductToContractResponse apiResponse = await this.EstateClient.AddTransactionFeeForProductToContract(accessToken, estateId, contractId, contractProductId, apiRequest, cancellationToken);
+
+            AddTransactionFeeToContractProductResponseModel addTransactionFeeToContractProductResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return addTransactionFeeToContractProductResponseModel;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
 
@@ -126,6 +127,92 @@
                                                                       };
 
             return createOperatorResponseModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public AddProductToContractRequest ConvertFrom(AddProductToContractModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            AddProductToContractRequest addProductToContractRequest = new AddProductToContractRequest
+                                                                      {
+                                                                          Value = source.Value,
+                                                                          ProductName = source.ProductName,
+                                                                          DisplayText = source.DisplayText
+                                                                      };
+
+            return addProductToContractRequest;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            AddProductToContractResponseModel addProductToContractResponseModel = new AddProductToContractResponseModel
+                                                                                  {
+                                                                                      EstateId = source.EstateId,
+                                                                                      ProductId = source.ProductId,
+                                                                                      ContractId = source.ContractId
+                                                                                  };
+
+            return addProductToContractResponseModel;
+        }
+
+        public AddTransactionFeeForProductToContractRequest ConvertFrom(AddTransactionFeeToContractProductModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            EstateManagement.DataTransferObjects.CalculationType calculationType = Enum.Parse<EstateManagement.DataTransferObjects.CalculationType>(source.CalculationType.ToString(), true);
+            EstateManagement.DataTransferObjects.FeeType feeType = Enum.Parse<EstateManagement.DataTransferObjects.FeeType>(source.FeeType.ToString(), true);
+            AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest = new AddTransactionFeeForProductToContractRequest
+                                                                                                        {
+                                                                                                            Value = source.Value,
+                                                                                                            Description = source.Description,
+                                                                                                            FeeType = feeType,
+                                                                                                            CalculationType = calculationType
+                                                                                                        };
+
+            return addTransactionFeeForProductToContractRequest;
+
+
+        }
+
+        public AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            AddTransactionFeeToContractProductResponseModel addTransactionFeeToContractProductResponseModel = new AddTransactionFeeToContractProductResponseModel
+                                                                                                              {
+                                                                                                                  EstateId = source.EstateId,
+                                                                                                                  ProductId = source.ProductId,
+                                                                                                                  TransactionFeeId = source.TransactionFeeId,
+                                                                                                                  ContractId = source.ContractId
+                                                                                                              };
+
+            return addTransactionFeeToContractProductResponseModel;
         }
 
         /// <summary>

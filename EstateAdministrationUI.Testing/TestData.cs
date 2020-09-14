@@ -6,6 +6,10 @@
     using BusinessLogic.Models;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
+    using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
+    using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
+    using FeeType = BusinessLogic.Models.FeeType;
+    using CalculationType = BusinessLogic.Models.CalculationType;
 
     public class TestData
     {
@@ -364,9 +368,9 @@
                                               {
                                                   Description = TestData.TransactionFeeDescription,
                                                   Value = TestData.TransactionFeeValue,
-                                                  FeeType = FeeType.Merchant,
+                                                  FeeType = DTOFeeType.Merchant,
                                                   TransactionFeeId = TestData.TransactionFeeId,
-                                                  CalculationType = CalculationType.Fixed
+                                                  CalculationType = DTOCalculationType.Fixed
                                               }
                                           },
                         ProductId = TestData.ContractProductId,
@@ -467,17 +471,96 @@
                 ContractDescription = TestData.ContractDescription
             };
 
-        public static String TransactionFeeType = "Merchant";
+        public static FeeType ModelTransactionFeeType = FeeType.Merchant;
 
-        public static String TransactionFeeCalculationType = "Fixed";
+        public static CalculationType ModelTransactionFeeCalculationType = CalculationType.Fixed;
+
+        public static DTOFeeType DTOTransactionFeeType = DTOFeeType.Merchant;
+
+        public static DTOCalculationType DTOTransactionFeeCalculationType = DTOCalculationType.Fixed;
+
+        public static AddTransactionFeeForProductToContractResponse AddTransactionFeeForProductToContractResponse =>
+            new AddTransactionFeeForProductToContractResponse
+            {
+                EstateId = TestData.EstateId,
+                ProductId = TestData.ContractProductId,
+                TransactionFeeId = TestData.TransactionFeeId,
+                ContractId = TestData.ContactId
+            };
+
+        public static AddTransactionFeeToContractProductModel AddTransactionFeeToContractProductModel =>
+            new AddTransactionFeeToContractProductModel
+            {
+                Value = TestData.TransactionFeeValue,
+                Description = TestData.TransactionFeeDescription,
+                FeeType = TestData.ModelTransactionFeeType,
+                CalculationType = TestData.ModelTransactionFeeCalculationType
+            };
+
+        public static CreateContractProductTransactionFeeViewModel CreateContractProductTransactionFeeViewModel =>
+            new CreateContractProductTransactionFeeViewModel
+            {
+                FeeType = (Int32)TestData.ModelTransactionFeeCalculationType,
+                Value = TestData.TransactionFeeValue,
+                Description = TestData.TransactionFeeDescription,
+                ContractProductId = TestData.ContractProductId,
+                CalculationType = (Int32)TestData.ModelTransactionFeeCalculationType,
+                ContractId = TestData.ContactId
+            };
+
+        public static CreateContractProductViewModel CreateContractProductViewModelWithValue =>
+            new CreateContractProductViewModel
+            {
+                Value = TestData.ContractProductValue,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                TransactionFees = null,
+                ContractId = TestData.ContactId,
+                IsVariable = false
+            };
+
+        public static CreateContractProductViewModel CreateContractProductViewModelWithNullValue =>
+            new CreateContractProductViewModel
+            {
+                Value = null,
+                ProductName = TestData.ContractProductName,
+                DisplayText = TestData.ContractProductDisplayText,
+                TransactionFees = null,
+                ContractId = TestData.ContactId,
+                IsVariable = true
+            };
+
+        public static AddProductToContractResponse AddProductToContractResponse =>
+            new AddProductToContractResponse
+            {
+                EstateId = TestData.EstateId,
+                ProductId = TestData.ContractProductId,
+                ContractId = TestData.ContactId
+            };
+
+        public static AddProductToContractModel AddProductToContractModelWithValue =>
+            new AddProductToContractModel
+            {
+                Value = TestData.ContractProductValue,
+                DisplayText = TestData.ContractProductDisplayText,
+                ProductName = TestData.ContractProductName
+            };
+
+        public static AddProductToContractModel AddProductToContractModelWithNullValue =>
+            new AddProductToContractModel
+            {
+                Value = TestData.ContractProductValueNull,
+                DisplayText = TestData.ContractProductDisplayText,
+                ProductName = TestData.ContractProductName
+            };
 
         public static ContractProductTransactionFeeModel ContractProductTransactionFeeModel =>
             new ContractProductTransactionFeeModel
             {
                 Description = TestData.TransactionFeeDescription,
                 Value = TestData.TransactionFeeValue.ToString(),
-                FeeType = TestData.TransactionFeeType,
-                CalculationType = TestData.TransactionFeeCalculationType,
+                FeeType = TestData.ModelTransactionFeeType.ToString(),
+                CalculationType = TestData.ModelTransactionFeeCalculationType.ToString(),
                 TransactionFeeId = TestData.TransactionFeeId
             };
 

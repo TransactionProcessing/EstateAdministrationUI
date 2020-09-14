@@ -15,6 +15,21 @@
         #region Methods
 
         /// <summary>
+        /// Adds the product to contract.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="addProductToContractModel">The add product to contract model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddProductToContractResponseModel> AddProductToContract(String accessToken,
+                                                                     ClaimsIdentity claimsIdentity,
+                                                                     Guid contractId,
+                                                                     AddProductToContractModel addProductToContractModel,
+                                                                     CancellationToken cancellationToken);
+
+        /// <summary>
         /// Creates the contract.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -141,6 +156,23 @@
                                                                    Guid merchantId,
                                                                    MakeMerchantDepositModel makeMerchantDepositModel,
                                                                    CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Adds the transaction fee to contract product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="addTransactionFeeToContractProductModel">The add transaction fee to contract product model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddTransactionFeeToContractProductResponseModel> AddTransactionFeeToContractProduct(String accessToken,
+                                                                                                ClaimsIdentity claimsIdentity,
+                                                                                                Guid contractId,
+                                                                                                Guid contractProductId,
+                                                                                                AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel,
+                                                                                                CancellationToken cancellationToken);
 
         #endregion
     }

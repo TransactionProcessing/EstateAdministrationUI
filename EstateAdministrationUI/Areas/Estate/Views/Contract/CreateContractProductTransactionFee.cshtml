@@ -1,0 +1,74 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.CreateContractProductTransactionFeeViewModel
+
+@{
+    ViewBag.Title = "New Transaction Fee Details";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-createnewmerchant-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create New Transaction Fee</h1>
+                        </div>
+                        <form id="createContractProductForm" asp-action="CreateContractProductTransactionFee" asp-area="Estate" asp-controller="Contract" method="post" class="user">
+                            @Html.HiddenFor(model => model.ContractId)
+                            @Html.HiddenFor(model => model.ContractProductId)
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label">Description</label>
+                                <input asp-for="Description" class="form-control form-control-user" name="description" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CalculationType" class="control-label">Calculation Type</label>
+                                <input asp-for="CalculationType" class="form-control form-control-user" name="calculationType" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FeeType" class="control-label">Fee Type</label>
+                                <input asp-for="FeeType" class="form-control form-control-user" name="feetype" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Value" class="control-label">Value</label>
+                                <input asp-for="Value" class="form-control form-control-user mx-sm-3" name="value" autofocus />
+                            </div>
+
+                            <button id="createTransactionFeeButton" type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-plus"></i> Create Transaction Fee</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        //$.get("GetOperatorListAsJson",
+        //    function(data)
+        //    {
+        //        var operatorListSelect = $('#operatorList');
+        //        var operatorList = data;
+
+        //        operatorList.forEach(function(element)
+        //        {
+        //            operatorListSelect.append(
+        //                $('<option></option>').val(element.operatorId).html(element.operatorName));
+        //            console.log(element);
+        //        });
+
+        //    });
+    });
+</script>
