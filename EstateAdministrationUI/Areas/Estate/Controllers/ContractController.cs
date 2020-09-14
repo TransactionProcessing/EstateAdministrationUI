@@ -298,6 +298,107 @@
             return this.ModelState.IsValid;
         }
 
+        /// <summary>
+        /// Validates the model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(CreateContractProductViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
+        }
+
+        /// <summary>
+        /// Validates the model.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns></returns>
+        private Boolean ValidateModel(CreateContractProductTransactionFeeViewModel viewModel)
+        {
+            return this.ModelState.IsValid;
+        }
+
+        /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> CreateContractProduct([FromQuery] Guid contractId, CancellationToken cancellationToken)
+        {
+            CreateContractProductViewModel viewModel = new CreateContractProductViewModel();
+            viewModel.ContractId = contractId;
+
+            return this.View("CreateContractProduct", viewModel);
+        }
+
+        /// <summary>
+        /// Creates the contract.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> CreateContractProduct(CreateContractProductViewModel viewModel,
+                                                               CancellationToken cancellationToken)
+        {
+            // Validate the model
+            if (this.ValidateModel(viewModel))
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                AddProductToContractModel addProductToContractModel = this.ViewModelFactory.ConvertFrom(viewModel);
+
+                // All good with model, call the client
+                AddProductToContractResponseModel addProductToContractResponse = await this.ApiClient.AddProductToContract(accessToken, this.User.Identity as ClaimsIdentity, viewModel.ContractId, addProductToContractModel, cancellationToken);
+
+                // Product Created, redirect to the Product List screen
+                return this.RedirectToAction("GetContractProductsList", "Contract", new {
+                    contractId = addProductToContractResponse.ContractId
+                }).WithSuccess("Product Created Successful", $"Contract Product {viewModel.ProductName} successfully created");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View("CreateContractProduct", viewModel);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> CreateContractProductTransactionFee([FromQuery] Guid contractId, [FromQuery] Guid contractProductId, CancellationToken cancellationToken)
+        {
+            CreateContractProductTransactionFeeViewModel viewModel = new CreateContractProductTransactionFeeViewModel();
+            viewModel.ContractId = contractId;
+            viewModel.ContractProductId = contractProductId;
+
+            return this.View("CreateContractProductTransactionFee", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateContractProductTransactionFee(CreateContractProductTransactionFeeViewModel viewModel,
+                                                                             CancellationToken cancellationToken)
+        {
+            // Validate the model
+            if (this.ValidateModel(viewModel))
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = this.ViewModelFactory.ConvertFrom(viewModel);
+
+                // All good with model, call the client
+                AddTransactionFeeToContractProductResponseModel addTransactionFeeToContractProductResponse = await this.ApiClient.AddTransactionFeeToContractProduct(accessToken, this.User.Identity as ClaimsIdentity, viewModel.ContractId, viewModel.ContractProductId,
+                                                                                                                                                       addTransactionFeeToContractProductModel, cancellationToken);
+
+                // Transaction Fee Created, redirect to the Transaction Fee List screen
+                return this.RedirectToAction("GetContractProductTransactionFeesList", "Contract", new
+                                                                                    {
+                                                                                        contractId = addTransactionFeeToContractProductResponse.ContractId,
+                                                                                        contractProductId = addTransactionFeeToContractProductResponse.ProductId
+                }).WithSuccess("Transaction Fee Created Successful", $"Transaction Fee {viewModel.Description} successfully created");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return this.View("CreateContractProductTransactionFee", viewModel);
+        }
         #endregion
     }
 }

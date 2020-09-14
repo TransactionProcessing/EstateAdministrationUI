@@ -100,6 +100,20 @@
         /// <returns></returns>
         MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createContractProductViewModel">The create contract product view model.</param>
+        /// <returns></returns>
+        AddProductToContractModel ConvertFrom(CreateContractProductViewModel createContractProductViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
+        /// <returns></returns>
+        AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel);
+
         #endregion
     }
 }

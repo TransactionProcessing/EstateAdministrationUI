@@ -1229,7 +1229,76 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() =>
                                                 {
                                                     viewModelFactory.ConvertFrom(modelList);
-                                                }); ;
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractProductViewModel_WithValue_IsConverted()
+        {
+            CreateContractProductViewModel viewModel = TestData.CreateContractProductViewModelWithValue;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            AddProductToContractModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.Value.ShouldBe(viewModel.Value);
+            model.DisplayText.ShouldBe(viewModel.DisplayText);
+            model.ProductName.ShouldBe(viewModel.ProductName);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractProductViewModel_WithNullValue_IsConverted()
+        {
+            CreateContractProductViewModel viewModel = TestData.CreateContractProductViewModelWithNullValue;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            AddProductToContractModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.Value.ShouldBeNull();
+            model.DisplayText.ShouldBe(viewModel.DisplayText);
+            model.ProductName.ShouldBe(viewModel.ProductName);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractProductViewModel_NullViewModel_IsConverted()
+        {
+            CreateContractProductViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractProductTransactionFeeViewModel_IsConverted()
+        {
+            CreateContractProductTransactionFeeViewModel viewModel = TestData.CreateContractProductTransactionFeeViewModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            AddTransactionFeeToContractProductModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.Value.ShouldBe(viewModel.Value);
+            model.CalculationType.ShouldBe((CalculationType)viewModel.CalculationType);
+            model.Description.ShouldBe(viewModel.Description);
+            model.FeeType.ShouldBe((FeeType)viewModel.FeeType);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_CreateContractProductTransactionFeeViewModel_NullModel_ErrorThrown()
+        {
+            CreateContractProductTransactionFeeViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                });
         }
     }
 }

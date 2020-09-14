@@ -103,6 +103,34 @@
         /// <returns></returns>
         CreateContractResponseModel ConvertFrom(CreateContractResponse source);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AddProductToContractRequest ConvertFrom(AddProductToContractModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source);
+
         #endregion
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AddTransactionFeeForProductToContractRequest ConvertFrom(AddTransactionFeeToContractProductModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source);
     }
 }

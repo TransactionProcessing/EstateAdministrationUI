@@ -12,6 +12,22 @@
         #region Properties
 
         /// <summary>
+        /// Gets or sets the contract identifier.
+        /// </summary>
+        /// <value>
+        /// The contract identifier.
+        /// </value>
+        public Guid ContractId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the contract product identifier.
+        /// </summary>
+        /// <value>
+        /// The contract product identifier.
+        /// </value>
+        public Guid ContractProductId { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of the calculation.
         /// </summary>
         /// <value>

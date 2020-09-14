@@ -376,6 +376,50 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="createContractProductViewModel">The create contract product view model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">createContractProductViewModel</exception>
+        public AddProductToContractModel ConvertFrom(CreateContractProductViewModel createContractProductViewModel)
+        {
+            if (createContractProductViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(createContractProductViewModel));
+            }
+
+            AddProductToContractModel addProductToContractModel = new AddProductToContractModel();
+
+            addProductToContractModel.Value = createContractProductViewModel.Value;
+            addProductToContractModel.DisplayText = createContractProductViewModel.DisplayText;
+            addProductToContractModel.ProductName = createContractProductViewModel.ProductName;
+
+            return addProductToContractModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
+        /// <returns></returns>
+        public AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel)
+        {
+            if (createContractProductTransactionFeeViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(createContractProductTransactionFeeViewModel));
+            }
+
+            AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = new AddTransactionFeeToContractProductModel();
+
+            addTransactionFeeToContractProductModel.Value = createContractProductTransactionFeeViewModel.Value;
+            addTransactionFeeToContractProductModel.CalculationType = (CalculationType)createContractProductTransactionFeeViewModel.CalculationType;
+            addTransactionFeeToContractProductModel.Description = createContractProductTransactionFeeViewModel.Description;
+            addTransactionFeeToContractProductModel.FeeType = (FeeType)createContractProductTransactionFeeViewModel.FeeType;
+
+            return addTransactionFeeToContractProductModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="deviceModels">The device models.</param>
         /// <returns></returns>
         private Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
