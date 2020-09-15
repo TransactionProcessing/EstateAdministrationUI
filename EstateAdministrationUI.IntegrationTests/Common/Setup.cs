@@ -34,7 +34,7 @@
             (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
             // Setup a network for the DB Server
-            Setup.DatabaseServerNetwork = global::Shared.IntegrationTesting.DockerHelper.SetupTestNetwork("sharednetwork", true);
+            Setup.DatabaseServerNetwork = SetupTestNetwork("sharednetwork");
 
             NlogLogger logger = new NlogLogger();
             logger.Initialise(LogManager.GetLogger("Specflow"), "Specflow");
@@ -61,6 +61,25 @@
             Int32 databaseHostPort = Setup.DatabaseServerContainer.ToHostExposedEndpoint("1433/tcp").Port;
 
             return $"server=localhost,{databaseHostPort};database={databaseName};user id={Setup.SqlUserName};password={Setup.SqlPassword}";
+        }
+
+        private INetworkService SetupTestNetwork(String networkName)
+        {
+            DockerEnginePlatform engineType = this.GetDockerEnginePlatform();
+            if (engineType == DockerEnginePlatform.Windows)
+            {
+                return Fd.UseNetwork(networkName).UseDriver("nat").Build().ReuseIfExist();
+            }
+
+            if (engineType == DockerEnginePlatform.Linux)
+            {
+                // Build a network
+                NetworkBuilder networkService = new Builder().UseNetwork(networkName).ReuseIfExist();
+
+                return networkService.Build();
+            }
+
+            return null;
         }
 
     }
