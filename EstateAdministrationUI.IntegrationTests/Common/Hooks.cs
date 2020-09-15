@@ -1,5 +1,7 @@
 ﻿namespace EstateAdministrationUI.IntegrationTests.Common
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using BoDi;
     using OpenQA.Selenium;
@@ -22,10 +24,13 @@
         public async Task BeforeScenario()
         {
             ChromeOptions options = new ChromeOptions();
-
-            options.AddArguments("--window-size=1920,1080");
-            options.AddArguments("--start-maximized");
-            options.AddArguments("--headless");
+            options.AddArguments("--disable-gpu");
+            options.AddArguments("--no-sandbox");
+            options.AddArguments("--disable-dev-shm-usage");
+            var experimentalFlags = new List<String>();
+            experimentalFlags.Add("same-site-by-default-cookies@2");
+            experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
+            options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
             this.WebDriver = new ChromeDriver(options);
 
             //FirefoxOptions options = new FirefoxOptions();

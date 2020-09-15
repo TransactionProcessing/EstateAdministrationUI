@@ -11,7 +11,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Ductus.FluentDocker;
     using Ductus.FluentDocker.Builders;
+    using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
@@ -23,6 +25,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Shared.Logger;
     using TransactionProcessor.Client;
     using ILogger = Shared.Logger.ILogger;
+
+    public enum DockerEnginePlatform
+    {
+        Linux,
+        Windows
+    }
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -101,6 +109,26 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         #region Methods
 
+        private INetworkService SetupTestNetwork()
+        {
+            DockerEnginePlatform engineType = this.GetDockerEnginePlatform();
+            String networkName = $"testnetwork{this.TestId:N}";
+            if (engineType == DockerEnginePlatform.Windows)
+            {
+                return Fd.UseNetwork(networkName).UseDriver("nat").Build();
+            }
+
+            if (engineType == DockerEnginePlatform.Linux)
+            {
+                // Build a network
+                NetworkBuilder networkService = new Builder().UseNetwork(networkName).ReuseIfExist();
+
+                return networkService.Build();
+            }
+
+            return null;
+        }
+
         public Int32 EstateManagementUIPort;
 
         protected String SecurityServiceContainerName;
@@ -109,6 +137,23 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         protected String EstateManagementUiContainerName;
 
         protected String EventStoreContainerName;
+
+        private DockerEnginePlatform GetDockerEnginePlatform()
+        {
+            IList<IHostService> hosts = new Hosts().Discover();
+            IHostService docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
+
+            if (docker.Host.IsLinuxEngine())
+            {
+                return DockerEnginePlatform.Linux;
+            }
+
+            if (docker.Host.IsWindowsEngine())
+            {
+                return DockerEnginePlatform.Windows;
+            }
+            throw new Exception("Unknown Engine Type");
+        }
 
         /// <summary>
         /// Starts the containers for scenario run.
@@ -135,9 +180,25 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
-            INetworkService testNetwork = DockerHelper.SetupTestNetwork();
+            INetworkService testNetwork = this.SetupTestNetwork();
             this.TestNetworks.Add(testNetwork);
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, "eventstore/eventstore:20.6.0-buster-slim", testNetwork, traceFolder, usesEventStore2006OrLater: true);
+
+            // Setup the docker image names
+            String eventStoreImageName = "eventstore/eventstore:20.6.0-buster-slim";
+            String estateMangementImageName = "stuartferguson/estatemanagement";
+            String estateReportingImageName = "stuartferguson/estatereporting";
+            String subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehost";
+
+            DockerEnginePlatform enginePlatform = this.GetDockerEnginePlatform();
+            if (enginePlatform == DockerEnginePlatform.Windows)
+            {
+                estateMangementImageName = "stuartferguson/estatemanagementwindows";
+                estateReportingImageName = "stuartferguson/estatereportingwindows";
+                eventStoreImageName = "stuartferguson/eventstore";
+                subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
+            }
+            
+            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder, usesEventStore2006OrLater: true);
 
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
@@ -147,7 +208,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,
-                                                                                                      "stuartferguson/estatemanagement",
+                                                                                                      estateMangementImageName,
                                                                                                       new List<INetworkService>
                                                                                                       {
                                                                                                           testNetwork,
@@ -167,7 +228,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IContainerService estateReportingContainer = DockerHelper.SetupEstateReportingContainer(this.EstateReportingContainerName,
                                                                                                     this.Logger,
-                                                                                                    "stuartferguson/estatereporting",
+                                                                                                    estateReportingImageName,
                                                                                                     new List<INetworkService>
                                                                                                     {
                                                                                                         testNetwork,
@@ -221,7 +282,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(this.SubscriptionServiceContainerName,
                                                                                                             this.Logger,
-                                                                                                            "stuartferguson/subscriptionservicehost",
+                                                                                                            subscriptionServiceHostImageName,
                                                                                                             new List<INetworkService>
                                                                                                             {
                                                                                                                 testNetwork,
