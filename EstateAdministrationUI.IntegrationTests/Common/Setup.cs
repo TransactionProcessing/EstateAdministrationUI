@@ -42,10 +42,17 @@
             logger.Initialise(LogManager.GetLogger("Specflow"), "Specflow");
             LogManager.AddHiddenAssembly(typeof(NlogLogger).Assembly);
 
+            String sqlServerImageName = "stuartferguson/subscriptionservicedatabasesqlserver";
+            DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
+            if (enginePlatform == DockerEnginePlatform.Windows)
+            {
+                sqlServerImageName = "stuartferguson/subscriptionservicedatabasesqlserverwindows";
+            }
+
             // Start the Database Server here
             Setup.DatabaseServerContainer = global::Shared.IntegrationTesting.DockerHelper.StartSqlContainerWithOpenConnection(Setup.SqlServerContainerName,
                                                                                                                                logger,
-                                                                                                                               "stuartferguson/subscriptionservicedatabasesqlserver",
+                                                                                                                               sqlServerImageName,
                                                                                                                                Setup.DatabaseServerNetwork,
                                                                                                                                "",
                                                                                                                                dockerCredentials,
