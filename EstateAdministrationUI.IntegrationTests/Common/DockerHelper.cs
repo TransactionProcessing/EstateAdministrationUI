@@ -451,17 +451,22 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             logger.LogInformation("About to Start Estate Management UI Container");
             
-            IContainerService containerService = new Builder().UseContainer().WithName(containerName)
-                                                              .WithEnvironment($"AppSettings:Authority=http://sferguson.ddns.net:55001",
-                                                                               $"AppSettings:ClientId={clientDetails.clientId}",
-                                                                               $"AppSettings:ClientSecret={clientDetails.clientSecret}",
-                                                                               $"AppSettings:IsIntegrationTest=true",
-                                                                               $"EstateManagementScope=estateManagement{this.TestId.ToString("N")}",
-                                                                               $"AppSettings:EstateManagementApi=http://{estateManagementContainerName}:{DockerHelper.EstateManagementDockerPort}")
-                                                              .UseImage(imageName).ExposePort(5004)
-                                                              .UseNetwork(networkServices.ToArray())
-                                                              .Mount(hostFolder, "/home", MountType.ReadWrite)
-                                                              .Build().Start().WaitForPort("5004/tcp", 30000);
+            ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(containerName)
+                                                             .WithEnvironment($"AppSettings:Authority=http://sferguson.ddns.net:55001",
+                                                                              $"AppSettings:ClientId={clientDetails.clientId}",
+                                                                              $"AppSettings:ClientSecret={clientDetails.clientSecret}",
+                                                                              $"AppSettings:IsIntegrationTest=true",
+                                                                              $"EstateManagementScope=estateManagement{this.TestId.ToString("N")}",
+                                                                              $"AppSettings:EstateManagementApi=http://{estateManagementContainerName}:{DockerHelper.EstateManagementDockerPort}")
+                                                             .UseImage(imageName).ExposePort(5004)
+                                                             .UseNetwork(networkServices.ToArray());
+
+            if (String.IsNullOrEmpty(hostFolder) == false)
+            {
+                containerBuilder = containerBuilder.Mount(hostFolder, "/home", MountType.ReadWrite);
+            }
+
+            IContainerService containerService = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
 
             Console.Out.WriteLine("Started Estate Management UI");
 
