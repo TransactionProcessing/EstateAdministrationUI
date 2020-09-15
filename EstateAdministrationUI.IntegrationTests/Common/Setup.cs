@@ -1,6 +1,8 @@
 ﻿namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System;
+    using Ductus.FluentDocker;
+    using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using NLog;
@@ -34,7 +36,7 @@
             (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
             // Setup a network for the DB Server
-            Setup.DatabaseServerNetwork = SetupTestNetwork("sharednetwork");
+            Setup.DatabaseServerNetwork = DockerHelper.SetupTestNetwork("sharednetwork");
 
             NlogLogger logger = new NlogLogger();
             logger.Initialise(LogManager.GetLogger("Specflow"), "Specflow");
@@ -62,25 +64,5 @@
 
             return $"server=localhost,{databaseHostPort};database={databaseName};user id={Setup.SqlUserName};password={Setup.SqlPassword}";
         }
-
-        private INetworkService SetupTestNetwork(String networkName)
-        {
-            DockerEnginePlatform engineType = this.GetDockerEnginePlatform();
-            if (engineType == DockerEnginePlatform.Windows)
-            {
-                return Fd.UseNetwork(networkName).UseDriver("nat").Build().ReuseIfExist();
-            }
-
-            if (engineType == DockerEnginePlatform.Linux)
-            {
-                // Build a network
-                NetworkBuilder networkService = new Builder().UseNetwork(networkName).ReuseIfExist();
-
-                return networkService.Build();
-            }
-
-            return null;
-        }
-
     }
 }

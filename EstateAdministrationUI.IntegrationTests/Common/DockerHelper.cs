@@ -109,13 +109,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         #region Methods
 
-        private INetworkService SetupTestNetwork()
+
+        public static INetworkService SetupTestNetwork(String networkName)
         {
-            DockerEnginePlatform engineType = this.GetDockerEnginePlatform();
-            String networkName = $"testnetwork{this.TestId:N}";
+            DockerEnginePlatform engineType = DockerHelper.GetDockerEnginePlatform();
+            
             if (engineType == DockerEnginePlatform.Windows)
             {
-                return Fd.UseNetwork(networkName).UseDriver("nat").Build();
+                return Fd.UseNetwork(networkName).UseDriver("nat").ReuseIfExist().Build();
             }
 
             if (engineType == DockerEnginePlatform.Linux)
@@ -138,7 +139,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         protected String EventStoreContainerName;
 
-        private DockerEnginePlatform GetDockerEnginePlatform()
+        public static DockerEnginePlatform GetDockerEnginePlatform()
         {
             IList<IHostService> hosts = new Hosts().Discover();
             IHostService docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
@@ -180,7 +181,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
-            INetworkService testNetwork = this.SetupTestNetwork();
+            INetworkService testNetwork = DockerHelper.SetupTestNetwork($"testnetwork{this.TestId:N}");
             this.TestNetworks.Add(testNetwork);
 
             // Setup the docker image names
@@ -189,7 +190,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String estateReportingImageName = "stuartferguson/estatereporting";
             String subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehost";
 
-            DockerEnginePlatform enginePlatform = this.GetDockerEnginePlatform();
+            DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
             if (enginePlatform == DockerEnginePlatform.Windows)
             {
                 estateMangementImageName = "stuartferguson/estatemanagementwindows";
