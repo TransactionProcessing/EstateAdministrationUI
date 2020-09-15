@@ -162,7 +162,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// <param name="scenarioName">Name of the scenario.</param>
         public override async Task StartContainersForScenarioRun(String scenarioName)
         {
-            String traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+            String traceFolder = null;
+            if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
+            {
+                traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+            }
 
             Logging.Enabled();
 
