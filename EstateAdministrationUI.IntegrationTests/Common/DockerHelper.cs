@@ -313,6 +313,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
 
             this.Containers.Add(subscriptionServiceContainer);
+
+            await Task.Delay(10000).ConfigureAwait(false);
         }
 
         private async Task LoadEventStoreProjections()
