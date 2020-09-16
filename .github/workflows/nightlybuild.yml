@@ -34,7 +34,7 @@ jobs:
         dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
 
     - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
+      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
                 
     - name: Run Integration Tests
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj"
