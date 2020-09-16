@@ -40,7 +40,7 @@ jobs:
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj"
 
   codecoverage:
-  name: "Nightly Build - Code Coverage"
+    name: "Nightly Build - Code Coverage"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
 
