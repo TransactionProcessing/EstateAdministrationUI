@@ -15,6 +15,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
+    using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
@@ -302,6 +303,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             this.TestId,
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
+
+            Console.WriteLine(subscriptionServiceContainer.State);
+            var logs = subscriptionServiceContainer.Logs(true);
+            var loglines = logs.ReadToEnd();
+            foreach (String logline in loglines)
+            {
+                Console.WriteLine(logline);
+            }
 
             this.Containers.Add(subscriptionServiceContainer);
         }
