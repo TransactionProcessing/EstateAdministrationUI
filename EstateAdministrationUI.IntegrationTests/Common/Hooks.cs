@@ -27,6 +27,8 @@
             options.AddArguments("--disable-gpu");
             options.AddArguments("--no-sandbox");
             options.AddArguments("--disable-dev-shm-usage");
+            options.AddArguments("--window-size=1920,1080");
+            options.AddArguments("--start-maximized");
             var experimentalFlags = new List<String>();
             experimentalFlags.Add("same-site-by-default-cookies@2");
             experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");

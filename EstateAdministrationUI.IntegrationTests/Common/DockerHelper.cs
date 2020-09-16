@@ -15,6 +15,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
+    using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
@@ -303,6 +304,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
 
+            Console.WriteLine(subscriptionServiceContainer.State);
+            var logs = subscriptionServiceContainer.Logs(true);
+            var loglines = logs.ReadToEnd();
+            foreach (String logline in loglines)
+            {
+                Console.WriteLine(logline);
+            }
+
             this.Containers.Add(subscriptionServiceContainer);
         }
 
@@ -372,20 +381,20 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
                 // Create an Event Store Server
                 await this.InsertEventStoreServer(connection, this.EventStoreContainerName).ConfigureAwait(false);
-
+                Console.WriteLine($"SS Event Store Server {this.EventStoreContainerName} Created");
                 String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
                 // Add Route for Estate Aggregate Events
                 await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
+                Console.WriteLine("SS Subscription Created $ce-EstateAggregate");
                 // Add Route for Merchant Aggregate Events
                 await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
+                Console.WriteLine("SS Subscription Created $ce-MerchantAggregate");
                 // Add Route for Transaction Aggregate Events
                 await this.InsertSubscription(connection, "$ce-TransactionAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
+                Console.WriteLine("SS Subscription Created $ce-TransactionAggregate");
                 // Add Route for Transaction Aggregate Events
                 await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-
+                Console.WriteLine("SS Subscription Created $ce-ContractAggregate");
                 await connection.CloseAsync().ConfigureAwait(false);
             }
         }
