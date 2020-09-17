@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Data;
+    using System.Diagnostics.Eventing.Reader;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -15,6 +16,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
+    using Ductus.FluentDocker.Executors;
     using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
     using Ductus.FluentDocker.Services;
@@ -23,6 +25,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using EventStore.Client;
     using Microsoft.Data.SqlClient;
     using SecurityService.Client;
+    using Shared.IntegrationTesting;
     using Shared.Logger;
     using TransactionProcessor.Client;
     using ILogger = Shared.Logger.ILogger;
@@ -203,8 +206,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 eventStoreImageName = "stuartferguson/eventstore";
                 subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
             }
-            
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder, usesEventStore2006OrLater: true);
+
+            IContainerService eventStoreContainer =
+                DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName,
+                                                      this.Logger,
+                                                      eventStoreImageName,
+                                                      testNetwork,
+                                                      traceFolder,
+                                                      usesEventStore2006OrLater:true);
 
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
@@ -224,9 +233,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                       dockerCredentials,
                                                                                                       this.SecurityServiceContainerName,
                                                                                                       this.EventStoreContainerName,
-                                                                                                      (Setup.SqlServerContainerName,
-                                                                                                      Setup.SqlUserName,
-                                                                                                      Setup.SqlPassword),
+                                                                                                      (Setup.SqlServerContainerName, Setup.SqlUserName,
+                                                                                                          Setup.SqlPassword),
                                                                                                       ("serviceClient", "Secret1"),
                                                                                                       securityServicePort:55001,
                                                                                                       additionalEnvironmentVariables:estateManagementVariables,
@@ -243,19 +251,17 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                     traceFolder,
                                                                                                     dockerCredentials,
                                                                                                     this.SecurityServiceContainerName,
-                                                                                                    (Setup.SqlServerContainerName,
-                                                                                                    Setup.SqlUserName,
-                                                                                                    Setup.SqlPassword),
+                                                                                                    (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword),
                                                                                                     ("serviceClient", "Secret1"),
                                                                                                     true);
-            
+
             IContainerService estateManagementUiContainer = SetupEstateManagementUIContainer(this.EstateManagementUiContainerName,
                                                                                              this.Logger,
                                                                                              "estateadministrationui",
                                                                                              new List<INetworkService>
                                                                                              {
                                                                                                  testNetwork
-                                                                                             }, 
+                                                                                             },
                                                                                              this.EstateManagementContainerName,
                                                                                              traceFolder,
                                                                                              dockerCredentials,
@@ -297,24 +303,33 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             traceFolder,
                                                                                                             dockerCredentials,
                                                                                                             this.SecurityServiceContainerName,
-                                                                                                            (Setup.SqlServerContainerName,
-                                                                                                            Setup.SqlUserName,
-                                                                                                            Setup.SqlPassword),
+                                                                                                            (Setup.SqlServerContainerName, Setup.SqlUserName,
+                                                                                                                Setup.SqlPassword),
                                                                                                             this.TestId,
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
 
-            Console.WriteLine(subscriptionServiceContainer.State);
-            var logs = subscriptionServiceContainer.Logs(true);
-            var loglines = logs.ReadToEnd();
-            foreach (String logline in loglines)
-            {
-                Console.WriteLine(logline);
-            }
+            //Console.WriteLine(subscriptionServiceContainer.State);
+            ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
+            await Retry.For(async () =>
+                            {
+                                IList<String> loglines = logs.ReadToEnd();
+                                if (loglines.Any(l => l.Contains("] connected on [")) == false)
+                                {
+                                    // SS is not running
+                                    throw new Exception("SS is not running yet");
+                                }
+                            });
+        
+        //foreach (String logline in loglines)
+        //{
+        //    Console.WriteLine(logline);
+        //}
 
-            this.Containers.Add(subscriptionServiceContainer);
 
-            await Task.Delay(10000).ConfigureAwait(false);
+        this.Containers.Add(subscriptionServiceContainer);
+
+            
         }
 
         private async Task LoadEventStoreProjections()
