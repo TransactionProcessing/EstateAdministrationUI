@@ -19,6 +19,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Executors;
     using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
+    using Ductus.FluentDocker.Model.Networks;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
@@ -143,10 +144,16 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         protected String EventStoreContainerName;
 
-        public static DockerEnginePlatform GetDockerEnginePlatform()
+        public static IHostService GetDockerHost()
         {
             IList<IHostService> hosts = new Hosts().Discover();
             IHostService docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
+            return docker;
+        }
+
+        public static DockerEnginePlatform GetDockerEnginePlatform()
+        {
+            IHostService docker = DockerHelper.GetDockerHost();
 
             if (docker.Host.IsLinuxEngine())
             {
@@ -309,7 +316,18 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
 
-            //Console.WriteLine(subscriptionServiceContainer.State);
+            IHostService docker = DockerHelper.GetDockerHost();
+            var networkList = docker.GetNetworks();
+            foreach (INetworkService networkService in networkList)
+            {
+                var cfg = networkService.GetConfiguration(true);
+
+                foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
+                {
+                    Console.WriteLine($"{networkedContainer.Key} : {networkedContainer.Value.Name}");
+                }
+            }
+
             ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
             await Retry.For(async () =>
                             {
