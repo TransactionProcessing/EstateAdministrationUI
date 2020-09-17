@@ -640,7 +640,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
                             {
                                 IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
-                                makeDepositButton.Displayed.ShouldBeTrue();
+                                //makeDepositButton.Displayed.ShouldBeTrue();
                                 //makeDepositButton.Click();
                                 makeDepositButton.Submit();
                             },
