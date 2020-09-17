@@ -15,6 +15,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using NLog.LayoutRenderers;
     using NLog.Targets.Wrappers;
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
@@ -645,6 +646,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                 {
                                     throw new Exception("makeDepositButton.Displayed == false");
                                 }
+                                
+                                Actions action = new Actions(this.WebDriver);
+                                action.MoveToElement(makeDepositButton);
                                 makeDepositButton.Click();
                             },
                             TimeSpan.FromSeconds(120));
