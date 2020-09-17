@@ -353,7 +353,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                     // SS is not running
                                     throw new Exception("SS is not running yet");
                                 }
-                            });
+                            }, TimeSpan.FromMinutes(2));
         
         //foreach (String logline in loglines)
         //{
@@ -446,6 +446,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 // Add Route for Transaction Aggregate Events
                 await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
                 Console.WriteLine("SS Subscription Created $ce-ContractAggregate");
+
+                String esConnectionString = $"ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
+                SqlCommand command = connection.CreateCommand();
+                command.CommandText = $"SELECT COUNT(*) FROM Subscription WHERE EventStoreId = '{this.TestId}'";
+                command.CommandType = CommandType.Text;
+                var scalar = await command.ExecuteScalarAsync(CancellationToken.None).ConfigureAwait(false);
+                Console.WriteLine(scalar.ToString());
+
+
                 await connection.CloseAsync().ConfigureAwait(false);
             }
         }
