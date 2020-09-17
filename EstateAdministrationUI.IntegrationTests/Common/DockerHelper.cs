@@ -323,37 +323,37 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
 
-            IHostService docker = DockerHelper.GetDockerHost();
-            var networkList = docker.GetNetworks();
-            foreach (INetworkService networkService in networkList)
-            {
-                Console.WriteLine(networkService.Id);
+            //IHostService docker = DockerHelper.GetDockerHost();
+            //var networkList = docker.GetNetworks();
+            //foreach (INetworkService networkService in networkList)
+            //{
+            //    Console.WriteLine(networkService.Id);
                 
-                var cfg = networkService.GetConfiguration(true);
-                Console.WriteLine(cfg.Name);
+            //    var cfg = networkService.GetConfiguration(true);
+            //    Console.WriteLine(cfg.Name);
 
-                foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
-                {
-                    Console.WriteLine($"{networkedContainer.Key} : {networkedContainer.Value.Name}");
-                }
-            }
+            //    foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
+            //    {
+            //        Console.WriteLine($"{networkedContainer.Key} : {networkedContainer.Value.Name}");
+            //    }
+            //}
 
-            ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
-            await Retry.For(async () =>
-                            {
-                                IList<String> loglines = logs.ReadToEnd();
+            //ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
+            //await Retry.For(async () =>
+            //                {
+            //                    IList<String> loglines = logs.ReadToEnd();
 
-                                foreach (String logline in loglines)
-                                {
-                                    Console.WriteLine(logline);
-                                }
+            //                    foreach (String logline in loglines)
+            //                    {
+            //                        Console.WriteLine(logline);
+            //                    }
 
-                                if (loglines.Any(l => l.Contains("] connected on [")) == false)
-                                {
-                                    // SS is not running
-                                    throw new Exception("SS is not running yet");
-                                }
-                            }, TimeSpan.FromMinutes(2));
+            //                    if (loglines.Any(l => l.Contains("] connected on [")) == false)
+            //                    {
+            //                        // SS is not running
+            //                        throw new Exception("SS is not running yet");
+            //                    }
+            //                }, TimeSpan.FromMinutes(2));
         
         //foreach (String logline in loglines)
         //{
