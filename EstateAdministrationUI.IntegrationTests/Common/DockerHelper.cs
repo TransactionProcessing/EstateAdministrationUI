@@ -320,7 +320,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             var networkList = docker.GetNetworks();
             foreach (INetworkService networkService in networkList)
             {
+                Console.WriteLine(networkService.Id);
+                
                 var cfg = networkService.GetConfiguration(true);
+                Console.WriteLine(cfg.Name);
 
                 foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
                 {
