@@ -317,7 +317,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             traceFolder,
                                                                                                             dockerCredentials,
                                                                                                             this.SecurityServiceContainerName,
-                                                                                                            (Setup.SqlServerContainerName, Setup.SqlUserName,
+                                                                                                            ($"{Setup.SqlServerContainerName},1433", Setup.SqlUserName,
                                                                                                                 Setup.SqlPassword),
                                                                                                             this.TestId,
                                                                                                             ("serviceClient", "Secret1"),
