@@ -314,6 +314,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
                             {
                                 IList<String> loglines = logs.ReadToEnd();
+
+                                foreach (String logline in loglines)
+                                {
+                                    Console.WriteLine(logline);
+                                }
+
                                 if (loglines.Any(l => l.Contains("] connected on [")) == false)
                                 {
                                     // SS is not running
