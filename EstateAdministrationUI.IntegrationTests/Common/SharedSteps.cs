@@ -641,7 +641,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                             {
                                 IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
                                 makeDepositButton.Displayed.ShouldBeTrue();
-                                makeDepositButton.Click();
+                                //makeDepositButton.Click();
+                                makeDepositButton.Submit();
                             },
                             TimeSpan.FromSeconds(120));
         }
