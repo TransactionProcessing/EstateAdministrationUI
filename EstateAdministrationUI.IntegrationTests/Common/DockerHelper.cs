@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Data;
+    using System.Diagnostics.Eventing.Reader;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -15,14 +16,18 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
+    using Ductus.FluentDocker.Executors;
     using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
+    using Ductus.FluentDocker.Model.Containers;
+    using Ductus.FluentDocker.Model.Networks;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
     using EventStore.Client;
     using Microsoft.Data.SqlClient;
     using SecurityService.Client;
+    using Shared.IntegrationTesting;
     using Shared.Logger;
     using TransactionProcessor.Client;
     using ILogger = Shared.Logger.ILogger;
@@ -117,7 +122,13 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             
             if (engineType == DockerEnginePlatform.Windows)
             {
-                return Fd.UseNetwork(networkName).UseDriver("nat").ReuseIfExist().Build();
+                var docker = DockerHelper.GetDockerHost();
+                var created = docker.CreateNetwork(networkName,
+                                     new NetworkCreateParams
+                                     {
+                                         Driver = "nat",
+                                     });
+                return created;
             }
 
             if (engineType == DockerEnginePlatform.Linux)
@@ -140,10 +151,16 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         protected String EventStoreContainerName;
 
-        public static DockerEnginePlatform GetDockerEnginePlatform()
+        public static IHostService GetDockerHost()
         {
             IList<IHostService> hosts = new Hosts().Discover();
             IHostService docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
+            return docker;
+        }
+
+        public static DockerEnginePlatform GetDockerEnginePlatform()
+        {
+            IHostService docker = DockerHelper.GetDockerHost();
 
             if (docker.Host.IsLinuxEngine())
             {
@@ -203,8 +220,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 eventStoreImageName = "stuartferguson/eventstore";
                 subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
             }
-            
-            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder, usesEventStore2006OrLater: true);
+
+            IContainerService eventStoreContainer =
+                DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName,
+                                                      this.Logger,
+                                                      eventStoreImageName,
+                                                      testNetwork,
+                                                      traceFolder,
+                                                      usesEventStore2006OrLater:true);
 
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
@@ -224,9 +247,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                       dockerCredentials,
                                                                                                       this.SecurityServiceContainerName,
                                                                                                       this.EventStoreContainerName,
-                                                                                                      (Setup.SqlServerContainerName,
-                                                                                                      Setup.SqlUserName,
-                                                                                                      Setup.SqlPassword),
+                                                                                                      (Setup.SqlServerContainerName, Setup.SqlUserName,
+                                                                                                          Setup.SqlPassword),
                                                                                                       ("serviceClient", "Secret1"),
                                                                                                       securityServicePort:55001,
                                                                                                       additionalEnvironmentVariables:estateManagementVariables,
@@ -243,19 +265,17 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                     traceFolder,
                                                                                                     dockerCredentials,
                                                                                                     this.SecurityServiceContainerName,
-                                                                                                    (Setup.SqlServerContainerName,
-                                                                                                    Setup.SqlUserName,
-                                                                                                    Setup.SqlPassword),
+                                                                                                    (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword),
                                                                                                     ("serviceClient", "Secret1"),
                                                                                                     true);
-            
+
             IContainerService estateManagementUiContainer = SetupEstateManagementUIContainer(this.EstateManagementUiContainerName,
                                                                                              this.Logger,
                                                                                              "estateadministrationui",
                                                                                              new List<INetworkService>
                                                                                              {
                                                                                                  testNetwork
-                                                                                             }, 
+                                                                                             },
                                                                                              this.EstateManagementContainerName,
                                                                                              traceFolder,
                                                                                              dockerCredentials,
@@ -297,22 +317,53 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                             traceFolder,
                                                                                                             dockerCredentials,
                                                                                                             this.SecurityServiceContainerName,
-                                                                                                            (Setup.SqlServerContainerName,
-                                                                                                            Setup.SqlUserName,
-                                                                                                            Setup.SqlPassword),
+                                                                                                            ($"{Setup.SqlServerContainerName},1433", Setup.SqlUserName,
+                                                                                                                Setup.SqlPassword),
                                                                                                             this.TestId,
                                                                                                             ("serviceClient", "Secret1"),
                                                                                                             true);
 
-            Console.WriteLine(subscriptionServiceContainer.State);
-            var logs = subscriptionServiceContainer.Logs(true);
-            var loglines = logs.ReadToEnd();
-            foreach (String logline in loglines)
+            IHostService docker = DockerHelper.GetDockerHost();
+            var networkList = docker.GetNetworks();
+            foreach (INetworkService networkService in networkList)
             {
-                Console.WriteLine(logline);
+                Console.WriteLine(networkService.Id);
+                
+                var cfg = networkService.GetConfiguration(true);
+                Console.WriteLine(cfg.Name);
+
+                foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
+                {
+                    Console.WriteLine($"{networkedContainer.Key} : {networkedContainer.Value.Name}");
+                }
             }
 
-            this.Containers.Add(subscriptionServiceContainer);
+            ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
+            await Retry.For(async () =>
+                            {
+                                IList<String> loglines = logs.ReadToEnd();
+
+                                foreach (String logline in loglines)
+                                {
+                                    Console.WriteLine(logline);
+                                }
+
+                                if (loglines.Any(l => l.Contains("] connected on [")) == false)
+                                {
+                                    // SS is not running
+                                    throw new Exception("SS is not running yet");
+                                }
+                            }, TimeSpan.FromMinutes(2));
+        
+        //foreach (String logline in loglines)
+        //{
+        //    Console.WriteLine(logline);
+        //}
+
+
+        this.Containers.Add(subscriptionServiceContainer);
+
+            
         }
 
         private async Task LoadEventStoreProjections()
@@ -395,6 +446,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 // Add Route for Transaction Aggregate Events
                 await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
                 Console.WriteLine("SS Subscription Created $ce-ContractAggregate");
+
+                String esConnectionString = $"ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
+                SqlCommand command = connection.CreateCommand();
+                command.CommandText = $"SELECT COUNT(*) FROM Subscription WHERE EventStoreId = '{this.TestId}'";
+                command.CommandType = CommandType.Text;
+                var scalar = await command.ExecuteScalarAsync(CancellationToken.None).ConfigureAwait(false);
+                Console.WriteLine(scalar.ToString());
+
+
                 await connection.CloseAsync().ConfigureAwait(false);
             }
         }
