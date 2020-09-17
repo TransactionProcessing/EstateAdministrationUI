@@ -642,10 +642,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
                             {
                                 IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
-                                if (makeDepositButton.Displayed == false)
-                                {
-                                    throw new Exception("makeDepositButton.Displayed == false");
-                                }
+                                //if (makeDepositButton.Displayed == false)
+                                //{
+                                //    throw new Exception("makeDepositButton.Displayed == false");
+                                //}
                                 
                                 Actions action = new Actions(this.WebDriver);
                                 action.MoveToElement(makeDepositButton);
