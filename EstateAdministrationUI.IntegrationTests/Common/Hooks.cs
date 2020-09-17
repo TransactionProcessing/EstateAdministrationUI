@@ -34,6 +34,7 @@
             experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
             options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
             this.WebDriver = new ChromeDriver(options);
+            this.WebDriver.Manage().Window.Maximize();
 
             //FirefoxOptions options = new FirefoxOptions();
             //options.AddArguments("--headless");
