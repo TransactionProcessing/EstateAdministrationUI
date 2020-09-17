@@ -19,6 +19,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Executors;
     using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Model.Builders;
+    using Ductus.FluentDocker.Model.Containers;
     using Ductus.FluentDocker.Model.Networks;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
@@ -121,7 +122,13 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             
             if (engineType == DockerEnginePlatform.Windows)
             {
-                return Fd.UseNetwork(networkName).UseDriver("nat").ReuseIfExist().Build();
+                var docker = DockerHelper.GetDockerHost();
+                var created = docker.CreateNetwork(networkName,
+                                     new NetworkCreateParams
+                                     {
+                                         Driver = "nat",
+                                     });
+                return created;
             }
 
             if (engineType == DockerEnginePlatform.Linux)
