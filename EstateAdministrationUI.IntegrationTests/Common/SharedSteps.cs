@@ -646,10 +646,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                 //{
                                 //    throw new Exception("makeDepositButton.Displayed == false");
                                 //}
-                                
-                                Actions action = new Actions(this.WebDriver);
-                                action.MoveToElement(makeDepositButton);
-                                makeDepositButton.Click();
+
+                                //Actions action = new Actions(this.WebDriver);
+                                //action.MoveToElement(makeDepositButton);
+                                //makeDepositButton.Click();
+                                this.WebDriver.ExecuteJavaScript("var element = document.querySelector('makeDepositLink') element.click();");
                             },
                             TimeSpan.FromSeconds(120));
         }
