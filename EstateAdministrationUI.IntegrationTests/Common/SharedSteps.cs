@@ -650,7 +650,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                 //Actions action = new Actions(this.WebDriver);
                                 //action.MoveToElement(makeDepositButton);
                                 //makeDepositButton.Click();
-                                this.WebDriver.ExecuteJavaScript("var element = document.querySelector('makeDepositLink') element.click();");
+                                this.WebDriver.ExecuteJavaScript("document.getElementById('makeDepositLink').click();");
                             },
                             TimeSpan.FromSeconds(120));
         }
