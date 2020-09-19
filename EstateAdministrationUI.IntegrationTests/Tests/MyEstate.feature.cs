@@ -403,11 +403,9 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Create New Contract")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "Create New Contract")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void CreateNewContract()
         {
-            string[] tagsOfScenario = new string[] {
-                    "PRTest"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Contract", null, tagsOfScenario, argumentsOfScenario);
 #line 86
