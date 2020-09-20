@@ -17,8 +17,8 @@
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <div class="col-lg-2 d-none d-lg-block bg-merchantlist-image"></div>
-                <div class="col-lg-10">
+                @*<div class="col-lg-2 d-none d-lg-block bg-merchantlist-image"></div>*@
+                <div class="col-lg-12">
                     <div class="p-5">
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">My Merchants</h1>
@@ -34,9 +34,9 @@
                                 <th>Contact Name</th>
                                 <th>Address Line 1</th>
                                 <th>Town</th>
-                                <th>Users</th>
+                                @*<th>Users</th>
                                 <th>Devices</th>
-                                <th>Operators</th>
+                                <th>Operators</th>*@
                                 <th></th>
                             </tr>
                             </thead>
@@ -78,9 +78,9 @@
                 { "data": "contactName", "name": "contactName", "autoWidth": true },
                 { "data": "addressLine1", "name": "addressLine1", "autoWidth": true },
                 { "data": "town", "name": "town", "autoWidth": true },
-                { "data": "numberOfUsers", "name": "numberOfUsers", "autoWidth": true },
-                { "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
-                { "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
+                //{ "data": "numberOfUsers", "name": "numberOfUsers", "autoWidth": true },
+                //{ "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
+                //{ "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
                 {
                     "render": function(data, type, full, meta)
                     {

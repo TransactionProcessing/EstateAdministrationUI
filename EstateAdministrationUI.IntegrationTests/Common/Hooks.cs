@@ -27,13 +27,17 @@
             //options.AddArguments("--disable-gpu");
             //options.AddArguments("--no-sandbox");
             //options.AddArguments("--disable-dev-shm-usage");
-            options.AddArguments("--window-size=1920,1080");
-            options.AddArguments("--start-maximized");
+            //options.AddArguments("--window-size=1920,1080");
+            //options.AddArguments("--start-maximized");
             var experimentalFlags = new List<String>();
             experimentalFlags.Add("same-site-by-default-cookies@2");
             experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
             options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
             this.WebDriver = new ChromeDriver(options);
+            this.WebDriver.Manage().Window.Maximize();
+            var size = this.WebDriver.Manage().Window.Size;
+            Console.WriteLine($"Height {size.Height} Width {size.Width}");
+
 
             //FirefoxOptions options = new FirefoxOptions();
             //options.AddArguments("--headless");

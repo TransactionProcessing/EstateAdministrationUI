@@ -507,9 +507,11 @@ this.FeatureBackground();
         [Xunit.SkippableFactAttribute(DisplayName="Make Merchant Deposit")]
         [Xunit.TraitAttribute("FeatureTitle", "MyMerchants")]
         [Xunit.TraitAttribute("Description", "Make Merchant Deposit")]
+        [Xunit.TraitAttribute("Category", "PRTest")]
         public virtual void MakeMerchantDeposit()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Deposit", null, tagsOfScenario, argumentsOfScenario);
 #line 98

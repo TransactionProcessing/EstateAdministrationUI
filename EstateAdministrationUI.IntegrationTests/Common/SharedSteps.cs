@@ -12,8 +12,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Coypu.Drivers.Selenium;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using NLog.LayoutRenderers;
     using NLog.Targets.Wrappers;
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
@@ -640,7 +642,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
                             {
                                 IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
-                                makeDepositButton.Click();
+                                if (makeDepositButton.Displayed == false)
+                                {
+                                    throw new Exception("makeDepositButton.Displayed == false");
+                                }
+
+                                //Actions action = new Actions(this.WebDriver);
+                                //action.MoveToElement(makeDepositButton);
+                                //makeDepositButton.Click();
+                                this.WebDriver.ExecuteJavaScript("document.getElementById('makeDepositLink').click();");
                             },
                             TimeSpan.FromSeconds(120));
         }
