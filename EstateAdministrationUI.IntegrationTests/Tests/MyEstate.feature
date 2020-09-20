@@ -48,7 +48,6 @@ Background:
 	
 	Then I am presented with the Estate Administrator Dashboard
 
-#@PRTest
 Scenario: View Estate
 	Given I click on the My Estate sidebar option
 	Then I am presented with the Estate Details Screen
@@ -63,7 +62,6 @@ Scenario: View My Operators
 	| OperatorName       |
 	| Test Operator [id] |
 
-#@PRTest
 Scenario: Create New Operator
 	Given I click on the My Operators sidebar option
 	Then I am presented with the Operators List Screen
@@ -82,7 +80,7 @@ Scenario: Create New Operator
 	| Test Operator [id] |
 	| Test New Operator |
 
-#@PRTest
+@PRTest
 Scenario: Create New Contract
 	Given I click on the My Contracts sidebar option
 	Then I am presented with the Contracts List Screen

@@ -82,7 +82,6 @@ Scenario: View My Merchants
 	| Test Merchant 2 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
 	| Test Merchant 3 | Test Contact 1 | Address Line 1 | TestTown | 0             | 1               | 1                 |
 
-#@PRTest
 Scenario: View Single Merchant
 	Given I click on the My Merchants sidebar option
 	Then I am presented with the Merchants List Screen
@@ -113,7 +112,6 @@ Scenario: Make Merchant Deposit
 	Then I am presented the merchant details screen for 'Test Merchant 1'
 	And the available balance for the merchant should be 1000.00
 
-#@PRTest
 Scenario: Create New Merchant
 	Given I click on the My Merchants sidebar option
 	Then I am presented with the Merchants List Screen
