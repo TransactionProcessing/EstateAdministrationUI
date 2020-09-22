@@ -1105,7 +1105,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
                             {
                                 IWebElement element = itemrow.FindElement(By.Id(elementToClickId));
-                                element.Click();
+                                if (element.Displayed)
+                                {
+                                    element.Click();
+                                }
+                                else
+                                {
+                                    this.WebDriver.ExecuteJavaScript($"document.getElementById('{elementToClickId}').click();");
+                                }
                             },
                             TimeSpan.FromSeconds(120));
         }
