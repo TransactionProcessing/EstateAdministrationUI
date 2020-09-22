@@ -15,12 +15,19 @@
     {
         public static async Task FillIn(this IWebDriver webDriver,
                                         String elementName,
-                                        String value)
+                                        String value,
+                                        Boolean clearExistingText = false)
         {
             await Retry.For(async () =>
                             {
                                 IWebElement webElement = webDriver.FindElement(By.Name(elementName));
                                 webElement.ShouldNotBeNull();
+                                webElement.Displayed.ShouldBe(true);
+                                webElement.Enabled.ShouldBe(true);
+                                if (clearExistingText)
+                                {
+                                    webElement.Clear();
+                                }
                                 webElement.SendKeys(value);
                             });
         }

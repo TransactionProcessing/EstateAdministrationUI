@@ -1284,7 +1284,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             model.Value.ShouldBe(viewModel.Value);
             model.CalculationType.ShouldBe((CalculationType)viewModel.CalculationType);
-            model.Description.ShouldBe(viewModel.Description);
+            model.Description.ShouldBe(viewModel.FeeDescription);
             model.FeeType.ShouldBe((FeeType)viewModel.FeeType);
         }
 

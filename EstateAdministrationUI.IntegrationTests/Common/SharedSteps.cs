@@ -17,6 +17,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
+    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
@@ -646,10 +647,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                 {
                                     throw new Exception("makeDepositButton.Displayed == false");
                                 }
-
-                                //Actions action = new Actions(this.WebDriver);
-                                //action.MoveToElement(makeDepositButton);
-                                //makeDepositButton.Click();
                                 this.WebDriver.ExecuteJavaScript("document.getElementById('makeDepositLink').click();");
                             },
                             TimeSpan.FromSeconds(120));
@@ -1063,6 +1060,240 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
             this.WebDriver.Title.ShouldBe("Dashboard");
         }
+
+        private async Task ClickElementInTable(String tableId,
+                                            String textToSearchFor,
+                                            String elementToClickId)
+        {
+            //await Task.Delay(20000).ConfigureAwait(false);
+
+            Boolean foundRow = false;
+            IWebElement itemrow = null;
+            await Retry.For(async () =>
+                            {
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id(tableId));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                                rows.ShouldNotBeNull();
+                                rows.Any().ShouldBeTrue();
+                                IList<IWebElement> rowTD;
+                                foreach (IWebElement row in rows)
+                                {
+                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                                    if (rowTH.Any())
+                                    {
+                                        // header row so skip
+                                        continue;
+                                    }
+
+                                    rowTD = row.FindElements(By.TagName("td"));
+
+                                    if (rowTD[0].Text == textToSearchFor)
+                                    {
+                                        itemrow = row;
+                                        foundRow = true;
+                                        break;
+                                    }
+                                }
+                            },
+                            TimeSpan.FromSeconds(120)).ConfigureAwait(false);
+
+            foundRow.ShouldBeTrue();
+            itemrow.ShouldNotBeNull();
+
+            await Retry.For(async () =>
+                            {
+                                IWebElement element = itemrow.FindElement(By.Id(elementToClickId));
+                                element.Click();
+                            },
+                            TimeSpan.FromSeconds(120));
+        }
+
+        [When(@"I click the Products Link for '(.*)'")]
+        public async Task WhenIClickTheProductsLinkFor(String contractDescription)
+        {
+            await ClickElementInTable("contractList", contractDescription, "numberOfProductsLink");
+        }
+
+        [Then(@"I am presented with the Products List Screen")]
+        public void ThenIAmPresentedWithTheProductsListScreen()
+        {
+            this.WebDriver.Title.ShouldStartWith("Products for Contract - ");
+        }
+
+        [When(@"I click the Add New Product button")]
+        public async Task WhenIClickTheAddNewProductButton()
+        {
+            await this.WebDriver.ClickButtonById("newContractProductButton");
+        }
+
+        [Then(@"I am presented the new product screen")]
+        public void ThenIAmPresentedTheNewProductScreen()
+        {
+            this.WebDriver.Title.ShouldBe("New Contract Product Details");
+        }
+
+        [When(@"I enter the following new product details")]
+        public async Task WhenIEnterTheFollowingNewProductDetails(Table table)
+        {
+            TableRow productDetails = table.Rows.Single();
+            String productName = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductName");
+            String displayText = SpecflowTableHelper.GetStringRowValue(productDetails, "DisplayText");
+            String productValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+
+            await this.WebDriver.FillIn("productName", productName);
+            await this.WebDriver.FillIn("displayText", displayText);
+            if (String.IsNullOrEmpty(productValue))
+            {
+                // Set the IsVariable flag
+                await this.WebDriver.FillIn("isVariable", "true");
+            }
+            else
+            {
+                // Set the product value
+                await this.WebDriver.FillIn("value", productValue);
+            }
+        }
+
+        [When(@"I click the Create Product button")]
+        public async Task WhenIClickTheCreateProductButton()
+        {
+            await this.WebDriver.ClickButtonById("createContractProductButton");
+        }
+
+        [Then(@"the following product details are in the list")]
+        public async Task ThenTheFollowingProductDetailsAreInTheList(Table table)
+        {
+            await Retry.For(async () =>
+            {
+                Int32 foundRowCount = 0;
+                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractProductList"));
+                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                rows.Count.ShouldBe(table.RowCount + 1);
+                foreach (TableRow tableRow in table.Rows)
+                {
+                    IList<IWebElement> rowTD;
+                    foreach (IWebElement row in rows)
+                    {
+                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                        if (rowTH.Any())
+                        {
+                            // header row so skip
+                            continue;
+                        }
+
+                        rowTD = row.FindElements(By.TagName("td"));
+
+                        String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
+
+                        if (rowTD[0].Text == productName)
+                        {
+                            // Compare other fields
+                            rowTD[0].Text.ShouldBe(productName);
+
+                            // We have found the row
+                            foundRowCount++;
+                            break;
+                        }
+                    }
+                }
+
+                foundRowCount.ShouldBe(table.RowCount);
+            }, TimeSpan.FromSeconds(120));
+        }
+
+        [When(@"I click the Transaction Fees Link for '(.*)'")]
+        public async Task WhenIClickTheTransactionFeesLinkFor(String productName)
+        {
+            await ClickElementInTable("contractProductList", productName, "numberOfTransactionFeesLink");
+        }
+
+        [When(@"I click the Create Transaction Fee button")]
+        public async Task WhenIClickTheCreateTransactionFeeButton()
+        {
+            await this.WebDriver.ClickButtonById("createTransactionFeeButton");
+        }
+
+        [Then(@"I am presented the new transaction fee screen")]
+        public void ThenIAmPresentedTheNewTransactionFeeScreen()
+        {
+            this.WebDriver.Title.ShouldBe("New Transaction Fee Details");
+        }
+
+        [When(@"I click the Add New Transaction Fee button")]
+        public async Task WhenIClickTheAddNewTransactionFeeButton()
+        {
+            await this.WebDriver.ClickButtonById("newContractProductTransactionFeeButton");
+        }
+
+
+        [When(@"I enter the following new transaction fee details")]
+        public async Task WhenIEnterTheFollowingNewTransactionFeeDetails(Table table)
+        {
+            TableRow productDetails = table.Rows.Single();
+            String description = SpecflowTableHelper.GetStringRowValue(productDetails, "Description");
+            String calculationType = SpecflowTableHelper.GetStringRowValue(productDetails, "CalculationType");
+            String feeType = SpecflowTableHelper.GetStringRowValue(productDetails, "FeeType");
+            String feeValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+
+            await this.WebDriver.FillIn("feeDescription", description);
+            await this.WebDriver.SelectDropDownItemByText("calculationTypeList", calculationType);
+            await this.WebDriver.SelectDropDownItemByText("feeTypeList", feeType);
+            await this.WebDriver.FillIn("value", feeValue, true);
+        }
+
+        [Then(@"I am presented with the Transaction Fee List Screen")]
+        public void ThenIAmPresentedWithTheTransactionFeeListScreen()
+        {
+            this.WebDriver.Title.ShouldStartWith("Transaction Fees for Product - ");
+        }
+
+        [Then(@"the following fee details are in the list")]
+        public async Task ThenTheFollowingFeeDetailsAreInTheList(Table table)
+        {
+            await Retry.For(async () =>
+                            {
+                                Int32 foundRowCount = 0;
+                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractProductTransactionFeeList"));
+                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
+
+                                rows.Count.ShouldBe(table.RowCount + 1);
+                                foreach (TableRow tableRow in table.Rows)
+                                {
+                                    IList<IWebElement> rowTD;
+                                    foreach (IWebElement row in rows)
+                                    {
+                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
+
+                                        if (rowTH.Any())
+                                        {
+                                            // header row so skip
+                                            continue;
+                                        }
+
+                                        rowTD = row.FindElements(By.TagName("td"));
+
+                                        String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "Description");
+
+                                        if (rowTD[0].Text == feeDescription)
+                                        {
+                                            // Compare other fields
+                                            rowTD[0].Text.ShouldBe(feeDescription);
+
+                                            // We have found the row
+                                            foundRowCount++;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foundRowCount.ShouldBe(table.RowCount);
+                            }, TimeSpan.FromSeconds(120));
+        }
+
 
     }
 }

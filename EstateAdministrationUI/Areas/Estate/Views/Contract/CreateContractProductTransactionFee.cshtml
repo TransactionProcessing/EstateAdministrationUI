@@ -28,16 +28,26 @@
                             @Html.HiddenFor(model => model.ContractProductId)
                             <br />
                             <div class="form-group">
-                                <label asp-for="Description" class="control-label">Description</label>
-                                <input asp-for="Description" class="form-control form-control-user" name="description" autofocus />
+                                <label asp-for="FeeDescription" class="control-label">Description</label>
+                                <input asp-for="FeeDescription" class="form-control form-control-user" name="feeDescription" autofocus />
                             </div>
                             <div class="form-group">
                                 <label asp-for="CalculationType" class="control-label">Calculation Type</label>
-                                <input asp-for="CalculationType" class="form-control form-control-user" name="calculationType" autofocus />
+                                @*<input asp-for="CalculationType" class="form-control form-control-user" name="calculationType" autofocus />*@
+                            <select asp-for="CalculationType" id="calculationTypeList" class="form-control" required>
+                                <option value="0" disabled selected>Select an calculation Type</option>
+                                <option value="1">Fixed</option>
+                                <option value="2">Percentage</option>
+                            </select>
                             </div>
                             <div class="form-group">
                                 <label asp-for="FeeType" class="control-label">Fee Type</label>
-                                <input asp-for="FeeType" class="form-control form-control-user" name="feetype" autofocus />
+                                @*<input asp-for="FeeType" class="form-control form-control-user" name="feetype" autofocus />*@
+                                <select asp-for="FeeType" id="feeTypeList" class="form-control" required>
+                                    <option value="0" disabled selected>Select a Fee Type</option>
+                                    <option value="1">Merchant</option>
+                                    <option value="2">ServiceProvider</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Value" class="control-label">Value</label>
