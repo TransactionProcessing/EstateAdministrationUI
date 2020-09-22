@@ -79,13 +79,8 @@
                 { "data": "description", "name": "description", "autoWidth": true },
                 { "data": "operatorName", "name": "operatorName", "autoWidth": true },
                 {
-                    "data": "numberOfProducts",
                     "render": function(data, type, full, meta){
-                        //if(type === 'display'){
-                            return '<a href="GetContractProductsList?contractId=' + full.contractId + '">' + data + '</a>';
-                        //}
-
-                        //return data;
+                        return '<a id="numberOfProductsLink" href="GetContractProductsList?contractId=' + full.contractId + '">' + full.numberOfProducts + '</a>';
                     }
                 },
                 {

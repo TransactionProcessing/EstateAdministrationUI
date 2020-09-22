@@ -410,9 +410,11 @@
             AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = new AddTransactionFeeToContractProductModel();
 
             addTransactionFeeToContractProductModel.Value = createContractProductTransactionFeeViewModel.Value;
-            addTransactionFeeToContractProductModel.CalculationType = (CalculationType)createContractProductTransactionFeeViewModel.CalculationType;
-            addTransactionFeeToContractProductModel.Description = createContractProductTransactionFeeViewModel.Description;
-            addTransactionFeeToContractProductModel.FeeType = (FeeType)createContractProductTransactionFeeViewModel.FeeType;
+            Int32 calculationType = createContractProductTransactionFeeViewModel.CalculationType - 1;
+            addTransactionFeeToContractProductModel.CalculationType = (CalculationType)calculationType;
+            addTransactionFeeToContractProductModel.Description = createContractProductTransactionFeeViewModel.FeeDescription;
+            Int32 feeType = createContractProductTransactionFeeViewModel.FeeType - 1;
+            addTransactionFeeToContractProductModel.FeeType = (FeeType)feeType;
 
             return addTransactionFeeToContractProductModel;
         }

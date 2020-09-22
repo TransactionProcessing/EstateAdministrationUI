@@ -41,7 +41,7 @@
         /// <value>
         /// The description.
         /// </value>
-        public String Description { get; set; }
+        public String FeeDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the fee.

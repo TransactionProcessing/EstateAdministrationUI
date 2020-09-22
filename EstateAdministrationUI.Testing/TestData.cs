@@ -502,7 +502,7 @@
             {
                 FeeType = (Int32)TestData.ModelTransactionFeeCalculationType,
                 Value = TestData.TransactionFeeValue,
-                Description = TestData.TransactionFeeDescription,
+                FeeDescription = TestData.TransactionFeeDescription,
                 ContractProductId = TestData.ContractProductId,
                 CalculationType = (Int32)TestData.ModelTransactionFeeCalculationType,
                 ContractId = TestData.ContactId

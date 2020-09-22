@@ -84,6 +84,7 @@ Scenario: Create New Operator
 Scenario: Create New Contract
 	Given I click on the My Contracts sidebar option
 	Then I am presented with the Contracts List Screen
+	# Create Contract
 	When I click the Add New Contract button
 	Then I am presented the new contract screen
 	When I enter the following new contract details
@@ -93,4 +94,51 @@ Scenario: Create New Contract
 	Then I am presented with the Contracts List Screen
 	And the following contract details are in the list
 	| ContractDescription |
-	| Test Contract       |
+	| Test Contract       |	
+	# Create Products - Fixed Value
+	When I click the Products Link for 'Test Contract'
+	Then I am presented with the Products List Screen
+	When I click the Add New Product button
+	Then I am presented the new product screen
+	When I enter the following new product details
+	| ProductName         | DisplayText | Value  |
+	| 100 KES Topup       | 100 KES     | 100.00 |
+	When I click the Create Product button
+	Then I am presented with the Products List Screen
+	And the following product details are in the list
+	| ProductName         |
+	| 100 KES Topup       |
+	# Create Transaction Fee - Fixed Value Product
+	When I click the Transaction Fees Link for '100 KES Topup'
+	Then I am presented with the Transaction Fee List Screen
+	When I click the Add New Transaction Fee button
+	Then I am presented the new transaction fee screen
+	When I enter the following new transaction fee details
+	| Description         | CalculationType | FeeType  | Value |
+	| Merchant Commission | Percentage      | Merchant | 0.05  |
+	When I click the Create Transaction Fee button
+	Then I am presented with the Transaction Fee List Screen
+	And the following fee details are in the list
+	| Description        |
+	| Merchant Commission  |
+
+	# Create Products - Variable Value
+	#When I click the Create Product button
+	#Then I am presented the new product screen
+	#When I enter the following new product details
+	#| ProductName        | DisplayText | Value |
+	#| Custom Value Topup | Custom      |       |
+	#When I click the Create Product button
+	#Then I am presented with the Products List Screen
+	#And the following product details are in the list
+	#| ProductName        |
+	#| Custom Value Topup |
+	
+	## Create Transaction Fee - Variable Value Product
+	#When I click the Transaction Fees Link for 'Custom Value Topup'
+	#When I click the Create Transaction Fee button
+	#Then I am presented the new transaction fee screen
+	#When I enter the following new transaction fee details
+	#| Description         | CalculationType | FeeType  | Value |
+	#| Merchant Commission | Percentage      | Merchant | 0.05  |
+	#When I click the Create Transaction Fee button

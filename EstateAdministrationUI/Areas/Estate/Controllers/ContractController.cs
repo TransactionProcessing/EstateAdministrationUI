@@ -393,7 +393,7 @@
                                                                                     {
                                                                                         contractId = addTransactionFeeToContractProductResponse.ContractId,
                                                                                         contractProductId = addTransactionFeeToContractProductResponse.ProductId
-                }).WithSuccess("Transaction Fee Created Successful", $"Transaction Fee {viewModel.Description} successfully created");
+                }).WithSuccess("Transaction Fee Created Successful", $"Transaction Fee {viewModel.FeeDescription} successfully created");
             }
 
             // If we got this far, something failed, redisplay form

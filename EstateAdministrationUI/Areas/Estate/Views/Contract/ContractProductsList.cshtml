@@ -80,9 +80,8 @@
                 { "data": "displayText", "name": "displayText", "autoWidth": true },
                 { "data": "value", "name": "value", "autoWidth": true },
                 {
-                    "data": "numberOfTransactionFees",
                     "render": function(data, type, full, meta){
-                        return '<a href="GetContractProductTransactionFeesList?contractId=' + full.contractId + '&contractProductId=' + full.contractProductId + '">' + data + '</a>';
+                        return '<a id="numberOfTransactionFeesLink" href="GetContractProductTransactionFeesList?contractId=' + full.contractId + '&contractProductId=' + full.contractProductId + '">' + full.numberOfTransactionFees + '</a>';
                         
                     }
                 }
