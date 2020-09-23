@@ -410,6 +410,7 @@
             AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = new AddTransactionFeeToContractProductModel();
 
             addTransactionFeeToContractProductModel.Value = createContractProductTransactionFeeViewModel.Value;
+            
             Int32 calculationType = createContractProductTransactionFeeViewModel.CalculationType - 1;
             addTransactionFeeToContractProductModel.CalculationType = (CalculationType)calculationType;
             addTransactionFeeToContractProductModel.Description = createContractProductTransactionFeeViewModel.FeeDescription;

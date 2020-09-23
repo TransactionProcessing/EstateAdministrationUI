@@ -56,109 +56,118 @@
         public static Guid MerchantId = Guid.Parse("BD9281C6-2906-4979-8E6B-F802E509FDDF");
 
         public static Decimal AvailableBalance = 1000.00m;
+
         public static Decimal Balance = 1000.00m;
 
         public static Guid AddressId = Guid.Parse("24F1E552-54F9-468F-81DD-E5899B2B8BDD");
+
         public static Guid ContactId = Guid.Parse("445AC5A8-B599-4143-B8EE-5FF23367EE5B");
+
         public static Guid DeviceId = Guid.Parse("7B6A1899-BAB0-4FD4-AEA0-BB7A0C085A35");
 
         public static String DeviceIdentifier = "Device1";
 
         public static String MerchantNumber = "00000001";
+
         public static String TerminalNumber = "10000001";
 
-        public static EstateModel EstateModel => new EstateModel
-                                                {
-                                                    EstateId = TestData.EstateId,
-                                                    EstateName = TestData.EstateName,
-                                                    Operators = TestData.Operators,
-                                                    SecurityUsers = TestData.SecurityUsers
-                                                };
-        
-        public static List<EstateOperatorModel> Operators => new List<EstateOperatorModel>
-                                                                      {
-                                                                          new EstateOperatorModel
-                                                                          {
-                                                                              Name = TestData.OperatorName,
-                                                                              OperatorId = TestData.OperatorId,
-                                                                              RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
-                                                                              RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber
-                                                                          }
-                                                                      };
-        
-        public static List<SecurityUserModel> SecurityUsers => new List<SecurityUserModel>
-                                                              {
-                                                                  new SecurityUserModel
-                                                                  {
-                                                                      EmailAddress = TestData.EmailAddress,
-                                                                      SecurityUserId = TestData.SecurityUserId
-                                                                  }
-                                                              };
+        public static EstateModel EstateModel =>
+            new EstateModel
+            {
+                EstateId = TestData.EstateId,
+                EstateName = TestData.EstateName,
+                Operators = TestData.Operators,
+                SecurityUsers = TestData.SecurityUsers
+            };
 
-        public static CreateMerchantViewModel CreateMerchantViewModel => new CreateMerchantViewModel
-                                                                        {
-            MerchantName = TestData.MerchantName,
-            ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
-            ContactName = TestData.MerchantContactName,
-            ContactEmailAddress = TestData.MerchantContactEmailAddress,
-            AddressLine4 = TestData.MerchantAddressLine4,
-            AddressLine2 = TestData.MerchantAddressLine2,
-            AddressLine3 = TestData.MerchantAddressLine3,
-            Country = TestData.MerchantCountry,
-            PostalCode = TestData.MerchantPostalCode,
-            Region = TestData.MerchantRegion,
-            Town = TestData.MerchantTown,
-            AddressLine1 = TestData.MerchantAddressLine1
-        };
+        public static List<EstateOperatorModel> Operators =>
+            new List<EstateOperatorModel>
+            {
+                new EstateOperatorModel
+                {
+                    Name = TestData.OperatorName,
+                    OperatorId = TestData.OperatorId,
+                    RequireCustomMerchantNumber = TestData.RequireCustomMerchantNumber,
+                    RequireCustomTerminalNumber = TestData.RequireCustomTerminalNumber
+                }
+            };
 
-        public static MerchantModel MerchantModel => new MerchantModel
-                                                    {
-                                                        MerchantId = TestData.MerchantId,
-                                                        MerchantName = TestData.MerchantName,
-                                                        AvailableBalance = TestData.AvailableBalance,
-                                                        EstateId = TestData.EstateId,
-                                                        Balance = TestData.Balance,
-                                                        Addresses = new List<AddressModel>
-                                                                    {
-                                                                        new AddressModel
-                                                                        {
-                                                                            AddressLine4 = TestData.MerchantAddressLine4,
-                                                                            AddressLine1 = TestData.MerchantAddressLine1,
-                                                                            AddressLine2 = TestData.MerchantAddressLine2,
-                                                                            AddressLine3 = TestData.MerchantAddressLine3,
-                                                                            Country = TestData.MerchantCountry,
-                                                                            PostalCode = TestData.MerchantPostalCode,
-                                                                            Region = TestData.MerchantRegion,
-                                                                            Town = TestData.MerchantTown,
-                                                                            AddressId = TestData.AddressId
-                                                                        }
-                                                                    },
-                                                        Contacts = new List<ContactModel>
-                                                                   {
-                                                                       new ContactModel
-                                                                       {
-                                                                           ContactName = TestData.MerchantContactName,
-                                                                           ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
-                                                                           ContactEmailAddress = TestData.MerchantContactEmailAddress,
-                                                                           ContactId = TestData.ContactId
-                                                                       }
-                                                                   },
-                                                        Devices = new Dictionary<Guid, String>
-                                                                  {
-                                                                      {TestData.DeviceId, TestData.DeviceIdentifier}
-                                                                  },
-                                                        Operators = new List<MerchantOperatorModel>
-                                                                    {
-                                                                        new MerchantOperatorModel
-                                                                        {
-                                                                            Name = TestData.OperatorName,
-                                                                            MerchantNumber = TestData.MerchantNumber,
-                                                                            OperatorId = TestData.OperatorId,
-                                                                            TerminalNumber = TestData.TerminalNumber
-                                                                        }
-                                                                    }
+        public static List<SecurityUserModel> SecurityUsers =>
+            new List<SecurityUserModel>
+            {
+                new SecurityUserModel
+                {
+                    EmailAddress = TestData.EmailAddress,
+                    SecurityUserId = TestData.SecurityUserId
+                }
+            };
 
-                                                    };
+        public static CreateMerchantViewModel CreateMerchantViewModel =>
+            new CreateMerchantViewModel
+            {
+                MerchantName = TestData.MerchantName,
+                ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                ContactName = TestData.MerchantContactName,
+                ContactEmailAddress = TestData.MerchantContactEmailAddress,
+                AddressLine4 = TestData.MerchantAddressLine4,
+                AddressLine2 = TestData.MerchantAddressLine2,
+                AddressLine3 = TestData.MerchantAddressLine3,
+                Country = TestData.MerchantCountry,
+                PostalCode = TestData.MerchantPostalCode,
+                Region = TestData.MerchantRegion,
+                Town = TestData.MerchantTown,
+                AddressLine1 = TestData.MerchantAddressLine1
+            };
+
+        public static MerchantModel MerchantModel =>
+            new MerchantModel
+            {
+                MerchantId = TestData.MerchantId,
+                MerchantName = TestData.MerchantName,
+                AvailableBalance = TestData.AvailableBalance,
+                EstateId = TestData.EstateId,
+                Balance = TestData.Balance,
+                Addresses = new List<AddressModel>
+                            {
+                                new AddressModel
+                                {
+                                    AddressLine4 = TestData.MerchantAddressLine4,
+                                    AddressLine1 = TestData.MerchantAddressLine1,
+                                    AddressLine2 = TestData.MerchantAddressLine2,
+                                    AddressLine3 = TestData.MerchantAddressLine3,
+                                    Country = TestData.MerchantCountry,
+                                    PostalCode = TestData.MerchantPostalCode,
+                                    Region = TestData.MerchantRegion,
+                                    Town = TestData.MerchantTown,
+                                    AddressId = TestData.AddressId
+                                }
+                            },
+                Contacts = new List<ContactModel>
+                           {
+                               new ContactModel
+                               {
+                                   ContactName = TestData.MerchantContactName,
+                                   ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
+                                   ContactEmailAddress = TestData.MerchantContactEmailAddress,
+                                   ContactId = TestData.ContactId
+                               }
+                           },
+                Devices = new Dictionary<Guid, String>
+                          {
+                              {TestData.DeviceId, TestData.DeviceIdentifier}
+                          },
+                Operators = new List<MerchantOperatorModel>
+                            {
+                                new MerchantOperatorModel
+                                {
+                                    Name = TestData.OperatorName,
+                                    MerchantNumber = TestData.MerchantNumber,
+                                    OperatorId = TestData.OperatorId,
+                                    TerminalNumber = TestData.TerminalNumber
+                                }
+                            }
+
+            };
 
         public static MakeMerchantDepositViewModel MakeMerchantDepositViewModel =>
             new MakeMerchantDepositViewModel
@@ -214,7 +223,7 @@
             new MakeMerchantDepositModel
             {
                 MerchantId = TestData.MerchantId,
-                DepositDateTime = DateTime.ParseExact(TestData.DepositDate, "dd/MM/yyyy",null),
+                DepositDateTime = DateTime.ParseExact(TestData.DepositDate, "dd/MM/yyyy", null),
                 Reference = TestData.DepositReference,
                 Amount = Decimal.Parse(TestData.DepositAmount)
             };
@@ -258,7 +267,7 @@
                 ContactId = TestData.ContactId,
                 AddressId = TestData.AddressId
             };
-        
+
 
         public static MerchantResponse MerchantResponse =>
             new MerchantResponse
@@ -308,7 +317,7 @@
                                 }
                             }
             };
-        
+
 
         public static EstateResponse EstateResponse =>
             new EstateResponse
@@ -337,14 +346,19 @@
             };
 
         public static String ContractDescription = "Test Contract 1";
+
         public static String ContractProductDescription = "Test Product 1";
+
         public static String ContractProductName = "Product 1";
+
         public static String ContractProductDisplayText = "Product1";
 
         public static Decimal ContractProductValue = 100.00m;
+
         public static Guid ContractProductId = Guid.Parse("6CAE4549-6334-4CC4-82CD-A915BDE559D3");
 
         public static String TransactionFeeDescription = "Test Fee 1";
+
         public static Decimal TransactionFeeValue = 1.00m;
 
         public static Decimal? ContractProductValueNull = null;
@@ -359,24 +373,24 @@
                 OperatorName = TestData.OperatorName,
                 Products = new List<ContractProduct>
                            {
-                    new ContractProduct
-                    {
-                        Value = TestData.ContractProductValue,
-                        TransactionFees = new List<ContractProductTransactionFee>
-                                          {
-                                              new ContractProductTransactionFee
-                                              {
-                                                  Description = TestData.TransactionFeeDescription,
-                                                  Value = TestData.TransactionFeeValue,
-                                                  FeeType = DTOFeeType.Merchant,
-                                                  TransactionFeeId = TestData.TransactionFeeId,
-                                                  CalculationType = DTOCalculationType.Fixed
-                                              }
-                                          },
-                        ProductId = TestData.ContractProductId,
-                        Name = TestData.ContractProductName,
-                        DisplayText = TestData.ContractProductDisplayText
-                    }
+                               new ContractProduct
+                               {
+                                   Value = TestData.ContractProductValue,
+                                   TransactionFees = new List<ContractProductTransactionFee>
+                                                     {
+                                                         new ContractProductTransactionFee
+                                                         {
+                                                             Description = TestData.TransactionFeeDescription,
+                                                             Value = TestData.TransactionFeeValue,
+                                                             FeeType = DTOFeeType.Merchant,
+                                                             TransactionFeeId = TestData.TransactionFeeId,
+                                                             CalculationType = DTOCalculationType.Fixed
+                                                         }
+                                                     },
+                                   ProductId = TestData.ContractProductId,
+                                   Name = TestData.ContractProductName,
+                                   DisplayText = TestData.ContractProductDisplayText
+                               }
                            },
                 Description = TestData.ContractDescription,
                 ContractId = TestData.ContactId
@@ -499,14 +513,15 @@
 
         public static CreateContractProductTransactionFeeViewModel CreateContractProductTransactionFeeViewModel =>
             new CreateContractProductTransactionFeeViewModel
-            {
-                FeeType = (Int32)TestData.ModelTransactionFeeCalculationType,
-                Value = TestData.TransactionFeeValue,
-                FeeDescription = TestData.TransactionFeeDescription,
-                ContractProductId = TestData.ContractProductId,
-                CalculationType = (Int32)TestData.ModelTransactionFeeCalculationType,
-                ContractId = TestData.ContactId
-            };
+                   {
+                       FeeType = 1,
+                       Value = TestData.TransactionFeeValue,
+                       FeeDescription = TestData.TransactionFeeDescription,
+                       ContractProductId = TestData.ContractProductId,
+                       CalculationType = 1,
+                       ContractId = TestData.ContactId
+                   };
+            
 
         public static CreateContractProductViewModel CreateContractProductViewModelWithValue =>
             new CreateContractProductViewModel

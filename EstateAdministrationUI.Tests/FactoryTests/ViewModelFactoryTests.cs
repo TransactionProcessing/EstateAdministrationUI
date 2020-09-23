@@ -1283,9 +1283,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             AddTransactionFeeToContractProductModel model = viewModelFactory.ConvertFrom(viewModel);
 
             model.Value.ShouldBe(viewModel.Value);
-            model.CalculationType.ShouldBe((CalculationType)viewModel.CalculationType);
+            model.CalculationType.ShouldBe((CalculationType)(viewModel.CalculationType -1));
             model.Description.ShouldBe(viewModel.FeeDescription);
-            model.FeeType.ShouldBe((FeeType)viewModel.FeeType);
+            model.FeeType.ShouldBe((FeeType)(viewModel.FeeType - 1));
         }
 
         [Fact]
