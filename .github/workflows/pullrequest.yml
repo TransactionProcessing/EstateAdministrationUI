@@ -36,7 +36,21 @@ jobs:
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
                 
-    - name: Run Integration Tests
+    - name: Run Integration Tests (Firefox)
+      env:
+        Browser: Firefox
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+
+    - name: Run Integration Tests (Chrome)
+      env:
+        Browser: Chrome
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+
+    - name: Run Integration Tests (Edge)
+      env:
+        Browser: Edge
+        DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
+        DriverExe: msedgedriver.exe
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
     - name: Setup tmate session
