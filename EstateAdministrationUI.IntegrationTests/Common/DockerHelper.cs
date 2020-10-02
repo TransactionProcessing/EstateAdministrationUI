@@ -123,12 +123,17 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             if (engineType == DockerEnginePlatform.Windows)
             {
                 var docker = DockerHelper.GetDockerHost();
-                var created = docker.CreateNetwork(networkName,
-                                     new NetworkCreateParams
-                                     {
-                                         Driver = "nat",
-                                     });
-                return created;
+                var network = docker.GetNetworks().Where(nw => nw.Name == networkName).SingleOrDefault();
+                if (network == null)
+                {
+                    network = docker.CreateNetwork(networkName,
+                                                       new NetworkCreateParams
+                                                       {
+                                                           Driver = "nat",
+                                                       });
+                }
+
+                return network;
             }
 
             if (engineType == DockerEnginePlatform.Linux)
