@@ -17,10 +17,13 @@ namespace EstateAdministrationUI
     using BusinessLogic.Factories;
     using EstateManagement.Client;
     using Factories;
+    using HealthChecks.UI.Client;
     using IdentityModel;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
@@ -52,6 +55,20 @@ namespace EstateAdministrationUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigurationReader.Initialise(Startup.Configuration);
+
+            services.AddHealthChecks()
+                    .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "Authority")}/health"),
+                                 name: "Security Service",
+                                 httpMethod: HttpMethod.Get,
+                                 failureStatus: HealthStatus.Unhealthy,
+                                 tags: new string[] { "security", "authorisation" })
+                .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "EstateManagementApi")}/health"),
+                             name: "Estate Management Service",
+                             httpMethod: HttpMethod.Get,
+                             failureStatus: HealthStatus.Unhealthy,
+                             tags: new string[] { "application", "estatemanagement" });
+
             services.AddControllersWithViews();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -145,9 +162,7 @@ namespace EstateAdministrationUI
             Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("EstateAdministrationUI");
 
             Logger.Initialise(logger);
-
-            ConfigurationReader.Initialise(Startup.Configuration);
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -167,11 +182,15 @@ namespace EstateAdministrationUI
                              {
                                  endpoints.MapAreaControllerRoute("Account", "Account", "Account/{controller=Home}/{action=Index}/{id?}");
                                  endpoints.MapAreaControllerRoute("Estate", "Estate", "Estate/{controller=Home}/{action=Index}/{id?}");
-
                                  endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                                 endpoints.MapHealthChecks("health", new HealthCheckOptions()
+                                                                     {
+                                                                         Predicate = _ => true,
+                                                                         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                                                                     });
 
 
-            });
+                             });
 
             
         }
