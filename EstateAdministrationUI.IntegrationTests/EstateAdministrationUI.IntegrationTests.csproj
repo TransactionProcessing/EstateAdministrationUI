@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Coypu" Version="3.1.1" />
+	  <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
+	  <PackageReference Include="Coypu" Version="3.1.1" />
     <PackageReference Include="EstateManagement.Client" Version="1.0.3.1-build30" />
     <PackageReference Include="EventStore.Client.Grpc.ProjectionManagement" Version="20.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />

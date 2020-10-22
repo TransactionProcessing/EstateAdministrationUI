@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using BoDi;
+    using Microsoft.Edge.SeleniumTools;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
-    using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using TechTalk.SpecFlow;
 
@@ -42,28 +42,30 @@
 
             if (browser == "Firefox")
             {
+                //FirefoxOptions options = new FirefoxOptions();
+                //options.AddArguments("-headless");
+                //this.WebDriver = new FirefoxDriver(options);
+                //FirefoxProfile profile = new ProfilesIni().getProfile("default");
+                //profile.setPreference("network.cookie.cookieBehavior", 2);
+                //this.WebDriver = new FirefoxDriver(profile);
                 FirefoxOptions options = new FirefoxOptions();
-                options.AddArguments("-headless");
+                options.SetPreference("network.cookie.sameSite.laxByDefault", false);
+                options.SetPreference("network.cookie.sameSite.noneRequiresSecure", false);
+                options.SetPreference("network.cookie.sameSite.schemeful", false);
+                options.SetPreference("network.cookie.cookieBehavior", 0);
                 this.WebDriver = new FirefoxDriver(options);
             }
 
             if (browser == "Edge")
             {
-                String? driverPath = Environment.GetEnvironmentVariable("DriverPath");
-                String? driverExe = Environment.GetEnvironmentVariable("DriverExe");
                 EdgeOptions options = new EdgeOptions();
-                EdgeDriverService service = null;
-                if (driverPath == null && driverExe == null)
-                {
-                    service = EdgeDriverService.CreateDefaultService(@"D:\Program Files (x86)\EdgeDriver\", "msedgedriver.exe");
-                }
-                else
-                {
-                    service = EdgeDriverService.CreateDefaultService(driverPath, driverExe);
-                }
+                options.UseChromium = true;
+                List<String> experimentalFlags = new List<String>();
+                experimentalFlags.Add("same-site-by-default-cookies@2");
+                experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
+                options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
 
-                this.WebDriver = new EdgeDriver(service, options);
-
+                this.WebDriver = new EdgeDriver(options);
             }
 
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
