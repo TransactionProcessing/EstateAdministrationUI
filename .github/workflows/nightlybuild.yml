@@ -46,12 +46,12 @@ jobs:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
-    #- name: Run Integration Tests (Edge)
-    #  env:
-    #    Browser: Edge
-    #    DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
-    #    DriverExe: msedgedriver.exe
-    #  run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+    - name: Run Integration Tests (Edge)
+      env:
+        Browser: Edge
+        DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
+        DriverExe: msedgedriver.exe
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
   codecoverage:
     name: "Nightly Build - Code Coverage"
