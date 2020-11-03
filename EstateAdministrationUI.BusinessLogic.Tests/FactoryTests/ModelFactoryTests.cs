@@ -8,6 +8,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using Areas.Estate.Models;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReporting.DataTransferObjects;
     using Factories;
     using Microsoft.AspNetCore.Identity;
     using Models;
@@ -1203,6 +1204,189 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                                 {
                                                     modelFactory.ConvertFrom(response);
                                                 });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByDayResponse_IsConverted()
+        {
+            TransactionsByDayResponse response = TestData.TransactionsByDayResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+
+            model.TransactionDateModels.ShouldNotBeNull();
+            model.TransactionDateModels.ShouldNotBeEmpty();
+            model.TransactionDateModels.Count.ShouldBe(response.TransactionDayResponses.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByDayResponse_NullResponse_ErrorThrown()
+        {
+            TransactionsByDayResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByDayResponse_NullChildClassResponse_ErrorThrown()
+        {
+            TransactionsByDayResponse response = new TransactionsByDayResponse();
+            response.TransactionDayResponses = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByDayResponse_EmptyChildClassResponse_ErrorThrown()
+        {
+            TransactionsByDayResponse response = new TransactionsByDayResponse();
+            response.TransactionDayResponses = new List<TransactionDayResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByWeekResponse_IsConverted()
+        {
+            TransactionsByWeekResponse response = TestData.TransactionsByWeekResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+
+            model.TransactionWeekModels.ShouldNotBeNull();
+            model.TransactionWeekModels.ShouldNotBeEmpty();
+            model.TransactionWeekModels.Count.ShouldBe(response.TransactionWeekResponses.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByWeekResponse_NullResponse_ErrorThrown()
+        {
+            TransactionsByWeekResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByWeekResponse_NullChildClass_ErrorThrown()
+        {
+            TransactionsByWeekResponse response = new TransactionsByWeekResponse();
+            response.TransactionWeekResponses = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByWeekResponse_EmptyChildClass_ErrorThrown()
+        {
+            TransactionsByWeekResponse response = new TransactionsByWeekResponse();
+            response.TransactionWeekResponses = new List<TransactionWeekResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByMonthResponse_IsConverted()
+        {
+            TransactionsByMonthResponse response = TestData.TransactionsByMonthResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+
+            model.TransactionMonthModels.ShouldNotBeNull();
+            model.TransactionMonthModels.ShouldNotBeEmpty();
+            model.TransactionMonthModels.Count.ShouldBe(response.TransactionMonthResponses.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByMonthResponse_NullResponse_ErrorThrown()
+        {
+            TransactionsByMonthResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByMonthResponse_NullChildClass_ErrorThrown()
+        {
+            TransactionsByMonthResponse response = new TransactionsByMonthResponse();
+            response.TransactionMonthResponses = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionsByMonthResponse_EmptyChildClass_ErrorThrown()
+        {
+            TransactionsByMonthResponse response = new TransactionsByMonthResponse();
+            response.TransactionMonthResponses = new List<TransactionMonthResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertToPeriodModel_IsConverted()
+        {
+            TransactionsByDayResponse response = TestData.TransactionsByDayResponseWithSingleDate;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionForPeriodModel model = modelFactory.ConvertToPeriodModel(response);
+
+            model.ShouldNotBeNull();
+            model.NumberOfTransactions.ShouldBe(response.TransactionDayResponses.Single().NumberOfTransactions);
+            model.CurrencyCode.ShouldBe(response.TransactionDayResponses.Single().CurrencyCode);
+            model.ValueOfTransactions.ShouldBe(response.TransactionDayResponses.Single().ValueOfTransactions);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertToPeriodModel_NullResponse_IsConverted()
+        {
+            TransactionsByDayResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionForPeriodModel model = modelFactory.ConvertToPeriodModel(response);
+
+            model.ShouldBeNull();
         }
     }
 }

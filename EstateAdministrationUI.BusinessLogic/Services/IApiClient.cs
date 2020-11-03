@@ -174,6 +174,65 @@
                                                                                                 AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel,
                                                                                                 CancellationToken cancellationToken);
 
+
+        /// <summary>
+        /// Gets the transactions for date period.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="datePeriod">The date period.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionForPeriodModel> GetTransactionsForDatePeriod(String accessToken,
+                                                                  ClaimsIdentity claimsIdentity, 
+                                                                  DatePeriod datePeriod, 
+                                                                  CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by date.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
+                                                           ClaimsIdentity claimsIdentity,
+                                                           DateTime startDate,
+                                                           DateTime endDate,
+                                                           CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by week.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
+                                   ClaimsIdentity claimsIdentity,
+                                   DateTime startDate,
+                                   DateTime endDate,
+                                   CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by month.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
+                                   ClaimsIdentity claimsIdentity,
+                                   DateTime startDate,
+                                   DateTime endDate,
+                                   CancellationToken cancellationToken);
+
         #endregion
     }
 }

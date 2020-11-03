@@ -26,7 +26,7 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body">
-                        10
+                        <h1 class="h3 mb-2 text-gray-800" id="todaysTransactionsLabel"></h1>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body">
-                        35
+                        <h1 class="h3 mb-2 text-gray-800" id="thisWeeksTransactionsLabel"></h1>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     </div>
                     <!-- Card Body -->
                     <div class="card-body">
-                        100
+                        <h1 class="h3 mb-2 text-gray-800" id="thisMonthsTransactionsLabel"></h1>
                     </div>
                 </div>
             </div>
@@ -100,3 +100,31 @@
     </div>
 
 
+<script language="javascript">
+    $.ajax({
+        url: "GetTodaysTransactionsAsJson",
+        type: "POST",
+        dataType: 'json'
+    }).done(function (results) {
+        var todaysTransactionsLabel = document.getElementById("todaysTransactionsLabel");
+        todaysTransactionsLabel.innerHTML = todaysTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    });
+
+    $.ajax({
+        url: "GetThisWeeksTransactionsAsJson",
+        type: "POST",
+        dataType: 'json'
+    }).done(function (results) {
+        var thisWeeksTransactionsLabel = document.getElementById("thisWeeksTransactionsLabel");
+        thisWeeksTransactionsLabel.innerHTML = thisWeeksTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    });
+
+    $.ajax({
+        url: "GetThisMonthsTransactionsAsJson",
+        type: "POST",
+        dataType: 'json'
+    }).done(function (results) {
+        var thisMonthsTransactionsLabel = document.getElementById("thisMonthsTransactionsLabel");
+        thisMonthsTransactionsLabel.innerHTML = thisMonthsTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    });
+</script>

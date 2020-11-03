@@ -16,6 +16,7 @@ namespace EstateAdministrationUI
     using System.Net.Http;
     using BusinessLogic.Factories;
     using EstateManagement.Client;
+    using EstateReporting.Client;
     using Factories;
     using HealthChecks.UI.Client;
     using IdentityModel;
@@ -67,7 +68,12 @@ namespace EstateAdministrationUI
                              name: "Estate Management Service",
                              httpMethod: HttpMethod.Get,
                              failureStatus: HealthStatus.Unhealthy,
-                             tags: new string[] { "application", "estatemanagement" });
+                             tags: new string[] { "application", "estatemanagement" })
+                .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "EstateReportingApi")}/health"),
+                             name: "Estate Reporting Service",
+                             httpMethod: HttpMethod.Get,
+                             failureStatus: HealthStatus.Unhealthy,
+                             tags: new string[] { "application", "estatereporting" });
 
             services.AddControllersWithViews();
 
@@ -139,6 +145,7 @@ namespace EstateAdministrationUI
             services.AddSingleton<IModelFactory, ModelFactory>();
             services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             services.AddSingleton<IEstateClient, EstateClient>();
+            services.AddSingleton<IEstateReportingClient, EstateReportingClient>();
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
                                                                      {
                                                                          return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;

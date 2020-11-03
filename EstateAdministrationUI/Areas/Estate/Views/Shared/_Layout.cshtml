@@ -78,12 +78,30 @@
                 </a>
             </li>
 
-            @*<li class="nav-item">
-                <a class="nav-link" id="usersLink" asp-action="GetUsersList" asp-area="Estate" asp-controller="Home">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Users</span>
+            <li class="nav-item">
+                @*<a class="nav-link" id="contractsLink" asp-action="GetContractList" asp-area="Estate" asp-controller="Contract">
+                    <i class="fas fa-fw fa-trophy"></i>
+                    <span>Reports</span>
+                </a>*@
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseReports">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Reports</span>
                 </a>
-            </li>*@
+                <div id="collapseReports" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-action="GetTransactionAnalysis" asp-area="Estate" asp-controller="Reporting">Transaction Analysis</a>
+                        <a class="collapse-item" href="cards.html">Merchant Analysis</a>
+                        <a class="collapse-item" href="cards.html">Operator Analysis</a>
+                    </div>
+                </div>
+            </li>
+
+            @*<li class="nav-item">
+            <a class="nav-link" id="usersLink" asp-action="GetUsersList" asp-area="Estate" asp-controller="Home">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>*@
         </ul>
 
             <!-- End of Sidebar -->

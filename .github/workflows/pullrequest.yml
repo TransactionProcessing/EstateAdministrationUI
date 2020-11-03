@@ -10,6 +10,7 @@ jobs:
     name: "Build and Test Pull Requests"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '12.x'                # set this to the node version to use
 
     runs-on: windows-latest
 
@@ -33,6 +34,16 @@ jobs:
         dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
         dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
     
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Run Javascript Unit Tests
+      run: |
+        npm install
+        npm run test
+
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
                 

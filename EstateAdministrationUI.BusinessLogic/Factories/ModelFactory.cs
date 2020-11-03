@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReporting.DataTransferObjects;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
@@ -213,6 +215,90 @@
                                                                                                               };
 
             return addTransactionFeeToContractProductResponseModel;
+        }
+
+        public TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            TransactionForPeriodModel model = new TransactionForPeriodModel();
+            
+                model.NumberOfTransactions = source.TransactionDayResponses.Sum(x => x.NumberOfTransactions);
+                model.ValueOfTransactions = source.TransactionDayResponses.Sum(x => x.ValueOfTransactions);
+                model.CurrencyCode = source.TransactionDayResponses.Select(x => x.CurrencyCode).First();
+
+                return model;
+        }
+
+        public TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source)
+        {
+            if (source == null || source.TransactionDayResponses == null || source.TransactionDayResponses.Any() == false)
+            {
+                return null;
+            }
+
+            TransactionsByDateModel model = new TransactionsByDateModel
+                                            {
+                                                TransactionDateModels = new List<TransactionDateModel>()
+                                            };
+
+            source.TransactionDayResponses.ForEach(t => model.TransactionDateModels.Add(new TransactionDateModel
+                                                                                        {
+                                                                                            NumberOfTransactions = t.NumberOfTransactions,
+                                                                                            ValueOfTransactions = t.ValueOfTransactions,
+                                                                                            CurrencyCode = t.CurrencyCode,
+                                                                                            Date = t.Date
+                                                                                        }));
+            return model;
+        }
+
+        public TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source)
+        {
+            if (source == null || source.TransactionWeekResponses == null || source.TransactionWeekResponses.Any() == false)
+            {
+                return null;
+            }
+
+            TransactionsByWeekModel model = new TransactionsByWeekModel
+            {
+                                                TransactionWeekModels = new List<TransactionWeekModel>()
+                                            };
+
+            source.TransactionWeekResponses.ForEach(t => model.TransactionWeekModels.Add(new TransactionWeekModel
+                                                                                        {
+                                                                                            NumberOfTransactions = t.NumberOfTransactions,
+                                                                                            ValueOfTransactions = t.ValueOfTransactions,
+                                                                                            CurrencyCode = t.CurrencyCode,
+                                                                                            WeekNumber = t.WeekNumber,
+                                                                                            Year = t.Year
+                                                                                        }));
+            return model;
+        }
+
+        public TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source)
+        {
+            if (source == null || source.TransactionMonthResponses == null || source.TransactionMonthResponses.Any() == false)
+            {
+                return null;
+            }
+
+            TransactionsByMonthModel model = new TransactionsByMonthModel
+            {
+                                                TransactionMonthModels = new List<TransactionMonthModel>()
+                                            };
+
+            source.TransactionMonthResponses.ForEach(t => model.TransactionMonthModels.Add(new TransactionMonthModel
+                                                                                          {
+                                                                                              NumberOfTransactions = t.NumberOfTransactions,
+                                                                                              ValueOfTransactions = t.ValueOfTransactions,
+                                                                                              CurrencyCode = t.CurrencyCode,
+                                                                                              MonthNumber = t.MonthNumber,
+                                                                                              Year = t.Year
+                                                                                          }));
+            return model;
         }
 
         /// <summary>
