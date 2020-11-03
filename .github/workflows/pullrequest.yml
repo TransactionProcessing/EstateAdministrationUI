@@ -22,6 +22,11 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
     - name: Restore Nuget Packages
       run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
@@ -33,11 +38,6 @@ jobs:
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
         dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
         dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
-    
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ env.NODE_VERSION }}
     
     - name: Run Javascript Unit Tests
       run: |
