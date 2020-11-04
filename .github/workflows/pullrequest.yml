@@ -27,11 +27,16 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
     
+    - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Restore Nuget Packages
       run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
     - name: Build Code
-      run: dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+      run: |
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
