@@ -20,7 +20,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
     [ExcludeFromCodeCoverage]
     [Authorize]
     [Area("Estate")]
-    public partial class ReportingController : Controller
+    public class ReportingController : Controller
     {
         #region Fields
 

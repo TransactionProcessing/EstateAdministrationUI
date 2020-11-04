@@ -1,4 +1,4 @@
-﻿if (typeof module !== 'undefined' && module.exports)
+﻿if (typeof module !== "undefined" && module.exports)
 {
     module.exports.translateDailyTotals = translateDailyTotals;
     module.exports.translateWeeklyTotals = translateWeeklyTotals;
@@ -11,7 +11,7 @@ function getChartColors()
             "#5cbae5", "#b6d957", "#fac364", "#9ea8ad", "#1b7eac", "#759422", "#dd8e07", "#69767c", "#abdbf2",
             "#d7eaa2", "#fde5bd", "#d5dadc"
         ];
-    };
+    }
 
     function translateDailyTotals(data)
     {
@@ -27,16 +27,16 @@ function getChartColors()
 
         // Add the labels first
         dataArray.push([
-            { label: 'Date', type: 'date' }, { label: 'Value of Sales', type: 'number' },
-            { label: 'Number of Sales', type: 'number' }
+            { label: "Date", type: "date" }, { label: "Value of Sales", type: "number" },
+            { label: "Number of Sales", type: "number" }
         ]);
 
-        data.transactionDateViewModels.forEach(day =>
+        data.transactionDateViewModels.forEach((day) =>
         {
             // Parse the date
             var date = new Date(day.date);
 
-            var dateStringValue = 'Date(' + date.getFullYear() + ',' + (date.getMonth() + 1)  + ',' + date.getDate() + ')';
+            var dateStringValue = "Date(" + date.getFullYear() + "," + (date.getMonth() + 1)  + "," + date.getDate() + ")";
 
             var item = {
                 c: [{ v: dateStringValue }, { v: day.valueOfTransactions / 10 }, { v: day.numberOfTransactions }]
@@ -45,7 +45,7 @@ function getChartColors()
         });
 
         return dataArray;
-    };
+    }
 
     function translateWeeklyTotals(data)
     {
@@ -61,13 +61,13 @@ function getChartColors()
 
         // Add the labels first
         dataArray.push([
-            { label: 'Week', type: 'string' }, { label: 'Value of Sales', type: 'number' },
-            { label: 'Number of Sales', type: 'number' }
+            { label: "Week", type: "string" }, { label: "Value of Sales", type: "number" },
+            { label: "Number of Sales", type: "number" }
         ]);
 
-        data.transactionWeekViewModels.forEach(week =>
+        data.transactionWeekViewModels.forEach((week) =>
         {
-            var dateStringValue = 'Wk ' + week.weekNumber + ' ' + week.year;
+            var dateStringValue = "Wk " + week.weekNumber + " " + week.year;
 
             var item = {
                 c: [{ v: dateStringValue }, { v: week.valueOfTransactions / 10 }, { v: week.numberOfTransactions }]
@@ -76,7 +76,7 @@ function getChartColors()
         });
 
         return dataArray;
-    };
+    }
 
     function translateMonthTotals(data)
     {
@@ -92,15 +92,15 @@ function getChartColors()
 
         // Add the labels first
         dataArray.push([
-            { label: 'Month', type: 'string' }, { label: 'Value of Sales', type: 'number' },
-            { label: 'Number of Sales', type: 'number' }
+            { label: "Month", type: "string" }, { label: "Value of Sales", type: "number" },
+            { label: "Number of Sales", type: "number" }
         ]);
 
-        data.transactionMonthViewModels.forEach(month =>
+        data.transactionMonthViewModels.forEach((month) =>
         {
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
             var date = new Date(month.year, month.monthNumber - 1, 1);
-            var dateStringValue = months[date.getMonth()] + ' ' + month.year;
+            var dateStringValue = months[date.getMonth()] + " " + month.year;
 
             var item = {
                 c: [{ v: dateStringValue }, { v: month.valueOfTransactions / 10 }, { v: month.numberOfTransactions }]
@@ -109,4 +109,4 @@ function getChartColors()
         });
 
         return dataArray;
-};
+    }
