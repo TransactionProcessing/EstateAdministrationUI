@@ -10,6 +10,7 @@ jobs:
     name: "Build and Test Pull Requests"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '12.x'                # set this to the node version to use
 
     runs-on: windows-latest
 
@@ -21,11 +22,21 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Restore Nuget Packages
       run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
     - name: Build Code
-      run: dotnet build EstateAdministrationUI.sln --configuration Release
+      run: |
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
@@ -33,6 +44,12 @@ jobs:
         dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
         dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
     
+    - name: Run Javascript Unit Tests
+      run: |
+        cd EstateAdministrationUI.Javascript.Tests
+        npm install
+        npm run test
+
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
                 

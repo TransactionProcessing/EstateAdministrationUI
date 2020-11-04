@@ -60,7 +60,7 @@
     },
     {
       "provider": "unpkg",
-      "library": "chart.js@2.8.0",
+      "library": "chart.js@2.9.4",
       "destination": "wwwroot/lib/chartjs",
       "files": [
         "dist/Chart.css",
@@ -73,6 +73,15 @@
       "provider": "cdnjs",
       "library": "bootstrap-datepicker@1.9.0",
       "destination": "wwwroot/lib/bootstrap-datepicker"
+    },
+    {
+      "provider": "unpkg",
+      "library": "daterangepicker@3.1.0",
+      "destination": "wwwroot/lib/daterangepicker",
+      "files": [
+        "daterangepicker.css",
+        "daterangepicker.js"
+      ]
     }
   ]
 }

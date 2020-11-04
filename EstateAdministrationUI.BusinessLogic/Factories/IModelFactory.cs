@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReporting.DataTransferObjects;
     using Models;
 
     /// <summary>
@@ -132,5 +133,18 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source);
+
+        TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source);
+
+        TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source);
+
+        TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source);
     }
 }

@@ -1300,5 +1300,66 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                     viewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionForPeriodModel_IsConverted()
+        {
+            TransactionForPeriodModel model = TestData.TransactionForPeriodModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionPeriodViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.NumberOfTransactions.ShouldBe(model.NumberOfTransactions);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionForPeriodModel_NullModel_IsConverted()
+        {
+            TransactionForPeriodModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionPeriodViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.NumberOfTransactions.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByDateModel_IsConverted()
+        {
+            TransactionsByDateModel model = TestData.TransactionsByDateModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionDateViewModels.Count.ShouldBe(model.TransactionDateModels.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByWeekModel_IsConverted()
+        {
+            TransactionsByWeekModel model = TestData.TransactionsByWeekModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionWeekViewModels.Count.ShouldBe(model.TransactionWeekModels.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByMonthModel_IsConverted()
+        {
+            TransactionsByMonthModel model = TestData.TransactionsByMonthModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionMonthViewModels.Count.ShouldBe(model.TransactionMonthModels.Count);
+        }
     }
 }

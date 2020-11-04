@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Areas.Estate.Controllers;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
+    using Services;
 
     /// <summary>
     /// 
@@ -113,6 +115,34 @@
         /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
         /// <returns></returns>
         AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionPeriodViewModel ConvertFrom(TransactionForPeriodModel model);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionsByDateViewModel ConvertFrom(TransactionsByDateModel model);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionsByWeekViewModel ConvertFrom(TransactionsByWeekModel model);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model);
 
         #endregion
     }

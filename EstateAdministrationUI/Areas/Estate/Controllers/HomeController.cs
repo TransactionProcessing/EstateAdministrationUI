@@ -1,9 +1,16 @@
 ﻿namespace EstateAdministrationUI.Areas.Estate.Controllers
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Security.Claims;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using BusinessLogic.Models;
     using Factories;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Models;
     using Services;
 
     /// <summary>
@@ -55,6 +62,46 @@
         public IActionResult Index()
         {
             return this.View();
+        }
+
+        [HttpPost]
+        [Route("GetTodaysTransactionsAsJson")]
+        public async Task<IActionResult> GetTodaysTransactionsAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            TransactionForPeriodModel transactionModel =
+                await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.Today, cancellationToken);
+
+            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
+
+            return this.Json(viewModel);
+        }
+
+        [HttpPost]
+        [Route("GetThisWeeksTransactionsAsJson")]
+        public async Task<IActionResult> GetThisWeeksTransactionsAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            TransactionForPeriodModel transactionModel = await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.ThisWeek, cancellationToken);
+
+            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
+
+            return this.Json(viewModel);
+        }
+
+        [HttpPost]
+        [Route("GetThisMonthsTransactionsAsJson")]
+        public async Task<IActionResult> GetThisMonthsTransactionsAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            TransactionForPeriodModel transactionModel = await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.ThisMonth, cancellationToken);
+
+            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
+
+            return this.Json(viewModel);
         }
 
         #endregion

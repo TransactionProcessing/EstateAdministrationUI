@@ -2,11 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
+    using Areas.Estate.Controllers;
     using Areas.Estate.Models;
+    using BusinessLogic.Common;
     using BusinessLogic.Models;
     using Microsoft.EntityFrameworkCore.Internal;
-
+    using Services;
+    
     /// <summary>
     /// 
     /// </summary>
@@ -418,6 +422,94 @@
             addTransactionFeeToContractProductModel.FeeType = (FeeType)feeType;
 
             return addTransactionFeeToContractProductModel;
+        }
+
+        public TransactionPeriodViewModel ConvertFrom(TransactionForPeriodModel model)
+        {
+            TransactionPeriodViewModel viewModel = new TransactionPeriodViewModel();
+
+            if (model == null)
+            {
+                return viewModel;
+            }
+
+            viewModel.NumberOfTransactions = model.NumberOfTransactions;
+
+            return viewModel;
+        }
+
+        public TransactionsByDateViewModel ConvertFrom(TransactionsByDateModel model)
+        {
+            if (model == null)
+            {
+                return new TransactionsByDateViewModel();
+            }
+
+            TransactionsByDateViewModel viewModel = new TransactionsByDateViewModel();
+            viewModel.TransactionDateViewModels = new List<TransactionDateViewModel>();
+            foreach (TransactionDateModel transactionDateModel in model.TransactionDateModels)
+            {
+                viewModel.TransactionDateViewModels.Add(new TransactionDateViewModel
+                                                        {
+                    CurrencyCode = transactionDateModel.CurrencyCode,
+                    Date = transactionDateModel.Date,
+                    NumberOfTransactions = transactionDateModel.NumberOfTransactions,
+                    ValueOfTransactions = transactionDateModel.ValueOfTransactions
+                                                        });
+            }
+
+            return viewModel;
+        }
+
+        public TransactionsByWeekViewModel ConvertFrom(TransactionsByWeekModel model)
+        {
+            if (model == null)
+            {
+                return new TransactionsByWeekViewModel();
+            }
+
+            TransactionsByWeekViewModel viewModel = new TransactionsByWeekViewModel();
+            viewModel.TransactionWeekViewModels = new List<TransactionWeekViewModel>();
+            
+            foreach (TransactionWeekModel transactionWeekModel in model.TransactionWeekModels)
+            {
+                viewModel.TransactionWeekViewModels.Add(new TransactionWeekViewModel
+                                                        {
+                                                            CurrencyCode = transactionWeekModel.CurrencyCode,
+                                                            WeekNumber = transactionWeekModel.WeekNumber,
+                                                            Year = transactionWeekModel.Year,
+                                                            NumberOfTransactions = transactionWeekModel.NumberOfTransactions,
+                                                            ValueOfTransactions = transactionWeekModel.ValueOfTransactions
+                                                        });
+            };
+
+            return viewModel;
+        }
+
+        public TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model)
+        {
+            if (model == null)
+            {
+                return new TransactionsByMonthViewModel();
+            }
+
+            TransactionsByMonthViewModel viewModel = new TransactionsByMonthViewModel();
+            viewModel.TransactionMonthViewModels=new List<TransactionMonthViewModel>();
+
+
+            foreach (TransactionMonthModel transactionMonthModel in model.TransactionMonthModels)
+            {
+                viewModel.TransactionMonthViewModels.Add(new TransactionMonthViewModel
+                                                        {
+                                                            CurrencyCode = transactionMonthModel.CurrencyCode,
+                                                            MonthNumber = transactionMonthModel.MonthNumber,
+                                                            Year = transactionMonthModel.Year,
+                                                            NumberOfTransactions = transactionMonthModel.NumberOfTransactions,
+                                                            ValueOfTransactions = transactionMonthModel.ValueOfTransactions
+                                                        });
+            }
+
+            return viewModel;
         }
 
         /// <summary>

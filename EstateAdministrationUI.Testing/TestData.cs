@@ -6,6 +6,7 @@
     using BusinessLogic.Models;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReporting.DataTransferObjects;
     using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
     using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
@@ -693,6 +694,169 @@
                 OperatorName = TestData.OperatorName,
                 ContractProducts = new List<ContractProductModel>(),
                 NumberOfProducts = 0
+            };
+
+        public static TransactionsByDayResponse TransactionsByDayResponseWithSingleDate =>
+            new TransactionsByDayResponse
+            {
+                TransactionDayResponses = new List<TransactionDayResponse>
+                                          {
+                                              new TransactionDayResponse
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  Date = new DateTime(2020,10,1),
+                                                  NumberOfTransactions = 10,
+                                                  ValueOfTransactions = 1000
+                                              }
+                                          }
+            };
+
+        public static TransactionsByDayResponse TransactionsByDayResponse =>
+            new TransactionsByDayResponse
+            {
+                TransactionDayResponses = new List<TransactionDayResponse>
+                                          {
+                                              new TransactionDayResponse
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  Date = new DateTime(2020,10,1),
+                                                  NumberOfTransactions = 10,
+                                                  ValueOfTransactions = 1000
+                                              },
+                                              new TransactionDayResponse
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  Date = new DateTime(2020,10,2),
+                                                  NumberOfTransactions = 20,
+                                                  ValueOfTransactions = 2000
+                                              }
+                                          }
+            };
+
+        public static TransactionsByDateModel TransactionsByDateModel =>
+            new TransactionsByDateModel
+            {
+                TransactionDateModels = new List<TransactionDateModel>
+                                          {
+                                              new TransactionDateModel
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  Date = new DateTime(2020,10,1),
+                                                  NumberOfTransactions = 10,
+                                                  ValueOfTransactions = 1000
+                                              },
+                                              new TransactionDateModel
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  Date = new DateTime(2020,10,2),
+                                                  NumberOfTransactions = 20,
+                                                  ValueOfTransactions = 2000
+                                              }
+                                          }
+            };
+
+        public static TransactionsByWeekResponse TransactionsByWeekResponse =>
+            new TransactionsByWeekResponse
+            {
+                TransactionWeekResponses = new List<TransactionWeekResponse>
+                                          {
+                                              new TransactionWeekResponse
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  WeekNumber = 1,
+                                                  Year = 2020,
+                                                  NumberOfTransactions = 10,
+                                                  ValueOfTransactions = 1000
+                                              },
+                                              new TransactionWeekResponse
+                                              {
+                                                  CurrencyCode = "KES",
+                                                  WeekNumber = 2,
+                                                  Year = 2020,
+                                                  NumberOfTransactions = 20,
+                                                  ValueOfTransactions = 2000
+                                              }
+                                          }
+            };
+
+        public static TransactionsByWeekModel TransactionsByWeekModel =>
+            new TransactionsByWeekModel
+            {
+                TransactionWeekModels = new List<TransactionWeekModel>
+                                           {
+                                               new TransactionWeekModel
+                                               {
+                                                   CurrencyCode = "KES",
+                                                   WeekNumber = 1,
+                                                   Year = 2020,
+                                                   NumberOfTransactions = 10,
+                                                   ValueOfTransactions = 1000
+                                               },
+                                               new TransactionWeekModel
+                                               {
+                                                   CurrencyCode = "KES",
+                                                   WeekNumber = 2,
+                                                   Year = 2020,
+                                                   NumberOfTransactions = 20,
+                                                   ValueOfTransactions = 2000
+                                               }
+                                           }
+            };
+
+        public static TransactionsByMonthResponse TransactionsByMonthResponse =>
+            new TransactionsByMonthResponse
+            {
+                TransactionMonthResponses = new List<TransactionMonthResponse>
+                                           {
+                                               new TransactionMonthResponse
+                                               {
+                                                   CurrencyCode = "KES",
+                                                   MonthNumber = 1,
+                                                   Year = 2020,
+                                                   NumberOfTransactions = 10,
+                                                   ValueOfTransactions = 1000
+                                               },
+                                               new TransactionMonthResponse
+                                               {
+                                                   CurrencyCode = "KES",
+                                                   MonthNumber = 2,
+                                                   Year = 2020,
+                                                   NumberOfTransactions = 20,
+                                                   ValueOfTransactions = 2000
+                                               }
+                                           }
+            };
+
+        public static TransactionsByMonthModel TransactionsByMonthModel =>
+            new TransactionsByMonthModel
+            {
+                TransactionMonthModels = new List<TransactionMonthModel>
+                                            {
+                                                new TransactionMonthModel
+                                                {
+                                                    CurrencyCode = "KES",
+                                                    MonthNumber = 1,
+                                                    Year = 2020,
+                                                    NumberOfTransactions = 10,
+                                                    ValueOfTransactions = 1000
+                                                },
+                                                new TransactionMonthModel
+                                                {
+                                                    CurrencyCode = "KES",
+                                                    MonthNumber = 2,
+                                                    Year = 2020,
+                                                    NumberOfTransactions = 20,
+                                                    ValueOfTransactions = 2000
+                                                }
+                                            }
+            };
+
+        public static TransactionForPeriodModel TransactionForPeriodModel =>
+            new TransactionForPeriodModel
+            {
+                NumberOfTransactions = 20,
+                CurrencyCode = "KES",
+                ValueOfTransactions = 2000
             };
     }
 }

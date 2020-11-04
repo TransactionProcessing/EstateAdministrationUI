@@ -8,11 +8,14 @@
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
+    using BusinessLogic.Common;
     using BusinessLogic.Factories;
     using BusinessLogic.Models;
     using EstateManagement.Client;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReporting.Client;
+    using EstateReporting.DataTransferObjects;
 
     /// <summary>
     /// 
@@ -28,6 +31,8 @@
         /// </summary>
         private readonly IEstateClient EstateClient;
 
+        private readonly IEstateReportingClient EstateReportingClient;
+
         /// <summary>
         /// The model factory
         /// </summary>
@@ -41,11 +46,14 @@
         /// Initializes a new instance of the <see cref="ApiClient" /> class.
         /// </summary>
         /// <param name="estateClient">The estate client.</param>
+        /// <param name="estateReportingClient">The estate reporting client.</param>
         /// <param name="modelFactory">The model factory.</param>
         public ApiClient(IEstateClient estateClient,
+                         IEstateReportingClient estateReportingClient,
                          IModelFactory modelFactory)
         {
             this.EstateClient = estateClient;
+            this.EstateReportingClient = estateReportingClient;
             this.ModelFactory = modelFactory;
         }
 
@@ -54,12 +62,13 @@
         #region Methods
 
         /// <summary>
+        /// Adds the product to contract.
         /// </summary>
-        /// <param name="accessToken"></param>
-        /// <param name="claimsIdentity"></param>
-        /// <param name="contractId"></param>
-        /// <param name="addProductToContractModel"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="addProductToContractModel">The add product to contract model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<AddProductToContractResponseModel> AddProductToContract(String accessToken,
                                                                                   ClaimsIdentity claimsIdentity,
@@ -294,6 +303,16 @@
             return makeMerchantDepositResponseModel;
         }
 
+        /// <summary>
+        /// Adds the transaction fee to contract product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="addTransactionFeeToContractProductModel">The add transaction fee to contract product model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<AddTransactionFeeToContractProductResponseModel> AddTransactionFeeToContractProduct(String accessToken,
                                                                                                               ClaimsIdentity claimsIdentity,
                                                                                                               Guid contractId,
@@ -310,6 +329,92 @@
             AddTransactionFeeToContractProductResponseModel addTransactionFeeToContractProductResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
 
             return addTransactionFeeToContractProductResponseModel;
+        }
+
+
+        /// <summary>
+        /// Gets the transactions for date period.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="datePeriod">The date period.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<TransactionForPeriodModel> GetTransactionsForDatePeriod(String accessToken,
+                                                                               ClaimsIdentity claimsIdentity, 
+                                                                               DatePeriod datePeriod,
+                                                                               CancellationToken cancellationToken)
+        {
+            
+            // Work out the date range required
+            (DateTime startDate, DateTime endDate) dateRange = this.CalculateDateRange(datePeriod);
+            
+
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            TransactionsByDayResponse response = await this.EstateReportingClient.GetTransactionsForEstateByDate(accessToken,
+                                                                                                                     estateId,
+                                                                                                                     dateRange.startDate.ToString("yyyyMMdd"),
+                                                                                                                     dateRange.endDate.ToString("yyyyMMdd"),
+                                                                                                                     cancellationToken);
+            TransactionForPeriodModel model = this.ModelFactory.ConvertToPeriodModel(response);
+
+            return model;
+        }
+
+        public async Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
+                                                                         ClaimsIdentity claimsIdentity,
+                                                                         DateTime startDate,
+                                                                         DateTime endDate,
+                                                                         CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            TransactionsByDayResponse response = await this.EstateReportingClient.GetTransactionsForEstateByDate(accessToken,
+                                                                                                                     estateId,
+                                                                                                                     startDate.ToString("yyyyMMdd"),
+                                                                                                                     endDate.ToString("yyyyMMdd"),
+                                                                                                                     cancellationToken);
+            TransactionsByDateModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
+        public async Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
+                                                                         ClaimsIdentity claimsIdentity,
+                                                                         DateTime startDate,
+                                                                         DateTime endDate,
+                                                                         CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            TransactionsByWeekResponse response = await this.EstateReportingClient.GetTransactionsForEstateByWeek(accessToken,
+                                                                                                                     estateId,
+                                                                                                                     startDate.ToString("yyyyMMdd"),
+                                                                                                                     endDate.ToString("yyyyMMdd"),
+                                                                                                                     cancellationToken);
+            TransactionsByWeekModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
+        public async Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
+                                                                           ClaimsIdentity claimsIdentity,
+                                                                           DateTime startDate,
+                                                                           DateTime endDate,
+                                                                           CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            TransactionsByMonthResponse response = await this.EstateReportingClient.GetTransactionsForEstateByMonth(accessToken,
+                estateId,
+                startDate.ToString("yyyyMMdd"),
+                endDate.ToString("yyyyMMdd"),
+                cancellationToken);
+
+            TransactionsByMonthModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
         }
 
         /// <summary>
@@ -333,5 +438,35 @@
         }
 
         #endregion
+
+        /// <summary>
+        /// Calculates the date range.
+        /// </summary>
+        /// <param name="datePeriod">The date period.</param>
+        /// <param name="today">The today.</param>
+        /// <param name="firstDayOfWeek">The first day of week.</param>
+        /// <returns></returns>
+        private (DateTime startDate, DateTime endDate) CalculateDateRange(DatePeriod datePeriod,
+                                                                          DateTime? today = null,
+                                                                          DayOfWeek firstDayOfWeek = DayOfWeek.Sunday)
+        {
+            if (today == null)
+            {
+                today=DateTime.Today;
+            }
+
+            if (datePeriod == DatePeriod.Today)
+            {
+                return (today.Value, today.Value);
+            }
+            else if (datePeriod == DatePeriod.ThisWeek)
+            {
+                return (today.Value.StartOfWeek(firstDayOfWeek), today.Value);
+            }
+            else
+            {
+                return (new DateTime(today.Value.Year, today.Value.Month, 1), today.Value);
+            }
+        }
     }
 }
