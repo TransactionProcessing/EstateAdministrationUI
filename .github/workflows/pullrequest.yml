@@ -31,7 +31,7 @@ jobs:
       run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
     - name: Build Code
-      run: dotnet build EstateAdministrationUI.sln --configuration Release
+      run: dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
 
     - name: Run Unit Tests
       run: |

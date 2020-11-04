@@ -1,6 +1,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>    
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="Exists('C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild')">C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <VSToolsPath Condition="Exists('D:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild')">D:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <MSBuildPath Condition="Exists('C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild')">C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current</MSBuildPath>
