@@ -46,7 +46,7 @@ jobs:
     
     - name: Run Javascript Unit Tests
       run: |
-        dir
+        cd EstateAdministrationUI.Javascript.Tests
         npm install
         npm run test
 
