@@ -46,7 +46,7 @@ jobs:
     
     - name: Run Javascript Unit Tests
       run: |
-        cd ..\EstateAdministrationUI.Javascript.Tests
+        dir
         npm install
         npm run test
 
