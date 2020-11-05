@@ -37,9 +37,8 @@ jobs:
 
     - name: Build Code
       run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
-
+        dotnet build EstateAdministrationUI.sln --configuration Release
+        
     - name: Run Unit Tests
       run: |
         echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
