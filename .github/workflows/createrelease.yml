@@ -34,7 +34,7 @@ jobs:
 
     - name: Build Code
       run: |
-        dotnet build EstateAdministrationUI.sln --configuration Release
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
         
     - name: Run Unit Tests
       run: |
@@ -44,6 +44,7 @@ jobs:
 
     - name: Run Javascript Unit Tests
       run: |
+        dir
         cd EstateAdministrationUI.Javascript.Tests
         npm install
         npm run test
