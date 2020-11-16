@@ -414,7 +414,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                         try
                         {
                             Logger.LogInformation($"Creating projection [{projectionName}]");
-                            await projectionClient.CreateContinuousAsync(projectionName, projection).ConfigureAwait(false);
+                            await projectionClient.CreateContinuousAsync(projectionName, projection, trackEmittedStreams:true).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {
