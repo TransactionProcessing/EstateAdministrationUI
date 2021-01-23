@@ -14,6 +14,8 @@ namespace EstateAdministrationUI
     using System.IdentityModel.Tokens.Jwt;
     using System.IO;
     using System.Net.Http;
+    using System.Security.Claims;
+    using System.Text.Json;
     using BusinessLogic.Factories;
     using EstateManagement.Client;
     using EstateReporting.Client;
@@ -22,12 +24,14 @@ namespace EstateAdministrationUI
     using IdentityModel;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authentication.OAuth.Claims;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json.Linq;
     using NLog.Extensions.Logging;
     using Services;
     using Shared.General;

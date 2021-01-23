@@ -180,7 +180,7 @@
         public List<OperatorListViewModel> ConvertFrom(Guid estateId,
                                                        List<EstateOperatorModel> estateOperatorModels)
         {
-            if (estateOperatorModels == null || EnumerableExtensions.Any(estateOperatorModels) == false)
+            if (estateOperatorModels == null || estateOperatorModels.Any() == false)
             {
                 throw new ArgumentNullException(nameof(estateOperatorModels));
             }
@@ -265,7 +265,7 @@
         /// <exception cref="ArgumentNullException">merchantModels</exception>
         public List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels)
         {
-            if (merchantModels == null || EnumerableExtensions.Any(merchantModels) == false)
+            if (merchantModels == null || merchantModels.Any() == false)
             {
                 throw new ArgumentNullException(nameof(merchantModels));
             }

@@ -142,7 +142,7 @@
 
             String jsonResult = JsonConvert.SerializeObject(dataTableResult);
             Logger.LogDebug(jsonResult);
-
+            
             return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Devices));
         }
 

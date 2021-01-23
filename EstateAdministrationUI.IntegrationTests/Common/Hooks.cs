@@ -25,7 +25,7 @@
         public async Task BeforeScenario()
         {
             String? browser = Environment.GetEnvironmentVariable("Browser");
-            //browser = "Edge";
+            browser = "Firefox";
 
             if (browser == null || browser == "Chrome")
             {
