@@ -884,6 +884,32 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
+        [Given(@"I create the following api scopes")]
+        public async Task GivenICreateTheFollowingApiScopes(Table table)
+        {
+            foreach (TableRow tableRow in table.Rows)
+            {
+                CreateApiScopeRequest createApiScopeRequest = new CreateApiScopeRequest
+                                                              {
+                    Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
+                    Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
+                                                                  DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
+                                                              };
+                var createApiScopeResponse =
+                    await this.CreateApiScope(createApiScopeRequest, CancellationToken.None).ConfigureAwait(false);
+
+                createApiScopeResponse.ShouldNotBeNull();
+                createApiScopeResponse.ApiScopeName.ShouldNotBeNullOrEmpty();
+            }
+        }
+
+        private async Task<CreateApiScopeResponse> CreateApiScope(CreateApiScopeRequest createApiScopeRequest,
+                                                                  CancellationToken cancellationToken)
+        {
+            CreateApiScopeResponse createApiScopeResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateApiScope(createApiScopeRequest, cancellationToken).ConfigureAwait(false);
+            return createApiScopeResponse;
+        }
+
         [Given(@"I create the following api resources")]
         public async Task GivenICreateTheFollowingApiResources(Table table)
         {

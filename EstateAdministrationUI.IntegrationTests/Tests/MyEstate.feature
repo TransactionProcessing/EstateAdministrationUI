@@ -7,6 +7,10 @@ Background:
 	| Role Name  |
 	| Estate[id] |
 
+	Given I create the following api scopes
+	| Name                 | DisplayName                  | Description                        |
+	| estateManagement[id] | Estate Managememt REST Scope | A scope for Estate Managememt REST |
+
 	Given I create the following api resources
 	| Name                 | DisplayName            | Secret  | Scopes           | UserClaims               |
 	| estateManagement[id] | Estate Managememt REST | Secret1 | estateManagement[id] | MerchantId,EstateId,role |
