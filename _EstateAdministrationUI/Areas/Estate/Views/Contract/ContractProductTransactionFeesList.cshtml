@@ -1,0 +1,96 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.ContractProductTransactionFeesListViewModel
+
+@{
+    ViewBag.Title = "Transaction Fees for Product - @Model.ProductName";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-3">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-2 d-none d-lg-block bg-merchantlist-image"></div>
+                <div class="col-lg-10">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Transaction Fees for Contract - @Model.Description Product - @Model.ProductName</h1>
+                        </div>
+
+                        <a class="btn btn-primary btn-circle btn-sm" asp-action="CreateContractProductTransactionFee" asp-controller="Contract" asp-area="Estate" id="newContractProductTransactionFeeButton" asp-route-contractId="@Model.ContractId" asp-route-contractProductId="@Model.ContractProductId" ><i class="fa fa-plus"></i></a>
+                        <table id="contractProductTransactionFeeList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Estate Id</th>
+                                    <th>Contract Id</th>
+                                    <th>Product Id</th>
+                                    <th>Fee Id</th>
+                                    <th>Description</th>
+                                    <th>Fee Type</th>
+                                    <th>Calculation Type</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        $("#contractProductTransactionFeeList").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "GetContractProductTransactionFeesListAsJson?contractId=@Model.ContractId&contractProductId=@Model.ContractProductId",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs":
+            [{
+                "targets": [0],
+                "visible": false,
+                "searchable": false
+                },
+                    {
+                        "targets": [1],
+                        "visible": false,
+                        "searchable": false  },
+                {
+                    "targets": [2],
+                    "visible": false,
+                        "searchable": false
+                    },
+                {
+                    "targets": [3],
+                    "visible": false,
+                    "searchable": false
+                }
+                ],
+            "columns": [
+                { "data": "estateId", "name": "estateId", "autoWidth": true },
+                { "data": "contractId", "name": "contractId", "autoWidth": true },
+                { "data": "contractProductId", "name": "contractProductId", "autoWidth": true },
+                { "data": "transactionFeeId", "name": "transactionFeeId", "autoWidth": true },
+                { "data": "description", "name": "description", "autoWidth": true },
+                { "data": "feeType", "name": "feeType", "autoWidth": true },
+                { "data": "calculationType", "name": "calculationType", "autoWidth": true },
+                { "data": "value", "name": "value", "autoWidth": true }
+            ],
+            "order": [[4, "asc"]]
+        });
+    });
+</script>

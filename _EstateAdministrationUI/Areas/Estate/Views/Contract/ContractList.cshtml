@@ -1,0 +1,96 @@
+﻿@model List<EstateAdministrationUI.Areas.Estate.Models.ContractListViewModel>
+
+@{
+    ViewBag.Title = "Contracts";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-3">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-2 d-none d-lg-block bg-merchantlist-image"></div>
+                <div class="col-lg-10">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">My Contracts</h1>
+                        </div>
+
+                        <a class="btn btn-primary btn-circle btn-sm" asp-action="CreateContract" asp-controller="Contract" asp-area="Estate" id="newContractButton"><i class="fa fa-plus"></i></a>
+                        <table id="contractList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Estate Id</th>
+                                    <th>Operator Id</th>
+                                    <th>Contract Id</th>
+                                    <th>Contract Description</th>
+                                    <th>Operator</th>
+                                    <th>Products</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        $("#contractList").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "GetContractListAsJson",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs":
+            [{
+                "targets": [0],
+                "visible": false,
+                "searchable": false
+                },
+                    {
+                        "targets": [1],
+                        "visible": false,
+                        "searchable": false  },
+                {
+                    "targets": [2],
+                    "visible": false,
+                    "searchable": false  }],
+            "columns": [
+                { "data": "estateId", "name": "estateId", "autoWidth": true },
+                { "data": "operatorId", "name": "operatorId", "autoWidth": true },
+                { "data": "contractId", "name": "contractId", "autoWidth": true },
+                { "data": "description", "name": "description", "autoWidth": true },
+                { "data": "operatorName", "name": "operatorName", "autoWidth": true },
+                {
+                    "render": function(data, type, full, meta){
+                        return '<a id="numberOfProductsLink" href="GetContractProductsList?contractId=' + full.contractId + '">' + full.numberOfProducts + '</a>';
+                    }
+                },
+                {
+                    "render": function(data, type, full, meta)
+                    {
+                        return '<a class="btn btn-info" id="editContractLink" href="GetContract?contractId=' + full.contractId + '"><i class="fa fa-edit-circle"></i></a>';
+                    }
+                }
+            ],
+            "order": [[3, "asc"]]
+        });
+    });
+</script>

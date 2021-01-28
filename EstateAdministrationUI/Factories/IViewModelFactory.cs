@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Areas.Estate.Controllers;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
-    using Services;
 
     /// <summary>
     /// 

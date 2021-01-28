@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace EstateAdministrationUI.Common
+﻿namespace EstateAdministrationUI.Common
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Linq.Expressions;
     using Areas.Estate.Models;
+    using BusinessLogic.Common;
     using Microsoft.AspNetCore.Http;
     using Shared.Logger;
-    using BusinessLogic.Common;
 
     [ExcludeFromCodeCoverage]
     public class Helpers

@@ -35,7 +35,7 @@
     },
     {
       "provider": "cdnjs",
-      "library": "font-awesome@5.8.2",
+      "library": "font-awesome@5.15.2",
       "destination": "wwwroot/lib/fontawesome"
     },
     {
@@ -57,17 +57,6 @@
       "provider": "cdnjs",
       "library": "bootbox.js@4.4.0",
       "destination": "wwwroot/lib/bootboxjs"
-    },
-    {
-      "provider": "unpkg",
-      "library": "chart.js@2.9.4",
-      "destination": "wwwroot/lib/chartjs",
-      "files": [
-        "dist/Chart.css",
-        "dist/Chart.js",
-        "dist/Chart.min.css",
-        "dist/Chart.min.js"
-      ]
     },
     {
       "provider": "cdnjs",
