@@ -65,17 +65,6 @@
     },
     {
       "provider": "unpkg",
-      "library": "chart.js@2.9.4",
-      "destination": "wwwroot/lib/chartjs",
-      "files": [
-        "dist/Chart.css",
-        "dist/Chart.js",
-        "dist/Chart.min.css",
-        "dist/Chart.min.js"
-      ]
-    },
-    {
-      "provider": "unpkg",
       "library": "daterangepicker@3.1.0",
       "destination": "wwwroot/lib/daterangepicker",
       "files": [
