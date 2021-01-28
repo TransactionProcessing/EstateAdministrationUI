@@ -1,0 +1,9 @@
+{
+  "name": "estate-administration-ui.node-js",
+  "version": "0.0.0",
+  "description": "EstateAdministrationUI.NodeJs",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  }
+}

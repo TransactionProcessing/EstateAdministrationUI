@@ -13,13 +13,12 @@
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Newtonsoft.Json;
     using Services;
     using Shared.Logger;
-    
+
     [ExcludeFromCodeCoverage]
     [Authorize]
     [Area("Estate")]

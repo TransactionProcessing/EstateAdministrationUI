@@ -2,19 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Linq;
-    using Areas.Estate.Controllers;
     using Areas.Estate.Models;
-    using BusinessLogic.Common;
     using BusinessLogic.Models;
-    using Microsoft.EntityFrameworkCore.Internal;
-    using Services;
-    
+
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="EstateAdministrationUI.Factories.IViewModelFactory" />
+    /// <seealso cref="IViewModelFactory" />
     public class ViewModelFactory : IViewModelFactory
     {
         #region Methods

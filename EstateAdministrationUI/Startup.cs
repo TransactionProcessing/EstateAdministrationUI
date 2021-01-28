@@ -1,21 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 namespace EstateAdministrationUI
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IdentityModel.Tokens.Jwt;
     using System.IO;
     using System.Net.Http;
-    using System.Security.Claims;
-    using System.Text.Json;
     using BusinessLogic.Factories;
     using EstateManagement.Client;
     using EstateReporting.Client;
@@ -24,14 +13,17 @@ namespace EstateAdministrationUI
     using IdentityModel;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
-    using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Newtonsoft.Json.Linq;
     using NLog.Extensions.Logging;
     using Services;
     using Shared.General;
@@ -82,12 +74,12 @@ namespace EstateAdministrationUI
             services.AddControllersWithViews();
 
             services.Configure<CookiePolicyOptions>(options =>
-                                                    {
-                                                        // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                                                        options.CheckConsentNeeded = context => true;
-                                                        options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-                                                        options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                                                    });
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            });
 
             services.AddAuthentication(options =>
             {
@@ -100,7 +92,8 @@ namespace EstateAdministrationUI
                 options.Cookie.SameSite = SameSiteMode.Unspecified;
                 options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            }).AddAutomaticTokenManagement().AddOpenIdConnect("oidc",
+            }).AddAutomaticTokenManagement()
+                    .AddOpenIdConnect("oidc",
                                                               options =>
                                                               {
                                                                   options.SignInScheme = "Cookies";
@@ -137,11 +130,11 @@ namespace EstateAdministrationUI
                                                                   options.SaveTokens = true;
 
                                                                   options.TokenValidationParameters = new TokenValidationParameters
-                                                                                                      {
-                                                                                                          NameClaimType = JwtClaimTypes.Name,
-                                                                                                          RoleClaimType = JwtClaimTypes.Role,
-                                                                                                          ValidateIssuer = false
-                                                                                                      };
+                                                                  {
+                                                                      NameClaimType = JwtClaimTypes.Name,
+                                                                      RoleClaimType = JwtClaimTypes.Role,
+                                                                      ValidateIssuer = false
+                                                                  };
                                                               });
             IdentityModelEventSource.ShowPII = true;
 
@@ -151,9 +144,9 @@ namespace EstateAdministrationUI
             services.AddSingleton<IEstateClient, EstateClient>();
             services.AddSingleton<IEstateReportingClient, EstateReportingClient>();
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
-                                                                     {
-                                                                         return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
-                                                                     });
+            {
+                return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
+            });
             services.AddSingleton<HttpClient>();
         }
 
@@ -173,7 +166,7 @@ namespace EstateAdministrationUI
             Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("EstateAdministrationUI");
 
             Logger.Initialise(logger);
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -190,20 +183,20 @@ namespace EstateAdministrationUI
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-                             {
-                                 endpoints.MapAreaControllerRoute("Account", "Account", "Account/{controller=Home}/{action=Index}/{id?}");
-                                 endpoints.MapAreaControllerRoute("Estate", "Estate", "Estate/{controller=Home}/{action=Index}/{id?}");
-                                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-                                 endpoints.MapHealthChecks("health", new HealthCheckOptions()
-                                                                     {
-                                                                         Predicate = _ => true,
-                                                                         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                                                                     });
+            {
+                endpoints.MapAreaControllerRoute("Account", "Account", "Account/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapAreaControllerRoute("Estate", "Estate", "Estate/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
 
 
-                             });
+            });
 
-            
+
         }
     }
 }

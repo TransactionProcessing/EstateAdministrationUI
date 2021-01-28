@@ -1,0 +1,73 @@
+﻿@model EstateAdministrationUI.Areas.Estate.Models.CreateContractProductViewModel
+
+@{
+    ViewBag.Title = "New Contract Product Details";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+@*<style>
+    .container {
+        margin-right: 0.75rem;
+        margin-left: 0.75rem;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-createnewmerchant-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create New Contract Product</h1>
+                        </div>
+                        <form id="createContractProductForm" asp-action="CreateContractProduct" asp-area="Estate" asp-controller="Contract" method="post" class="user">
+                            @Html.HiddenFor(model => model.ContractId)
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="ProductName" class="control-label">Product Name</label>
+                                <input asp-for="ProductName" class="form-control form-control-user" name="productName" autofocus />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DisplayText" class="control-label">Display Text</label>
+                                <input asp-for="DisplayText" class="form-control form-control-user" name="displayText" autofocus />
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label asp-for="Value" class="control-label">Value</label>
+                                    <input asp-for="Value" class="form-control form-control-user mx-sm-3" name="value" autofocus />
+                                    <label asp-for="IsVariable" class="form-check-label">Is Variable Value</label>
+                                    <input asp-for="IsVariable" class="form-check-input mx-sm-3" name="isVariable" autofocus />
+                                </div>
+                            </div>
+
+                            <button id="createContractProductButton" type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-plus"></i> Create Contact Product</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        //$.get("GetOperatorListAsJson",
+        //    function(data)
+        //    {
+        //        var operatorListSelect = $('#operatorList');
+        //        var operatorList = data;
+
+        //        operatorList.forEach(function(element)
+        //        {
+        //            operatorListSelect.append(
+        //                $('<option></option>').val(element.operatorId).html(element.operatorName));
+        //            console.log(element);
+        //        });
+
+        //    });
+    });
+</script>

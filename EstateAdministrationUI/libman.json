@@ -35,7 +35,7 @@
     },
     {
       "provider": "cdnjs",
-      "library": "font-awesome@5.8.2",
+      "library": "font-awesome@5.15.2",
       "destination": "wwwroot/lib/fontawesome"
     },
     {
@@ -59,6 +59,11 @@
       "destination": "wwwroot/lib/bootboxjs"
     },
     {
+      "provider": "cdnjs",
+      "library": "bootstrap-datepicker@1.9.0",
+      "destination": "wwwroot/lib/bootstrap-datepicker"
+    },
+    {
       "provider": "unpkg",
       "library": "chart.js@2.9.4",
       "destination": "wwwroot/lib/chartjs",
@@ -68,11 +73,6 @@
         "dist/Chart.min.css",
         "dist/Chart.min.js"
       ]
-    },
-    {
-      "provider": "cdnjs",
-      "library": "bootstrap-datepicker@1.9.0",
-      "destination": "wwwroot/lib/bootstrap-datepicker"
     },
     {
       "provider": "unpkg",

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EstateAdministrationUI.Areas.Estate.Controllers
+﻿namespace EstateAdministrationUI.Areas.Estate.Controllers
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Threading;
+    using System.Threading.Tasks;
     using BusinessLogic.Models;
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Newtonsoft.Json;
     using Services;
 
     [ExcludeFromCodeCoverage]

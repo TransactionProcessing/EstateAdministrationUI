@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\daterangepicker\example\**" />
+    <Compile Remove="wwwroot\lib\daterangepicker\website\**" />
+    <Content Remove="wwwroot\lib\daterangepicker\example\**" />
+    <Content Remove="wwwroot\lib\daterangepicker\website\**" />
+    <EmbeddedResource Remove="wwwroot\lib\daterangepicker\example\**" />
+    <EmbeddedResource Remove="wwwroot\lib\daterangepicker\website\**" />
+    <None Remove="wwwroot\lib\daterangepicker\example\**" />
+    <None Remove="wwwroot\lib\daterangepicker\website\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\daterangepicker\bower.json" />
+    <Content Remove="wwwroot\lib\daterangepicker\demo.html" />
+    <Content Remove="wwwroot\lib\daterangepicker\drp.png" />
+    <Content Remove="wwwroot\lib\daterangepicker\index.html" />
+    <Content Remove="wwwroot\lib\daterangepicker\moment.min.js" />
+    <Content Remove="wwwroot\lib\daterangepicker\package.js" />
+    <Content Remove="wwwroot\lib\daterangepicker\package.json" />
+    <Content Remove="wwwroot\lib\daterangepicker\README.md" />
+    <Content Remove="wwwroot\lib\daterangepicker\test.html" />
+    <Content Remove="wwwroot\lib\daterangepicker\website.css" />
+    <Content Remove="wwwroot\lib\daterangepicker\website.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
+    <PackageReference Include="Shared" Version="1.0.3" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Account\Models\" />
+    <Folder Include="Areas\Estate\Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EstateAdministrationUI.BusinessLogic\EstateAdministrationUI.BusinessLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="hosting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="nlog.development.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="NuGet.Config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
+
+</Project>

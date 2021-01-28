@@ -9,13 +9,14 @@
     </div>
     <div class="row">
 
-        <h3>Select Date Range:</h3>
-        <br/>
-        <input type="text" id="dates" style="width: 250px"/>
+        <h4>
+            Select Date Range:
+            <input type="text" id="dates" style="width: 250px"/>
+        </h4>
 
         <!-- Sales By Time Period -->
         <div class="col-xl-12 col-lg-12">
-            <div class="card shadow mb-4">
+            @*<div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Sales By Time Period</h6>
@@ -31,6 +32,32 @@
                         <div id="chart_div" style="height: 700px"></div>
                     </div>
                 </div>
+            </div>*@
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5>
+                        Select Breakdown:
+                        <select id="timePeriod" onchange="drawChart()">
+                            <option value="Day" selected>By Day</option>
+                            <option value="Week">By Week</option>
+                            <option value="Month">By Month</option>
+                        </select>
+                    </h5>
+                    <div class="chart" id="chartCanvasParent">
+                        <div id="chart_div" style="height: 700px"></div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
             </div>
         </div>
     </div>
