@@ -9,6 +9,8 @@
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
+    using SortDirection = EstateReporting.DataTransferObjects.SortDirection;
+    using SortField = EstateReporting.DataTransferObjects.SortField;
 
     /// <summary>
     /// 
@@ -177,6 +179,12 @@
             return addProductToContractResponseModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public AddTransactionFeeForProductToContractRequest ConvertFrom(AddTransactionFeeToContractProductModel source)
         {
             if (source == null)
@@ -199,6 +207,12 @@
 
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source)
         {
             if (source == null)
@@ -217,6 +231,11 @@
             return addTransactionFeeToContractProductResponseModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source)
         {
             if (source == null)
@@ -233,6 +252,11 @@
                 return model;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source)
         {
             if (source == null || source.TransactionDayResponses == null || source.TransactionDayResponses.Any() == false)
@@ -255,6 +279,11 @@
             return model;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source)
         {
             if (source == null || source.TransactionWeekResponses == null || source.TransactionWeekResponses.Any() == false)
@@ -278,6 +307,11 @@
             return model;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source)
         {
             if (source == null || source.TransactionMonthResponses == null || source.TransactionMonthResponses.Any() == false)
@@ -298,6 +332,76 @@
                                                                                               MonthNumber = t.MonthNumber,
                                                                                               Year = t.Year
                                                                                           }));
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="sortDirection">The sort direction.</param>
+        /// <returns></returns>
+        public SortDirection ConvertFrom(Models.SortDirection sortDirection)
+        {
+            SortDirection result = SortDirection.Ascending;
+            switch (sortDirection)
+            {
+                case Models.SortDirection.Ascending:
+                    result = SortDirection.Ascending;
+                    break;
+                case Models.SortDirection.Descending:
+                    result = SortDirection.Descending;
+                    break;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="sortField">The sort field.</param>
+        /// <returns></returns>
+        public SortField ConvertFrom(Models.SortField sortField)
+        {
+            SortField result = SortField.Value;
+            switch (sortField)
+            {
+                case Models.SortField.Value:
+                    result = SortField.Value;
+                    break;
+                case Models.SortField.Count:
+                    result = SortField.Count;
+                    break;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public TransactionsByMerchantModel ConvertFrom(TransactionsByMerchantResponse source)
+        {
+            if (source == null || source.TransactionMerchantResponses == null || source.TransactionMerchantResponses.Any() == false)
+            {
+                return null;
+            }
+
+            TransactionsByMerchantModel model = new TransactionsByMerchantModel
+            {
+                                                    TransactionMerchantModels = new List<TransactionMerchantModel>()
+                                                };
+
+            source.TransactionMerchantResponses.ForEach(t => model.TransactionMerchantModels.Add(new TransactionMerchantModel
+                                                                                                 {
+                                                                                                     NumberOfTransactions = t.NumberOfTransactions,
+                                                                                                     ValueOfTransactions = t.ValueOfTransactions,
+                                                                                                     CurrencyCode = t.CurrencyCode,
+                                                                                                     MerchantId = t.MerchantId,
+                                                                                                     MerchantName = t.MerchantName
+                                                                                                 }));
             return model;
         }
 

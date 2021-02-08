@@ -1339,6 +1339,18 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByDateModel_ModelIsNull_IsConverted()
+        {
+            TransactionsByDateModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionDateViewModels.ShouldBeNull();
+        }
+
+        [Fact]
         public void ViewModelFactory_ConvertFrom_TransactionsByWeekModel_IsConverted()
         {
             TransactionsByWeekModel model = TestData.TransactionsByWeekModel;
@@ -1351,6 +1363,18 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByWeekModel_ModelIsNull_IsConverted()
+        {
+            TransactionsByWeekModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionWeekViewModels.ShouldBeNull();
+        }
+
+        [Fact]
         public void ViewModelFactory_ConvertFrom_TransactionsByMonthModel_IsConverted()
         {
             TransactionsByMonthModel model = TestData.TransactionsByMonthModel;
@@ -1360,6 +1384,42 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             TransactionsByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
             viewModel.TransactionMonthViewModels.Count.ShouldBe(model.TransactionMonthModels.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByMonthModel_ModelIsNull_IsConverted()
+        {
+            TransactionsByMonthModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionMonthViewModels.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByMerchantModel_IsConverted()
+        {
+            TransactionsByMerchantModel model = TestData.TransactionsByMerchantModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionMerchantViewModels.Count.ShouldBe(model.TransactionMerchantModels.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TransactionsByMerchantModel_ModelIsNull_IsConverted()
+        {
+            TransactionsByMerchantModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            TransactionsByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.TransactionMerchantViewModels.ShouldBeNull();
         }
     }
 }

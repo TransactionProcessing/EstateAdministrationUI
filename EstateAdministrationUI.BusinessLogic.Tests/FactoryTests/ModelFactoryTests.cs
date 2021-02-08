@@ -15,6 +15,10 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using Shouldly;
     using Testing;
     using Xunit;
+    using DTOSortDirection = EstateReporting.DataTransferObjects.SortDirection;
+    using ModelSortDirection = Models.SortDirection;
+    using DTOSortField = EstateReporting.DataTransferObjects.SortField;
+    using ModelSortField = Models.SortField;
 
     public class ModelFactoryTests
     {
@@ -1387,6 +1391,78 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             TransactionForPeriodModel model = modelFactory.ConvertToPeriodModel(response);
 
             model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionMerchantResponse_ModelIsConverted()
+        {
+            TransactionsByMerchantResponse response = TestData.TransactionsByMerchantResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+
+            model.TransactionMerchantModels.ShouldNotBeNull();
+            model.TransactionMerchantModels.ShouldNotBeEmpty();
+            model.TransactionMerchantModels.Count.ShouldBe(response.TransactionMerchantResponses.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionMerchantResponse_NullResponse_ErrorThrown()
+        {
+            TransactionsByMerchantResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionMerchantResponse_NullChildClassResponse_ErrorThrown()
+        {
+            TransactionsByMerchantResponse response = new TransactionsByMerchantResponse();
+            response.TransactionMerchantResponses = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionMerchantResponse_EmptyChildClassResponse_ErrorThrown()
+        {
+            TransactionsByMerchantResponse response = new TransactionsByMerchantResponse();
+            response.TransactionMerchantResponses = new List<TransactionMerchantResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData(ModelSortDirection.Ascending, DTOSortDirection.Ascending)]
+        [InlineData(ModelSortDirection.Descending, DTOSortDirection.Descending)]
+        public void ModelFactory_ConvertFrom_SortDirection_EmptyChildClassResponse_ErrorThrown(ModelSortDirection input, DTOSortDirection expected)
+        {
+            ModelFactory modelFactory = new ModelFactory();
+            DTOSortDirection actual = modelFactory.ConvertFrom(input);
+            actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(ModelSortField.Count, DTOSortField.Count)]
+        [InlineData(ModelSortField.Value, DTOSortField.Value)]
+        public void ModelFactory_ConvertFrom_SortField_EmptyChildClassResponse_ErrorThrown(ModelSortField input, DTOSortField expected)
+        {
+            ModelFactory modelFactory = new ModelFactory();
+            DTOSortField actual = modelFactory.ConvertFrom(input);
+            actual.ShouldBe(expected);
         }
     }
 }

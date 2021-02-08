@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Transaction Analysis";
+    ViewBag.Title = "Merchant Analysis";
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid">
     <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-4">Transaction Analysis</h1>
+        <h1 class="h4 text-gray-900 mb-4">Merchant Analysis</h1>
     </div>
     <div class="row">
 
@@ -29,11 +29,26 @@
                 </div>
                 <div class="card-body">
                     <h5>
-                        Select Breakdown:
-                        <select id="timePeriod" onchange="drawChart()">
-                            <option value="Day" selected>By Day</option>
-                            <option value="Week">By Week</option>
-                            <option value="Month">By Month</option>
+                        Sort By:
+                        <select id="sortBy" onchange="drawChart()">
+                            <option value="0" selected>Sales Value</option>
+                            <option value="1">Sales Count</option>
+                        </select>
+                    </h5>
+                    <h5>
+                        Direction:
+                        <select id="direction" onchange="drawChart()">
+                            <option value="0" selected>Top</option>
+                            <option value="1">Bottom</option>
+                        </select>
+                    </h5>
+                    <h5>
+                        Number of Merchants:
+                        <select id="merchantCount" onchange="drawChart()">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
                         </select>
                     </h5>
                     <div class="chart" id="chartCanvasParent">
@@ -60,22 +75,25 @@
 
     function drawChart()
     {
-        var timePeriod = document.getElementById("timePeriod").value;
+        var merchantCount = document.getElementById("merchantCount").value;
+        var direction = document.getElementById("direction").value;
+        var sortBy = document.getElementById("sortBy").value;
+        console.log(direction);
 
         var drp = $('#dates').data('daterangepicker');
         var startDate = new Date(drp.startDate);
         var endDate = new Date(drp.endDate);
 
         var jsonData = $.ajax({
-            url: "GetSalesByTimePeriodAsJson?timePeriod=" + timePeriod + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
+            url: "GetSalesByMerchantAsJson?merchantCount=" + merchantCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
             dataType: "json",
             async: false
         }).responseText;
-
-        // Convert JSON value to google format array
-        var data = convertJsonToArray(jsonData, timePeriod);
         
-        var options = setupChartOptions(timePeriod);
+        // Convert JSON value to google format array
+        var data = convertJsonToArray(jsonData, sortBy);
+        
+        var options = setupChartOptions(merchantCount, direction, sortBy);
 
         if (data.getNumberOfRows() > 0)
         {
@@ -89,30 +107,35 @@
         }
     }
 
-    function setupChartOptions(timePeriod)
+    function setupChartOptions(merchantcount, sortdirection, sortfield)
     {
-        var hAxis = {};
+        console.log(sortdirection);
+        hAxis = { title: 'Merchant'};
         var title = '';
-        switch (timePeriod) {
-            case "Day":
-                hAxis= { title: 'Date', format: 'dd/MM/yyyy' };
-                title = 'Sales Value and Count by Day';
-                break;
-            case "Week":
-                hAxis = { title: 'Week Number' };
-                title = 'Sales Value and Count by Week';
-                break;
-            case "Month":
-                hAxis = { title: 'Month' };
-                title = 'Sales Value and Count by Month';
-                break;
+        if (sortdirection === '0')
+        {
+            title += 'Top ' + merchantcount;
+            console.log(title);
+        }
+        else
+        {
+            title += 'Bottom ' + merchantcount;
         }
 
+        if (sortfield === '0')
+        {
+            title += ' by Value';
+        }
+        else
+        {
+            title += ' by Count';
+        }
+        
         var options = {
             title: title,
             hAxis: hAxis,
             seriesType: 'bars',
-            series: { 1: { type: 'line' } },
+            //series: { 1: { type: 'line' } },
             colors: getChartColors(),
             animation: {
                 startup: true,
@@ -124,22 +147,12 @@
         return options;
     }
 
-    function convertJsonToArray(jsonData, timePeriod)
+    function convertJsonToArray(jsonData, sortField)
     {
         var data = JSON.parse(jsonData);
         var dataArray = [];
-        switch (timePeriod)
-        {
-            case "Day":
-                dataArray = translateDailyTotals(data);
-                break;
-            case "Week":
-                dataArray = translateWeeklyTotals(data);
-                break;
-            case "Month":
-                dataArray = translateMonthTotals(data);
-                break;
-        }
+
+        dataArray = translateMerchantTotals(data, sortField);
         
         return google.visualization.arrayToDataTable(dataArray);
     }

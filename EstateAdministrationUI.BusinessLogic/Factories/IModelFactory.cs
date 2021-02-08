@@ -5,6 +5,11 @@
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.DataTransferObjects;
     using Models;
+    using SortDirectionModel = Models.SortDirection;
+    using SortDirectionDTO = EstateReporting.DataTransferObjects.SortDirection;
+    using SortFieldModel = Models.SortField;
+    using SortFieldDTO = EstateReporting.DataTransferObjects.SortField;
+
 
     /// <summary>
     /// 
@@ -141,10 +146,46 @@
         /// <returns></returns>
         TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="sortDirection">The sort direction.</param>
+        /// <returns></returns>
+        SortDirectionDTO ConvertFrom(SortDirectionModel sortDirection);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="sortField">The sort field.</param>
+        /// <returns></returns>
+        SortFieldDTO ConvertFrom(SortFieldModel sortField);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        TransactionsByMerchantModel ConvertFrom(TransactionsByMerchantResponse source);
     }
 }

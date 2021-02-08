@@ -3,6 +3,7 @@
     module.exports.translateDailyTotals = translateDailyTotals;
     module.exports.translateWeeklyTotals = translateWeeklyTotals;
     module.exports.translateMonthTotals = translateMonthTotals;
+    module.exports.translateMerchantTotals = translateMerchantTotals;
 }
 
 function getChartColors()
@@ -109,4 +110,53 @@ function getChartColors()
         });
 
         return dataArray;
+}
+
+function translateMerchantTotals(data, sortField)
+{
+    var dataArray = [];
+    
+    if (data === null)
+    {
+        return [];
     }
+
+    if (data.transactionMerchantViewModels === null)
+    {
+        return [];
+    }
+    console.log('labels sortField is ' + sortField);
+    // Add the labels first
+    if (sortField === '0')
+    {
+        dataArray.push([
+            { label: "Merchant", type: "string" }, { label: "Value of Sales", type: "number" }
+        ]);
+    }
+    else
+    {
+        dataArray.push([
+            { label: "Merchant", type: "string" }, { label: "Number of Sales", type: "number" }
+        ]);
+    }
+
+    data.transactionMerchantViewModels.forEach((merchant) =>
+    {
+        var merchantName = merchant.merchantName;
+        var value = 0;
+        console.log('values sortField is ' + sortField);
+        if (sortField === '0')
+        {
+            value = merchant.valueOfTransactions;
+        }
+        else
+        {
+            value = merchant.numberOfTransactions;
+        }
+        var item = {
+            c: [{ v: merchantName }, { v: value }]
+        };
+        dataArray.push(item);
+    });
+    return dataArray;
+}

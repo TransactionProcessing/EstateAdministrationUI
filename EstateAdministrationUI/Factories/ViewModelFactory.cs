@@ -9,6 +9,7 @@
     /// <summary>
     /// 
     /// </summary>
+    /// <seealso cref="EstateAdministrationUI.Factories.IViewModelFactory" />
     /// <seealso cref="IViewModelFactory" />
     public class ViewModelFactory : IViewModelFactory
     {
@@ -399,6 +400,7 @@
         /// </summary>
         /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">createContractProductTransactionFeeViewModel</exception>
         public AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel)
         {
             if (createContractProductTransactionFeeViewModel == null)
@@ -419,6 +421,11 @@
             return addTransactionFeeToContractProductModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         public TransactionPeriodViewModel ConvertFrom(TransactionForPeriodModel model)
         {
             TransactionPeriodViewModel viewModel = new TransactionPeriodViewModel();
@@ -433,6 +440,11 @@
             return viewModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         public TransactionsByDateViewModel ConvertFrom(TransactionsByDateModel model)
         {
             if (model == null)
@@ -456,6 +468,11 @@
             return viewModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         public TransactionsByWeekViewModel ConvertFrom(TransactionsByWeekModel model)
         {
             if (model == null)
@@ -481,6 +498,11 @@
             return viewModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         public TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model)
         {
             if (model == null)
@@ -502,6 +524,37 @@
                                                             NumberOfTransactions = transactionMonthModel.NumberOfTransactions,
                                                             ValueOfTransactions = transactionMonthModel.ValueOfTransactions
                                                         });
+            }
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        public TransactionsByMerchantViewModel ConvertFrom(TransactionsByMerchantModel model)
+        {
+            if (model == null)
+            {
+                return new TransactionsByMerchantViewModel();
+            }
+
+            TransactionsByMerchantViewModel viewModel = new TransactionsByMerchantViewModel();
+            viewModel.TransactionMerchantViewModels = new List<TransactionMerchantViewModel>();
+
+
+            foreach (TransactionMerchantModel transactionMerchantModel in model.TransactionMerchantModels)
+            {
+                viewModel.TransactionMerchantViewModels.Add(new TransactionMerchantViewModel
+                                                         {
+                                                             CurrencyCode = transactionMerchantModel.CurrencyCode,
+                                                             MerchantId = transactionMerchantModel.MerchantId,
+                                                             MerchantName = transactionMerchantModel.MerchantName,
+                                                             NumberOfTransactions = transactionMerchantModel.NumberOfTransactions,
+                                                             ValueOfTransactions = transactionMerchantModel.ValueOfTransactions
+                                                         });
             }
 
             return viewModel;
