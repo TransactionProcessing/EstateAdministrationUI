@@ -2,13 +2,62 @@ var chai = require("chai");
 var testData = require("../testData.js");
 var googleChartHelpers = require("../../../EstateAdministrationUI/wwwroot/js/googleChartHelpers.js");
 
+describe("Merchant Factory Tests", function()
+{
+    it("Merchant Dataset is converted - By Value", function()
+    {
+        var viewModel = testData.getTransactionsByMerchantViewModel();
+        var googleModel = googleChartHelpers.translateMerchantTotals(viewModel,'0');
+        chai.expect(googleModel[0].length).to.equal(2);
+        chai.expect(googleModel[0][0].label).to.equal("Merchant");
+        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
+
+        chai.expect(googleModel[1].c[0].v).to.equal("Test Merchant 3");
+        chai.expect(googleModel[1].c[1].v).to.equal(62184);
+
+        chai.expect(googleModel[2].c[0].v).to.equal("Emulator Merchant");
+        chai.expect(googleModel[2].c[1].v).to.equal(56943);
+
+        chai.expect(googleModel[3].c[0].v).to.equal("Xperia Merchant");
+        chai.expect(googleModel[3].c[1].v).to.equal(56553);
+
+        chai.expect(googleModel[4].c[0].v).to.equal("Test Merchant 1");
+        chai.expect(googleModel[4].c[1].v).to.equal(54715);
+
+        chai.expect(googleModel[5].c[0].v).to.equal("S7 Merchant");
+        chai.expect(googleModel[5].c[1].v).to.equal(53870);
+    });
+
+    it("Merchant Dataset is converted - By Count", function () {
+        var viewModel = testData.getTransactionsByMerchantViewModel();
+        var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '1');
+        chai.expect(googleModel[0].length).to.equal(2);
+        chai.expect(googleModel[0][0].label).to.equal("Merchant");
+        chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
+
+        chai.expect(googleModel[1].c[0].v).to.equal("Test Merchant 3");
+        chai.expect(googleModel[1].c[1].v).to.equal(434);
+
+        chai.expect(googleModel[2].c[0].v).to.equal("Emulator Merchant");
+        chai.expect(googleModel[2].c[1].v).to.equal(404);
+
+        chai.expect(googleModel[3].c[0].v).to.equal("Xperia Merchant");
+        chai.expect(googleModel[3].c[1].v).to.equal(395);
+
+        chai.expect(googleModel[4].c[0].v).to.equal("Test Merchant 1");
+        chai.expect(googleModel[4].c[1].v).to.equal(384);
+
+        chai.expect(googleModel[5].c[0].v).to.equal("S7 Merchant");
+        chai.expect(googleModel[5].c[1].v).to.equal(372);
+    });
+})
+
 describe("Daily Factory Tests", function () {
     it("Daily Dataset is converted", function()
     {
         var viewModel = testData.getTransactionsByDateViewModel();
 
         var googleModel = googleChartHelpers.translateDailyTotals(viewModel);
-
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Date");
         chai.expect(googleModel[0][1].label).to.equal("Value of Sales");

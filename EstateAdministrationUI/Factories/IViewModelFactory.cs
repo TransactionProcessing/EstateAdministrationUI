@@ -142,6 +142,13 @@
         /// <returns></returns>
         TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionsByMerchantViewModel ConvertFrom(TransactionsByMerchantModel model);
+
         #endregion
     }
 }

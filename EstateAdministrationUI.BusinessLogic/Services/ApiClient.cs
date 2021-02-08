@@ -16,6 +16,8 @@
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.Client;
     using EstateReporting.DataTransferObjects;
+    using SortDirection = BusinessLogic.Models.SortDirection;
+    using SortField = BusinessLogic.Models.SortField;
 
     /// <summary>
     /// 
@@ -415,6 +417,33 @@
             TransactionsByMonthModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
+        }
+
+        public async Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
+                                                                                 ClaimsIdentity claimsIdentity,
+                                                                                 DateTime startDate,
+                                                                                 DateTime endDate,
+                                                                                 Int32 recordCount,
+                                                                                 SortDirection sortDirection,
+                                                                                 SortField sortField,
+                                                                                 CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            
+            TransactionsByMerchantResponse response =
+                await this.EstateReportingClient.GetTransactionsForEstateByMerchant(accessToken,
+                                                                                    estateId,
+                                                                                    startDate.ToString("yyyyMMdd"),
+                                                                                    endDate.ToString("yyyyMMdd"),
+                                                                                    recordCount,
+                                                                                    this.ModelFactory.ConvertFrom(sortDirection),
+                                                                                    this.ModelFactory.ConvertFrom(sortField),
+                                                                                    cancellationToken);
+
+            TransactionsByMerchantModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+
         }
 
         /// <summary>

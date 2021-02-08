@@ -106,4 +106,47 @@ module.exports = {
             transactionMonthViewModels: []
         }
     },
+
+    getTransactionsByMerchantViewModel: function()
+    {
+        return {
+            transactionMerchantViewModels: [
+                {
+                    "currencyCode": "",
+                    "merchantId": "a05d6531-4379-46ae-9771-608aeede05ea",
+                    "merchantName": "Test Merchant 3",
+                    "numberOfTransactions": 434,
+                    "valueOfTransactions": 62184.0
+                },
+                {
+                    "currencyCode": "",
+                    "merchantId": "439f76f3-81c1-4551-bc2e-55d193e5841d",
+                    "merchantName": "Emulator Merchant",
+                    "numberOfTransactions": 404,
+                    "valueOfTransactions": 56943.0
+                },
+                {
+                    "currencyCode": "",
+                    "merchantId": "96b61e55-23e3-416a-9c39-d0b8cf84310a",
+                    "merchantName": "Xperia Merchant",
+                    "numberOfTransactions": 395,
+                    "valueOfTransactions": 56553.0
+                },
+                {
+                    "currencyCode": "",
+                    "merchantId": "689f724c-143e-4c8f-ad17-1b115e8b0fea",
+                    "merchantName": "Test Merchant 1",
+                    "numberOfTransactions": 384,
+                    "valueOfTransactions": 54715.0
+                },
+                {
+                    "currencyCode": "",
+                    "merchantId": "14f26bad-b0b5-40bf-9666-8d8b9cf5f8d2",
+                    "merchantName": "S7 Merchant",
+                    "numberOfTransactions": 372,
+                    "valueOfTransactions": 53870.0
+                }
+            ]
+        };
+    }
 };

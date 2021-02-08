@@ -46,11 +46,9 @@
             this.ViewModelFactory = viewModelFactory;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetTransactionAnalysis(CancellationToken cancellationToken)
-        {
-            return this.View("TransactionAnalysis");
-        }
+        #endregion
+
+        #region Methods
 
         [HttpGet]
         public async Task<IActionResult> GetSalesByTimePeriodAsJson([FromQuery] String timePeriod,
@@ -62,7 +60,6 @@
 
             if (timePeriod == "Day")
             {
-
                 TransactionsByDateModel model = await this.ApiClient.GetTransactionsByDate(accessToken,
                                                                                            this.User.Identity as ClaimsIdentity,
                                                                                            startDate,
@@ -71,7 +68,7 @@
                 TransactionsByDateViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
                 return this.Json(viewModel);
             }
-            
+
             if (timePeriod == "Week")
             {
                 TransactionsByWeekModel model = await this.ApiClient.GetTransactionsByWeek(accessToken,
@@ -95,8 +92,43 @@
             }
 
             return null;
-
-            #endregion
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesByMerchantAsJson([FromQuery] Int32 merchantCount,
+                                                                  [FromQuery] SortDirection sortDirection,
+                                                                  [FromQuery] SortField sortField,
+                                                                    [FromQuery] DateTime startDate,
+                                                                    [FromQuery] DateTime endDate,
+                                                                    CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            TransactionsByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
+                                                                                               this.User.Identity as ClaimsIdentity,
+                                                                                               startDate,
+                                                                                               endDate,
+                                                                                               merchantCount,
+                                                                                               sortDirection,
+                                                                                               sortField,
+                                                                                               cancellationToken);
+
+            TransactionsByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            return this.Json(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionAnalysis(CancellationToken cancellationToken)
+        {
+            return this.View("TransactionAnalysis");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMerchantAnalysis(CancellationToken cancellationToken)
+        {
+            return this.View("MerchantAnalysis");
+        }
+
+        #endregion
     }
 }

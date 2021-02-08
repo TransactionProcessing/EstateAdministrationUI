@@ -494,6 +494,37 @@
 
         public static DTOCalculationType DTOTransactionFeeCalculationType = DTOCalculationType.Fixed;
 
+        public static TransactionsByMerchantModel TransactionsByMerchantModel => new TransactionsByMerchantModel
+                                                                                 {
+                                                                                     TransactionMerchantModels = new List<TransactionMerchantModel>
+                                                                                         {
+                                                                                             new TransactionMerchantModel
+                                                                                             {
+                                                                                                 CurrencyCode = String.Empty,
+                                                                                                 MerchantId = TestData.MerchantId,
+                                                                                                 MerchantName = TestData.MerchantName,
+                                                                                                 NumberOfTransactions = 10,
+                                                                                                 ValueOfTransactions = 1000
+                                                                                             }
+                                                                                         }
+                                                                                 };
+
+        public static TransactionsByMerchantResponse TransactionsByMerchantResponse =>
+            new TransactionsByMerchantResponse
+            {   
+                TransactionMerchantResponses = new List<TransactionMerchantResponse>
+                                               {
+                                                   new TransactionMerchantResponse
+                                                   {
+                                                       CurrencyCode = String.Empty,
+                                                       MerchantId = TestData.MerchantId,
+                                                       MerchantName = TestData.MerchantName,
+                                                       NumberOfTransactions = 10,
+                                                       ValueOfTransactions = 1000
+                                                   }
+                                               }
+            };
+
         public static AddTransactionFeeForProductToContractResponse AddTransactionFeeForProductToContractResponse =>
             new AddTransactionFeeForProductToContractResponse
             {

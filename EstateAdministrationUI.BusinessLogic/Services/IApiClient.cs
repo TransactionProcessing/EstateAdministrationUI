@@ -6,6 +6,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
+    using EstateReporting.DataTransferObjects;
+    using SortDirection = BusinessLogic.Models.SortDirection;
+    using SortField = BusinessLogic.Models.SortField;
 
     /// <summary>
     /// 
@@ -232,6 +235,27 @@
                                    DateTime startDate,
                                    DateTime endDate,
                                    CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="recordCount">The record count.</param>
+        /// <param name="sortDirection">The sort direction.</param>
+        /// <param name="sortField">The sort field.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
+                                                            ClaimsIdentity claimsIdentity,
+                                                            DateTime startDate,
+                                                            DateTime endDate,
+                                                            Int32 recordCount,
+                                                            SortDirection sortDirection,
+                                                            SortField sortField,
+                                                            CancellationToken cancellationToken);
 
         #endregion
     }
