@@ -187,5 +187,12 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         TransactionsByMerchantModel ConvertFrom(TransactionsByMerchantResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        TransactionsByOperatorModel ConvertFrom(TransactionsByOperatorResponse source);
     }
 }

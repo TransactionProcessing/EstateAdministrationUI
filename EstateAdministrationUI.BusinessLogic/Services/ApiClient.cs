@@ -446,6 +446,31 @@
 
         }
 
+        public async Task<TransactionsByOperatorModel> GetTransactionsByOperator(String accessToken,
+                                                                                 ClaimsIdentity claimsIdentity,
+                                                                                 DateTime startDate,
+                                                                                 DateTime endDate,
+                                                                                 Int32 recordCount,
+                                                                                 SortDirection sortDirection,
+                                                                                 SortField sortField,
+                                                                                 CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            TransactionsByOperatorResponse response = await this.EstateReportingClient.GetTransactionsForEstateByOperator(accessToken,
+                                                                                              estateId,
+                                                                                              startDate.ToString("yyyyMMdd"),
+                                                                                              endDate.ToString("yyyyMMdd"),
+                                                                                              recordCount,
+                                                                                              this.ModelFactory.ConvertFrom(sortDirection),
+                                                                                              this.ModelFactory.ConvertFrom(sortField),
+                                                                                              cancellationToken);
+
+            TransactionsByOperatorModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
         /// <summary>
         /// Gets the claim value.
         /// </summary>

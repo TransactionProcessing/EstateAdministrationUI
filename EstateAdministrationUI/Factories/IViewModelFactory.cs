@@ -149,6 +149,13 @@
         /// <returns></returns>
         TransactionsByMerchantViewModel ConvertFrom(TransactionsByMerchantModel model);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        TransactionsByOperatorViewModel ConvertFrom(TransactionsByOperatorModel model);
+
         #endregion
     }
 }

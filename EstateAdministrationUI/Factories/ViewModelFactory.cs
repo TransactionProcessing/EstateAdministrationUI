@@ -563,6 +563,36 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        public TransactionsByOperatorViewModel ConvertFrom(TransactionsByOperatorModel model)
+        {
+            if (model == null)
+            {
+                return new TransactionsByOperatorViewModel();
+            }
+
+            TransactionsByOperatorViewModel viewModel = new TransactionsByOperatorViewModel();
+            viewModel.TransactionOperatorViewModels = new List<TransactionOperatorViewModel>();
+
+            foreach (TransactionOperatorModel transactionOperatorModel in model.TransactionOperatorModels)
+            {
+                viewModel.TransactionOperatorViewModels.Add(new TransactionOperatorViewModel
+                                                            {
+                                                                ValueOfTransactions = transactionOperatorModel.ValueOfTransactions,
+                                                                CurrencyCode = transactionOperatorModel.CurrencyCode,
+                                                                NumberOfTransactions = transactionOperatorModel.NumberOfTransactions,
+                                                                OperatorName = transactionOperatorModel.OperatorName
+                                                            });
+            }
+
+            return viewModel;
+
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="deviceModels">The device models.</param>
         /// <returns></returns>
         private Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)

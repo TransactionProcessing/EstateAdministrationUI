@@ -4,6 +4,7 @@
     module.exports.translateWeeklyTotals = translateWeeklyTotals;
     module.exports.translateMonthTotals = translateMonthTotals;
     module.exports.translateMerchantTotals = translateMerchantTotals;
+    module.exports.translateOperatorTotals = translateOperatorTotals;
 }
 
 function getChartColors()
@@ -14,7 +15,7 @@ function getChartColors()
         ];
     }
 
-    function translateDailyTotals(data)
+function translateDailyTotals(data)
     {
         var dataArray = [];
 
@@ -48,7 +49,7 @@ function getChartColors()
         return dataArray;
     }
 
-    function translateWeeklyTotals(data)
+function translateWeeklyTotals(data)
     {
         var dataArray = [];
 
@@ -79,7 +80,7 @@ function getChartColors()
         return dataArray;
     }
 
-    function translateMonthTotals(data)
+function translateMonthTotals(data)
     {
         var dataArray = [];
 
@@ -125,7 +126,6 @@ function translateMerchantTotals(data, sortField)
     {
         return [];
     }
-    console.log('labels sortField is ' + sortField);
     // Add the labels first
     if (sortField === '0')
     {
@@ -144,7 +144,6 @@ function translateMerchantTotals(data, sortField)
     {
         var merchantName = merchant.merchantName;
         var value = 0;
-        console.log('values sortField is ' + sortField);
         if (sortField === '0')
         {
             value = merchant.valueOfTransactions;
@@ -155,6 +154,45 @@ function translateMerchantTotals(data, sortField)
         }
         var item = {
             c: [{ v: merchantName }, { v: value }]
+        };
+        dataArray.push(item);
+    });
+    return dataArray;
+}
+
+function translateOperatorTotals(data, sortField) {
+    var dataArray = [];
+
+    if (data === null) {
+        return [];
+    }
+
+    if (data.transactionOperatorViewModels === null) {
+        return [];
+    }
+    // Add the labels first
+    if (sortField === '0') {
+        dataArray.push([
+            { label: "Operator", type: "string" }, { label: "Value of Sales", type: "number" }
+        ]);
+    }
+    else {
+        dataArray.push([
+            { label: "Operator", type: "string" }, { label: "Number of Sales", type: "number" }
+        ]);
+    }
+
+    data.transactionOperatorViewModels.forEach((operator) => {
+        var operatorName = operator.operatorName;
+        var value = 0;
+        if (sortField === '0') {
+            value = operator.valueOfTransactions;
+        }
+        else {
+            value = operator.numberOfTransactions;
+        }
+        var item = {
+            c: [{ v: operatorName }, { v: value }]
         };
         dataArray.push(item);
     });

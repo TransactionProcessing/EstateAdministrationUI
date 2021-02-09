@@ -410,6 +410,33 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        public TransactionsByOperatorModel ConvertFrom(TransactionsByOperatorResponse source)
+        {
+            if (source == null || source.TransactionOperatorResponses == null || source.TransactionOperatorResponses.Any() == false)
+            {
+                return null;
+            }
+
+            TransactionsByOperatorModel model = new TransactionsByOperatorModel
+                                                {
+                                                    TransactionOperatorModels = new List<TransactionOperatorModel>()
+                                                };
+
+            source.TransactionOperatorResponses.ForEach(t=> model.TransactionOperatorModels.Add(new TransactionOperatorModel
+                                                                                                {
+                                                                                                    CurrencyCode = t.CurrencyCode,
+                                                                                                    NumberOfTransactions = t.NumberOfTransactions,
+                                                                                                    ValueOfTransactions = t.ValueOfTransactions,
+                                                                                                    OperatorName = t.OperatorName
+                                                                                                }));
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
         public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {

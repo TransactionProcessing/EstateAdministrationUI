@@ -494,19 +494,49 @@
 
         public static DTOCalculationType DTOTransactionFeeCalculationType = DTOCalculationType.Fixed;
 
+        public static TransactionsByOperatorModel TransactionsByOperatorModel =>
+            new TransactionsByOperatorModel
+            {
+                TransactionOperatorModels = new List<TransactionOperatorModel>
+                                            {
+                                                new TransactionOperatorModel
+                                                {
+                                                    CurrencyCode = String.Empty,
+                                                    NumberOfTransactions = 10,
+                                                    ValueOfTransactions = 1000,
+                                                    OperatorName = TestData.OperatorName
+                                                }
+                                            }
+            };
+
+        public static TransactionsByOperatorResponse TransactionsByOperatorResponse =>
+            new TransactionsByOperatorResponse
+            {
+                TransactionOperatorResponses = new List<TransactionOperatorResponse>
+                                               {
+                                                   new TransactionOperatorResponse
+                                                   {
+                                                       CurrencyCode = String.Empty,
+                                                       NumberOfTransactions = 10,
+                                                       ValueOfTransactions = 1000,
+                                                       OperatorName = TestData.OperatorName
+                                                   }
+                                               }
+            };
+
         public static TransactionsByMerchantModel TransactionsByMerchantModel => new TransactionsByMerchantModel
                                                                                  {
                                                                                      TransactionMerchantModels = new List<TransactionMerchantModel>
-                                                                                         {
-                                                                                             new TransactionMerchantModel
-                                                                                             {
-                                                                                                 CurrencyCode = String.Empty,
-                                                                                                 MerchantId = TestData.MerchantId,
-                                                                                                 MerchantName = TestData.MerchantName,
-                                                                                                 NumberOfTransactions = 10,
-                                                                                                 ValueOfTransactions = 1000
-                                                                                             }
-                                                                                         }
+                                                                                                                 {
+                                                                                                                     new TransactionMerchantModel
+                                                                                                                     {
+                                                                                                                         CurrencyCode = String.Empty,
+                                                                                                                         MerchantId = TestData.MerchantId,
+                                                                                                                         MerchantName = TestData.MerchantName,
+                                                                                                                         NumberOfTransactions = 10,
+                                                                                                                         ValueOfTransactions = 1000
+                                                                                                                     }
+                                                                                                                 }
                                                                                  };
 
         public static TransactionsByMerchantResponse TransactionsByMerchantResponse =>

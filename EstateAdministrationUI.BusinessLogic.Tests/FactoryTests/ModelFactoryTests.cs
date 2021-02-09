@@ -1464,5 +1464,57 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             DTOSortField actual = modelFactory.ConvertFrom(input);
             actual.ShouldBe(expected);
         }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionOperatorResponse_ModelIsConverted()
+        {
+            TransactionsByOperatorResponse response = TestData.TransactionsByOperatorResponse;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+
+            model.TransactionOperatorModels.ShouldNotBeNull();
+            model.TransactionOperatorModels.ShouldNotBeEmpty();
+            model.TransactionOperatorModels.Count.ShouldBe(response.TransactionOperatorResponses.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionOperatorResponse_NullResponse_ErrorThrown()
+        {
+            TransactionsByOperatorResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionOperatorResponse_NullChildClassResponse_ErrorThrown()
+        {
+            TransactionsByOperatorResponse response = new TransactionsByOperatorResponse();
+            response.TransactionOperatorResponses = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TransactionOperatorResponse_EmptyChildClassResponse_ErrorThrown()
+        {
+            TransactionsByOperatorResponse response = new TransactionsByOperatorResponse();
+            response.TransactionOperatorResponses = new List<TransactionOperatorResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
     }
 }
