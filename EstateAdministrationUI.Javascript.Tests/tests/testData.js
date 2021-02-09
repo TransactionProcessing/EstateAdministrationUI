@@ -150,6 +150,18 @@ module.exports = {
         };
     },
 
+    getTransactionsByMerchantViewModelWithNullMerchantModels: function () {
+        return {
+            transactionMerchantViewModels: null
+        }
+    },
+
+    getTransactionsByMerchantViewModelWithEmptyMerchantModels: function () {
+        return {
+            transactionMerchantViewModels: []
+        }
+    },
+
     getTransactionsByOperatorViewModel: function () {
         return {
             transactionOperatorViewModels: [
@@ -167,5 +179,17 @@ module.exports = {
                 }
             ]
         };
-    }
+    },
+
+    getTransactionsByOperatorViewModelWithNullOperatorModels: function () {
+        return {
+            transactionOperatorViewModels: null
+        }
+    },
+
+    getTransactionsByOperatorViewModelWithEmptyOperatorModels: function () {
+        return {
+            transactionOperatorViewModels: []
+        }
+    },
 };
