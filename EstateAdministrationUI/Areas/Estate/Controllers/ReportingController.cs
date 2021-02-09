@@ -118,6 +118,29 @@
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetSalesByOperatorAsJson([FromQuery] Int32 operatorCount,
+                                                                  [FromQuery] SortDirection sortDirection,
+                                                                  [FromQuery] SortField sortField,
+                                                                  [FromQuery] DateTime startDate,
+                                                                  [FromQuery] DateTime endDate,
+                                                                  CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            TransactionsByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
+                                                                                               this.User.Identity as ClaimsIdentity,
+                                                                                               startDate,
+                                                                                               endDate,
+                                                                                               operatorCount,
+                                                                                               sortDirection,
+                                                                                               sortField,
+                                                                                               cancellationToken);
+
+            TransactionsByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            return this.Json(viewModel);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetTransactionAnalysis(CancellationToken cancellationToken)
         {
             return this.View("TransactionAnalysis");
@@ -127,6 +150,12 @@
         public async Task<IActionResult> GetMerchantAnalysis(CancellationToken cancellationToken)
         {
             return this.View("MerchantAnalysis");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOperatorAnalysis(CancellationToken cancellationToken)
+        {
+            return this.View("OperatorAnalysis");
         }
 
         #endregion

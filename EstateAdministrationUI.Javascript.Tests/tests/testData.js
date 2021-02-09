@@ -148,5 +148,48 @@ module.exports = {
                 }
             ]
         };
-    }
+    },
+
+    getTransactionsByMerchantViewModelWithNullMerchantModels: function () {
+        return {
+            transactionMerchantViewModels: null
+        }
+    },
+
+    getTransactionsByMerchantViewModelWithEmptyMerchantModels: function () {
+        return {
+            transactionMerchantViewModels: []
+        }
+    },
+
+    getTransactionsByOperatorViewModel: function () {
+        return {
+            transactionOperatorViewModels: [
+                {
+                    "currencyCode": "",
+                    "operatorName": "Test Operator 1",
+                    "numberOfTransactions": 434,
+                    "valueOfTransactions": 62184.0
+                },
+                {
+                    "currencyCode": "",
+                    "operatorName": "Test Operator 2",
+                    "numberOfTransactions": 404,
+                    "valueOfTransactions": 56943.0
+                }
+            ]
+        };
+    },
+
+    getTransactionsByOperatorViewModelWithNullOperatorModels: function () {
+        return {
+            transactionOperatorViewModels: null
+        }
+    },
+
+    getTransactionsByOperatorViewModelWithEmptyOperatorModels: function () {
+        return {
+            transactionOperatorViewModels: []
+        }
+    },
 };

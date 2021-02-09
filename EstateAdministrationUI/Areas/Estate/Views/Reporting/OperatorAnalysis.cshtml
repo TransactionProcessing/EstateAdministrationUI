@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Operator Analysis";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Operator Analysis</h1>
+    </div>
+    <div class="row">
+
+        <h4>
+            Select Date Range:
+            <input type="text" id="dates" style="width: 250px"/>
+        </h4>
+
+        <!-- Sales By Time Period -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5>
+                        Sort By:
+                        <select id="sortBy" onchange="drawChart()">
+                            <option value="0" selected>Sales Value</option>
+                            <option value="1">Sales Count</option>
+                        </select>
+                    </h5>
+                    <h5>
+                        Direction:
+                        <select id="direction" onchange="drawChart()">
+                            <option value="0" selected>Top</option>
+                            <option value="1">Bottom</option>
+                        </select>
+                    </h5>
+                    <h5>
+                        Number of Operator:
+                        <select id="operatorCount" onchange="drawChart()">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </h5>
+                    <div class="chart" id="chartCanvasParent">
+                        <div id="chart_div" style="height: 700px"></div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/js/googleChartHelpers.js"></script>
+
+<script language="javascript">
+    // Load the Visualization API and the piechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    initDatePicker();
+
+    function drawChart()
+    {
+        var operatorCount = document.getElementById("operatorCount").value;
+        var direction = document.getElementById("direction").value;
+        var sortBy = document.getElementById("sortBy").value;
+        console.log(direction);
+
+        var drp = $('#dates').data('daterangepicker');
+        var startDate = new Date(drp.startDate);
+        var endDate = new Date(drp.endDate);
+
+        var jsonData = $.ajax({
+            url: "GetSalesByOperatorAsJson?operatorCount=" + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
+            dataType: "json",
+            async: false
+        }).responseText;
+        
+        // Convert JSON value to google format array
+        var data = convertJsonToArray(jsonData, sortBy);
+        
+        var options = setupChartOptions(operatorCount, direction, sortBy);
+
+        if (data.getNumberOfRows() > 0)
+        {
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+        else
+        {
+            $("#chart_div").empty();
+            $("#chart_div").append("Sorry, not found any data for the selected date range.");
+        }
+    }
+
+    function setupChartOptions(operatorCount, sortdirection, sortfield)
+    {
+        console.log(sortdirection);
+        hAxis = { title: 'Operator'};
+        var title = '';
+        if (sortdirection === '0')
+        {
+            title += 'Top ' + operatorCount;
+            console.log(title);
+        }
+        else
+        {
+            title += 'Bottom ' + operatorCount;
+        }
+
+        if (sortfield === '0')
+        {
+            title += ' by Value';
+        }
+        else
+        {
+            title += ' by Count';
+        }
+        
+        var options = {
+            title: title,
+            hAxis: hAxis,
+            seriesType: 'bars',
+            //series: { 1: { type: 'line' } },
+            colors: getChartColors(),
+            animation: {
+                startup: true,
+                duration: 1000,
+                easing: 'out'
+            }
+        };
+
+        return options;
+    }
+
+    function convertJsonToArray(jsonData, sortField)
+    {
+        var data = JSON.parse(jsonData);
+        var dataArray = [];
+
+        dataArray = translateOperatorTotals(data, sortField);
+        
+        return google.visualization.arrayToDataTable(dataArray);
+    }
+    
+    function initDatePicker() {
+
+        var startDate = moment().subtract(29, 'days');
+        var endDate = moment();
+        var minDate = moment().subtract(1, 'years');
+        var maxDate = moment();
+
+        $('input[id="dates"]').daterangepicker({
+            opens: 'left',
+            startDate: startDate,
+            endDate: endDate,
+            minDate: minDate,
+            maxDate: maxDate,
+            locale: {
+                format: "DD/MM/YYYY"
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+        }, function (start, end, label) {
+            drawChart();
+        });
+    }
+
+    Date.prototype.yyyymmdd = function () {
+        var yyyy = this.getFullYear();
+        var mm = this.getMonth() < 9 ? "0" + (this.getMonth() + 1) : (this.getMonth() + 1); // getMonth() is zero-based
+        var dd = this.getDate() < 10 ? "0" + this.getDate() : this.getDate();
+
+        return "".concat(yyyy).concat('-').concat(mm).concat('-').concat(dd);
+    };
+</script>
