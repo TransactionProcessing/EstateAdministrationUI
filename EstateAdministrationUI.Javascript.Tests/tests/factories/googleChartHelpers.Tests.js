@@ -83,7 +83,7 @@ describe("Merchant Factory Tests",
                 chai.expect(googleModel.length).to.equal(1);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][2].label).to.equal("Value of Sales");
+                chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
             });
 
         it("Merchant Dataset Empty Merchant Models is converted - By Count",
@@ -96,7 +96,7 @@ describe("Merchant Factory Tests",
                 chai.expect(googleModel.length).to.equal(1);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+                chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
             });
     });
 
