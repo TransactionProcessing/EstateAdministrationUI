@@ -273,9 +273,23 @@
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
 
-            List<MerchantBalanceHistoryResponse> merchantBalanceHistory= await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, cancellationToken);
+            try
+            {
+                List<MerchantBalanceHistoryResponse> merchantBalanceHistory =
+                    await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
+                return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
+            }
+            catch(Exception ex)
+            {
+                if (ex.InnerException.GetType() == typeof(KeyNotFoundException))
+                {
+                    return new List<MerchantBalanceHistory>();
+                }
+
+                throw;
+            }
+            
         }
 
         /// <summary>
