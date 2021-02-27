@@ -214,9 +214,13 @@
 
         public static String DepositAmount = "1000";
 
+        public static Decimal DepositAmountDecimal = 1000;
+
         public static String DepositReference = "Test Deposit";
 
         public static String DepositDate = "24/06/2020";
+
+        public static DateTime DepositDateTime = new DateTime(2021, 2, 27);
 
         public static Guid DepositId = Guid.Parse("895EE043-26E3-49E1-8255-2A25AAF070B7");
 
@@ -493,6 +497,46 @@
         public static DTOFeeType DTOTransactionFeeType = DTOFeeType.Merchant;
 
         public static DTOCalculationType DTOTransactionFeeCalculationType = DTOCalculationType.Fixed;
+
+        public static List<MerchantBalanceHistory> MerchantBalanceHistoryList => new List<MerchantBalanceHistory>
+                                                                                {
+                                                                                    new MerchantBalanceHistory
+                                                                                    {
+                                                                                        Balance = TestData.Balance,
+                                                                                        MerchantId = TestData.MerchantId,
+                                                                                        Reference = TestData.DepositReference,
+                                                                                        ChangeAmount = TestData.DepositAmountDecimal,
+                                                                                        EntryDateTime = TestData.DepositDateTime,
+                                                                                        EntryType = "C",
+                                                                                        EstateId = TestData.EstateId,
+                                                                                        EventId = TestData.EventId,
+                                                                                        In = TestData.DepositAmountDecimal,
+                                                                                        Out = null,
+                                                                                        TransactionId = TestData.TransactionId
+                                                                                    }
+                                                                                };
+
+        public static Guid EventId = Guid.Parse("2EF14DC4-C234-4175-BCA1-D5AB7F58943E");
+        public static Guid TransactionId = Guid.Parse("3FB06E57-B307-4C30-8D5A-EE20C916A81D");
+
+        public static List<MerchantBalanceHistoryResponse> MerchantBalanceHistoryResponseList =>
+            new List<MerchantBalanceHistoryResponse>
+            {
+                new MerchantBalanceHistoryResponse
+                {
+                    Balance = TestData.Balance,
+                    MerchantId = TestData.MerchantId,
+                    Reference = TestData.DepositReference,
+                    ChangeAmount = TestData.DepositAmountDecimal,
+                    EntryDateTime = TestData.DepositDateTime,
+                    EntryType = "C",
+                    EstateId = TestData.EstateId,
+                    EventId = TestData.EventId,
+                    In = TestData.DepositAmountDecimal,
+                    Out = null,
+                    TransactionId = TestData.TransactionId
+                }
+            };
 
         public static TransactionsByOperatorModel TransactionsByOperatorModel =>
             new TransactionsByOperatorModel

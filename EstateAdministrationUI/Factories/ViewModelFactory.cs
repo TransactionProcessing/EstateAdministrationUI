@@ -353,6 +353,42 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchantBalanceModel">The merchant balance model.</param>
+        /// <returns></returns>
+        public MerchantBalanceHistoryListViewModel ConvertFrom(List<MerchantBalanceHistory> merchantBalanceModel)
+        {
+            if (merchantBalanceModel == null)
+            {
+                return new MerchantBalanceHistoryListViewModel();
+            }
+
+            MerchantBalanceHistoryListViewModel viewModel = new MerchantBalanceHistoryListViewModel();
+            viewModel.MerchantBalanceHistoryViewModels = new List<MerchantBalanceHistoryViewModel>();
+
+            merchantBalanceModel.ForEach(h =>
+                                         {
+                                             viewModel.MerchantBalanceHistoryViewModels.Add(new MerchantBalanceHistoryViewModel
+                                                                                            {
+                                                                                                MerchantId = h.MerchantId,
+                                                                                                Balance = h.Balance,
+                                                                                                ChangeAmount = h.ChangeAmount,
+                                                                                                EntryDateTime = h.EntryDateTime,
+                                                                                                EntryType = h.EntryType,
+                                                                                                EstateId = h.EstateId,
+                                                                                                EventId = h.EventId,
+                                                                                                In = h.In,
+                                                                                                Out = h.Out,
+                                                                                                Reference = h.Reference,
+                                                                                                TransactionId = h.TransactionId
+                                                                                            });
+                                         });
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="makeMerchantDepositViewModel">The make merchant deposit view model.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">makeMerchantDepositViewModel</exception>

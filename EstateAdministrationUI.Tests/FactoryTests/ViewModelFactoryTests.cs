@@ -1445,5 +1445,29 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             viewModel.TransactionOperatorViewModels.ShouldBeNull();
         }
+
+        [Fact]
+        public void ViewModelFactory_CovertFrom_MerchantBalanceHistoryModel_IsConverted()
+        {
+            List<MerchantBalanceHistory> model = TestData.MerchantBalanceHistoryList;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            MerchantBalanceHistoryListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.MerchantBalanceHistoryViewModels.Count.ShouldBe(model.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_CovertFrom_MerchantBalanceHistoryModel_ModelIsNull_IsConverted()
+        {
+            List<MerchantBalanceHistory> model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+            
+            MerchantBalanceHistoryListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.MerchantBalanceHistoryViewModels.ShouldBeNull();
+        }
     }
 }

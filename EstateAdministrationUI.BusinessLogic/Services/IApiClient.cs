@@ -6,9 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
-    using EstateReporting.DataTransferObjects;
-    using SortDirection = BusinessLogic.Models.SortDirection;
-    using SortField = BusinessLogic.Models.SortField;
 
     /// <summary>
     /// 
@@ -31,6 +28,24 @@
                                                                      Guid contractId,
                                                                      AddProductToContractModel addProductToContractModel,
                                                                      CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Adds the transaction fee to contract product.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="contractId">The contract identifier.</param>
+        /// <param name="contractProductId">The contract product identifier.</param>
+        /// <param name="addTransactionFeeToContractProductModel">The add transaction fee to contract product model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddTransactionFeeToContractProductResponseModel> AddTransactionFeeToContractProduct(String accessToken,
+                                                                                                 ClaimsIdentity claimsIdentity,
+                                                                                                 Guid contractId,
+                                                                                                 Guid contractProductId,
+                                                                                                 AddTransactionFeeToContractProductModel
+                                                                                                     addTransactionFeeToContractProductModel,
+                                                                                                 CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates the contract.
@@ -135,6 +150,19 @@
                                         CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
+                                                                     ClaimsIdentity claimsIdentity,
+                                                                     Guid merchantId,
+                                                                     CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the merchants.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -146,52 +174,6 @@
                                                CancellationToken cancellationToken);
 
         /// <summary>
-        /// Makes the merchant deposit.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="merchantId">The merchant identifier.</param>
-        /// <param name="makeMerchantDepositModel">The make merchant deposit model.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
-                                                                   ClaimsIdentity claimsIdentity,
-                                                                   Guid merchantId,
-                                                                   MakeMerchantDepositModel makeMerchantDepositModel,
-                                                                   CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Adds the transaction fee to contract product.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="contractId">The contract identifier.</param>
-        /// <param name="contractProductId">The contract product identifier.</param>
-        /// <param name="addTransactionFeeToContractProductModel">The add transaction fee to contract product model.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<AddTransactionFeeToContractProductResponseModel> AddTransactionFeeToContractProduct(String accessToken,
-                                                                                                ClaimsIdentity claimsIdentity,
-                                                                                                Guid contractId,
-                                                                                                Guid contractProductId,
-                                                                                                AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel,
-                                                                                                CancellationToken cancellationToken);
-
-
-        /// <summary>
-        /// Gets the transactions for date period.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="datePeriod">The date period.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<TransactionForPeriodModel> GetTransactionsForDatePeriod(String accessToken,
-                                                                  ClaimsIdentity claimsIdentity, 
-                                                                  DatePeriod datePeriod, 
-                                                                  CancellationToken cancellationToken);
-
-        /// <summary>
         /// Gets the transactions by date.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -201,40 +183,10 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
-                                                           ClaimsIdentity claimsIdentity,
-                                                           DateTime startDate,
-                                                           DateTime endDate,
-                                                           CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the transactions by week.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="startDate">The start date.</param>
-        /// <param name="endDate">The end date.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
-                                   ClaimsIdentity claimsIdentity,
-                                   DateTime startDate,
-                                   DateTime endDate,
-                                   CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the transactions by month.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="startDate">The start date.</param>
-        /// <param name="endDate">The end date.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
-                                   ClaimsIdentity claimsIdentity,
-                                   DateTime startDate,
-                                   DateTime endDate,
-                                   CancellationToken cancellationToken);
+                                                            ClaimsIdentity claimsIdentity,
+                                                            DateTime startDate,
+                                                            DateTime endDate,
+                                                            CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the transactions by merchant.
@@ -249,13 +201,28 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
-                                                            ClaimsIdentity claimsIdentity,
-                                                            DateTime startDate,
-                                                            DateTime endDate,
-                                                            Int32 recordCount,
-                                                            SortDirection sortDirection,
-                                                            SortField sortField,
-                                                            CancellationToken cancellationToken);
+                                                                    ClaimsIdentity claimsIdentity,
+                                                                    DateTime startDate,
+                                                                    DateTime endDate,
+                                                                    Int32 recordCount,
+                                                                    SortDirection sortDirection,
+                                                                    SortField sortField,
+                                                                    CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by month.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
+                                                              ClaimsIdentity claimsIdentity,
+                                                              DateTime startDate,
+                                                              DateTime endDate,
+                                                              CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the transactions by operator.
@@ -277,6 +244,49 @@
                                                                     SortDirection sortDirection,
                                                                     SortField sortField,
                                                                     CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions by week.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
+                                                            ClaimsIdentity claimsIdentity,
+                                                            DateTime startDate,
+                                                            DateTime endDate,
+                                                            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the transactions for date period.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="datePeriod">The date period.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<TransactionForPeriodModel> GetTransactionsForDatePeriod(String accessToken,
+                                                                     ClaimsIdentity claimsIdentity,
+                                                                     DatePeriod datePeriod,
+                                                                     CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Makes the merchant deposit.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="makeMerchantDepositModel">The make merchant deposit model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
+                                                                   ClaimsIdentity claimsIdentity,
+                                                                   Guid merchantId,
+                                                                   MakeMerchantDepositModel makeMerchantDepositModel,
+                                                                   CancellationToken cancellationToken);
 
         #endregion
     }

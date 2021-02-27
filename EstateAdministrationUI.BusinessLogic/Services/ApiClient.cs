@@ -5,6 +5,8 @@
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
@@ -33,13 +35,16 @@
         /// </summary>
         private readonly IEstateClient EstateClient;
 
+        /// <summary>
+        /// The estate reporting client
+        /// </summary>
         private readonly IEstateReportingClient EstateReportingClient;
 
         /// <summary>
         /// The model factory
         /// </summary>
         private readonly IModelFactory ModelFactory;
-
+        
         #endregion
 
         #region Constructors
@@ -259,6 +264,18 @@
             MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
 
             return this.ModelFactory.ConvertFrom(merchant);
+        }
+
+        public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
+                                      ClaimsIdentity claimsIdentity,
+                                      Guid merchantId,
+                                      CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+
+            List<MerchantBalanceHistoryResponse> merchantBalanceHistory= await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, cancellationToken);
+
+            return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
         }
 
         /// <summary>
