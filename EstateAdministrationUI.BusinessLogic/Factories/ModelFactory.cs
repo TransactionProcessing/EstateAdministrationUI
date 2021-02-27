@@ -437,6 +437,42 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> source)
+        {
+            if (source == null || source.Any() == false)
+            {
+                return null;
+            }
+
+            List<MerchantBalanceHistory> model = new List<MerchantBalanceHistory>();
+
+            source.ForEach(s =>
+                           {
+                               model.Add(new MerchantBalanceHistory
+                                         {
+                                             MerchantId = s.MerchantId,
+                                             Balance = s.Balance,
+                                             ChangeAmount = s.ChangeAmount,
+                                             EntryDateTime = s.EntryDateTime,
+                                             EntryType = s.EntryType,
+                                             EstateId = s.EstateId,
+                                             EventId = s.EventId,
+                                             In = s.In,
+                                             Out = s.Out,
+                                             Reference = s.Reference,
+                                             TransactionId = s.TransactionId
+                                                         
+                                         });
+                               });
+
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
         public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {

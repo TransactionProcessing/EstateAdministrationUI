@@ -217,6 +217,37 @@
             return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Operators));
         }
 
+        /// <summary>
+        /// Gets the merchant balance history as json.
+        /// </summary>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetMerchantBalanceHistoryAsJson([FromQuery] Guid merchantId,
+                                                                         CancellationToken cancellationToken)
+        {
+            Logger.LogDebug("In method GetMerchantBalanceHistoryAsJson");
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            List<MerchantBalanceHistory> merchantBalanceHistory = await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+
+            MerchantBalanceHistoryListViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalanceHistory);
+
+            // Search Value from (Search box)  
+            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+            Logger.LogDebug($"searchvalue is {searchValue}");
+
+            Expression<Func<MerchantBalanceHistoryViewModel, Boolean>> whereClause = m => m.Reference.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
+
+            DataTablesResult<MerchantBalanceHistoryViewModel> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, viewModel.MerchantBalanceHistoryViewModels, whereClause);
+
+            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
+            Logger.LogDebug(jsonResult);
+
+            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.MerchantBalanceHistoryViewModels, whereClause));
+        }
         [HttpGet]
         public async Task<IActionResult> MakeMerchantDeposit([FromQuery] Guid merchantId,
                                                              [FromQuery] String merchantName,

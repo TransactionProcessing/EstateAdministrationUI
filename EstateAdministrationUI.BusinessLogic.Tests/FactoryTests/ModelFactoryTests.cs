@@ -1516,5 +1516,47 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.ShouldBeNull();
         }
+
+        //public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> source)
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_ModelIsConverted()
+        {
+            List<MerchantBalanceHistoryResponse> response = TestData.MerchantBalanceHistoryResponseList;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+
+            model.ShouldNotBeNull();
+            model.ShouldNotBeEmpty();
+            model.Count.ShouldBe(response.Count);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_NullResponse_ErrorThrown()
+        {
+            List<MerchantBalanceHistoryResponse> response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_EmptyResponse_ErrorThrown()
+        {
+            List<MerchantBalanceHistoryResponse> response = new List<MerchantBalanceHistoryResponse>();
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
+        }
+
+
     }
 }

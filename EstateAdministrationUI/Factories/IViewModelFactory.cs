@@ -96,6 +96,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchantBalanceModel">The merchant balance model.</param>
+        /// <returns></returns>
+        MerchantBalanceHistoryListViewModel ConvertFrom(List<MerchantBalanceHistory> merchantBalanceModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="makeMerchantDepositViewModel">The make merchant deposit view model.</param>
         /// <returns></returns>
         MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel);
