@@ -240,7 +240,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"EstateRoleName=Estate{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"MerchantRoleName=Merchant{this.TestId.ToString("N")}");
-            estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,

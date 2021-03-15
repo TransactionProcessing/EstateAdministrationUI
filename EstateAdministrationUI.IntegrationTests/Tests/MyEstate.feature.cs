@@ -114,7 +114,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Estate Managememt REST",
                         "Secret1",
                         "estateManagement[id]",
-                        "MerchantId,EstateId,role"});
+                        "merchantId,estateId,role"});
 #line 14
  testRunner.Given("I create the following api resources", ((string)(null)), table3, "Given ");
 #line hidden
@@ -132,7 +132,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "profile",
                         "User profile",
                         "Your user profile information (first name, last name, etc.)",
-                        "name,role,email,given_name,middle_name,family_name,EstateId,MerchantId"});
+                        "name,role,email,given_name,middle_name,family_name,estateId,merchantId"});
             table4.AddRow(new string[] {
                         "email",
                         "Email",

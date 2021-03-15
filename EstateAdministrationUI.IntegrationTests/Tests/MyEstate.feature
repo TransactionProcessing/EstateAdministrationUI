@@ -13,12 +13,12 @@ Background:
 
 	Given I create the following api resources
 	| Name                 | DisplayName            | Secret  | Scopes           | UserClaims               |
-	| estateManagement[id] | Estate Managememt REST | Secret1 | estateManagement[id] | MerchantId,EstateId,role |
+	| estateManagement[id] | Estate Managememt REST | Secret1 | estateManagement[id] | merchantId,estateId,role |
 
 	Given I create the following identity resources
 	| Name    | DisplayName          | Description                                                 | UserClaims                                                             |
 	| openid  | Your user identifier |                                                             | sub                                                                    |
-	| profile | User profile         | Your user profile information (first name, last name, etc.) | name,role,email,given_name,middle_name,family_name,EstateId,MerchantId |
+	| profile | User profile         | Your user profile information (first name, last name, etc.) | name,role,email,given_name,middle_name,family_name,estateId,merchantId |
 	| email   | Email                | Email and Email Verified Flags                              | email_verified,email                                                   |
 
 	Given I create the following clients
