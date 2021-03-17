@@ -405,7 +405,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [When(@"I click the Add New Contract button")]
         public async Task WhenIClickTheAddNewContractButton()
         {
-            await this.WebDriver.ClickButtonById("newContractButton");
+            await Retry.For(async () =>
+                            {
+                                await this.WebDriver.ClickButtonById("newContractButton");
+                            });
         }
 
 
