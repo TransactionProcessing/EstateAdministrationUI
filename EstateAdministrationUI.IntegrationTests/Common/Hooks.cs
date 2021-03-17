@@ -25,7 +25,6 @@
         public async Task BeforeScenario()
         {
             String? browser = Environment.GetEnvironmentVariable("Browser");
-            browser = "Firefox";
 
             if (browser == null || browser == "Chrome")
             {
@@ -38,6 +37,7 @@
                 experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
                 options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
                 this.WebDriver = new ChromeDriver(options);
+                this.WebDriver.Manage().Window.Maximize();
             }
 
             if (browser == "Firefox")
@@ -54,6 +54,7 @@
                 options.SetPreference("network.cookie.sameSite.schemeful", false);
                 options.SetPreference("network.cookie.cookieBehavior", 0);
                 this.WebDriver = new FirefoxDriver(options);
+                this.WebDriver.Manage().Window.Maximize();
             }
 
             if (browser == "Edge")
@@ -66,6 +67,7 @@
                 options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
 
                 this.WebDriver = new EdgeDriver(options);
+                this.WebDriver.Manage().Window.Maximize();
             }
 
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);

@@ -206,13 +206,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.EstateManagementUiContainerName = $"estateadministrationui{testGuid:N}";
             this.EventStoreContainerName = $"eventstore{testGuid:N}";
 
+            String eventStoreAddress = $"http://{this.EventStoreContainerName}";
+
             (String, String, String) dockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
 
             INetworkService testNetwork = DockerHelper.SetupTestNetwork($"testnetwork{this.TestId:N}");
             this.TestNetworks.Add(testNetwork);
 
             // Setup the docker image names
-            String eventStoreImageName = "eventstore/eventstore:20.6.0-buster-slim";
+            String eventStoreImageName = "eventstore/eventstore:20.10.0-buster-slim";
             String estateMangementImageName = "stuartferguson/estatemanagement";
             String estateReportingImageName = "stuartferguson/estatereporting";
             String subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehost";
@@ -226,19 +228,18 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
             }
 
-            IContainerService eventStoreContainer =
-                DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName,
-                                                      this.Logger,
-                                                      eventStoreImageName,
-                                                      testNetwork,
-                                                      traceFolder,
-                                                      usesEventStore2006OrLater:true);
+            IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder);
+            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
+
+            await Retry.For(async () =>
+                            {
+                                await this.PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
+                            }, retryFor: TimeSpan.FromMinutes(2), retryInterval: TimeSpan.FromSeconds(30));
 
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"EstateRoleName=Estate{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"MerchantRoleName=Merchant{this.TestId.ToString("N")}");
-            estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
 
             IContainerService estateManagementContainer = DockerHelper.SetupEstateManagementContainer(this.EstateManagementContainerName,
                                                                                                       this.Logger,
@@ -251,7 +252,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                       traceFolder,
                                                                                                       dockerCredentials,
                                                                                                       this.SecurityServiceContainerName,
-                                                                                                      this.EventStoreContainerName,
+                                                                                                      eventStoreAddress,
                                                                                                       (Setup.SqlServerContainerName, Setup.SqlUserName,
                                                                                                           Setup.SqlPassword),
                                                                                                       ("serviceClient", "Secret1"),
@@ -270,6 +271,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                     traceFolder,
                                                                                                     dockerCredentials,
                                                                                                     this.SecurityServiceContainerName,
+                                                                                                    eventStoreAddress,
                                                                                                     (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword),
                                                                                                     ("serviceClient", "Secret1"),
                                                                                                     true);
@@ -308,67 +310,31 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
 
             await LoadEventStoreProjections().ConfigureAwait(false);
+        }
 
-            await PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
+        private static EventStoreClientSettings ConfigureEventStoreSettings(Int32 eventStoreHttpPort)
+        {
+            String connectionString = $"http://127.0.0.1:{eventStoreHttpPort}";
 
-            IContainerService subscriptionServiceContainer = DockerHelper.SetupSubscriptionServiceContainer(this.SubscriptionServiceContainerName,
-                                                                                                            this.Logger,
-                                                                                                            subscriptionServiceHostImageName,
-                                                                                                            new List<INetworkService>
-                                                                                                            {
-                                                                                                                testNetwork,
-                                                                                                                Setup.DatabaseServerNetwork
-                                                                                                            },
-                                                                                                            traceFolder,
-                                                                                                            dockerCredentials,
-                                                                                                            this.SecurityServiceContainerName,
-                                                                                                            ($"{Setup.SqlServerContainerName},1433", Setup.SqlUserName,
-                                                                                                                Setup.SqlPassword),
-                                                                                                            this.TestId,
-                                                                                                            ("serviceClient", "Secret1"),
-                                                                                                            true);
+            EventStoreClientSettings settings = new EventStoreClientSettings();
+            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
+                                                      {
+                                                          SslOptions =
+                                                          {
+                                                              RemoteCertificateValidationCallback = (sender,
+                                                                                                     certificate,
+                                                                                                     chain,
+                                                                                                     errors) => true,
+                                                          }
+                                                      };
+            settings.ConnectionName = "Specflow";
+            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
+                                            {
+                                                Address = new Uri(connectionString),
+                                            };
 
-            //IHostService docker = DockerHelper.GetDockerHost();
-            //var networkList = docker.GetNetworks();
-            //foreach (INetworkService networkService in networkList)
-            //{
-            //    Console.WriteLine(networkService.Id);
-                
-            //    var cfg = networkService.GetConfiguration(true);
-            //    Console.WriteLine(cfg.Name);
-
-            //    foreach (KeyValuePair<String, NetworkedContainer> networkedContainer in cfg.Containers)
-            //    {
-            //        Console.WriteLine($"{networkedContainer.Key} : {networkedContainer.Value.Name}");
-            //    }
-            //}
-
-            //ConsoleStream<String> logs = subscriptionServiceContainer.Logs(true);
-            //await Retry.For(async () =>
-            //                {
-            //                    IList<String> loglines = logs.ReadToEnd();
-
-            //                    foreach (String logline in loglines)
-            //                    {
-            //                        Console.WriteLine(logline);
-            //                    }
-
-            //                    if (loglines.Any(l => l.Contains("] connected on [")) == false)
-            //                    {
-            //                        // SS is not running
-            //                        throw new Exception("SS is not running yet");
-            //                    }
-            //                }, TimeSpan.FromMinutes(2));
-        
-        //foreach (String logline in loglines)
-        //{
-        //    Console.WriteLine(logline);
-        //}
-
-
-        this.Containers.Add(subscriptionServiceContainer);
-
-            
+            settings.DefaultCredentials = new UserCredentials("admin", "changeit");
+            return settings;
         }
 
         private async Task LoadEventStoreProjections()
@@ -385,26 +351,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 {
                     FileInfo[] files = di.GetFiles();
 
-                    EventStoreClientSettings eventStoreClientSettings = new EventStoreClientSettings
-                    {
-                        ConnectivitySettings = new EventStoreClientConnectivitySettings
-                        {
-                            Address = new Uri($"https://{ipAddresses.First().ToString()}:{this.EventStoreHttpPort}")
-                        },
-                        CreateHttpMessageHandler = () => new SocketsHttpHandler
-                        {
-                            SslOptions =
-                                                                                                                 {
-                                                                                                                     RemoteCertificateValidationCallback = (sender,
-                                                                                                                                                            certificate,
-                                                                                                                                                            chain,
-                                                                                                                                                            errors) => true,
-                                                                                                                 }
-                        },
-                        DefaultCredentials = new UserCredentials("admin", "changeit")
-
-                    };
-                    EventStoreProjectionManagementClient projectionClient = new EventStoreProjectionManagementClient(eventStoreClientSettings);
+                    EventStoreProjectionManagementClient projectionClient = new EventStoreProjectionManagementClient(ConfigureEventStoreSettings(this.EventStoreHttpPort));
 
                     foreach (FileInfo file in files)
                     {
@@ -429,92 +376,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         protected async Task PopulateSubscriptionServiceConfiguration()
         {
-            String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
+            EventStorePersistentSubscriptionsClient client = new EventStorePersistentSubscriptionsClient(ConfigureEventStoreSettings(this.EventStoreHttpPort));
 
-            await using(SqlConnection connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
-
-                // Create an Event Store Server
-                await this.InsertEventStoreServer(connection, this.EventStoreContainerName).ConfigureAwait(false);
-                Console.WriteLine($"SS Event Store Server {this.EventStoreContainerName} Created");
-                String endPointUri = $"http://{this.EstateReportingContainerName}:5005/api/domainevents";
-                // Add Route for Estate Aggregate Events
-                await this.InsertSubscription(connection, "$ce-EstateAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-                Console.WriteLine("SS Subscription Created $ce-EstateAggregate");
-                // Add Route for Merchant Aggregate Events
-                await this.InsertSubscription(connection, "$ce-MerchantAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-                Console.WriteLine("SS Subscription Created $ce-MerchantAggregate");
-                // Add Route for Transaction Aggregate Events
-                await this.InsertSubscription(connection, "$ce-TransactionAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-                Console.WriteLine("SS Subscription Created $ce-TransactionAggregate");
-                // Add Route for Transaction Aggregate Events
-                await this.InsertSubscription(connection, "$ce-ContractAggregate", "Reporting", endPointUri).ConfigureAwait(false);
-                Console.WriteLine("SS Subscription Created $ce-ContractAggregate");
-
-                String esConnectionString = $"ConnectTo=tcp://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
-                SqlCommand command = connection.CreateCommand();
-                command.CommandText = $"SELECT COUNT(*) FROM Subscription WHERE EventStoreId = '{this.TestId}'";
-                command.CommandType = CommandType.Text;
-                var scalar = await command.ExecuteScalarAsync(CancellationToken.None).ConfigureAwait(false);
-                Console.WriteLine(scalar.ToString());
-
-
-                await connection.CloseAsync().ConfigureAwait(false);
-            }
+            PersistentSubscriptionSettings settings = new PersistentSubscriptionSettings(resolveLinkTos: true);
+            await client.CreateAsync("$ce-EstateAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-MerchantAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-ContractAggregate", "Reporting", settings);
+            await client.CreateAsync("$ce-TransactionAggregate", "Reporting", settings);
         }
-
-        protected async Task CleanUpSubscriptionServiceConfiguration()
-        {
-            String connectionString = Setup.GetLocalConnectionString("SubscriptionServiceConfiguration");
-
-            await using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
-
-                // Delete the Event Store Server
-                await this.DeleteEventStoreServer(connection).ConfigureAwait(false);
-
-                // Delete the Subscriptions
-                await this.DeleteSubscriptions(connection).ConfigureAwait(false);
-
-                await connection.CloseAsync().ConfigureAwait(false);
-            }
-        }
-
-        protected async Task InsertEventStoreServer(SqlConnection openConnection, String eventStoreContainerName)
-        {
-            String esConnectionString = $"ConnectTo=tcp://admin:changeit@{eventStoreContainerName}:{DockerHelper.EventStoreTcpDockerPort};VerboseLogging=true;";
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"INSERT INTO EventStoreServer(EventStoreServerId, ConnectionString,Name) SELECT '{this.TestId}', '{esConnectionString}', 'TestEventStore'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
-        protected async Task DeleteEventStoreServer(SqlConnection openConnection)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"DELETE FROM EventStoreServer WHERE EventStoreServerId = '{this.TestId}'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
-        protected async Task DeleteSubscriptions(SqlConnection openConnection)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"DELETE FROM Subscription WHERE EventStoreId = '{this.TestId}'";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
-        protected async Task InsertSubscription(SqlConnection openConnection, String streamName, String groupName, String endPointUri)
-        {
-            SqlCommand command = openConnection.CreateCommand();
-            command.CommandText = $"INSERT INTO subscription(SubscriptionId, EventStoreId, StreamName, GroupName, EndPointUri, StreamPosition) SELECT '{Guid.NewGuid()}', '{this.TestId}', '{streamName}', '{groupName}', '{endPointUri}', null";
-            command.CommandType = CommandType.Text;
-            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-
+        
         private IContainerService SetupEstateManagementUIContainer(string containerName, ILogger logger,
                                                          string imageName,
                                                          List<INetworkService> networkServices,

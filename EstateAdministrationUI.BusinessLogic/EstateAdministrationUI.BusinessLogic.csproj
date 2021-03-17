@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateManagement.Client" Version="1.0.7-build47" />
-    <PackageReference Include="EstateReporting.Client" Version="1.0.10" />
-    <PackageReference Include="Shared" Version="1.0.3" />
+    <PackageReference Include="EstateManagement.Client" Version="1.0.8.3" />
+    <PackageReference Include="EstateReporting.Client" Version="1.0.11.2" />
+    <PackageReference Include="Shared" Version="1.0.3.3" />
   </ItemGroup>
 
 </Project>
