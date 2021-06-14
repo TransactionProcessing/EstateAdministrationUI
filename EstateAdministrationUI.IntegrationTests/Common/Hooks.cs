@@ -32,27 +32,16 @@
                 options.AddArguments("--disable-gpu");
                 options.AddArguments("--no-sandbox");
                 options.AddArguments("--disable-dev-shm-usage");
-                var experimentalFlags = new List<String>();
-                experimentalFlags.Add("same-site-by-default-cookies@2");
-                experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
-                options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
+                options.AcceptInsecureCertificates = true;
                 this.WebDriver = new ChromeDriver(options);
                 this.WebDriver.Manage().Window.Maximize();
             }
 
             if (browser == "Firefox")
             {
-                //FirefoxOptions options = new FirefoxOptions();
-                //options.AddArguments("-headless");
-                //this.WebDriver = new FirefoxDriver(options);
-                //FirefoxProfile profile = new ProfilesIni().getProfile("default");
-                //profile.setPreference("network.cookie.cookieBehavior", 2);
-                //this.WebDriver = new FirefoxDriver(profile);
                 FirefoxOptions options = new FirefoxOptions();
-                options.SetPreference("network.cookie.sameSite.laxByDefault", false);
-                options.SetPreference("network.cookie.sameSite.noneRequiresSecure", false);
-                options.SetPreference("network.cookie.sameSite.schemeful", false);
                 options.SetPreference("network.cookie.cookieBehavior", 0);
+                options.AcceptInsecureCertificates = true;
                 this.WebDriver = new FirefoxDriver(options);
                 this.WebDriver.Manage().Window.Maximize();
             }
@@ -61,11 +50,7 @@
             {
                 EdgeOptions options = new EdgeOptions();
                 options.UseChromium = true;
-                List<String> experimentalFlags = new List<String>();
-                experimentalFlags.Add("same-site-by-default-cookies@2");
-                experimentalFlags.Add("cookies-without-same-site-must-be-secure@2");
-                options.AddLocalStatePreference("browser.enabled_labs_experiments", experimentalFlags);
-
+                options.AcceptInsecureCertificates = true;
                 this.WebDriver = new EdgeDriver(options);
                 this.WebDriver.Manage().Window.Maximize();
             }
