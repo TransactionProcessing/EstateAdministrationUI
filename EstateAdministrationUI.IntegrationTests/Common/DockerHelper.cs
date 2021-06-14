@@ -217,7 +217,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String eventStoreImageName = "eventstore/eventstore:20.10.0-buster-slim";
             String estateMangementImageName = "stuartferguson/estatemanagement";
             String estateReportingImageName = "stuartferguson/estatereporting";
-            String subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehost";
 
             DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
             if (enginePlatform == DockerEnginePlatform.Windows)
@@ -225,7 +224,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 estateMangementImageName = "stuartferguson/estatemanagementwindows";
                 estateReportingImageName = "stuartferguson/estatereportingwindows";
                 eventStoreImageName = "stuartferguson/eventstore";
-                subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
             }
 
             IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder);

@@ -5,6 +5,7 @@ namespace EstateAdministrationUI
     using System.IdentityModel.Tokens.Jwt;
     using System.IO;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using BusinessLogic.Factories;
     using EstateManagement.Client;
     using EstateReporting.Client;
@@ -73,70 +74,127 @@ namespace EstateAdministrationUI
 
             services.AddControllersWithViews();
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-                options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            });
+            //services.Configure<CookiePolicyOptions>(options =>
+            //{
+            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            //    options.CheckConsentNeeded = context => true;
+            //    options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+            //    options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            //});
+
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = "oidc";
+            //}).AddCookie(options =>
+            //{
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+            //    options.Cookie.Name = "mvchybridautorefresh";
+            //    options.Cookie.SameSite = SameSiteMode.Unspecified;
+            //    options.Cookie.IsEssential = true;
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            //}).AddAutomaticTokenManagement()
+            //        .AddOpenIdConnect("oidc",
+            //                                                  options =>
+            //                                                  {
+            //                                                      options.SignInScheme = "Cookies";
+            //                                                      options.Authority = ConfigurationReader.GetValue("Authority");
+
+            //                                                      options.RequireHttpsMetadata = false;
+
+            //                                                      options.ClientSecret =
+            //                                                          ConfigurationReader.GetValue("ClientSecret");
+            //                                                      options.ClientId = ConfigurationReader.GetValue("ClientId");
+
+            //                                                      options.ResponseType = "code id_token";
+
+            //                                                      options.Scope.Clear();
+            //                                                      options.Scope.Add("openid");
+            //                                                      options.Scope.Add("profile");
+            //                                                      options.Scope.Add("email");
+            //                                                      options.Scope.Add("offline_access");
+
+            //                                                      String? estateManagementScope =
+            //                                                          Environment.GetEnvironmentVariable("EstateManagementScope");
+
+            //                                                      options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
+
+            //                                                      options.ClaimActions.MapAllExcept("iss",
+            //                                                                                        "nbf",
+            //                                                                                        "exp",
+            //                                                                                        "aud",
+            //                                                                                        "nonce",
+            //                                                                                        "iat",
+            //                                                                                        "c_hash");
+
+            //                                                      options.GetClaimsFromUserInfoEndpoint = true;
+            //                                                      options.SaveTokens = true;
+
+            //                                                      options.TokenValidationParameters = new TokenValidationParameters
+            //                                                      {
+            //                                                          NameClaimType = JwtClaimTypes.Name,
+            //                                                          RoleClaimType = JwtClaimTypes.Role,
+            //                                                          ValidateIssuer = false
+            //                                                      };
+            //                                                  });
+            //IdentityModelEventSource.ShowPII = true;
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = "Cookies";
                 options.DefaultChallengeScheme = "oidc";
-            }).AddCookie(options =>
-            {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.Cookie.Name = "mvchybridautorefresh";
-                options.Cookie.SameSite = SameSiteMode.Unspecified;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            }).AddAutomaticTokenManagement()
-                    .AddOpenIdConnect("oidc",
-                                                              options =>
-                                                              {
-                                                                  options.SignInScheme = "Cookies";
-                                                                  options.Authority = ConfigurationReader.GetValue("Authority");
+            })
+                    .AddCookie("Cookies")
+                    .AddOpenIdConnect("oidc", options =>
+                    {
+                        HttpClientHandler handler = new HttpClientHandler();
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        options.BackchannelHttpHandler = handler;
 
-                                                                  options.RequireHttpsMetadata = false;
+                        options.Authority = ConfigurationReader.GetValue("Authority");
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false,
+                            NameClaimType = JwtClaimTypes.Name,
+                            RoleClaimType = JwtClaimTypes.Role,
+                        };
 
-                                                                  options.ClientSecret =
-                                                                      ConfigurationReader.GetValue("ClientSecret");
-                                                                  options.ClientId = ConfigurationReader.GetValue("ClientId");
+                        options.ClientSecret =
+                            ConfigurationReader.GetValue("ClientSecret");
+                        options.ClientId = ConfigurationReader.GetValue("ClientId");
 
-                                                                  options.ResponseType = "code id_token";
+                        options.MetadataAddress = $"{ConfigurationReader.GetValue("Authority")}/.well-known/openid-configuration";
 
-                                                                  options.Scope.Clear();
-                                                                  options.Scope.Add("openid");
-                                                                  options.Scope.Add("profile");
-                                                                  options.Scope.Add("email");
-                                                                  options.Scope.Add("offline_access");
+                        options.ResponseType = "code id_token";
 
-                                                                  String? estateManagementScope =
-                                                                      Environment.GetEnvironmentVariable("EstateManagementScope");
+                        options.Scope.Clear();
+                        options.Scope.Add("openid");
+                        options.Scope.Add("profile");
+                        options.Scope.Add("email");
+                        options.Scope.Add("offline_access");
 
-                                                                  options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
+                                                                              String? estateManagementScope =
+                                                                                  Environment.GetEnvironmentVariable("EstateManagementScope");
+                        options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
 
-                                                                  options.ClaimActions.MapAllExcept("iss",
-                                                                                                    "nbf",
-                                                                                                    "exp",
-                                                                                                    "aud",
-                                                                                                    "nonce",
-                                                                                                    "iat",
-                                                                                                    "c_hash");
+                        options.ClaimActions.MapAllExcept("iss",
+                                                          "nbf",
+                                                          "exp",
+                                                          "aud",
+                                                          "nonce",
+                                                          "iat",
+                                                          "c_hash");
 
-                                                                  options.GetClaimsFromUserInfoEndpoint = true;
-                                                                  options.SaveTokens = true;
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.SaveTokens = true;
 
-                                                                  options.TokenValidationParameters = new TokenValidationParameters
-                                                                  {
-                                                                      NameClaimType = JwtClaimTypes.Name,
-                                                                      RoleClaimType = JwtClaimTypes.Role,
-                                                                      ValidateIssuer = false
-                                                                  };
-                                                              });
-            IdentityModelEventSource.ShowPII = true;
+                        options.Events.OnRedirectToIdentityProvider = context =>
+                        {
+                            // Intercept the redirection so the browser navigates to the right URL in your host
+                            context.ProtocolMessage.IssuerAddress = $"{ConfigurationReader.GetValue("Authority")}/connect/authorize";
+                            return Task.CompletedTask;
+                        };
+                    });
 
             services.AddSingleton<IApiClient, ApiClient>();
             services.AddSingleton<IModelFactory, ModelFactory>();

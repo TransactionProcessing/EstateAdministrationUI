@@ -6,9 +6,9 @@
 
   <ItemGroup>
 	  <PackageReference Include="IdentityModel" Version="5.0.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.2" />
-	  <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="5.0.2" />
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.6" />
+	  <!--<PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="5.0.2" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />-->
 	  <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
@@ -44,6 +44,12 @@
   <ItemGroup>
     <None Update="..\.dockerignore">
       <DependentUpon>dockerfile</DependentUpon>
+    </None>
+    <None Update="aspnetapp-root-cert.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="aspnetapp-web-api.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
