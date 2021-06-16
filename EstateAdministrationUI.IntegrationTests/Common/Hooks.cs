@@ -25,7 +25,7 @@
         public async Task BeforeScenario()
         {
             String? browser = Environment.GetEnvironmentVariable("Browser");
-
+            browser = "Firefox";
             if (browser == null || browser == "Chrome")
             {
                 ChromeOptions options = new ChromeOptions();
