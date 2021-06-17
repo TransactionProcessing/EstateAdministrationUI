@@ -167,8 +167,8 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Secret1",
                         "estateManagement[id],openid,email,profile",
                         "hybrid",
-                        "http://localhost:[port]/signin-oidc",
-                        "http://localhost:[port]/signout-oidc",
+                        "https://localhost:[port]/signin-oidc",
+                        "https://localhost:[port]/signout-oidc",
                         "false",
                         "true"});
 #line 24

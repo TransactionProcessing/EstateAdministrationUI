@@ -1049,7 +1049,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Given(@"I am on the application home page")]
         public void GivenIAmOnTheApplicationHomePage()
         {
-            this.WebDriver.Navigate().GoToUrl($"http://localhost:{this.TestingContext.DockerHelper.EstateManagementUIPort}");
+            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUIPort}");
             this.WebDriver.Title.ShouldBe("Welcome");
         }
 
