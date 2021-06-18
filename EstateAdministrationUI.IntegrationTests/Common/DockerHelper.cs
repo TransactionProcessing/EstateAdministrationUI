@@ -179,6 +179,39 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             throw new Exception("Unknown Engine Type");
         }
 
+        //public static IContainerService LocalSetupEventStoreContainer(String containerName,
+        //                                                         ILogger logger,
+        //                                                         String imageName,
+        //                                                         INetworkService networkService,
+        //                                                         String hostFolder,
+        //                                                         Boolean forceLatestImage = false)
+        //{
+        //    logger.LogInformation("About to Start Event Store Container");
+
+        //    List<String> environmentVariables = new List<String>();
+        //    environmentVariables.Add("EVENTSTORE_RUN_PROJECTIONS=all");
+        //    environmentVariables.Add("EVENTSTORE_START_STANDARD_PROJECTIONS=true");
+        //    environmentVariables.Add("EVENTSTORE_INSECURE=true");
+        //    environmentVariables.Add("EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true");
+        //    environmentVariables.Add("EVENTSTORE_ENABLE_EXTERNAL_TCP=true");
+
+        //    var eventStoreContainerBuilder = new Builder().UseContainer().UseImage(imageName, forceLatestImage) //.ExposePort(DockerHelper.EventStoreHttpDockerPort);
+        //                                                  //.ExposePort(DockerHelper.EventStoreTcpDockerPort)
+        //                                                  .WithName(containerName)
+        //                                                  .WithEnvironment(environmentVariables.ToArray());//.UseNetwork(networkService);
+
+        //    if (String.IsNullOrEmpty(hostFolder) == false)
+        //    {
+        //        eventStoreContainerBuilder = eventStoreContainerBuilder.Mount(hostFolder, "/var/log/eventstore", MountType.ReadWrite);
+        //    }
+
+        //    IContainerService eventStoreContainer = eventStoreContainerBuilder.Build().Start();
+
+        //    logger.LogInformation("Event Store Container Started");
+
+        //    return eventStoreContainer;
+        //}
+
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -217,7 +250,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String eventStoreImageName = "eventstore/eventstore:20.10.0-buster-slim";
             String estateMangementImageName = "stuartferguson/estatemanagement";
             String estateReportingImageName = "stuartferguson/estatereporting";
-            String subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehost";
 
             DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
             if (enginePlatform == DockerEnginePlatform.Windows)
@@ -225,7 +257,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 estateMangementImageName = "stuartferguson/estatemanagementwindows";
                 estateReportingImageName = "stuartferguson/estatereportingwindows";
                 eventStoreImageName = "stuartferguson/eventstore";
-                subscriptionServiceHostImageName = "stuartferguson/subscriptionservicehostwindows";
             }
 
             IContainerService eventStoreContainer = DockerHelper.SetupEventStoreContainer(this.EventStoreContainerName, this.Logger, eventStoreImageName, testNetwork, traceFolder);
@@ -304,9 +335,20 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             // Setup the base address resolvers
             String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementApiPort}";
 
-            HttpClient httpClient = new HttpClient();
+            HttpClientHandler clientHandler = new HttpClientHandler
+                                              {
+                                                  ServerCertificateCustomValidationCallback = (message,
+                                                                                               certificate2,
+                                                                                               arg3,
+                                                                                               arg4) =>             
+                                                  {
+                                                    return true;
+                                                  }
+
+                                              };
+            HttpClient httpClient = new HttpClient(clientHandler);
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
-            Func<String, String> securityServiceBaseAddressResolver = api => $"http://sferguson.ddns.net:55001";
+            Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
 
             await LoadEventStoreProjections().ConfigureAwait(false);
@@ -396,7 +438,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             logger.LogInformation("About to Start Estate Management UI Container");
             
             ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(containerName)
-                                                             .WithEnvironment($"AppSettings:Authority=http://sferguson.ddns.net:55001",
+                                                             .WithEnvironment($"AppSettings:Authority=https://sferguson.ddns.net:55001",
                                                                               $"AppSettings:ClientId={clientDetails.clientId}",
                                                                               $"AppSettings:ClientSecret={clientDetails.clientSecret}",
                                                                               $"AppSettings:IsIntegrationTest=true",
