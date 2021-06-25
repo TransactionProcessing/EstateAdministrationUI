@@ -1,18 +1,20 @@
 module.exports = {
     getTransactionsByDateViewModel: function() { return {
-        transactionDateViewModels: [
+
+            // Note: in javascript the months are 0 bases (11 = October)
+            transactionDateViewModels: [
             {
-                "date": "2020-10-01",
+                "date": "2020-11-01",
                 "numberOfTransactions": 10,
                 "valueOfTransactions": 10000.00
             },
             {
-                "date": "2020-10-02",
+                "date": "2020-11-02",
                 "numberOfTransactions": 20,
                 "valueOfTransactions": 20000.00
             },
             {
-                "date": "2020-10-03",
+                "date": "2020-11-03",
                 "numberOfTransactions": 30,
                 "valueOfTransactions": 30000.00
             }
