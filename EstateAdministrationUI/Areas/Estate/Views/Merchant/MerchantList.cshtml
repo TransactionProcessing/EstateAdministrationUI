@@ -51,45 +51,51 @@
 <script>
     $(document).ready(function ()
     {
-        $("#merchantList").DataTable({
-            "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
-            "filter": true, // this is for disable filter (search box)
-            "orderMulti": false, // for disable multiple column at once
-            "ajax": {
-                "url": "GetMerchantListAsJson",
-                "type": "POST",
-                "datatype": "json"
-            },
-            "columnDefs":
-            [{
-                "targets": [0],
-                "visible": false,
-                "searchable": false
+        $.fn.dataTable.ext.errMode = 'none';
+
+        $("#merchantList")
+            .on('error.dt', function (e, settings, techNote, message) {
+                console.log( 'An error has been occurred getting a list of merchants. Error reported by DataTables: ', message );
+            })
+            .DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "ajax": {
+                    "url": "GetMerchantListAsJson",
+                    "type": "POST",
+                    "datatype": "json"
                 },
+                "columnDefs":
+                [{
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
                     {
                         "targets": [1],
                         "visible": false,
                         "searchable": false  }],
-            "columns": [
-                { "data": "estateId", "name": "estateId", "autoWidth": true },
-                { "data": "merchantId", "name": "merchantId", "autoWidth": true },
-                { "data": "merchantName", "name": "merchantName", "autoWidth": true },
-                { "data": "contactName", "name": "contactName", "autoWidth": true },
-                { "data": "addressLine1", "name": "addressLine1", "autoWidth": true },
-                { "data": "town", "name": "town", "autoWidth": true },
-                //{ "data": "numberOfUsers", "name": "numberOfUsers", "autoWidth": true },
-                //{ "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
-                //{ "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
-                {
-                    "render": function(data, type, full, meta)
+                "columns": [
+                    { "data": "estateId", "name": "estateId", "autoWidth": true },
+                    { "data": "merchantId", "name": "merchantId", "autoWidth": true },
+                    { "data": "merchantName", "name": "merchantName", "autoWidth": true },
+                    { "data": "contactName", "name": "contactName", "autoWidth": true },
+                    { "data": "addressLine1", "name": "addressLine1", "autoWidth": true },
+                    { "data": "town", "name": "town", "autoWidth": true },
+                    //{ "data": "numberOfUsers", "name": "numberOfUsers", "autoWidth": true },
+                    //{ "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
+                    //{ "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
                     {
-                        return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>' + 
-                               '<a class="btn btn-info" id="makeDepositLink" href="MakeMerchantDeposit?merchantId=' + full.merchantId + '&merchantName=' + full.merchantName + '"><i class="fa fa-money-bill"></i></a>';
+                        "render": function(data, type, full, meta)
+                        {
+                            return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>' + 
+                                '<a class="btn btn-info" id="makeDepositLink" href="MakeMerchantDeposit?merchantId=' + full.merchantId + '&merchantName=' + full.merchantName + '"><i class="fa fa-money-bill"></i></a>';
+                        }
                     }
-                }
-            ],
-            "order": [[2, "asc"]]
-        });
+                ],
+                "order": [[2, "asc"]]
+            });
     });
 </script>

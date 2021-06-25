@@ -109,29 +109,26 @@
         [HttpPost]
         public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetOperatorListAsJson");
+            try
+            {
+                // Search Value from (Search box)  
+                String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
 
-            // Search Value from (Search box)  
-            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
-            Logger.LogDebug($"searchvalue is {searchValue}");
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-            Logger.LogDebug("got access token");
+                EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
 
-            EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
 
-            List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+                Expression<Func<OperatorListViewModel, Boolean>> whereClause = m => m.OperatorName.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 
-            Logger.LogDebug($"operator list count is {operatorViewModels.Count}");
-
-            Expression<Func<OperatorListViewModel, Boolean>> whereClause = m => m.OperatorName.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-
-            DataTablesResult<OperatorListViewModel> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, operatorViewModels, whereClause);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form,operatorViewModels, whereClause));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, operatorViewModels, whereClause));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<OperatorListViewModel>(), null));
+            }
         }
 
         /// <summary>

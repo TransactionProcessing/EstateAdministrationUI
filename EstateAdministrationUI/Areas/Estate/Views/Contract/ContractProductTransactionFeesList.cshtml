@@ -48,7 +48,12 @@
 <script>
     $(document).ready(function ()
     {
-        $("#contractProductTransactionFeeList").DataTable({
+        $.fn.dataTable.ext.errMode = 'none';
+
+        $("#contractProductTransactionFeeList")
+            .on('error.dt', function (e, settings, techNote, message) {
+                console.log('An error has been occurred getting a list of contract product transacton fees. Error reported by DataTables: ', message);
+            }).DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
