@@ -86,7 +86,7 @@
 
                 CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
-                // All good with model, call the client to create the golf club
+                // All good with model, call the client to create the merchant
                 CreateMerchantResponseModel creteMerchantResponse =
                     await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
 
@@ -116,6 +116,11 @@
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
             MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+            
+            if (merchantModel == null)
+            {
+                return this.RedirectToAction("GetMerchantList", "Merchant").WithWarning("Warning:", $"Failed to get Merchant Record, please try again.");
+            }
 
             return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
         }

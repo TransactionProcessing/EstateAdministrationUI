@@ -18,6 +18,7 @@
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.Client;
     using EstateReporting.DataTransferObjects;
+    using Shared.Logger;
     using SortDirection = BusinessLogic.Models.SortDirection;
     using SortField = BusinessLogic.Models.SortField;
 
@@ -260,11 +261,19 @@
                                                      Guid merchantId,
                                                      CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
+                MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(merchant);
+                return this.ModelFactory.ConvertFrom(merchant);
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
         }
 
         public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,

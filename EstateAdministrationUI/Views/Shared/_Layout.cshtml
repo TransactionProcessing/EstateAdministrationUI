@@ -22,6 +22,7 @@
             <!-- Main content -->
             <div class="content">
                 <div class="container">
+                    @await Html.PartialAsync("_StatusMessage")
                     @RenderBody()
                     <!-- /.row -->
                 </div><!-- /.container-fluid -->
