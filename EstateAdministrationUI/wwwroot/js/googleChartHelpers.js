@@ -38,8 +38,10 @@ function translateDailyTotals(data)
             // Parse the date
             var date = new Date(day.date);
 
-            var dateStringValue = "Date(" + date.getFullYear() + "," + (date.getMonth() + 1)  + "," + date.getDate() + ")";
+            console.log(date);
 
+            var dateStringValue = "Date(" + date.getFullYear() + "," + date.getMonth()  + "," + date.getDate() + ")";
+            console.log(dateStringValue);
             var item = {
                 c: [{ v: dateStringValue }, { v: day.valueOfTransactions / 10 }, { v: day.numberOfTransactions }]
             };
