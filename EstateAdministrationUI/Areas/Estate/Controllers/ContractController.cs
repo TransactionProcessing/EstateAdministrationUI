@@ -177,31 +177,27 @@
         public async Task<IActionResult> GetContractProductsListAsJson([FromQuery] Guid contractId,
                                                                        CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetContractProductsListAsJson");
+            try
+            {
+                // Search Value from (Search box)  
+                String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
 
-            // Search Value from (Search box)  
-            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
-            Logger.LogDebug($"searchvalue is {searchValue}");
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-            Logger.LogDebug("got access token");
+                ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
 
-            ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
+                ContractProductListViewModel contractProductListViewModel = this.ViewModelFactory.ConvertFrom(contract);
 
-            ContractProductListViewModel contractProductListViewModel = this.ViewModelFactory.ConvertFrom(contract);
+                Expression<Func<ContractProductViewModel, Boolean>> whereClause = c => c.ProductName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                                                                                       c.DisplayText.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 
-            Logger.LogDebug($"contract product list count is {contractProductListViewModel.ContractProducts.Count}");
-
-            Expression<Func<ContractProductViewModel, Boolean>> whereClause = c => c.ProductName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
-                                                                                   c.DisplayText.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-
-            DataTablesResult<ContractProductViewModel> dataTableResult =
-                Helpers.GetDataForDataTable(this.Request.Form, contractProductListViewModel.ContractProducts, whereClause);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductListViewModel.ContractProducts, whereClause));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductListViewModel.ContractProducts, whereClause));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<ContractProductViewModel>(), null));
+            }
         }
 
         /// <summary>
@@ -238,34 +234,30 @@
                                                                                      [FromQuery] Guid contractProductId,
                                                                                      CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetContractProductTransactionFeeListAsJson");
+            try
+            {
+                // Search Value from (Search box)  
+                String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
 
-            // Search Value from (Search box)  
-            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
-            Logger.LogDebug($"searchvalue is {searchValue}");
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-            Logger.LogDebug("got access token");
+                ContractProductModel contractProduct =
+                    await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
 
-            ContractProductModel contractProduct =
-                await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
+                ContractProductTransactionFeesListViewModel contractProductTransactionFeesViewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
 
-            ContractProductTransactionFeesListViewModel contractProductTransactionFeesViewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
+                Expression<Func<ContractProductTransactionFeesViewModel, Boolean>> whereClause =
+                    c => c.Description.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                         c.CalculationType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                         c.FeeType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) || c.Value.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 
-            Logger.LogDebug($"contract product transaction fee list count is {contractProductTransactionFeesViewModel.TransactionFees.Count}");
-
-            Expression<Func<ContractProductTransactionFeesViewModel, Boolean>> whereClause =
-                c => c.Description.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
-                     c.CalculationType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) || c.FeeType.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
-                     c.Value.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-
-            DataTablesResult<ContractProductTransactionFeesViewModel> dataTableResult =
-                Helpers.GetDataForDataTable(this.Request.Form, contractProductTransactionFeesViewModel.TransactionFees, whereClause);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductTransactionFeesViewModel.TransactionFees, whereClause));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, contractProductTransactionFeesViewModel.TransactionFees, whereClause));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<ContractProductTransactionFeesListViewModel>(), null));
+            }
         }
 
         /// <summary>
@@ -276,11 +268,8 @@
         [HttpGet]
         public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetOperatorListAsJson");
-
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-            Logger.LogDebug("got access token");
-
+         
             EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
 
             List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);

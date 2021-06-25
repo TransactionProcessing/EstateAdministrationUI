@@ -134,7 +134,12 @@
 <script>
     $(document).ready(function ()
     {
-        $("#merchantOperatorList").DataTable({
+        $.fn.dataTable.ext.errMode = 'none';
+
+        $("#merchantOperatorList")
+            .on('error.dt', function (e, settings, techNote, message) {
+                console.log('An error has been occurred getting a list of merchant operators. Error reported by DataTables: ', message);
+            }).DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": false, // this is for disable filter (search box)
@@ -161,7 +166,10 @@
 
         });
 
-        $("#merchantDeviceList").DataTable({
+        $("#merchantDeviceList")
+            .on('error.dt', function (e, settings, techNote, message) {
+                console.log('An error has been occurred getting a list of merchant devices. Error reported by DataTables: ', message);
+            }).DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": false, // this is for disable filter (search box)
@@ -186,7 +194,10 @@
 
         });
 
-        $("#merchantBalanceHistoryList").DataTable({
+        $("#merchantBalanceHistoryList")
+            .on('error.dt', function (e, settings, techNote, message) {
+                console.log('An error has been occurred getting the merchant balance history. Error reported by DataTables: ', message);
+            }).DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)

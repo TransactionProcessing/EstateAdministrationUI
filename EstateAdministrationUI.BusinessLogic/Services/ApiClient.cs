@@ -68,6 +68,7 @@
 
         #region Methods
 
+        private const String EstateIdClaimType = "estateId";
         /// <summary>
         /// Adds the product to contract.
         /// </summary>
@@ -83,7 +84,7 @@
                                                                                   AddProductToContractModel addProductToContractModel,
                                                                                   CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             AddProductToContractRequest apiRequest = this.ModelFactory.ConvertFrom(addProductToContractModel);
 
@@ -107,7 +108,7 @@
                                                                       CreateContractModel createContractModel,
                                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             CreateContractRequest apiRequest = this.ModelFactory.ConvertFrom(createContractModel);
 
@@ -131,7 +132,7 @@
                                                                       CreateMerchantModel createMerchantModel,
                                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             CreateMerchantRequest apiRequest = this.ModelFactory.ConvertFrom(createMerchantModel);
 
@@ -155,7 +156,7 @@
                                                                       CreateOperatorModel createOperatorModel,
                                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             CreateOperatorRequest apiRequest = this.ModelFactory.ConvertFrom(createOperatorModel);
 
@@ -179,7 +180,7 @@
                                                      Guid contractId,
                                                      CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, true, true, cancellationToken);
 
@@ -201,7 +202,7 @@
                                                                    Guid contractProductId,
                                                                    CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, true, true, cancellationToken);
 
@@ -221,7 +222,7 @@
                                                             ClaimsIdentity claimsIdentity,
                                                             CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             List<ContractResponse> contracts = await this.EstateClient.GetContracts(accessToken, estateId, cancellationToken);
 
@@ -239,7 +240,7 @@
                                                  ClaimsIdentity claimsIdentity,
                                                  CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             EstateResponse estate = await this.EstateClient.GetEstate(accessToken, estateId, cancellationToken);
 
@@ -259,7 +260,7 @@
                                                      Guid merchantId,
                                                      CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
 
@@ -271,7 +272,7 @@
                                       Guid merchantId,
                                       CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             try
             {
@@ -303,7 +304,7 @@
                                                             ClaimsIdentity claimsIdentity,
                                                             CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             List<MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
 
@@ -325,7 +326,7 @@
                                                                                 MakeMerchantDepositModel makeMerchantDepositModel,
                                                                                 CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             MakeMerchantDepositRequest apiRequest = this.ModelFactory.ConvertFrom(makeMerchantDepositModel);
 
@@ -353,7 +354,7 @@
                                                                                                               AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel,
                                                                                                               CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             AddTransactionFeeForProductToContractRequest apiRequest = this.ModelFactory.ConvertFrom(addTransactionFeeToContractProductModel);
 
@@ -383,7 +384,7 @@
             (DateTime startDate, DateTime endDate) dateRange = this.CalculateDateRange(datePeriod);
             
 
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             TransactionsByDayResponse response = await this.EstateReportingClient.GetTransactionsForEstateByDate(accessToken,
                                                                                                                      estateId,
@@ -401,7 +402,7 @@
                                                                          DateTime endDate,
                                                                          CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             TransactionsByDayResponse response = await this.EstateReportingClient.GetTransactionsForEstateByDate(accessToken,
                                                                                                                      estateId,
@@ -419,7 +420,7 @@
                                                                          DateTime endDate,
                                                                          CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             TransactionsByWeekResponse response = await this.EstateReportingClient.GetTransactionsForEstateByWeek(accessToken,
                                                                                                                      estateId,
@@ -437,7 +438,7 @@
                                                                            DateTime endDate,
                                                                            CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             TransactionsByMonthResponse response = await this.EstateReportingClient.GetTransactionsForEstateByMonth(accessToken,
                 estateId,
@@ -459,7 +460,7 @@
                                                                                  SortField sortField,
                                                                                  CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
             
             TransactionsByMerchantResponse response =
                 await this.EstateReportingClient.GetTransactionsForEstateByMerchant(accessToken,
@@ -486,7 +487,7 @@
                                                                                  SortField sortField,
                                                                                  CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "EstateId");
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             TransactionsByOperatorResponse response = await this.EstateReportingClient.GetTransactionsForEstateByOperator(accessToken,
                                                                                               estateId,

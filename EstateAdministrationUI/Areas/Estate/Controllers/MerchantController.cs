@@ -130,20 +130,22 @@
         public async Task<IActionResult> GetMerchantDeviceListAsJson([FromQuery] Guid merchantId,
                                                                      CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetMerchantDeviceListAsJson");
+            try
+            {
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
 
-            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+                MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
 
-            DataTablesResult<KeyValuePair<String, String>> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, viewModel.Devices);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-            
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Devices));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Devices));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new Dictionary<String, String>(), null));
+            }
         }
 
         /// <summary>
@@ -165,30 +167,27 @@
         [HttpPost]
         public async Task<IActionResult> GetMerchantListAsJson(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetMerchantListAsJson");
+            try
+            {
+                // Search Value from (Search box)  
+                String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            // Search Value from (Search box)  
-            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
-            Logger.LogDebug($"searchvalue is {searchValue}");
+                List<MerchantModel> merchantList = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                merchantList = null;
+                List<MerchantListViewModel> merchantViewModels = this.ViewModelFactory.ConvertFrom(merchantList);
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-            Logger.LogDebug("got access token");
+                Expression<Func<MerchantListViewModel, Boolean>> whereClause = m => m.MerchantName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
+                                                                                    m.Town.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 
-            List<MerchantModel> merchantList = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
-
-            List<MerchantListViewModel> merchantViewModels = this.ViewModelFactory.ConvertFrom(merchantList);
-
-            Logger.LogDebug($"merchant list count is {merchantViewModels.Count}");
-
-            Expression<Func<MerchantListViewModel, Boolean>> whereClause = m => m.MerchantName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
-                                                                                m.Town.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-
-            DataTablesResult<MerchantListViewModel> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, merchantViewModels, whereClause);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, merchantViewModels, whereClause));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, merchantViewModels, whereClause));
+            }
+            catch (Exception e)
+            {
+                throw;
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantListViewModel>(), null));
+            }
         }
 
         /// <summary>
@@ -201,20 +200,21 @@
         public async Task<IActionResult> GetMerchantOperatorListAsJson([FromQuery] Guid merchantId,
                                                                        CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetMerchantOperatorListAsJson");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
 
-            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
 
-            MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
-
-            DataTablesResult<MerchantOperatorViewModel> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, viewModel.Operators);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Operators));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Operators));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantOperatorViewModel>(), null));
+            }
         }
 
         /// <summary>
@@ -227,26 +227,26 @@
         public async Task<IActionResult> GetMerchantBalanceHistoryAsJson([FromQuery] Guid merchantId,
                                                                          CancellationToken cancellationToken)
         {
-            Logger.LogDebug("In method GetMerchantBalanceHistoryAsJson");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                List<MerchantBalanceHistory> merchantBalanceHistory =
+                    await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
 
-            List<MerchantBalanceHistory> merchantBalanceHistory = await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                MerchantBalanceHistoryListViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalanceHistory);
 
-            MerchantBalanceHistoryListViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalanceHistory);
+                // Search Value from (Search box)  
+                String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
+                Expression<Func<MerchantBalanceHistoryViewModel, Boolean>> whereClause = m => m.Reference.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 
-            // Search Value from (Search box)  
-            String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
-            Logger.LogDebug($"searchvalue is {searchValue}");
-
-            Expression<Func<MerchantBalanceHistoryViewModel, Boolean>> whereClause = m => m.Reference.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
-
-            DataTablesResult<MerchantBalanceHistoryViewModel> dataTableResult = Helpers.GetDataForDataTable(this.Request.Form, viewModel.MerchantBalanceHistoryViewModels, whereClause);
-
-            String jsonResult = JsonConvert.SerializeObject(dataTableResult);
-            Logger.LogDebug(jsonResult);
-
-            return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.MerchantBalanceHistoryViewModels, whereClause));
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.MerchantBalanceHistoryViewModels, whereClause));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantBalanceHistoryViewModel>(), null));
+            }
         }
         [HttpGet]
         public async Task<IActionResult> MakeMerchantDeposit([FromQuery] Guid merchantId,
