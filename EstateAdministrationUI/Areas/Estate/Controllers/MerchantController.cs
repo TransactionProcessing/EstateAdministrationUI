@@ -174,7 +174,7 @@
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
                 List<MerchantModel> merchantList = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
-                merchantList = null;
+
                 List<MerchantListViewModel> merchantViewModels = this.ViewModelFactory.ConvertFrom(merchantList);
 
                 Expression<Func<MerchantListViewModel, Boolean>> whereClause = m => m.MerchantName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
@@ -184,7 +184,6 @@
             }
             catch (Exception e)
             {
-                throw;
                 Logger.LogError(e);
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantListViewModel>(), null));
             }
