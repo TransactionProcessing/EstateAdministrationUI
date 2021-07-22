@@ -1611,7 +1611,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    List<FileImportLogModel> modelList = modelFactory.ConvertFrom(response);
+                                                    modelFactory.ConvertFrom(response);
                                                 });
         }
     }
