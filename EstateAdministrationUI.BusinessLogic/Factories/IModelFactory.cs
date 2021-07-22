@@ -4,6 +4,7 @@
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.DataTransferObjects;
+    using FileProcessor.DataTransferObjects.Responses;
     using Models;
     using SortDirectionModel = Models.SortDirection;
     using SortDirectionDTO = EstateReporting.DataTransferObjects.SortDirection;
@@ -94,6 +95,13 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         MakeMerchantDepositRequest ConvertFrom(MakeMerchantDepositModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        List<FileImportLogModel> ConvertFrom(FileImportLogList source);
 
         /// <summary>
         /// Converts from.

@@ -112,8 +112,27 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-fw fa-book"></i>
+                                <span>File Processing</span>
+                                <i class="right fas fa-angle-left"></i>
+                            </a>
+                            <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="collapse-item" asp-action="GetFileImportLogList" asp-area="Estate" asp-controller="FileProcessing">
+                                    <i class="fas fa-fw fa-chart-line nav-icon"></i>
+                                    <span>File Import Log Enquiry</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="collapse-item" asp-action="GetMerchantAnalysis" asp-area="Estate" asp-controller="Reporting">
+                                    <i class="fas fa-fw fa-chart-line nav-icon"></i>
+                                <span>Upload File</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->

@@ -10,6 +10,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.DataTransferObjects;
     using Factories;
+    using FileProcessor.DataTransferObjects.Responses;
     using Microsoft.AspNetCore.Identity;
     using Models;
     using Shouldly;
@@ -1557,6 +1558,61 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.ShouldBeNull();
         }
 
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileImportLogList_IsConverted()
+        {
+            FileImportLogList response = TestData.FileImportLogList;
 
+            ModelFactory modelFactory = new ModelFactory();
+
+            List<FileImportLogModel> modelList = modelFactory.ConvertFrom(response);
+
+            modelList.ShouldNotBeNull();
+            modelList.ShouldNotBeEmpty();
+
+            foreach (FileImportLog responseFileImportLog in response.FileImportLogs)
+            {
+                FileImportLogModel fileImportLogModel = modelList.SingleOrDefault(m => m.FileImportLogId == responseFileImportLog.FileImportLogId);
+
+                fileImportLogModel.ShouldNotBeNull();
+                fileImportLogModel.ImportLogDateTime.ShouldBe(responseFileImportLog.ImportLogDateTime);
+                fileImportLogModel.ImportLogDate.ShouldBe(responseFileImportLog.ImportLogDate);
+                fileImportLogModel.ImportLogTime.ShouldBe(responseFileImportLog.ImportLogTime);
+                fileImportLogModel.FileCount.ShouldBe(responseFileImportLog.FileCount);
+                fileImportLogModel.Files.ShouldNotBeNull();
+                fileImportLogModel.Files.ShouldNotBeEmpty();
+
+                foreach (FileImportLogFile responseFileImportLogFile in responseFileImportLog.Files)
+                {
+                    FileImportLogFileModel fileImportLogFileModel = fileImportLogModel.Files.SingleOrDefault(f => f.FileId == responseFileImportLogFile.FileId);
+
+                    fileImportLogFileModel.ShouldNotBeNull();
+                    fileImportLogFileModel.FileId.ShouldBe(responseFileImportLogFile.FileId);
+                    fileImportLogFileModel.FileImportLogId.ShouldBe(responseFileImportLogFile.FileImportLogId);
+                    fileImportLogFileModel.FilePath.ShouldBe(responseFileImportLogFile.FilePath);
+                    fileImportLogFileModel.FileProfileId.ShouldBe(responseFileImportLogFile.FileProfileId);
+                    fileImportLogFileModel.FileUploadedDateTime.ShouldBe(responseFileImportLogFile.FileUploadedDateTime);
+                    fileImportLogFileModel.MerchantId.ShouldBe(responseFileImportLogFile.MerchantId);
+                    fileImportLogFileModel.OriginalFileName.ShouldBe(responseFileImportLogFile.OriginalFileName);
+                    fileImportLogFileModel.UserId.ShouldBe(responseFileImportLogFile.UserId);
+
+                }
+
+            }
+
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileImportLogList_ResponseIsNull_IsConverted()
+        {
+            FileImportLogList response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    List<FileImportLogModel> modelList = modelFactory.ConvertFrom(response);
+                                                });
+        }
     }
 }
