@@ -768,7 +768,7 @@
             return models;
         }
 
-        private FileImportLogModel ConvertFrom(FileImportLog source)
+        public FileImportLogModel ConvertFrom(FileImportLog source)
         {
             FileImportLogModel model = new FileImportLogModel
                                        {

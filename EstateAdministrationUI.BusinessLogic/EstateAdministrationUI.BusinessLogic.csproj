@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="EstateManagement.Client" Version="1.0.11.1" />
     <PackageReference Include="EstateReporting.Client" Version="1.0.14.2" />
-    <PackageReference Include="FileProcessor.Client" Version="1.0.0.3" />
+    <PackageReference Include="FileProcessor.Client" Version="1.0.0.4" />
     <PackageReference Include="Shared" Version="1.0.8" />
   </ItemGroup>
 

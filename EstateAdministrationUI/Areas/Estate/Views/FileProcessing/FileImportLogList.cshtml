@@ -79,12 +79,12 @@
                     "columns": [
                         { "data": "fileImportLogId", "name": "fileImportLogId", "autoWidth": true },
                         { "data": "importLogDateTime", "name": "importLogDateTime", "autoWidth": true },
-                        { "data": "fileCount", "name": "fileCount", "autoWidth": true }//,
-                        //{
-                        //    "render": function (data, type, full, meta) {
-                        //        return '<a class="btn btn-info" id="viewFilesLine" href="GetFileImportLogFiles?fileImportLogId=' + full.fileImportLogId + '"><i class="fa fa-eye"></i></a>';
-                        //    }
-                        //}
+                        { "data": "fileCount", "name": "fileCount", "autoWidth": true },
+                        {
+                            "render": function (data, type, full, meta) {
+                                return '<a class="btn btn-info" id="viewileImportLog" href="GetFileImportLog?fileImportLogId=' + full.fileImportLogId + '"><i class="fa fa-eye"></i></a>';
+                            }
+                        }
                     ],
                     "order": [[1, "desc"]]
                 });
