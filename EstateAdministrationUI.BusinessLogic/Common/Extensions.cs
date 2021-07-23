@@ -28,6 +28,11 @@ namespace EstateAdministrationUI.BusinessLogic.Common
         {
             PropertyInfo propertyInfo = typeof(T).GetProperty(orderByColumn, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
+            if (propertyInfo == null)
+            {
+                return enumerable;
+            }
+
             if (orderByDirection == "asc")
             {
                 return enumerable.OrderBy(x => propertyInfo.GetValue(x, null));
@@ -49,6 +54,11 @@ namespace EstateAdministrationUI.BusinessLogic.Common
                                                String orderByDirection)
         {
             PropertyInfo propertyInfo = typeof(T).GetProperty(orderByColumn, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propertyInfo == null)
+            {
+                return enumerable;
+            }
 
             if (orderByDirection == "asc")
             {

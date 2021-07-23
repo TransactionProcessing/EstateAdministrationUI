@@ -108,6 +108,13 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        FileImportLogModel ConvertFrom(FileImportLog source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source);
 
         /// <summary>

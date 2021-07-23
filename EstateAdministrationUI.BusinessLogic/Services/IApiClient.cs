@@ -154,6 +154,19 @@
                                                          CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the file import log.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="fileImportLogId">The file import log identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<FileImportLogModel> GetFileImportLog(String accessToken,
+                                                         ClaimsIdentity claimsIdentity,
+                                                         Guid fileImportLogId,
+                                                         CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

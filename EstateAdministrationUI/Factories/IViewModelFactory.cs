@@ -170,6 +170,13 @@
         /// <returns></returns>
         List<FileImportLogViewModel> ConvertFrom(List<FileImportLogModel> models);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The models.</param>
+        /// <returns></returns>
+        FileImportLogViewModel ConvertFrom(FileImportLogModel model);
+
         #endregion
     }
 }

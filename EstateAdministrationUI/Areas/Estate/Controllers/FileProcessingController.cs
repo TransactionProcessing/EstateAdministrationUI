@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
@@ -66,6 +67,43 @@
         public async Task<IActionResult> GetFileImportLogList(CancellationToken cancellationToken)
         {
             return this.View("FileImportLogList");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFileImportLog([FromQuery] Guid fileImportLogId, CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            FileImportLogModel fileImportLogModel = await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
+
+            if (fileImportLogModel == null)
+            {
+                return this.RedirectToAction("GetFileImportLogList", "FileProcessing").WithWarning("Warning:", $"Failed to get File Import Log Record, please try again.");
+            }
+
+            return this.View("FileImportLog", this.ViewModelFactory.ConvertFrom(fileImportLogModel));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetFileImportLogFileListAsJson([FromQuery] Guid fileImportLogId,
+                                                                        CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                FileImportLogModel fileImportLogModel =
+                    await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
+
+                FileImportLogViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileImportLogModel);
+
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Files));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
+            }
         }
 
         /// <summary>

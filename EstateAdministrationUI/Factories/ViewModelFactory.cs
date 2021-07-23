@@ -641,37 +641,43 @@
 
             foreach (FileImportLogModel fileImportLogModel in models)
             {
-                FileImportLogViewModel viewModel = new FileImportLogViewModel
-                                                   {
-                                                       FileCount = fileImportLogModel.FileCount,
-                                                       FileImportLogId = fileImportLogModel.FileImportLogId,
-                                                       Files = new List<FileImportLogFileViewModel>(),
-                                                       ImportLogDate = fileImportLogModel.ImportLogDate,
-                                                       ImportLogDateTime = fileImportLogModel.ImportLogDateTime,
-                                                       ImportLogTime = fileImportLogModel.ImportLogTime
-                                                   };
-
-                if (fileImportLogModel.Files.Any())
-                {
-                    foreach (FileImportLogFileModel fileImportLogFileModel in fileImportLogModel.Files)
-                    {
-                        viewModel.Files.Add(new FileImportLogFileViewModel
-                                            {
-                                                FileImportLogId = fileImportLogFileModel.FileImportLogId,
-                                                FileId = fileImportLogFileModel.FileId,
-                                                FilePath = fileImportLogFileModel.FilePath,
-                                                FileProfileId = fileImportLogFileModel.FileProfileId,
-                                                FileUploadedDateTime = fileImportLogFileModel.FileUploadedDateTime,
-                                                MerchantId = fileImportLogFileModel.MerchantId,
-                                                OriginalFileName = fileImportLogFileModel.OriginalFileName,
-                                                UserId = fileImportLogFileModel.UserId
-                        });
-                    }
-                }
-                viewModels.Add(viewModel);
+                viewModels.Add(this.ConvertFrom(fileImportLogModel));
             }
 
             return viewModels;
+        }
+
+        public FileImportLogViewModel ConvertFrom(FileImportLogModel model)
+        {
+            FileImportLogViewModel viewModel = new FileImportLogViewModel
+            {
+                FileCount = model.FileCount,
+                FileImportLogId = model.FileImportLogId,
+                Files = new List<FileImportLogFileViewModel>(),
+                ImportLogDate = model.ImportLogDate,
+                ImportLogDateTime = model.ImportLogDateTime,
+                ImportLogTime = model.ImportLogTime
+            };
+
+            if (model.Files.Any())
+            {
+                foreach (FileImportLogFileModel fileImportLogFileModel in model.Files)
+                {
+                    viewModel.Files.Add(new FileImportLogFileViewModel
+                    {
+                        FileImportLogId = fileImportLogFileModel.FileImportLogId,
+                        FileId = fileImportLogFileModel.FileId,
+                        FilePath = fileImportLogFileModel.FilePath,
+                        FileProfileId = fileImportLogFileModel.FileProfileId,
+                        FileUploadedDateTime = fileImportLogFileModel.FileUploadedDateTime,
+                        MerchantId = fileImportLogFileModel.MerchantId,
+                        OriginalFileName = fileImportLogFileModel.OriginalFileName,
+                        UserId = fileImportLogFileModel.UserId
+                    });
+                }
+            }
+
+            return viewModel;
         }
 
         /// <summary>
