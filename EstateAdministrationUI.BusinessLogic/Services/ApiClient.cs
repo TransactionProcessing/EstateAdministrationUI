@@ -18,6 +18,8 @@
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.Client;
     using EstateReporting.DataTransferObjects;
+    using FileProcessor.Client;
+    using FileProcessor.DataTransferObjects.Responses;
     using Shared.Logger;
     using SortDirection = BusinessLogic.Models.SortDirection;
     using SortField = BusinessLogic.Models.SortField;
@@ -42,10 +44,15 @@
         private readonly IEstateReportingClient EstateReportingClient;
 
         /// <summary>
+        /// The file processor client
+        /// </summary>
+        private readonly IFileProcessorClient FileProcessorClient;
+
+        /// <summary>
         /// The model factory
         /// </summary>
         private readonly IModelFactory ModelFactory;
-        
+
         #endregion
 
         #region Constructors
@@ -55,13 +62,16 @@
         /// </summary>
         /// <param name="estateClient">The estate client.</param>
         /// <param name="estateReportingClient">The estate reporting client.</param>
+        /// <param name="fileProcessorClient">The file processor client.</param>
         /// <param name="modelFactory">The model factory.</param>
         public ApiClient(IEstateClient estateClient,
                          IEstateReportingClient estateReportingClient,
+                         IFileProcessorClient fileProcessorClient,
                          IModelFactory modelFactory)
         {
             this.EstateClient = estateClient;
             this.EstateReportingClient = estateReportingClient;
+            this.FileProcessorClient = fileProcessorClient;
             this.ModelFactory = modelFactory;
         }
 
@@ -69,6 +79,9 @@
 
         #region Methods
 
+        /// <summary>
+        /// The estate identifier claim type
+        /// </summary>
         private const String EstateIdClaimType = "estateId";
         /// <summary>
         /// Adds the product to contract.
@@ -276,6 +289,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets the merchant balance history.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
                                       ClaimsIdentity claimsIdentity,
                                       Guid merchantId,
@@ -347,6 +368,32 @@
         }
 
         /// <summary>
+        /// Gets the file import logs.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<List<FileImportLogModel>> GetFileImportLogs(String accessToken,
+                                                                      ClaimsIdentity claimsIdentity,
+                                                                      Guid? merchantId,
+                                                                      DateTime startDate,
+                                                                      DateTime endDate,
+                                                                      CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            FileImportLogList fileImportLogs = await this.FileProcessorClient.GetFileImportLogs(accessToken, estateId, startDate, endDate, merchantId, cancellationToken);
+
+            List<FileImportLogModel> fileImportLogModels = this.ModelFactory.ConvertFrom(fileImportLogs);
+
+            return fileImportLogModels;
+        }
+
+        /// <summary>
         /// Adds the transaction fee to contract product.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -405,6 +452,15 @@
             return model;
         }
 
+        /// <summary>
+        /// Gets the transactions by date.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
                                                                          ClaimsIdentity claimsIdentity,
                                                                          DateTime startDate,
@@ -423,6 +479,15 @@
             return model;
         }
 
+        /// <summary>
+        /// Gets the transactions by week.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
                                                                          ClaimsIdentity claimsIdentity,
                                                                          DateTime startDate,
@@ -441,6 +506,15 @@
             return model;
         }
 
+        /// <summary>
+        /// Gets the transactions by month.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
                                                                            ClaimsIdentity claimsIdentity,
                                                                            DateTime startDate,
@@ -460,6 +534,18 @@
             return model;
         }
 
+        /// <summary>
+        /// Gets the transactions by merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="recordCount">The record count.</param>
+        /// <param name="sortDirection">The sort direction.</param>
+        /// <param name="sortField">The sort field.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
                                                                                  ClaimsIdentity claimsIdentity,
                                                                                  DateTime startDate,
@@ -487,6 +573,18 @@
 
         }
 
+        /// <summary>
+        /// Gets the transactions by operator.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="recordCount">The record count.</param>
+        /// <param name="sortDirection">The sort direction.</param>
+        /// <param name="sortField">The sort field.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<TransactionsByOperatorModel> GetTransactionsByOperator(String accessToken,
                                                                                  ClaimsIdentity claimsIdentity,
                                                                                  DateTime startDate,

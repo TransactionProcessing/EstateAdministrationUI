@@ -7,6 +7,7 @@
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.DataTransferObjects;
+    using FileProcessor.DataTransferObjects.Responses;
     using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
     using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
@@ -517,7 +518,54 @@
                                                                                 };
 
         public static Guid EventId = Guid.Parse("2EF14DC4-C234-4175-BCA1-D5AB7F58943E");
+
         public static Guid TransactionId = Guid.Parse("3FB06E57-B307-4C30-8D5A-EE20C916A81D");
+
+        public static Guid FileImportLogId = Guid.Parse("45F5C142-D034-4AE3-B27B-B733FE200028");
+
+        public static Int32 FileCount = 1;
+
+        public  static DateTime ImportLogDateTime = new DateTime(2021,7,22,9,9,25);
+
+        public static String FilePath = "/home/txnproc/uploadedfile;";
+
+        public static Guid FileProfileId = Guid.Parse("711EFF6A-05F1-4B80-A60C-2728E9C9081C");
+
+        public static DateTime FileUploadedDateTime = new DateTime(2021, 7, 22, 10, 9, 25);
+
+        public static String OriginalFileName = "OriginalFileName.txt";
+
+        public static Guid FileId = Guid.Parse("2FC540D7-8606-4F3C-A5F0-B179015D7928");
+
+        public static FileImportLogList FileImportLogList =>
+        new FileImportLogList
+        {
+            FileImportLogs = new List<FileImportLog>
+                             {
+                                 new FileImportLog
+                                 {
+                                     FileCount = TestData.FileCount,
+                                     FileImportLogId = TestData.FileImportLogId,
+                                     ImportLogDate = TestData.ImportLogDateTime.Date,
+                                     ImportLogDateTime = TestData.ImportLogDateTime,
+                                     ImportLogTime = TestData.ImportLogDateTime.TimeOfDay,
+                                     Files = new List<FileImportLogFile>
+                                             {
+                                                 new FileImportLogFile
+                                                 {
+                                                     FileImportLogId = TestData.FileImportLogId,
+                                                     FileId = TestData.FileId,
+                                                     FilePath = TestData.FilePath,
+                                                     FileProfileId = TestData.FileProfileId,
+                                                     FileUploadedDateTime = TestData.FileUploadedDateTime,
+                                                     MerchantId = TestData.MerchantId,
+                                                     OriginalFileName = TestData.OriginalFileName,
+                                                     UserId = TestData.SecurityUserId
+                                                 }
+                                             }
+                                 }
+                             }
+        };
 
         public static List<MerchantBalanceHistoryResponse> MerchantBalanceHistoryResponseList =>
             new List<MerchantBalanceHistoryResponse>
@@ -962,6 +1010,30 @@
                 NumberOfTransactions = 20,
                 CurrencyCode = "KES",
                 ValueOfTransactions = 2000
+            };
+
+        public static FileImportLogModel FileImportLogModel =>
+            new FileImportLogModel
+            {
+                FileImportLogId = TestData.FileImportLogId,
+                FileCount = TestData.FileCount,
+                ImportLogDate = TestData.ImportLogDateTime.Date,
+                ImportLogDateTime = TestData.ImportLogDateTime,
+                ImportLogTime = TestData.ImportLogDateTime.TimeOfDay,
+                Files = new List<FileImportLogFileModel>
+                        {
+                            new FileImportLogFileModel
+                            {
+                                FileImportLogId = TestData.FileImportLogId,
+                                FileId = TestData.FileId,
+                                FilePath = TestData.FilePath,
+                                FileProfileId = TestData.FileProfileId,
+                                FileUploadedDateTime = TestData.FileUploadedDateTime,
+                                MerchantId = TestData.MerchantId,
+                                OriginalFileName = TestData.OriginalFileName,
+                                UserId = TestData.SecurityUserId
+                            }
+                        }
             };
     }
 }

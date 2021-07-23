@@ -163,6 +163,13 @@
         /// <returns></returns>
         TransactionsByOperatorViewModel ConvertFrom(TransactionsByOperatorModel model);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="models">The models.</param>
+        /// <returns></returns>
+        List<FileImportLogViewModel> ConvertFrom(List<FileImportLogModel> models);
+
         #endregion
     }
 }

@@ -10,6 +10,7 @@ namespace EstateAdministrationUI
     using EstateManagement.Client;
     using EstateReporting.Client;
     using Factories;
+    using FileProcessor.Client;
     using HealthChecks.UI.Client;
     using IdentityModel;
     using Microsoft.AspNetCore.Authentication;
@@ -74,71 +75,6 @@ namespace EstateAdministrationUI
 
             services.AddControllersWithViews();
 
-            //services.Configure<CookiePolicyOptions>(options =>
-            //{
-            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            //    options.CheckConsentNeeded = context => true;
-            //    options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-            //    options.ConsentCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            //});
-
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = "oidc";
-            //}).AddCookie(options =>
-            //{
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-            //    options.Cookie.Name = "mvchybridautorefresh";
-            //    options.Cookie.SameSite = SameSiteMode.Unspecified;
-            //    options.Cookie.IsEssential = true;
-            //    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            //}).AddAutomaticTokenManagement()
-            //        .AddOpenIdConnect("oidc",
-            //                                                  options =>
-            //                                                  {
-            //                                                      options.SignInScheme = "Cookies";
-            //                                                      options.Authority = ConfigurationReader.GetValue("Authority");
-
-            //                                                      options.RequireHttpsMetadata = false;
-
-            //                                                      options.ClientSecret =
-            //                                                          ConfigurationReader.GetValue("ClientSecret");
-            //                                                      options.ClientId = ConfigurationReader.GetValue("ClientId");
-
-            //                                                      options.ResponseType = "code id_token";
-
-            //                                                      options.Scope.Clear();
-            //                                                      options.Scope.Add("openid");
-            //                                                      options.Scope.Add("profile");
-            //                                                      options.Scope.Add("email");
-            //                                                      options.Scope.Add("offline_access");
-
-            //                                                      String? estateManagementScope =
-            //                                                          Environment.GetEnvironmentVariable("EstateManagementScope");
-
-            //                                                      options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
-
-            //                                                      options.ClaimActions.MapAllExcept("iss",
-            //                                                                                        "nbf",
-            //                                                                                        "exp",
-            //                                                                                        "aud",
-            //                                                                                        "nonce",
-            //                                                                                        "iat",
-            //                                                                                        "c_hash");
-
-            //                                                      options.GetClaimsFromUserInfoEndpoint = true;
-            //                                                      options.SaveTokens = true;
-
-            //                                                      options.TokenValidationParameters = new TokenValidationParameters
-            //                                                      {
-            //                                                          NameClaimType = JwtClaimTypes.Name,
-            //                                                          RoleClaimType = JwtClaimTypes.Role,
-            //                                                          ValidateIssuer = false
-            //                                                      };
-            //                                                  });
-            //IdentityModelEventSource.ShowPII = true;
-
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
@@ -200,6 +136,7 @@ namespace EstateAdministrationUI
             services.AddSingleton<IModelFactory, ModelFactory>();
             services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             services.AddSingleton<IEstateClient, EstateClient>();
+            services.AddSingleton<IFileProcessorClient, FileProcessorClient>();
             services.AddSingleton<IEstateReportingClient, EstateReportingClient>();
             services.AddSingleton<Func<String, String>>(container => (serviceName) =>
             {

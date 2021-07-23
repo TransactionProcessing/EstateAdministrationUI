@@ -1469,5 +1469,71 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             viewModel.MerchantBalanceHistoryViewModels.ShouldBeNull();
         }
+        
+        [Fact]
+        public void ViewModelFactory_CovertFrom_FileImportLogModelList_IsConverted()
+        {
+            List<FileImportLogModel> modelList = new List<FileImportLogModel>
+                                            {
+                                                TestData.FileImportLogModel
+                                            };
+
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.Count.ShouldBe(modelList.Count);
+            foreach (FileImportLogModel fileImportLogModel in modelList)
+            {
+                FileImportLogViewModel fileImportLogViewModel = viewModel.SingleOrDefault(v => v.FileImportLogId == fileImportLogModel.FileImportLogId);
+                fileImportLogViewModel.ShouldNotBeNull();
+                fileImportLogViewModel.FileCount.ShouldBe(fileImportLogModel.FileCount);
+                fileImportLogViewModel.ImportLogDate.ShouldBe(fileImportLogModel.ImportLogDate);
+                fileImportLogViewModel.ImportLogDateTime.ShouldBe(fileImportLogModel.ImportLogDateTime);
+                fileImportLogViewModel.ImportLogTime.ShouldBe(fileImportLogModel.ImportLogTime);
+                fileImportLogViewModel.Files.Count.ShouldBe(fileImportLogModel.Files.Count);
+
+                foreach (FileImportLogFileModel fileImportLogFileModel in fileImportLogModel.Files)
+                {
+                    FileImportLogFileViewModel fileImportLogFileViewModel = fileImportLogViewModel.Files.SingleOrDefault(f => f.FileId == fileImportLogFileModel.FileId);
+                    fileImportLogFileViewModel.ShouldNotBeNull();
+                    fileImportLogFileViewModel.FileImportLogId.ShouldBe(fileImportLogFileViewModel.FileImportLogId);
+                    fileImportLogFileViewModel.FileProfileId.ShouldBe(fileImportLogFileViewModel.FileProfileId);
+                    fileImportLogFileViewModel.FilePath.ShouldBe(fileImportLogFileViewModel.FilePath);
+                    fileImportLogFileViewModel.FileUploadedDateTime.ShouldBe(fileImportLogFileViewModel.FileUploadedDateTime);
+                    fileImportLogFileViewModel.MerchantId.ShouldBe(fileImportLogFileViewModel.MerchantId);
+                    fileImportLogFileViewModel.OriginalFileName.ShouldBe(fileImportLogFileViewModel.OriginalFileName);
+                    fileImportLogFileViewModel.UserId.ShouldBe(fileImportLogFileViewModel.UserId);
+                }
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_CovertFrom_FileImportLogModelList_NullModel_IsConverted()
+        {
+            List<FileImportLogModel> modelList = null;
+            
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_CovertFrom_FileImportLogModelList_EmptyModelList_IsConverted()
+        {
+            List<FileImportLogModel> modelList = new List<FileImportLogModel>();
+            
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.ShouldBeEmpty();
+        }
     }
 }

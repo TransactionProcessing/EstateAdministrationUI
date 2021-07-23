@@ -6,6 +6,7 @@
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using EstateReporting.DataTransferObjects;
+    using FileProcessor.DataTransferObjects.Responses;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
@@ -739,6 +740,65 @@
                                                     };
 
             return apiRequest;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public List<FileImportLogModel> ConvertFrom(FileImportLogList source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            List<FileImportLogModel> models = new List<FileImportLogModel>();
+
+            if (source.FileImportLogs.Any())
+            {
+                foreach (FileImportLog sourceFileImportLog in source.FileImportLogs)
+                {
+                    models.Add(this.ConvertFrom(sourceFileImportLog));
+                }
+            }
+
+            return models;
+        }
+
+        private FileImportLogModel ConvertFrom(FileImportLog source)
+        {
+            FileImportLogModel model = new FileImportLogModel
+                                       {
+                                           FileCount = source.FileCount,
+                                           FileImportLogId = source.FileImportLogId,
+                                           ImportLogDate = source.ImportLogDate,
+                                           ImportLogDateTime = source.ImportLogDateTime,
+                                           ImportLogTime = source.ImportLogTime
+                                       };
+
+            if (source.Files.Any())
+            {
+                model.Files = new List<FileImportLogFileModel>();
+                foreach (FileImportLogFile fileImportLogFile in source.Files)
+                {
+                    model.Files.Add(new FileImportLogFileModel
+                                    {
+                                        FileImportLogId = fileImportLogFile.FileImportLogId,
+                                        FileId = fileImportLogFile.FileId,
+                                        FilePath = fileImportLogFile.FilePath,
+                                        FileProfileId = fileImportLogFile.FileProfileId,
+                                        FileUploadedDateTime = fileImportLogFile.FileUploadedDateTime,
+                                        MerchantId = fileImportLogFile.MerchantId,
+                                        OriginalFileName = fileImportLogFile.OriginalFileName,
+                                        UserId = fileImportLogFile.UserId
+                                    });
+                }
+            }
+
+            return model;
         }
 
         /// <summary>
