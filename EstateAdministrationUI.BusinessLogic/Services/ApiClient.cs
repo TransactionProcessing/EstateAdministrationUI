@@ -388,6 +388,28 @@
         }
         
         /// <summary>
+        /// Gets the file details.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<FileDetailsModel> GetFileDetails(String accessToken,
+                                                          ClaimsIdentity claimsIdentity,
+                                                          Guid fileId,
+                                                          CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            FileDetails fileDetails = await this.FileProcessorClient.GetFile(accessToken, estateId, fileId, cancellationToken);
+
+            FileDetailsModel model = this.ModelFactory.ConvertFrom(fileDetails);
+
+            return model;
+        }
+
+        /// <summary>
         /// Gets the file import logs.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

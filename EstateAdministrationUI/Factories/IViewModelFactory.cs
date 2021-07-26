@@ -184,6 +184,13 @@
         /// <returns></returns>
         FileImportLogViewModel ConvertFrom(FileImportLogModel model);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        FileDetailsViewModel ConvertFrom(FileDetailsModel model);
+
         #endregion
     }
 }
