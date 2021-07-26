@@ -30,6 +30,19 @@
                                                                      CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the file details.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<FileDetailsModel> GetFileDetails(String accessToken,
+                                              ClaimsIdentity claimsIdentity,
+                                              Guid fileId,
+                                              CancellationToken cancellationToken);
+
+        /// <summary>
         /// Adds the transaction fee to contract product.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -317,19 +330,6 @@
                                                                    Guid merchantId,
                                                                    MakeMerchantDepositModel makeMerchantDepositModel,
                                                                    CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Gets the file details.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="fileId">The file identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<FileDetailsModel> GetFileDetails(String accessToken,
-                                             ClaimsIdentity claimsIdentity,
-                                             Guid fileId,
-                                             CancellationToken cancellationToken);
 
         #endregion
     }

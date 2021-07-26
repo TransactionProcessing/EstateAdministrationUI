@@ -156,28 +156,6 @@
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetFileLineListAsJson([FromQuery] Guid fileId,
-                                                               CancellationToken cancellationToken)
-        {
-            try
-            {
-                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-                FileDetailsModel fileDetailsModel =
-                    await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
-
-                FileDetailsViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileDetailsModel);
-
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.FileLines));
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
-            }
-        }
-
         /// <summary>
         /// Gets the merchant list as json.
         /// </summary>
@@ -203,6 +181,12 @@
             }
         }
 
+        /// <summary>
+        /// Gets the file details.
+        /// </summary>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetFileDetails([FromQuery] Guid fileId, CancellationToken cancellationToken)
         {
@@ -210,12 +194,40 @@
 
             FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
 
-            if (fileDetailsModel== null)
+            if (fileDetailsModel == null)
             {
                 return this.RedirectToAction("GetFileImportLog", "FileProcessing").WithWarning("Warning:", $"Failed to get File Details Record, please try again.");
             }
 
             return this.View("FileDetails", this.ViewModelFactory.ConvertFrom(fileDetailsModel));
+        }
+
+        /// <summary>
+        /// Gets the file line list as json.
+        /// </summary>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetFileLineListAsJson([FromQuery] Guid fileId,
+                                                               CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                FileDetailsModel fileDetailsModel =
+                    await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
+
+                FileDetailsViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileDetailsModel);
+
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.FileLines));
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
+            }
         }
 
         #endregion
