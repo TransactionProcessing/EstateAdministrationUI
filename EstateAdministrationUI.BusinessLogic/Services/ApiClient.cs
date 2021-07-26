@@ -386,7 +386,7 @@
 
             return makeMerchantDepositResponseModel;
         }
-
+        
         /// <summary>
         /// Gets the file import logs.
         /// </summary>
