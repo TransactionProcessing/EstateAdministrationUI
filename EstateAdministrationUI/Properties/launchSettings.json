@@ -2,12 +2,14 @@
   "profiles": {
     "EstateAdministrationUI": {
       "commandName": "Project",
-      "launchBrowser": false,
+      "launchBrowser": true,
+      "launchUrl": "https://192.168.1.67:5004",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": "true",
-      "applicationUrl": "http://192.168.1.67:5004"
+      "applicationUrl": "http://192.168.1.67:5004",
+      "jsWebView2Debugging": true
     }
   }
 }

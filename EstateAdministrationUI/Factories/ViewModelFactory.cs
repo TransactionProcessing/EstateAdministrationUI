@@ -5,6 +5,7 @@
     using System.Linq;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
+    using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
 
     /// <summary>
     /// 
@@ -647,8 +648,18 @@
             return viewModels;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The models.</param>
+        /// <returns></returns>
         public FileImportLogViewModel ConvertFrom(FileImportLogModel model)
         {
+            if (model == null)
+            {
+                return null;
+            }
+
             FileImportLogViewModel viewModel = new FileImportLogViewModel
             {
                 FileCount = model.FileCount,
@@ -680,6 +691,100 @@
             return viewModel;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        public FileDetailsViewModel ConvertFrom(FileDetailsModel model)
+        {
+            if (model == null)
+            {
+                return null;
+            }
+
+
+            FileDetailsViewModel viewModel = new FileDetailsViewModel
+                                             {
+                                                 ProcessingSummary = new FileProcessingSummaryViewModel
+                                                                     {
+                                                                         TotalLines = model.ProcessingSummary.TotalLines,
+                                                                         IgnoredLines = model.ProcessingSummary.IgnoredLines,
+                                                                         SuccessfullyProcessedLines = model.ProcessingSummary.SuccessfullyProcessedLines,
+                                                                         FailedLines = model.ProcessingSummary.FailedLines,
+                                                                         NotProcessedLines = model.ProcessingSummary.NotProcessedLines,
+                                                                         RejectedLines = model.ProcessingSummary.RejectedLines
+                                                                     },
+                                                 ProcessingCompleted = model.ProcessingCompleted,
+                                                 EstateId = model.EstateId,
+                                                 FileId = model.FileId,
+                                                 FileImportLogId = model.FileImportLogId,
+                                                 FileLines = new List<FileLineViewModel>(),
+                                                 FileLocation = model.FileLocation,
+                                                 FileProfileId = model.FileProfileId,
+                                                 MerchantId = model.MerchantId,
+                                                 UserId = model.UserId
+                                             };
+
+            if (model.FileLines.Any())
+            {
+                foreach (FileLineModel modelFileLine in model.FileLines)
+                {
+                    FileLineViewModel fileLineViewModel = new FileLineViewModel
+                                                          {
+                                                              LineData = modelFileLine.LineData,
+                                                              LineNumber = modelFileLine.LineNumber,
+                                                              TransactionId = modelFileLine.TransactionId,
+                                                              RejectionReason = modelFileLine.RejectionReason
+                                                          };
+
+                    // Translate the processing result
+                    (FileLineProcessingResult result, String stringResult) processingResult = this.ConvertFrom(modelFileLine.ProcessingResult);
+
+                    fileLineViewModel.ProcessingResult = processingResult.result;
+                    fileLineViewModel.ProcessingResultString = processingResult.stringResult;
+
+                    viewModel.FileLines.Add(fileLineViewModel);
+
+                }
+            }
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        private (FileLineProcessingResult result,String stringResult) ConvertFrom(BusinessLogic.Models.FileLineProcessingResult model)
+        {
+            (FileLineProcessingResult, String) viewModel = (FileLineProcessingResult.Unknown,"Unknown");
+            switch (model)
+            {
+                case BusinessLogic.Models.FileLineProcessingResult.Failed:
+                    viewModel = (FileLineProcessingResult.Failed,"Failed");
+                    break;
+                case BusinessLogic.Models.FileLineProcessingResult.Unknown:
+                    viewModel = (FileLineProcessingResult.Unknown, "Unknown");
+                    break;
+                case BusinessLogic.Models.FileLineProcessingResult.Ignored:
+                    viewModel = (FileLineProcessingResult.Ignored, "Ignored");
+                    break;
+                case BusinessLogic.Models.FileLineProcessingResult.NotProcessed:
+                    viewModel = (FileLineProcessingResult.NotProcessed, "Not Processed");
+                    break;
+                case BusinessLogic.Models.FileLineProcessingResult.Rejected:
+                    viewModel = (FileLineProcessingResult.Rejected, "Rejected");
+                    break;
+                case BusinessLogic.Models.FileLineProcessingResult.Successful:
+                    viewModel = (FileLineProcessingResult.Successful, "Successful");
+                    break;
+            }
+
+            return viewModel;
+        }
+        
         /// <summary>
         /// Converts from.
         /// </summary>

@@ -10,6 +10,7 @@
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
+    using FileLineProcessingResult = Models.FileLineProcessingResult;
     using SortDirection = EstateReporting.DataTransferObjects.SortDirection;
     using SortField = EstateReporting.DataTransferObjects.SortField;
 
@@ -474,6 +475,88 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        public FileDetailsModel ConvertFrom(FileDetails source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            FileDetailsModel model = new FileDetailsModel
+                                     {
+                                         EstateId = source.EstateId,
+                                         FileId = source.FileId,
+                                         FileImportLogId = source.FileImportLogId,
+                                         FileLines = new List<FileLineModel>(),
+                                         FileLocation = source.FileLocation,
+                                         FileProfileId = source.FileProfileId,
+                                         MerchantId = source.MerchantId,
+                                         ProcessingCompleted = source.ProcessingCompleted,
+                                         ProcessingSummary = new FileProcessingSummaryModel
+                                                             {
+                                                                 FailedLines = source.ProcessingSummary.FailedLines,
+                                                                 IgnoredLines = source.ProcessingSummary.IgnoredLines,
+                                                                 NotProcessedLines = source.ProcessingSummary.NotProcessedLines,
+                                                                 RejectedLines = source.ProcessingSummary.RejectedLines,
+                                                                 SuccessfullyProcessedLines = source.ProcessingSummary.SuccessfullyProcessedLines,
+                                                                 TotalLines = source.ProcessingSummary.TotalLines
+                                                             },
+                                         UserId = source.UserId
+                                     };
+
+            foreach (FileLine sourceFileLine in source.FileLines)
+            {
+                model.FileLines.Add(new FileLineModel
+                                    {
+                                        LineData = sourceFileLine.LineData,
+                                        LineNumber = sourceFileLine.LineNumber,
+                                        ProcessingResult = this.ConvertFrom(sourceFileLine.ProcessingResult),
+                                        RejectionReason = sourceFileLine.RejectionReason,
+                                        TransactionId = sourceFileLine.TransactionId
+                                    });
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="dto">The dto.</param>
+        /// <returns></returns>
+        private FileLineProcessingResult ConvertFrom(FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult dto)
+        {
+            FileLineProcessingResult model = FileLineProcessingResult.Unknown;
+            switch (dto)
+            {
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Failed:
+                    model = FileLineProcessingResult.Failed;
+                    break;
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Unknown:
+                    model = FileLineProcessingResult.Unknown;
+                    break;
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Ignored:
+                    model = FileLineProcessingResult.Ignored;
+                    break;
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.NotProcessed:
+                    model = FileLineProcessingResult.NotProcessed;
+                    break;
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Rejected:
+                    model = FileLineProcessingResult.Rejected;
+                    break;
+                case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Successful:
+                    model = FileLineProcessingResult.Successful;
+                    break;
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
         public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {
@@ -768,6 +851,11 @@
             return models;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         public FileImportLogModel ConvertFrom(FileImportLog source)
         {
             FileImportLogModel model = new FileImportLogModel

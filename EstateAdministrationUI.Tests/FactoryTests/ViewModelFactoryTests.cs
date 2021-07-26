@@ -1524,6 +1524,18 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
+        public void ViewModelFactory_CovertFrom_FileImportLogModel_NullModel_IsConverted()
+        {
+            FileImportLogModel model = null;
+            
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            FileImportLogViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ShouldBeNull();
+        }
+
+        [Fact]
         public void ViewModelFactory_CovertFrom_FileImportLogModelList_EmptyModelList_IsConverted()
         {
             List<FileImportLogModel> modelList = new List<FileImportLogModel>();
@@ -1534,6 +1546,58 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             viewModel.ShouldNotBeNull();
             viewModel.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_FileDetails_IsConverted()
+        {
+            FileDetailsModel model = TestData.FileDetailsModel;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            FileDetailsViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.UserId.ShouldBe(model.UserId);
+            viewModel.EstateId.ShouldBe(model.EstateId);
+            viewModel.FileId.ShouldBe(model.FileId);
+            viewModel.FileImportLogId.ShouldBe(model.FileImportLogId);
+            viewModel.FileLocation.ShouldBe(model.FileLocation);
+            viewModel.FileProfileId.ShouldBe(model.FileProfileId);
+            viewModel.MerchantId.ShouldBe(model.MerchantId);
+            viewModel.ProcessingCompleted.ShouldBe(model.ProcessingCompleted);
+            viewModel.ProcessingSummary.ShouldNotBeNull();
+            viewModel.ProcessingSummary.IgnoredLines.ShouldBe(model.ProcessingSummary.IgnoredLines);
+            viewModel.ProcessingSummary.FailedLines.ShouldBe(model.ProcessingSummary.FailedLines);
+            viewModel.ProcessingSummary.NotProcessedLines.ShouldBe(model.ProcessingSummary.NotProcessedLines);
+            viewModel.ProcessingSummary.RejectedLines.ShouldBe(model.ProcessingSummary.RejectedLines);
+            viewModel.ProcessingSummary.SuccessfullyProcessedLines.ShouldBe(model.ProcessingSummary.SuccessfullyProcessedLines);
+            viewModel.ProcessingSummary.TotalLines.ShouldBe(model.ProcessingSummary.TotalLines);
+            viewModel.FileLines.ShouldNotBeNull();
+            viewModel.FileLines.ShouldNotBeEmpty();
+
+            foreach (FileLineModel modelFileLine in model.FileLines)
+            {
+                var line = viewModel.FileLines.SingleOrDefault(f => f.LineNumber == modelFileLine.LineNumber);
+                line.ShouldNotBeNull();
+                line.LineData.ShouldBe(modelFileLine.LineData);
+                line.TransactionId.ShouldBe(modelFileLine.TransactionId);
+                line.RejectionReason.ShouldBe(modelFileLine.RejectionReason);
+                line.ProcessingResult.ToString().ShouldBe(modelFileLine.ProcessingResult.ToString());
+                line.ProcessingResultString.Replace(" ", "").ShouldBe(modelFileLine.ProcessingResult.ToString());
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_FileDetails_NullDetails_IsConverted()
+        {
+            FileDetailsModel response = null;
+
+            ViewModelFactory modelFactory = new ViewModelFactory();
+
+            FileDetailsViewModel viewModel = modelFactory.ConvertFrom(response);
+
+            viewModel.ShouldBeNull();
         }
     }
 }

@@ -12,6 +12,7 @@
     using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
     using CalculationType = BusinessLogic.Models.CalculationType;
+    using FileLineProcessingResult = FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult;
 
     public class TestData
     {
@@ -537,6 +538,12 @@
 
         public static Guid FileId = Guid.Parse("2FC540D7-8606-4F3C-A5F0-B179015D7928");
 
+        public static String FileLocation = "/home/txnproc/file.txt";
+
+        public static Boolean ProcessingCompleted = true;
+
+        public static Int32 TotalLines = 7;
+
         public static FileImportLogList FileImportLogList =>
         new FileImportLogList
         {
@@ -1034,6 +1041,152 @@
                                 UserId = TestData.SecurityUserId
                             }
                         }
+            };
+
+        public static Int32 IgnoredLines = 2;
+        public static Int32 NotProcessedLines = 2;
+        public static Int32 RejectedLines = 1;
+        public static Int32 SuccessfullyProcessedLines = 1;
+        public static Int32 FailedLines = 1;
+
+        public static FileDetails FileDetails =>
+            new FileDetails
+            {
+                EstateId = TestData.EstateId,
+                FileId = TestData.FileId,
+                FileImportLogId = TestData.FileImportLogId,
+                FileLocation = TestData.FileLocation,
+                FileProfileId = TestData.FileProfileId,
+                MerchantId = TestData.MerchantId,
+                ProcessingCompleted = TestData.ProcessingCompleted,
+                ProcessingSummary = new FileProcessingSummary
+                                    {
+                                        TotalLines = TestData.TotalLines,
+                                        IgnoredLines = TestData.IgnoredLines,
+                                        NotProcessedLines = TestData.NotProcessedLines,
+                                        RejectedLines = TestData.RejectedLines,
+                                        SuccessfullyProcessedLines = TestData.SuccessfullyProcessedLines,
+                                        FailedLines = TestData.FailedLines
+                                    },
+                UserId = TestData.SecurityUserId,
+                FileLines = new List<FileLine>
+                            {
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Ignored,
+                                    LineNumber = 1,
+                                    LineData = "H",
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Successful,
+                                    LineNumber = 2,
+                                    LineData = "D",
+                                    TransactionId = Guid.Parse("F327C705-28D7-4F11-AC93-75A0D614D1FB")
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Rejected,
+                                    LineNumber = 3,
+                                    LineData = "D",
+                                    RejectionReason = "Invalid Format"
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Failed,
+                                    LineNumber = 4,
+                                    LineData = "D",
+                                    TransactionId = Guid.Parse("0C0F278B-B9C9-4767-A367-AFD6B9D95BEA")
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.NotProcessed,
+                                    LineNumber = 5,
+                                    LineData = "D",
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Unknown,
+                                    LineNumber = 6,
+                                    LineData = "D",
+                                },
+                                new FileLine
+                                {
+                                    ProcessingResult = FileLineProcessingResult.Ignored,
+                                    LineNumber = 7,
+                                    LineData = "T",
+                                }
+                            }
+            };
+
+        public static FileDetailsModel FileDetailsModel =>
+            new FileDetailsModel
+            {
+                EstateId = TestData.EstateId,
+                FileId = TestData.FileId,
+                FileImportLogId = TestData.FileImportLogId,
+                FileLocation = TestData.FileLocation,
+                FileProfileId = TestData.FileProfileId,
+                MerchantId = TestData.MerchantId,
+                ProcessingCompleted = TestData.ProcessingCompleted,
+                ProcessingSummary = new FileProcessingSummaryModel
+                {
+                    TotalLines = TestData.TotalLines,
+                    IgnoredLines = TestData.IgnoredLines,
+                    NotProcessedLines = TestData.NotProcessedLines,
+                    RejectedLines = TestData.RejectedLines,
+                    SuccessfullyProcessedLines = TestData.SuccessfullyProcessedLines,
+                    FailedLines = TestData.FailedLines
+                },
+                UserId = TestData.SecurityUserId,
+                FileLines = new List<FileLineModel>
+                            {
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Ignored,
+                                    LineNumber = 1,
+                                    LineData = "H",
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Successful,
+                                    LineNumber = 2,
+                                    LineData = "D",
+                                    TransactionId = Guid.Parse("F327C705-28D7-4F11-AC93-75A0D614D1FB")
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Rejected,
+                                    LineNumber = 3,
+                                    LineData = "D",
+                                    RejectionReason = "Invalid Format"
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Failed,
+                                    LineNumber = 4,
+                                    LineData = "D",
+                                    TransactionId = Guid.Parse("0C0F278B-B9C9-4767-A367-AFD6B9D95BEA")
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.NotProcessed,
+                                    LineNumber = 5,
+                                    LineData = "D",
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Unknown,
+                                    LineNumber = 6,
+                                    LineData = "D",
+                                },
+                                new FileLineModel
+                                {
+                                    ProcessingResult = BusinessLogic.Models.FileLineProcessingResult.Ignored,
+                                    LineNumber = 7,
+                                    LineData = "T",
+                                }
+                            }
             };
     }
 }
