@@ -30,7 +30,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            CreateMerchantRequest request =  modelFactory.ConvertFrom(model);
+            CreateMerchantRequest request = modelFactory.ConvertFrom(model);
 
             request.Contact.ShouldNotBeNull();
             request.Contact.EmailAddress.ShouldBe(model.Contact.ContactEmailAddress);
@@ -57,10 +57,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -85,10 +82,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -112,11 +106,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            operatorModel.Name.ShouldBe(o.Name);
                                        });
             response.SecurityUsers.ForEach(u =>
-                                       {
-                                           SecurityUserModel securityUserModel = model.SecurityUsers.SingleOrDefault(su => su.SecurityUserId == u.SecurityUserId);
-                                           securityUserModel.ShouldNotBeNull();
-                                           securityUserModel.EmailAddress.ShouldBe(u.EmailAddress);
-                                       });
+                                           {
+                                               SecurityUserModel securityUserModel = model.SecurityUsers.SingleOrDefault(su => su.SecurityUserId == u.SecurityUserId);
+                                               securityUserModel.ShouldNotBeNull();
+                                               securityUserModel.EmailAddress.ShouldBe(u.EmailAddress);
+                                           });
         }
 
         [Fact]
@@ -189,8 +183,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         public void ModelFactory_ConvertFrom_EstateResponse_EmptySecurityUsers_ModelIsConverted()
         {
             EstateResponse response = TestData.EstateResponse;
-            response.SecurityUsers = new List<SecurityUserResponse>(
-                                                                    );
+            response.SecurityUsers = new List<SecurityUserResponse>();
             ModelFactory modelFactory = new ModelFactory();
 
             EstateModel model = modelFactory.ConvertFrom(response);
@@ -216,10 +209,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -238,14 +228,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -257,29 +247,29 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -299,14 +289,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -318,14 +308,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.ShouldBeNull();
         }
 
@@ -346,14 +336,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -365,14 +355,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.ShouldBeNull();
         }
 
@@ -403,29 +393,29 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -455,29 +445,29 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -497,14 +487,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -517,19 +507,19 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.Operators.ShouldBeNull();
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -549,14 +539,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -569,19 +559,19 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.Operators.ShouldBeNull();
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -601,42 +591,42 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.ShouldBeNull();
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -656,42 +646,42 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.ShouldBeNull();
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -701,19 +691,16 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponseList_ModelIsConverted()
         {
             List<MerchantResponse> responseList = new List<MerchantResponse>
-                                              {
-                                                  TestData.MerchantResponse
-                                              };
+                                                  {
+                                                      TestData.MerchantResponse
+                                                  };
 
             ModelFactory modelFactory = new ModelFactory();
 
@@ -731,14 +718,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
             model.Contacts.Count.ShouldBe(response.Contacts.Count);
             response.Contacts.ForEach(c =>
-            {
-                // Find the contact in the view model
-                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
-                modelContact.ShouldNotBeNull();
-                modelContact.ContactName.ShouldBe(c.ContactName);
-                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
-                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
-            });
+                                      {
+                                          // Find the contact in the view model
+                                          ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                                          modelContact.ShouldNotBeNull();
+                                          modelContact.ContactName.ShouldBe(c.ContactName);
+                                          modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                                          modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+                                      });
 
             model.Devices.Count.ShouldBe(response.Devices.Count);
             foreach (KeyValuePair<Guid, String> device in response.Devices)
@@ -750,29 +737,29 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Operators.Count.ShouldBe(response.Operators.Count);
             response.Operators.ForEach(o =>
-            {
-                // Find the operator in the view model
-                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
-                modelOperator.ShouldNotBeNull();
-                modelOperator.Name.ShouldBe(o.Name);
-                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
-                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                                           modelOperator.ShouldNotBeNull();
+                                           modelOperator.Name.ShouldBe(o.Name);
+                                           modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                                           modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+                                       });
             model.Addresses.Count.ShouldBe(response.Addresses.Count);
             response.Addresses.ForEach(a =>
-            {
-                // Find the operator in the view model
-                AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
-                modelAddress.ShouldNotBeNull();
-                modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
-                modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
-                modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
-                modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
-                modelAddress.Country.ShouldBe(a.Country);
-                modelAddress.PostalCode.ShouldBe(a.PostalCode);
-                modelAddress.Region.ShouldBe(a.Region);
-                modelAddress.Town.ShouldBe(a.Town);
-            });
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
         }
 
         [Fact]
@@ -782,10 +769,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-            {
-                modelFactory.ConvertFrom(responseList);
-            });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(responseList); });
         }
 
         [Fact]
@@ -810,10 +794,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -837,10 +818,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -864,10 +842,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -890,10 +865,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -916,10 +888,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -943,10 +912,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -1050,10 +1016,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -1077,10 +1040,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(responseList);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(responseList); });
         }
 
         [Fact]
@@ -1119,10 +1079,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -1138,7 +1095,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             model.ContractId.ShouldBe(response.ContractId);
             model.EstateId.ShouldBe(response.EstateId);
         }
-        
+
         [Fact]
         public void ModelFactory_ConvertFrom_AddProductToContractResponse_NullResponse_ErrorThrown()
         {
@@ -1146,10 +1103,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -1161,7 +1115,8 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             AddTransactionFeeForProductToContractRequest request = modelFactory.ConvertFrom(model);
 
-            EstateManagement.DataTransferObjects.CalculationType calculationType = Enum.Parse<EstateManagement.DataTransferObjects.CalculationType>(model.CalculationType.ToString(), true);
+            EstateManagement.DataTransferObjects.CalculationType calculationType =
+                Enum.Parse<EstateManagement.DataTransferObjects.CalculationType>(model.CalculationType.ToString(), true);
             EstateManagement.DataTransferObjects.FeeType feeType = Enum.Parse<EstateManagement.DataTransferObjects.FeeType>(model.FeeType.ToString(), true);
 
             request.Value.ShouldBe(model.Value);
@@ -1177,10 +1132,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(model);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -1205,10 +1157,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
         [Fact]
@@ -1449,7 +1398,8 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Theory]
         [InlineData(ModelSortDirection.Ascending, DTOSortDirection.Ascending)]
         [InlineData(ModelSortDirection.Descending, DTOSortDirection.Descending)]
-        public void ModelFactory_ConvertFrom_SortDirection_EmptyChildClassResponse_ErrorThrown(ModelSortDirection input, DTOSortDirection expected)
+        public void ModelFactory_ConvertFrom_SortDirection_EmptyChildClassResponse_ErrorThrown(ModelSortDirection input,
+                                                                                               DTOSortDirection expected)
         {
             ModelFactory modelFactory = new ModelFactory();
             DTOSortDirection actual = modelFactory.ConvertFrom(input);
@@ -1459,7 +1409,8 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Theory]
         [InlineData(ModelSortField.Count, DTOSortField.Count)]
         [InlineData(ModelSortField.Value, DTOSortField.Value)]
-        public void ModelFactory_ConvertFrom_SortField_EmptyChildClassResponse_ErrorThrown(ModelSortField input, DTOSortField expected)
+        public void ModelFactory_ConvertFrom_SortField_EmptyChildClassResponse_ErrorThrown(ModelSortField input,
+                                                                                           DTOSortField expected)
         {
             ModelFactory modelFactory = new ModelFactory();
             DTOSortField actual = modelFactory.ConvertFrom(input);
@@ -1609,10 +1560,58 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    modelFactory.ConvertFrom(response);
-                                                });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileDetails_IsConverted()
+        {
+            FileDetails response = TestData.FileDetails;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            FileDetailsModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldNotBeNull();
+            model.UserId.ShouldBe(response.UserId);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.FileId.ShouldBe(response.FileId);
+            model.FileImportLogId.ShouldBe(response.FileImportLogId);
+            model.FileLocation.ShouldBe(response.FileLocation);
+            model.FileProfileId.ShouldBe(response.FileProfileId);
+            model.MerchantId.ShouldBe(response.MerchantId);
+            model.ProcessingCompleted.ShouldBe(response.ProcessingCompleted);
+            model.ProcessingSummary.ShouldNotBeNull();
+            model.ProcessingSummary.IgnoredLines.ShouldBe(response.ProcessingSummary.IgnoredLines);
+            model.ProcessingSummary.FailedLines.ShouldBe(response.ProcessingSummary.FailedLines);
+            model.ProcessingSummary.NotProcessedLines.ShouldBe(response.ProcessingSummary.NotProcessedLines);
+            model.ProcessingSummary.RejectedLines.ShouldBe(response.ProcessingSummary.RejectedLines);
+            model.ProcessingSummary.SuccessfullyProcessedLines.ShouldBe(response.ProcessingSummary.SuccessfullyProcessedLines);
+            model.ProcessingSummary.TotalLines.ShouldBe(response.ProcessingSummary.TotalLines);
+            model.FileLines.ShouldNotBeNull();
+            model.FileLines.ShouldNotBeEmpty();
+
+            foreach (FileLine responseFileLine in response.FileLines)
+            {
+                var line = model.FileLines.SingleOrDefault(f => f.LineNumber == responseFileLine.LineNumber);
+                line.ShouldNotBeNull();
+                line.LineData.ShouldBe(responseFileLine.LineData);
+                line.TransactionId.ShouldBe(responseFileLine.TransactionId);
+                line.RejectionReason.ShouldBe(responseFileLine.RejectionReason);
+                line.ProcessingResult.ToString().ShouldBe(responseFileLine.ProcessingResult.ToString());
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_FileDetails_NullDetails_IsConverted()
+        {
+            FileDetails response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            FileDetailsModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldBeNull();
         }
     }
 }

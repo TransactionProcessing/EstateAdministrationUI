@@ -216,5 +216,12 @@
         /// <param name="merchantBalanceHistory">The merchant balance history.</param>
         /// <returns></returns>
         List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> merchantBalanceHistory);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        FileDetailsModel ConvertFrom(FileDetails source);
     }
 }
