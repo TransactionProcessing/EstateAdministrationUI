@@ -780,6 +780,9 @@
                 case BusinessLogic.Models.FileLineProcessingResult.Successful:
                     viewModel = (FileLineProcessingResult.Successful, "Successful");
                     break;
+                default:
+                    viewModel = (FileLineProcessingResult.Unknown, "Unknown");
+                    break;
             }
 
             return viewModel;

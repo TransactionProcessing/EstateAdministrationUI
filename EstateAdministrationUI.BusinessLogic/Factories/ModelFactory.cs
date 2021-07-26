@@ -547,6 +547,9 @@
                 case FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult.Successful:
                     model = FileLineProcessingResult.Successful;
                     break;
+                default:
+                    model = FileLineProcessingResult.Unknown;
+                    break;
             }
 
             return model;
