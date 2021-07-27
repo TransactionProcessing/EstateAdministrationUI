@@ -51,6 +51,30 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
+        public MerchantBalanceModel ConvertFrom(MerchantBalanceResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            MerchantBalanceModel model = new MerchantBalanceModel
+                                         {
+                                             MerchantId = source.MerchantId,
+                                             AvailableBalance = source.AvailableBalance,
+                                             Balance = source.Balance,
+                                             EstateId = source.EstateId
+                                         };
+
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
         public CreateOperatorRequest ConvertFrom(CreateOperatorModel source)
         {
             if (source == null)

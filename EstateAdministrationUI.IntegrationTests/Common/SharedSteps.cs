@@ -786,7 +786,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Then(@"the available balance for the merchant should be (.*)")]
         public void ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance)
         {
-            IWebElement element = this.WebDriver.FindElement(By.Id("AvailableBalance"));
+            IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
             element.ShouldNotBeNull();
             String elementValue = element.GetProperty("value");
             Decimal actualBalance = Decimal.Parse(elementValue);

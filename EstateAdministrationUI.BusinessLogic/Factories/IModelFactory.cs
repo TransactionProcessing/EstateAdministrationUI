@@ -31,6 +31,13 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        MerchantBalanceModel ConvertFrom(MerchantBalanceResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         CreateOperatorRequest ConvertFrom(CreateOperatorModel source);
 
         /// <summary>

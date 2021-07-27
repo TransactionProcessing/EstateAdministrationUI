@@ -30,19 +30,6 @@
                                                                      CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the file details.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="fileId">The file identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<FileDetailsModel> GetFileDetails(String accessToken,
-                                              ClaimsIdentity claimsIdentity,
-                                              Guid fileId,
-                                              CancellationToken cancellationToken);
-
-        /// <summary>
         /// Adds the transaction fee to contract product.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -150,6 +137,32 @@
                                     CancellationToken cancellationToken);
 
         /// <summary>
+        /// Gets the file details.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<FileDetailsModel> GetFileDetails(String accessToken,
+                                              ClaimsIdentity claimsIdentity,
+                                              Guid fileId,
+                                              CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the file import log.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="fileImportLogId">The file import log identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<FileImportLogModel> GetFileImportLog(String accessToken,
+                                                  ClaimsIdentity claimsIdentity,
+                                                  Guid fileImportLogId,
+                                                  CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the file import logs.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -167,19 +180,6 @@
                                                          CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the file import log.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="fileImportLogId">The file import log identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<FileImportLogModel> GetFileImportLog(String accessToken,
-                                                         ClaimsIdentity claimsIdentity,
-                                                         Guid fileImportLogId,
-                                                         CancellationToken cancellationToken);
-
-        /// <summary>
         /// Gets the merchant.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -191,6 +191,19 @@
                                         ClaimsIdentity claimsIdentity,
                                         Guid merchantId,
                                         CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the merchant balance.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<MerchantBalanceModel> GetMerchantBalance(String accessToken,
+                                                      ClaimsIdentity claimsIdentity,
+                                                      Guid merchantId,
+                                                      CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the merchant balance history.
