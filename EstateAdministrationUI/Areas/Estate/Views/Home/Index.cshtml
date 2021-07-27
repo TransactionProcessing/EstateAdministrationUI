@@ -112,7 +112,7 @@
     google.charts.load('current', { 'packages': ['corechart'] });
 
     // Set a callback to run when the Google Visualization API is loaded.
-    //google.charts.setOnLoadCallback(chartCallback);
+    google.charts.setOnLoadCallback(chartCallback);
 
     function chartCallback()
     {
@@ -120,17 +120,23 @@
         drawTransactionsByMerchantChart();
     }
 
-    function convertOperatorJsonToArray(jsonData, sortField) {
+    function convertOperatorJsonToArray(jsonData, sortField)
+    {
+        console.log('jsonData is [' + jsonData + ']');
         var data = JSON.parse(jsonData);
+        console.log('data is');
+        console.log(data);
         var dataArray = [];
-
+        
         dataArray = translateOperatorTotals(data, sortField);
 
         return google.visualization.arrayToDataTable(dataArray);
     }
 
     function convertMerchantJsonToArray(jsonData, sortField) {
+        console.log('jsonData is [' + jsonData + ']');
         var data = JSON.parse(jsonData);
+        console.log('data is');
         var dataArray = [];
 
         dataArray = translateMerchantTotals(data, sortField);
@@ -151,10 +157,12 @@
             url: "GetTransactionsByOperatorAsJson?operatorCount=" + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
             dataType: "json",
             async: false
-        }).responseText;
+        });
+        
+        console.log(jsonData);
 
         // Convert JSON value to google format array
-        var data = convertOperatorJsonToArray(jsonData, sortBy);
+        var data = convertOperatorJsonToArray(jsonData.reponseText, sortBy);
 
         var options = setupOperatorChartOptions(operatorCount, direction, sortBy);
 
@@ -181,10 +189,10 @@
             url: "GetTransactionsByMerchantAsJson?merchantCount=" + merchantCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
             dataType: "json",
             async: false
-        }).responseText;
-
+        });
+        console.log(jsonData);
         // Convert JSON value to google format array
-        var data = convertMerchantJsonToArray(jsonData, sortBy);
+        var data = convertMerchantJsonToArray(jsonData.responseText, sortBy);
 
         var options = setupMerchantChartOptions(merchantCount, direction, sortBy);
 
@@ -193,8 +201,8 @@
             chart.draw(data, options);
         }
         else {
-            $("#transactionsByOperatorchart_div").empty();
-            $("#transactionsByOperatorchart_div").append("Sorry, not found any data for the selected date range.");
+            $("#transactionsByMerchantchart_div").empty();
+            $("#transactionsByMerchantchart_div").append("Sorry, not found any data for the selected date range.");
         }
     }
 
