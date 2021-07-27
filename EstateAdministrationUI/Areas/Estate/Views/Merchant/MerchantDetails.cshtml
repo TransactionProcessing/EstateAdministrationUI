@@ -105,6 +105,7 @@
                                 </div>
                                 
                                 <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                                    Select Date Range: <input type="text" id="dates" style="width: 250px" />
                                     <table id="merchantBalanceHistoryList" class="table table-striped table-bordered nowrap" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
@@ -150,6 +151,54 @@
 
     $(document).ready(function ()
     {
+        initDatePicker();
+
+        function initDatePicker() {
+            var startDate = moment().subtract(29, 'days');
+            var endDate = moment();
+            var minDate = moment().subtract(1, 'years');
+            var maxDate = moment();
+
+            $('input[id="dates"]').daterangepicker({
+                opens: 'left',
+                startDate: startDate,
+                endDate: endDate,
+                minDate: minDate,
+                maxDate: maxDate,
+                locale: {
+                    format: "DD/MM/YYYY"
+                },
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, function (start, end, label) {
+                getMerchantBalanceHistory();
+            });
+        }
+
+        function getMerchantBalanceHistory()
+        {
+            console.log('In getMerchantBalanceHistory');
+            var url = 'GetMerchantBalanceHistoryAsJson?merchantId=@Model.MerchantId';
+            var dataTable = $("#merchantBalanceHistoryList").DataTable();
+            console.log('In getMerchantBalanceHistory load url ' + url);
+            dataTable.ajax.url(url).load();
+        }
+
+        Date.prototype.yyyymmdd = function () {
+            var yyyy = this.getFullYear();
+            var mm = this.getMonth() < 9 ? "0" + (this.getMonth() + 1) : (this.getMonth() + 1); // getMonth() is zero-based
+            var dd = this.getDate() < 10 ? "0" + this.getDate() : this.getDate();
+
+            return "".concat(yyyy).concat('-').concat(mm).concat('-').concat(dd);
+        };
+
         $.fn.dataTable.ext.errMode = 'none';
 
         $("#merchantOperatorList")
@@ -181,6 +230,20 @@
                 "order": [[1, "asc"]]
 
             });
+
+        function addAdditionalParameters(d) {
+            // Date Filter
+            var drp = $('#dates').data('daterangepicker');
+
+            var startDate = new Date(drp.startDate);
+            var endDate = new Date(drp.endDate);
+
+            // Merchant filter
+            return $.extend({}, d, {
+                "startDate": startDate.yyyymmdd(),
+                "endDate": endDate.yyyymmdd()
+            });
+        }
 
         $("#merchantDeviceList")
             .on('error.dt', function (e, settings, techNote, message) {
@@ -222,7 +285,8 @@
                 "ajax": {
                     "url": "GetMerchantBalanceHistoryAsJson?merchantId=@Model.MerchantId",
                     "type": "POST",
-                    "datatype": "json"
+                    "datatype": "json",
+                    "data": function (d) { return addAdditionalParameters(d); }
                 },
                 "columnDefs":
                 [{

@@ -340,6 +340,8 @@
         public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
                                       ClaimsIdentity claimsIdentity,
                                       Guid merchantId,
+                                      DateTime startDate,
+                                      DateTime endDate,
                                       CancellationToken cancellationToken)
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
@@ -348,6 +350,9 @@
             {
                 List<MerchantBalanceHistoryResponse> merchantBalanceHistory =
                     await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, cancellationToken);
+
+                // Filter the data on dates
+                merchantBalanceHistory = merchantBalanceHistory.Where(m => m.EntryDateTime.Date >= startDate && m.EntryDateTime.Date <= endDate).ToList();
 
                 return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
             }

@@ -235,8 +235,23 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
+                // Start and End Date 
+                // Set the defaults
+                DateTime startDateTime = DateTime.Now.AddDays(-1).Date;
+                DateTime endDateTime = DateTime.Now.Date;
+
+                if (this.HttpContext.Request.Form.ContainsKey("startDate"))
+                {
+                    startDateTime = DateTime.ParseExact(this.HttpContext.Request.Form["startDate"], "yyyy-MM-dd", null);
+                }
+
+                if (this.HttpContext.Request.Form.ContainsKey("endDate"))
+                {
+                    endDateTime = DateTime.ParseExact(this.HttpContext.Request.Form["endDate"], "yyyy-MM-dd", null);
+                }
+
                 List<MerchantBalanceHistory> merchantBalanceHistory =
-                    await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                    await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, startDateTime, endDateTime, cancellationToken);
 
                 MerchantBalanceHistoryListViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalanceHistory);
 
