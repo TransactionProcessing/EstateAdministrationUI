@@ -155,7 +155,7 @@
 
         var result = $.ajax({
             url: "GetTransactionsByOperatorAsJson?operatorCount=" + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
-            dataType: "json",
+            dataType: "json"
         }).done(function (jsonData)
         {
             console.log(jsonData);
@@ -190,8 +190,7 @@
         
         var jsonData = $.ajax({
             url: "GetTransactionsByMerchantAsJson?merchantCount=" + merchantCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
-            dataType: "json",
-            async: false
+            dataType: "json"
         }).done(function (jsonData) {
             console.log(jsonData);
 
