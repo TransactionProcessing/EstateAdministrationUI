@@ -153,27 +153,30 @@
         var startDate = moment().subtract(14, 'days').format('YYYY-MM-DD');
         var endDate = moment().format('YYYY-MM-DD');
 
-        var jsonData = $.ajax({
+        var result = $.ajax({
             url: "GetTransactionsByOperatorAsJson?operatorCount=" + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
             dataType: "json",
-            async: false
-        });
-        
-        console.log(jsonData);
+        }).done(function (jsonData)
+        {
+            console.log(jsonData);
 
-        // Convert JSON value to google format array
-        var data = convertOperatorJsonToArray(jsonData.reponseText, sortBy);
+            // Convert JSON value to google format array
+            var data = convertOperatorJsonToArray(jsonData, sortBy);
 
-        var options = setupOperatorChartOptions(operatorCount, direction, sortBy);
+            var options = setupOperatorChartOptions(operatorCount, direction, sortBy);
 
-        if (data.getNumberOfRows() > 0) {
-            var chart = new google.visualization.ColumnChart(document.getElementById('transactionsByOperatorchart_div'));
-            chart.draw(data, options);
-        }
-        else {
+            if (data.getNumberOfRows() > 0) {
+                var chart = new google.visualization.ColumnChart(document.getElementById('transactionsByOperatorchart_div'));
+                chart.draw(data, options);
+            }
+            else {
+                $("#transactionsByOperatorchart_div").empty();
+                $("#transactionsByOperatorchart_div").append("Sorry, not found any data for the selected date range.");
+            }
+        }).fail(function(){
             $("#transactionsByOperatorchart_div").empty();
             $("#transactionsByOperatorchart_div").append("Sorry, not found any data for the selected date range.");
-        }
+        });
     }
 
     function drawTransactionsByMerchantChart() {
@@ -189,21 +192,26 @@
             url: "GetTransactionsByMerchantAsJson?merchantCount=" + merchantCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate + "&endDate=" + endDate,
             dataType: "json",
             async: false
-        });
-        console.log(jsonData);
-        // Convert JSON value to google format array
-        var data = convertMerchantJsonToArray(jsonData.responseText, sortBy);
+        }).done(function (jsonData) {
+            console.log(jsonData);
 
-        var options = setupMerchantChartOptions(merchantCount, direction, sortBy);
+            // Convert JSON value to google format array
+            var data = convertMerchantJsonToArray(jsonData, sortBy);
 
-        if (data.getNumberOfRows() > 0) {
-            var chart = new google.visualization.ColumnChart(document.getElementById('transactionsByMerchantchart_div'));
-            chart.draw(data, options);
-        }
-        else {
+            var options = setupMerchantChartOptions(operatorCount, direction, sortBy);
+
+            if (data.getNumberOfRows() > 0) {
+                var chart = new google.visualization.ColumnChart(document.getElementById('transactionsByMerchantchart_div'));
+                chart.draw(data, options);
+            }
+            else {
+                $("#transactionsByMerchantchart_div").empty();
+                $("#transactionsByMerchantchart_div").append("Sorry, not found any data for the selected date range.");
+            }
+        }).fail(function () {
             $("#transactionsByMerchantchart_div").empty();
             $("#transactionsByMerchantchart_div").append("Sorry, not found any data for the selected date range.");
-        }
+        });
     }
 
     function setupOperatorChartOptions(operatorcount, sortdirection, sortfield) {
