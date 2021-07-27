@@ -77,6 +77,8 @@ Background:
 	
 	Then I am presented with the Estate Administrator Dashboard
 
+Scenario: Dashboard
+
 Scenario: View My Merchants
 	Given I click on the My Merchants sidebar option
 	Then I am presented with the Merchants List Screen

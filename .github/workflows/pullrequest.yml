@@ -69,3 +69,9 @@ jobs:
         DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
         DriverExe: msedgedriver.exe
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+
+    - uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: tracelogs
+        path: c:\\home\\txnproc\\trace\\

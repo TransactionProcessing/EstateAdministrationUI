@@ -292,6 +292,23 @@
             return viewModels;
         }
 
+        public MerchantCountViewModel ConvertFrom(MerchantModel[] merchants)
+        {
+            if (merchants == null || merchants.Any() == false)
+            {
+                return new MerchantCountViewModel
+                       {
+                           NumberOfMerchants = 0
+                       };
+            }
+
+            MerchantCountViewModel viewModel = new MerchantCountViewModel();
+
+            viewModel.NumberOfMerchants = merchants.Length;
+
+            return viewModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
