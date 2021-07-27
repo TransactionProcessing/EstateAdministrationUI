@@ -82,6 +82,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="merchantModels">The merchant models.</param>
+        /// <returns></returns>
+        MerchantCountViewModel ConvertFrom(MerchantModel[] merchantModels);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="contractModels">The contract models.</param>
         /// <returns></returns>
         List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels);

@@ -119,7 +119,6 @@
             String connectionString = $"server={server},{port};user id={user}; password={password}; database={database};";
             logger.LogInformation($"Connection String {connectionString}");
             SqlConnection connection = new SqlConnection(connectionString);
-            Boolean databaseFound = false;
             while (counter <= maxRetries)
             {
                 try
@@ -134,18 +133,18 @@
 
                     logger.LogInformation("Connection Opened");
 
-                    // Check if we need to create the SS database
-                    if (dataReader.HasRows)
-                    {
-                        while (dataReader.Read())
-                        {
-                            if (dataReader.GetFieldValue<String>(0) == "SubscriptionServiceConfiguration")
-                            {
-                                databaseFound = true;
-                                break;
-                            }
-                        }
-                    }
+                    //// Check if we need to create the SS database
+                    //if (dataReader.HasRows)
+                    //{
+                    //    while (dataReader.Read())
+                    //    {
+                    //        if (dataReader.GetFieldValue<String>(0) == "SubscriptionServiceConfiguration")
+                    //        {
+                    //            databaseFound = true;
+                    //            break;
+                    //        }
+                    //    }
+                    //}
 
                     dataReader.Close();
                     connection.Close();
@@ -167,56 +166,7 @@
                     counter++;
                 }
             }
-
-
-
-            if (databaseFound == false)
-            {
-                // Create the SS database here
-                // Read the SQL File
-                String sqlToExecute = null;
-                String executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                String sqlFileLocation = Path.Combine(executableLocation, "DbScripts");
-                IOrderedEnumerable<String> files = Directory.GetFiles(sqlFileLocation).OrderBy(x => x);
-
-                try
-                {
-                    SqlConnection ssconnection = new SqlConnection(connectionString);
-                    ssconnection.Open();
-                    SqlCommand sscommand = ssconnection.CreateCommand();
-                    sscommand.CommandText = "CREATE DATABASE SubscriptionServiceConfiguration";
-                    sscommand.ExecuteNonQuery();
-
-                    sscommand.CommandText = "USE SubscriptionServiceConfiguration";
-                    sscommand.ExecuteNonQuery();
-
-                    foreach (String file in files)
-                    {
-                        using (StreamReader sr = new StreamReader(file))
-                        {
-                            sqlToExecute = sr.ReadToEnd();
-                        }
-
-                        sscommand.CommandText = sqlToExecute;
-                        sscommand.ExecuteNonQuery();
-                    }
-
-                    connection.Close();
-
-                    Console.WriteLine("SS Database Created");
-                }
-                catch (Exception e)
-                {
-                    if (connection.State == ConnectionState.Open)
-                    {
-                        connection.Close();
-                    }
-
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
-
+            
             return databaseServerContainer;
         }
 

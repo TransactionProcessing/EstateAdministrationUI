@@ -221,7 +221,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String traceFolder = null;
             if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
             {
-                traceFolder = FdOs.IsWindows() ? $"D:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+                traceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
             }
 
             Logging.Enabled();

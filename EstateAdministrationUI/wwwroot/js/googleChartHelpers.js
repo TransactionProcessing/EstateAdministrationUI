@@ -19,7 +19,7 @@ function translateDailyTotals(data)
     {
         var dataArray = [];
 
-        if (data === null) {
+        if (data === null ) {
             return [];
         }
 
@@ -119,7 +119,7 @@ function translateMerchantTotals(data, sortField)
 {
     var dataArray = [];
     
-    if (data === null)
+    if (data === undefined ||data === null)
     {
         return [];
     }
@@ -165,7 +165,7 @@ function translateMerchantTotals(data, sortField)
 function translateOperatorTotals(data, sortField) {
     var dataArray = [];
 
-    if (data === null) {
+    if (data === undefined || data === null) {
         return [];
     }
 
