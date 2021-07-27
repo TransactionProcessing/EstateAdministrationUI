@@ -211,11 +211,15 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="claimsIdentity">The claims identity.</param>
         /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
                                                                      ClaimsIdentity claimsIdentity,
                                                                      Guid merchantId,
+                                                                     DateTime startDate,
+                                                                     DateTime endDate,
                                                                      CancellationToken cancellationToken);
 
         /// <summary>
