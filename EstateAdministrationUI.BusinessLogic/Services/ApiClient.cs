@@ -99,7 +99,7 @@
                                                                                   CancellationToken cancellationToken)
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
-
+            
             AddProductToContractRequest apiRequest = this.ModelFactory.ConvertFrom(addProductToContractModel);
 
             AddProductToContractResponse apiResponse = await this.EstateClient.AddProductToContract(accessToken, estateId, contractId, apiRequest, cancellationToken);
@@ -309,6 +309,26 @@
             }
         }
 
+        public async Task<MerchantBalanceModel> GetMerchantBalance(String accessToken,
+                                                                   ClaimsIdentity claimsIdentity,
+                                                                   Guid merchantId,
+                                                                   CancellationToken cancellationToken)
+        {
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+                MerchantBalanceResponse merchantBalance = await this.EstateClient.GetMerchantBalance(accessToken, estateId, merchantId, cancellationToken);
+
+                return this.ModelFactory.ConvertFrom(merchantBalance);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
         /// <summary>
         /// Gets the merchant balance history.
         /// </summary>
@@ -386,7 +406,7 @@
 
             return makeMerchantDepositResponseModel;
         }
-        
+
         /// <summary>
         /// Gets the file details.
         /// </summary>

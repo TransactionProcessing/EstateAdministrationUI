@@ -122,24 +122,17 @@
 
     function convertOperatorJsonToArray(jsonData, sortField)
     {
-        console.log('jsonData is [' + jsonData + ']');
-        var data = JSON.parse(jsonData);
-        console.log('data is');
-        console.log(data);
         var dataArray = [];
         
-        dataArray = translateOperatorTotals(data, sortField);
+        dataArray = translateOperatorTotals(jsonData, sortField);
 
         return google.visualization.arrayToDataTable(dataArray);
     }
 
     function convertMerchantJsonToArray(jsonData, sortField) {
-        console.log('jsonData is [' + jsonData + ']');
-        var data = JSON.parse(jsonData);
-        console.log('data is');
         var dataArray = [];
 
-        dataArray = translateMerchantTotals(data, sortField);
+        dataArray = translateMerchantTotals(jsonData, sortField);
 
         return google.visualization.arrayToDataTable(dataArray);
     }
@@ -197,7 +190,7 @@
             // Convert JSON value to google format array
             var data = convertMerchantJsonToArray(jsonData, sortBy);
 
-            var options = setupMerchantChartOptions(operatorCount, direction, sortBy);
+            var options = setupMerchantChartOptions(merchantCount, direction, sortBy);
 
             if (data.getNumberOfRows() > 0) {
                 var chart = new google.visualization.ColumnChart(document.getElementById('transactionsByMerchantchart_div'));

@@ -252,6 +252,28 @@
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantBalanceHistoryViewModel>(), null));
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMerchantBalanceAsJson([FromQuery] Guid merchantId,
+                                        CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                var merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+
+                MerchantBalanceViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalance);
+
+                return this.Json(viewModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantBalanceHistoryViewModel>(), null));
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> MakeMerchantDeposit([FromQuery] Guid merchantId,
                                                              [FromQuery] String merchantName,

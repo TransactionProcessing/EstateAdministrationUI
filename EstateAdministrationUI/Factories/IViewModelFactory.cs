@@ -10,6 +10,17 @@
     /// </summary>
     public interface IViewModelFactory
     {
+        #region Constructors
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantBalanceModel">The merchant balance model.</param>
+        /// <returns></returns>
+        MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel);
+
+        #endregion
+
         #region Methods
 
         /// <summary>

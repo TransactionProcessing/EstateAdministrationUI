@@ -16,6 +16,24 @@
     {
         #region Methods
 
+        public MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel)
+        {
+            if (merchantBalanceModel == null)
+            {
+                throw new ArgumentNullException(nameof(merchantBalanceModel));
+            }
+
+            MerchantBalanceViewModel viewModel = new MerchantBalanceViewModel
+                                                 {
+                                                     EstateId = merchantBalanceModel.EstateId,
+                                                     AvailableBalance = merchantBalanceModel.AvailableBalance,
+                                                     Balance = merchantBalanceModel.Balance,
+                                                     MerchantId = merchantBalanceModel.MerchantId
+                                                 };
+
+            return viewModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>

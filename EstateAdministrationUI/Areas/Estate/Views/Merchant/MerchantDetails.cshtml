@@ -43,11 +43,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Balance" class="control-label">Balance (KES)</label>
-                                        <input asp-for="Balance" class="form-control form-control-user" readonly />
+                                        <input asp-for="Balance" id="merchantBalanceLabel" class="form-control form-control-user" readonly />
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="AvailableBalance" class="control-label">Available Balance (KES)</label>
-                                        <input asp-for="AvailableBalance" class="form-control form-control-user" readonly />
+                                        <input asp-for="AvailableBalance" id="merchantAvailableBalanceLabel" class="form-control form-control-user" readonly />
                                     </div>
                                 </div>
                                 <div class="tab-pane fade show" id="address" role="tabpanel" aria-labelledby="address-tab">
@@ -132,6 +132,22 @@
 </div>
 
 <script>
+
+    setInterval(function ()
+    {
+        $.ajax({
+        url: "GetMerchantBalanceAsJson?merchantId=@Model.MerchantId",
+        type: "GET",
+        dataType: 'json'
+    }).done(function (results)
+    {
+        var merchantBalanceLabel = document.getElementById("merchantBalanceLabel");
+        merchantBalanceLabel.innerHTML = merchantBalanceLabel.innerHTML + " " + results.balance;
+
+        var merchantAvailableBalanceLabel = document.getElementById("merchantAvailableBalanceLabel");
+        merchantAvailableBalanceLabel.innerHTML = merchantAvailableBalanceLabel.innerHTML + " " + results.merchantAvailableBalance;
+    })}, 30000);
+
     $(document).ready(function ()
     {
         $.fn.dataTable.ext.errMode = 'none';
@@ -140,103 +156,103 @@
             .on('error.dt', function (e, settings, techNote, message) {
                 console.log('An error has been occurred getting a list of merchant operators. Error reported by DataTables: ', message);
             }).DataTable({
-            "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
-            "filter": false, // this is for disable filter (search box)
-            "orderMulti": false, // for disable multiple column at once,
-            "paging": false,
-            "ajax": {
-                "url": "GetMerchantOperatorListAsJson?merchantId=@Model.MerchantId",
-                "type": "POST",
-                "datatype": "json"
-            },
-            "columnDefs":
-            [{
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once,
+                "paging": false,
+                "ajax": {
+                    "url": "GetMerchantOperatorListAsJson?merchantId=@Model.MerchantId",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs":
+                [{
                     "targets": [0],
                     "visible": false,
                     "searchable": false
                 }],
-            "columns": [
-                { "data": "operatorId", "name": "operatorId", "autoWidth": true },
-                { "data": "name", "name": "name", "autoWidth": true },
-                { "data": "merchantNumber", "name": "merchantNumber", "autoWidth": true },
-                { "data": "terminalNumber", "name": "terminalNumber", "autoWidth": true },
-            ],
-            "order": [[1, "asc"]]
+                "columns": [
+                    { "data": "operatorId", "name": "operatorId", "autoWidth": true },
+                    { "data": "name", "name": "name", "autoWidth": true },
+                    { "data": "merchantNumber", "name": "merchantNumber", "autoWidth": true },
+                    { "data": "terminalNumber", "name": "terminalNumber", "autoWidth": true },
+                ],
+                "order": [[1, "asc"]]
 
-        });
+            });
 
         $("#merchantDeviceList")
             .on('error.dt', function (e, settings, techNote, message) {
                 console.log('An error has been occurred getting a list of merchant devices. Error reported by DataTables: ', message);
             }).DataTable({
-            "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
-            "filter": false, // this is for disable filter (search box)
-            "orderMulti": false, // for disable multiple column at once,
-            "paging": false,
-            "ajax": {
-                "url": "GetMerchantDeviceListAsJson?merchantId=@Model.MerchantId",
-                "type": "POST",
-                "datatype": "json"
-            },
-            "columnDefs":
-            [{
-                "targets": [0],
-                "visible": false,
-                "searchable": false
-            }],
-            "columns": [
-                { "data": "key", "name": "key", "autoWidth": true, "defaultContent": "<i>Not set</i>" },
-                { "data": "value", "name": "value", "autoWidth": true, "defaultContent": "<i>Not set</i>" }
-            ],
-            "order": [[1, "asc"]]
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once,
+                "paging": false,
+                "ajax": {
+                    "url": "GetMerchantDeviceListAsJson?merchantId=@Model.MerchantId",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs":
+                [{
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "key", "name": "key", "autoWidth": true, "defaultContent": "<i>Not set</i>" },
+                    { "data": "value", "name": "value", "autoWidth": true, "defaultContent": "<i>Not set</i>" }
+                ],
+                "order": [[1, "asc"]]
 
-        });
+            });
 
         $("#merchantBalanceHistoryList")
             .on('error.dt', function (e, settings, techNote, message) {
                 console.log('An error has been occurred getting the merchant balance history. Error reported by DataTables: ', message);
             }).DataTable({
-            "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
-            "filter": true, // this is for disable filter (search box)
-            "orderMulti": false, // for disable multiple column at once,
-            "paging": false,
-            "ajax": {
-                "url": "GetMerchantBalanceHistoryAsJson?merchantId=@Model.MerchantId",
-                "type": "POST",
-                "datatype": "json"
-            },
-            "columnDefs":
-            [{
-                "targets": [0],
-                "visible": false,
-                "searchable": false
-            }],
-            "columns": [
-                { "data": "eventId", "name": "eventId", "autoWidth": true },
-                {
-                    "data": "entryDateTime", "name": "entryDateTime", "autoWidth": true,
-                    render: function (d) { return moment(d).format("DD-MM-YYYY HH:mm:ss"); }
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once,
+                "paging": false,
+                "ajax": {
+                    "url": "GetMerchantBalanceHistoryAsJson?merchantId=@Model.MerchantId",
+                    "type": "POST",
+                    "datatype": "json"
                 },
-                { "data": "reference", "name": "reference", "autoWidth": true },
-                { "data": "entryType", "name": "entryType", "autoWidth": true },
-                {
-                    "data": "in", "name": "in", "autoWidth": true, "defaultContent": "",
-                    render: $.fn.dataTable.render.number(',', '.', 4)
-                },
-                {
-                    "data": "out", "name": "out", "autoWidth": true, "defaultContent": "",
-                    render: $.fn.dataTable.render.number(',', '.', 4)
-                },
-                {
-                    "data": "balance", "name": "balance", "autoWidth": true,
-                    render: $.fn.dataTable.render.number(',', '.', 4)
-                }
-            ],
-            "order": [[1, "desc"]]
+                "columnDefs":
+                [{
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "eventId", "name": "eventId", "autoWidth": true },
+                    {
+                        "data": "entryDateTime", "name": "entryDateTime", "autoWidth": true,
+                        render: function (d) { return moment(d).format("DD-MM-YYYY HH:mm:ss"); }
+                    },
+                    { "data": "reference", "name": "reference", "autoWidth": true },
+                    { "data": "entryType", "name": "entryType", "autoWidth": true },
+                    {
+                        "data": "in", "name": "in", "autoWidth": true, "defaultContent": "",
+                        render: $.fn.dataTable.render.number(',', '.', 4)
+                    },
+                    {
+                        "data": "out", "name": "out", "autoWidth": true, "defaultContent": "",
+                        render: $.fn.dataTable.render.number(',', '.', 4)
+                    },
+                    {
+                        "data": "balance", "name": "balance", "autoWidth": true,
+                        render: $.fn.dataTable.render.number(',', '.', 4)
+                    }
+                ],
+                "order": [[1, "desc"]]
 
-        });
+            });
     });
 </script>
