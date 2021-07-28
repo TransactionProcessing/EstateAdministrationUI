@@ -1613,5 +1613,104 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.ShouldBeNull();
         }
+        
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddMerchantDeviceModel_IsConverted()
+        {
+            AddMerchantDeviceModel model = new AddMerchantDeviceModel
+                                           {
+                                               DeviceIdentifier = TestData.DeviceIdentifier
+                                           };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddMerchantDeviceRequest apiRequest = modelFactory.ConvertFrom(model);
+
+            apiRequest.ShouldNotBeNull();
+            apiRequest.DeviceIdentifier.ShouldBe(model.DeviceIdentifier);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddMerchantDeviceModel_ModelIsNull_ErrorThrown()
+        {
+            AddMerchantDeviceModel model = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddMerchantDeviceResponse_IsConverted()
+        {
+            AddMerchantDeviceResponse response = new AddMerchantDeviceResponse
+            {
+                                                  MerchantId = TestData.MerchantId,
+                                                  DeviceId = TestData.DeviceId,
+                                                  EstateId = TestData.EstateId
+                                              };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            AddMerchantDeviceResponseModel model = modelFactory.ConvertFrom(response);
+
+            model.ShouldNotBeNull();
+            model.MerchantId.ShouldBe(response.MerchantId);
+            model.DeviceId.ShouldBe(response.DeviceId);
+            model.EstateId.ShouldBe(response.EstateId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AddMerchantDeviceResponse_ResponseIsNull_ErrorThrown()
+        {
+            AddMerchantDeviceResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
+                                                });
+        }
+
+        //MerchantBalanceResponse
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantBalanceResponse_IsConverted()
+        {
+            MerchantBalanceResponse response = new MerchantBalanceResponse
+            {
+                                                   MerchantId = TestData.MerchantId,
+                                                   AvailableBalance = TestData.AvailableBalance,
+                                                   Balance =   TestData.Balance,
+                                                   EstateId = TestData.EstateId
+                                               };
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            var model = modelFactory.ConvertFrom(response);
+
+            model.ShouldNotBeNull();
+            model.MerchantId.ShouldBe(response.MerchantId);
+            model.AvailableBalance.ShouldBe(response.AvailableBalance);
+            model.Balance.ShouldBe(response.Balance);
+            model.EstateId.ShouldBe(response.EstateId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantBalanceResponse_ResponseIsNull_ErrorThrown()
+        {
+            MerchantBalanceResponse response = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    modelFactory.ConvertFrom(response);
+                                                });
+        }
     }
 }

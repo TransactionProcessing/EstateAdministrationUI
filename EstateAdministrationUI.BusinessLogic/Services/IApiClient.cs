@@ -15,6 +15,21 @@
         #region Methods
 
         /// <summary>
+        /// Adds the device to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="merchantDeviceModel">The merchant device model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
+                                                                 ClaimsIdentity claimsIdentity,
+                                                                 Guid merchantId,
+                                                                 AddMerchantDeviceModel merchantDeviceModel,
+                                                                 CancellationToken cancellationToken);
+
+        /// <summary>
         /// Adds the product to contract.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

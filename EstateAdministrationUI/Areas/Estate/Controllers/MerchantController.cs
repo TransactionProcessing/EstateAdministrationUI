@@ -69,6 +69,32 @@
             return this.View("CreateMerchant", viewModel);
         }
 
+        [HttpGet]
+        public ActionResult AddMerchantDevice(Guid merchantId, CancellationToken cancellationToken)
+        {
+            AddMerchantDeviceViewModel viewModel = new AddMerchantDeviceViewModel();
+            viewModel.MerchantId = merchantId;
+
+            return this.PartialView("_AddMerchantDevice", viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> AddMerchantDevice(AddMerchantDeviceViewModel viewModel, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+                return PartialView("_AddMerchantDevice", viewModel);
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            AddMerchantDeviceModel model = this.ViewModelFactory.ConvertFrom(viewModel);
+
+            await this.ApiClient.AddDeviceToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
+
+            return this.RedirectToAction("GetMerchant", new {
+                                                                merchantId = viewModel.MerchantId}).WithSuccess("Device Added Successfully", $"Device added successfully for Merchant");
+        }
+
         /// <summary>
         /// Creates the merchant.
         /// </summary>

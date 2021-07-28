@@ -182,6 +182,44 @@
             return addProductToContractRequest;
         }
 
+        public AddMerchantDeviceRequest ConvertFrom(AddMerchantDeviceModel source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            AddMerchantDeviceRequest addMerchantDeviceRequest = new AddMerchantDeviceRequest
+                                                                {
+                                                                    DeviceIdentifier = source.DeviceIdentifier
+                                                                };
+
+            return addMerchantDeviceRequest;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">source</exception>
+        public AddMerchantDeviceResponseModel ConvertFrom(AddMerchantDeviceResponse source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            AddMerchantDeviceResponseModel addMerchantDeviceResponseModel = new AddMerchantDeviceResponseModel
+                                                                            {
+                                                                                MerchantId = source.MerchantId,
+                                                                                DeviceId = source.DeviceId,
+                                                                                EstateId = source.EstateId
+                                                                            };
+
+            return addMerchantDeviceResponseModel;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
