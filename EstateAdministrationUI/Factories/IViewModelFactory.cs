@@ -19,6 +19,13 @@
         /// <returns></returns>
         MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel);
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="addMerchantDeviceViewModel">The add merchant device view model.</param>
+        /// <returns></returns>
+        AddMerchantDeviceModel ConvertFrom(AddMerchantDeviceViewModel addMerchantDeviceViewModel);
+
         #endregion
 
         #region Methods

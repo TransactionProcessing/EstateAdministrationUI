@@ -16,6 +16,12 @@
     {
         #region Methods
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchantBalanceModel">The merchant balance model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">merchantBalanceModel</exception>
         public MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel)
         {
             if (merchantBalanceModel == null)
@@ -32,6 +38,26 @@
                                                  };
 
             return viewModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="addMerchantDeviceViewModel">The add merchant device view model.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">addMerchantDeviceViewModel</exception>
+        public AddMerchantDeviceModel ConvertFrom(AddMerchantDeviceViewModel addMerchantDeviceViewModel)
+        {
+            if (addMerchantDeviceViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(addMerchantDeviceViewModel));
+            }
+
+            AddMerchantDeviceModel model = new AddMerchantDeviceModel
+                                           {
+                                               DeviceIdentifier = addMerchantDeviceViewModel.DeviceIdentifier
+                                           };
+            return model;
         }
 
         /// <summary>
@@ -310,6 +336,11 @@
             return viewModels;
         }
 
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="merchants">The merchants.</param>
+        /// <returns></returns>
         public MerchantCountViewModel ConvertFrom(MerchantModel[] merchants)
         {
             if (merchants == null || merchants.Any() == false)
@@ -822,7 +853,7 @@
 
             return viewModel;
         }
-        
+
         /// <summary>
         /// Converts from.
         /// </summary>

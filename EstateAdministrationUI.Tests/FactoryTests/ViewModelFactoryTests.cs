@@ -1599,5 +1599,114 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
             viewModel.ShouldBeNull();
         }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_MerchantModelArray_ModelIsConverted()
+        {
+            List<MerchantModel> modelList = new List<MerchantModel>
+                                            {
+                                                TestData.MerchantModel
+                                            };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            MerchantCountViewModel viewModel = viewModelFactory.ConvertFrom(modelList.ToArray());
+
+            viewModel.ShouldNotBeNull();
+            viewModel.NumberOfMerchants.ShouldBe(modelList.Count);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_MerchantModelArray_NullArray_ModelIsConverted()
+        {
+            MerchantModel[] modelList = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            MerchantCountViewModel viewModel = viewModelFactory.ConvertFrom(modelList);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.NumberOfMerchants.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_MerchantModelArray_EmptyArray_ModelIsConverted()
+        {
+            List<MerchantModel> modelList = new List<MerchantModel>();
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            MerchantCountViewModel viewModel = viewModelFactory.ConvertFrom(modelList.ToArray());
+
+            viewModel.ShouldNotBeNull();
+            viewModel.NumberOfMerchants.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_MerchantBalanceModel_ModelIsConverted()
+        {
+            MerchantBalanceModel model = new MerchantBalanceModel
+                                         {
+                                             EstateId = TestData.EstateId,
+                                             AvailableBalance = TestData.AvailableBalance,
+                                             Balance = TestData.Balance,
+                                             MerchantId = TestData.MerchantId
+                                         };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            MerchantBalanceViewModel viewModel = viewModelFactory.ConvertFrom(model);
+
+            viewModel.ShouldNotBeNull();
+            viewModel.EstateId.ShouldBe(model.EstateId);
+            viewModel.AvailableBalance.ShouldBe(model.AvailableBalance);
+            viewModel.Balance.ShouldBe(model.Balance);
+            viewModel.MerchantId.ShouldBe(model.MerchantId);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_MerchantBalanceModel_NullModel_ErrorThrown()
+        {
+            MerchantBalanceModel model = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_AddMerchantDeviceViewModel_ModelIsConverted()
+        {
+            AddMerchantDeviceViewModel viewModel = new AddMerchantDeviceViewModel
+            {
+                                                   DeviceIdentifier = TestData.DeviceIdentifier,
+                                                   MerchantId = TestData.MerchantId
+                                               };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            AddMerchantDeviceModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.ShouldNotBeNull();
+            model.DeviceIdentifier.ShouldBe(viewModel.DeviceIdentifier);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_AddMerchantDeviceViewModel_NullModel_ErrorThrown()
+        {
+            AddMerchantDeviceViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                });
+        }
+
+        //AddMerchantDeviceViewModel
     }
 }

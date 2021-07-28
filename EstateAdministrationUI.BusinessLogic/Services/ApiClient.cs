@@ -83,6 +83,24 @@
         /// The estate identifier claim type
         /// </summary>
         private const String EstateIdClaimType = "estateId";
+
+        public async Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
+                                                                             ClaimsIdentity claimsIdentity,
+                                                                             Guid merchantId,
+                                                                             AddMerchantDeviceModel merchantDeviceModel,
+                                                                             CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            AddMerchantDeviceRequest apiRequest = this.ModelFactory.ConvertFrom(merchantDeviceModel);
+
+            AddMerchantDeviceResponse apiResponse = await this.EstateClient.AddDeviceToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
+
+            AddMerchantDeviceResponseModel addMerchantDeviceResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return addMerchantDeviceResponseModel;
+        }
+
         /// <summary>
         /// Adds the product to contract.
         /// </summary>

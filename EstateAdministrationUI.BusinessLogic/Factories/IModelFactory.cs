@@ -143,6 +143,20 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
+        AddMerchantDeviceRequest ConvertFrom(AddMerchantDeviceModel source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AddMerchantDeviceResponseModel ConvertFrom(AddMerchantDeviceResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
         AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source);
 
         #endregion
