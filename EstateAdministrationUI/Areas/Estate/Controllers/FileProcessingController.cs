@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading;
@@ -12,7 +13,9 @@
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
     using Models;
     using Services;
     using Shared.Logger;
@@ -228,6 +231,70 @@
                 Logger.LogError(e);
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UploadFile(CancellationToken cancellationToken)
+        {
+            return this.View("UploadFile");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFileProfileListAsJson(CancellationToken cancellationToken)
+        {
+            List<FileProfileViewModel> fileProfileViewModels = new List<FileProfileViewModel>();
+            fileProfileViewModels.Add(new FileProfileViewModel
+                                      {
+                                          FileProfileId = Guid.Parse("B2A59ABF-293D-4A6B-B81B-7007503C3476"),
+                                          FileProfileName = "Safaricom Topup"
+                                      });
+            fileProfileViewModels.Add(new FileProfileViewModel
+                                      {
+                                          FileProfileId = Guid.Parse("8806EDBC-3ED6-406B-9E5F-A9078356BE99"),
+                                          FileProfileName = "Voucher Issue"
+                                      });
+
+            return this.Json(fileProfileViewModels);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostUploadFile(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            if (this.Request.Form.ContainsKey("merchantId") == false)
+            {
+                return this.BadRequest(new
+                                       {
+                                       message = "Missing merchantId form parameter"
+                                       });
+            }
+
+            if (this.Request.Form.ContainsKey("fileProfileId") == false)
+            {
+                return this.BadRequest(new
+                                       {
+                                           message = "Missing fileProfileId form parameter"
+                });
+            }
+
+            IFormFileCollection files = this.HttpContext.Request.Form.Files;
+            Guid merchantId = Guid.Parse(this.Request.Form["merchantId"]);
+            Guid fileProfileId = Guid.Parse(this.Request.Form["fileProfileId"]);
+            IFormFile file = files.First();
+            if (file.Length > 0)
+            {
+                using(MemoryStream ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms, cancellationToken);
+                    Byte[] fileBytes = ms.ToArray();
+                    Guid fileId = await this.ApiClient.UploadFile(accessToken, this.User.Identity as ClaimsIdentity, merchantId, fileProfileId, fileBytes, file.FileName, cancellationToken);
+
+                    return Ok(new { message = "File Processed Successfully" });
+                }
+            }
+
+            return this.BadRequest(new { message = "File is empty" });
         }
 
         #endregion

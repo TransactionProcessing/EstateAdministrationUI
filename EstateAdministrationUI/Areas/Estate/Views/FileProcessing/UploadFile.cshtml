@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "Upload File";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card o-hidden border-0 shadow-lg my-3">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row" align="left">
+                <div class="col-lg-12">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Upload Bulk Transaction File</h1>
+                        </div>
+                        <form id="uploadFileForm"
+                            action="PostUploadFile"
+                              enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
+                              method="post">
+                            <dl>
+                                <dt>
+                                    <label for="FileUpload_FormFile">File</label>
+                                </dt>
+                                <dd>
+                                    File Profile: <select id="fileProfileList" name="fileProfileList">
+                                        <option value="">- Select File Profile -</option>
+                                    </select>
+                                </dd>
+                                <dd>
+                                    Merchant: <select id="merchantList" name="merchantList">
+                                        <option value="">- Select Merchant -</option>
+                                    </select>
+                                </dd>
+                                <dd>
+                                    <input id="FileUpload_FormFile" type="file"
+                                           name="uploadFile" />
+                                </dd>
+                                <dd>
+                                    <button id="uploadFileButton" type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload File</button>
+                                </dd>
+                            </dl>
+                            
+                            <div style="margin-top:15px">
+                                <output name="result"></output>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.validator.addMethod('filesize', function(value, element, param) {
+        // param = size (in bytes) 
+        // element = element to validate (<input>)
+        // value = value of the element (file name)
+        return this.optional(element) || (element.files[0].size <= param) || (element.files[0].size == 0);
+    });
+
+    $(document).ready(function()
+    {
+        getMerchantList();
+        getFileProfileList();
+
+        // initialize tooltipster on text input elements
+        $('#uploadFileForm select').tooltipster({
+            trigger: 'hover',
+            position: 'right',
+            animation: 'grow'
+        });
+
+        $('#uploadFileForm input[type="file"]').tooltipster({
+            trigger: 'hover',
+            position: 'right',
+            animation: 'grow'
+        });
+        
+        var merchantListRuleSet = {
+            required: true
+        };
+
+        var fileProfileListRuleSet = {
+            required: true
+        };
+
+        var uploadFileRuleSet = {
+            required: true,
+            filesize: 1048576
+        };
+
+        var merchantListMessages = {
+            required: "Please select a Merchant"
+        };
+
+        var fileProfileListMessages = {
+            required: "Please select a File Profile"
+        };
+
+        var uploadFileMessages = {
+            required: "Please select a file to upload",
+            filesize: "Please select a file to upload with a max size of 1MB"
+        };
+
+        // just for the demos, avoids form submit
+        jQuery.validator.setDefaults({
+            //debug: true
+        });
+
+        $("#uploadFileForm").validate({
+            rules: {
+                fileProfileList: fileProfileListRuleSet,
+                merchantList: merchantListRuleSet,
+                uploadFile: uploadFileRuleSet
+            },
+            messages: {
+                fileProfileList: fileProfileListMessages,
+                merchantList: merchantListMessages,
+                uploadFile: uploadFileMessages
+            },
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorPlacement: function(error, element)
+            {
+                var err = $(error),
+                    msg = err.text();
+
+                console.log(msg);
+
+                if (msg != null && msg !== '')
+                {
+                    //ele.tooltipster('content', msg);
+                    $(element).tooltipster('update', $(error).text());
+                    $(element).tooltipster('show');
+                }
+            },
+            highlight: function(element, errorClass, validClass) { $(element).addClass(errorClass).removeClass(validClass); },
+            unhighlight: function(element, errorClass, validClass) { $(element).removeClass(errorClass).addClass(validClass).tooltipster('hide'); }
+        });
+    });
+
+    function getFileProfileList() {
+        var options = $("#fileProfileList");
+        $.getJSON("GetFileProfileListAsJson", function (response) {
+            $.each(response, function (index, fileProfile) {
+                options.append($("<option />").val(fileProfile.fileProfileId).text(fileProfile.fileProfileName));
+            });
+        });
+    }
+
+    function getMerchantList()
+    {
+        var options = $("#merchantList");
+        $.getJSON("GetMerchantListAsJson", function(response) {
+            $.each(response, function (index,merchant)
+            {
+                options.append($("<option />").val(merchant.merchantId).text(merchant.merchantName));
+            });
+        });
+    }
+
+    function AJAXSubmit(oFormElement)
+    {
+        var isvalid = $("#uploadFileForm").valid();
+        console.log(isvalid);
+        if (isvalid) {
+            var resultElement = oFormElement.elements.namedItem("result");
+            var merchantList = document.getElementById('merchantList');
+            var fileProfileList = document.getElementById('fileProfileList');
+            const formData = new FormData(oFormElement);
+            formData.append('merchantId', merchantList.value);
+            formData.append('fileProfileId', fileProfileList.value);
+
+            fetch(oFormElement.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    resultElement.value = 'Result: ' + result.message;
+                })
+                .catch(error => {
+                    resultElement.value = 'Result: ' + error.message;
+                });
+        }
+    }
+</script>
