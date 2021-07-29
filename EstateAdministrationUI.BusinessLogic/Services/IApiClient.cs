@@ -14,6 +14,14 @@
     {
         #region Methods
 
+        Task<Guid> UploadFile(String accessToken,
+                              ClaimsIdentity claimsIdentity,
+                              Guid merchantId,
+                              Guid fileProfileId,
+                              Byte[] fileData,
+                              String fileName,
+                              CancellationToken cancellationToken);
+
         /// <summary>
         /// Adds the device to merchant.
         /// </summary>

@@ -19,6 +19,7 @@
     using EstateReporting.Client;
     using EstateReporting.DataTransferObjects;
     using FileProcessor.Client;
+    using FileProcessor.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Shared.Logger;
     using SortDirection = BusinessLogic.Models.SortDirection;
@@ -84,11 +85,35 @@
         /// </summary>
         private const String EstateIdClaimType = "estateId";
 
+        public async Task<Guid> UploadFile(String accessToken,
+                                     ClaimsIdentity claimsIdentity,
+                                     Guid merchantId,
+                                     Guid fileProfileId,
+                                     Byte[] fileData,
+                                     String fileName,
+                                     CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            Guid userId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "sub");
+
+            UploadFileRequest request = new UploadFileRequest
+                                        {
+                                            EstateId = estateId,
+                                            FileProfileId = fileProfileId,
+                                            MerchantId = merchantId,
+                                            UserId = userId
+                                        };
+
+            var response = await this.FileProcessorClient.UploadFile(accessToken, fileName, fileData, request, cancellationToken);
+
+            return response;
+        }
+
         public async Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
-                                                                             ClaimsIdentity claimsIdentity,
-                                                                             Guid merchantId,
-                                                                             AddMerchantDeviceModel merchantDeviceModel,
-                                                                             CancellationToken cancellationToken)
+                                                                              ClaimsIdentity claimsIdentity,
+                                                                              Guid merchantId,
+                                                                              AddMerchantDeviceModel merchantDeviceModel,
+                                                                              CancellationToken cancellationToken)
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
