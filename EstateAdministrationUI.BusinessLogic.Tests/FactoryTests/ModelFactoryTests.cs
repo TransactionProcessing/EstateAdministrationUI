@@ -1739,9 +1739,9 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             ModelFactory modelFactory = new ModelFactory();
 
            AssignOperatorRequest assignOperatorRequest =  modelFactory.ConvertFrom(model);
-        }
 
-        //public AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source)
+           assignOperatorRequest.ShouldBeNull();
+        }
 
         [Fact]
         public void ModelFactory_ConvertFrom_AssignOperatorResponse_IsConverted()
@@ -1769,6 +1769,8 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             ModelFactory modelFactory = new ModelFactory();
 
             AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = modelFactory.ConvertFrom(response);
+
+            assignOperatorToMerchantResponseModel.ShouldBeNull();
         }
     }
 }

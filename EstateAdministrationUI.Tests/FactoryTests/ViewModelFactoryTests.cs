@@ -1707,8 +1707,6 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 });
         }
 
-        //public AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
-
         [Fact]
         public void ViewModelFactory_ConvertFrom_AssignOperatorToMerchantViewModel_ModelIsConverted()
         {
