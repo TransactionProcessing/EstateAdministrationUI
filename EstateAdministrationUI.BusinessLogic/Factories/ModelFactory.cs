@@ -584,6 +584,50 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
+                                                          {
+                                                              MerchantNumber = source.MerchantNumber,
+                                                              TerminalNumber = source.TerminalNumber,
+                                                              OperatorId = source.OperatorId
+                                                          };
+
+            return assignOperatorRequest;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = new AssignOperatorToMerchantResponseModel
+                                                                                          {
+                                                                                              EstateId = source.EstateId,
+                                                                                              MerchantId = source.MerchantId,
+                                                                                              OperatorId = source.OperatorId
+                                                                                          };
+
+            return assignOperatorToMerchantResponseModel;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="dto">The dto.</param>
         /// <returns></returns>
         private FileLineProcessingResult ConvertFrom(FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult dto)

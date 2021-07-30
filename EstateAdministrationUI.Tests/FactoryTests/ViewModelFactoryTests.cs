@@ -1707,6 +1707,40 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 });
         }
 
-        //AddMerchantDeviceViewModel
+        //public AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_AssignOperatorToMerchantViewModel_ModelIsConverted()
+        {
+            AssignOperatorToMerchantViewModel viewModel = new AssignOperatorToMerchantViewModel
+            {
+                                                              MerchantNumber = TestData.MerchantNumber,
+                                                              OperatorId = TestData.OperatorId,
+                                                              MerchantId = TestData.MerchantId,
+                                                              TerminalNumber = TestData.TerminalNumber
+                                                          };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            AssignOperatorToMerchantModel model = viewModelFactory.ConvertFrom(viewModel);
+
+            model.ShouldNotBeNull();
+            model.OperatorId.ShouldBe(viewModel.OperatorId);
+            model.MerchantNumber.ShouldBe(viewModel.MerchantNumber);
+            model.TerminalNumber.ShouldBe(viewModel.TerminalNumber);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_AssignOperatorToMerchantViewModel_NullModel_ErrorThrown()
+        {
+            AssignOperatorToMerchantViewModel viewModel = null;
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                });
+        }
     }
 }

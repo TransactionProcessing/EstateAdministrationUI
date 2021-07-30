@@ -14,6 +14,31 @@
     {
         #region Methods
 
+        /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorToMerchantModel">The assign operator to merchant model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<AssignOperatorToMerchantResponseModel> AssignOperatorToMerchant(String accessToken,
+                                                                            ClaimsIdentity claimsIdentity,
+                                                                            Guid merchantId,
+                                                                            AssignOperatorToMerchantModel assignOperatorToMerchantModel,
+                                                                            CancellationToken cancellationToken);
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="fileProfileId">The file profile identifier.</param>
+        /// <param name="fileData">The file data.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         Task<Guid> UploadFile(String accessToken,
                               ClaimsIdentity claimsIdentity,
                               Guid merchantId,

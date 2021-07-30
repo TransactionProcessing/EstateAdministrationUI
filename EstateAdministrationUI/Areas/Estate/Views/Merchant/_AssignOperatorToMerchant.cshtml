@@ -1,0 +1,64 @@
+﻿@model AssignOperatorToMerchantViewModel
+
+<div class="modal-content">
+
+    <!--Modal Header Start-->
+    <div class="modal-header">
+        <h4 class="modal-title">Assign Merchant Operator</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <!--Modal Header End-->
+
+    <form id="assignOperatorToMerchant" asp-action="AssignOperatorToMerchant" asp-area="Estate" asp-controller="Merchant" method="post" class="user">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.MerchantId)
+
+        <div class="modal-body form-horizontal">
+            <div class="form-group row">
+                <label asp-for="OperatorId" class="control-label">Operator</label>
+                <select id="OperatorId" name="OperatorId" class="form-control form-control-user">
+                    <option value="">- Select Operator -</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label asp-for="MerchantNumber" class="control-label">Merchant Number</label>
+                <input asp-for="MerchantNumber" class="form-control form-control-user" autofocus/>
+            </div>
+            <div class="form-group row">
+                <label asp-for="TerminalNumber" class="control-label">Terminal Number</label>
+                <input asp-for="TerminalNumber" class="form-control form-control-user" autofocus/>
+            </div>
+        </div>
+        <!--Modal Footer Start-->
+        <div class="modal-footer">
+            <button data-dismiss="modal" id="cancel" class="btn btn-default" type="button">Cancel</button>
+            <button class="btn btn-success relative" id="btnSubmit" type="submit">
+                <i class="loader"></i>
+                Assign Operator
+            </button>
+        </div>
+        <!--Modal Footer End-->
+    </form>
+</div>
+
+
+<!--Modal Body End-->  
+<script>
+
+    $(document).ready(function()
+    {
+        getOperatorList();
+
+    });
+    function getOperatorList()
+    {
+        var options = $("#OperatorId");
+        $.getJSON("GetOperatorListAsJson?merchantId=@Model.MerchantId", function (response) {
+            $.each(response, function (index, operator) {
+                options.append($("<option />").val(operator.operatorId).text(operator.operatorName));
+            });
+        });
+    }
+</script>

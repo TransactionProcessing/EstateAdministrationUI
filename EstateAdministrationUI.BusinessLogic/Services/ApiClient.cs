@@ -85,30 +85,75 @@
         /// </summary>
         private const String EstateIdClaimType = "estateId";
 
+        /// <summary>
+        /// Assigns the operator to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="assignOperatorToMerchantModel">The assign operator to merchant model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task<AssignOperatorToMerchantResponseModel> AssignOperatorToMerchant(String accessToken,
+                                                                                         ClaimsIdentity claimsIdentity,
+                                                                                         Guid merchantId,
+                                                                                         AssignOperatorToMerchantModel assignOperatorToMerchantModel,
+                                                                                         CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            AssignOperatorRequest apiRequest = this.ModelFactory.ConvertFrom(assignOperatorToMerchantModel);
+
+            AssignOperatorResponse apiResponse = await this.EstateClient.AssignOperatorToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
+
+            AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
+
+            return assignOperatorToMerchantResponseModel;
+        }
+
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="fileProfileId">The file profile identifier.</param>
+        /// <param name="fileData">The file data.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<Guid> UploadFile(String accessToken,
-                                     ClaimsIdentity claimsIdentity,
-                                     Guid merchantId,
-                                     Guid fileProfileId,
-                                     Byte[] fileData,
-                                     String fileName,
-                                     CancellationToken cancellationToken)
+                                           ClaimsIdentity claimsIdentity,
+                                           Guid merchantId,
+                                           Guid fileProfileId,
+                                           Byte[] fileData,
+                                           String fileName,
+                                           CancellationToken cancellationToken)
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
             Guid userId = ApiClient.GetClaimValue<Guid>(claimsIdentity, "sub");
 
-            UploadFileRequest request = new UploadFileRequest
-                                        {
-                                            EstateId = estateId,
-                                            FileProfileId = fileProfileId,
-                                            MerchantId = merchantId,
-                                            UserId = userId
-                                        };
+            UploadFileRequest apiRequest = new UploadFileRequest
+                                           {
+                                               EstateId = estateId,
+                                               FileProfileId = fileProfileId,
+                                               MerchantId = merchantId,
+                                               UserId = userId
+                                           };
 
-            var response = await this.FileProcessorClient.UploadFile(accessToken, fileName, fileData, request, cancellationToken);
+            var apiResponse = await this.FileProcessorClient.UploadFile(accessToken, fileName, fileData, apiRequest, cancellationToken);
 
-            return response;
+            return apiResponse;
         }
 
+        /// <summary>
+        /// Adds the device to merchant.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="merchantDeviceModel">The merchant device model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
                                                                               ClaimsIdentity claimsIdentity,
                                                                               Guid merchantId,
@@ -352,6 +397,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets the merchant balance.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="claimsIdentity">The claims identity.</param>
+        /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<MerchantBalanceModel> GetMerchantBalance(String accessToken,
                                                                    ClaimsIdentity claimsIdentity,
                                                                    Guid merchantId,
@@ -378,6 +431,8 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="claimsIdentity">The claims identity.</param>
         /// <param name="merchantId">The merchant identifier.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<List<MerchantBalanceHistory>> GetMerchantBalanceHistory(String accessToken,
