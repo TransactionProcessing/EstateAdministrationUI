@@ -70,6 +70,80 @@
         }
 
         [HttpGet]
+        public ActionResult AssignOperatorToMerchant(Guid merchantId,
+                                                     CancellationToken cancellationToken)
+        {
+            AssignOperatorToMerchantViewModel viewModel = new AssignOperatorToMerchantViewModel();
+            viewModel.MerchantId = merchantId;
+
+            return this.PartialView("_AssignOperatorToMerchant", viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOperatorListAsJson(Guid merchantId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                
+                List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+
+                List<OperatorListViewModel> availableOperators = new List<OperatorListViewModel>();
+                foreach (OperatorListViewModel operatorListViewModel in operatorViewModels)
+                {
+                    if (merchantModel.Operators.SingleOrDefault(o => o.OperatorId == operatorListViewModel.OperatorId) ==null)
+                    {
+                        availableOperators.Add(operatorListViewModel);
+                    }
+                }
+
+                return this.Json(availableOperators);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(new List<OperatorListViewModel>());
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> AssignOperatorToMerchant(AssignOperatorToMerchantViewModel viewModel,
+                                                                  CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+                return PartialView("_AssignOperatorToMerchant", viewModel);
+
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            AssignOperatorToMerchantModel model = this.ViewModelFactory.ConvertFrom(viewModel);
+
+            try
+            {
+                
+            await this.ApiClient.AssignOperatorToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
+
+            return this.RedirectToAction("GetMerchant",
+                                         new
+                                         {
+                                             merchantId = viewModel.MerchantId
+                                         }).WithSuccess("Operator Assigned Successfully", $"Operator Assigned successfully for Merchant");
+        }
+        catch (Exception e)
+            {
+                return this.RedirectToAction("GetMerchant",
+                                             new
+                                             {
+                                                 merchantId = viewModel.MerchantId
+                                             }).WithWarning("Operator Assign Failed", $"Failed to assign Operator to Merchant");
+            }
+        }
+
+        [HttpGet]
         public ActionResult AddMerchantDevice(Guid merchantId, CancellationToken cancellationToken)
         {
             AddMerchantDeviceViewModel viewModel = new AddMerchantDeviceViewModel();
@@ -89,10 +163,23 @@
 
             AddMerchantDeviceModel model = this.ViewModelFactory.ConvertFrom(viewModel);
 
+            try
+            {
+
+            
             await this.ApiClient.AddDeviceToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
 
             return this.RedirectToAction("GetMerchant", new {
                                                                 merchantId = viewModel.MerchantId}).WithSuccess("Device Added Successfully", $"Device added successfully for Merchant");
+            }
+            catch (Exception e)
+            {
+                return this.RedirectToAction("GetMerchant",
+                                             new
+                                             {
+                                                 merchantId = viewModel.MerchantId
+                                             }).WithWarning("Device Add Failed", $"Failed to add device to Merchant");
+            }
         }
 
         /// <summary>

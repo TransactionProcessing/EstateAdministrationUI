@@ -1712,5 +1712,65 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                                     modelFactory.ConvertFrom(response);
                                                 });
         }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AssignOperatorToMerchantModel_IsConverted()
+        {
+            AssignOperatorToMerchantModel model = new AssignOperatorToMerchantModel
+                                                  {
+                                                      MerchantNumber = TestData.MerchantNumber,
+                                                      TerminalNumber = TestData.TerminalNumber,
+                                                      OperatorId = TestData.OperatorId
+                                                  };
+            ModelFactory modelFactory = new ModelFactory();
+
+            AssignOperatorRequest assignOperatorRequest = modelFactory.ConvertFrom(model);
+
+            assignOperatorRequest.ShouldNotBeNull();
+            assignOperatorRequest.MerchantNumber.ShouldBe(model.MerchantNumber);
+            assignOperatorRequest.TerminalNumber.ShouldBe(model.TerminalNumber);
+            assignOperatorRequest.OperatorId.ShouldBe(model.OperatorId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AssignOperatorToMerchantModel_ModelIsNull_ErrorThrown()
+        {
+            AssignOperatorToMerchantModel model = null;
+            ModelFactory modelFactory = new ModelFactory();
+
+           AssignOperatorRequest assignOperatorRequest =  modelFactory.ConvertFrom(model);
+
+           assignOperatorRequest.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AssignOperatorResponse_IsConverted()
+        {
+            AssignOperatorResponse response= new AssignOperatorResponse
+            {
+                                               EstateId = TestData.EstateId,
+                                               MerchantId = TestData.MerchantId,
+                                               OperatorId = TestData.OperatorId
+                                           };
+            ModelFactory modelFactory = new ModelFactory();
+
+            AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = modelFactory.ConvertFrom(response);
+
+            assignOperatorToMerchantResponseModel.ShouldNotBeNull();
+            assignOperatorToMerchantResponseModel.EstateId.ShouldBe(response.EstateId);
+            assignOperatorToMerchantResponseModel.MerchantId.ShouldBe(response.MerchantId);
+            assignOperatorToMerchantResponseModel.OperatorId.ShouldBe(response.OperatorId);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_AssignOperatorResponse_ModelIsNull_ErrorThrown()
+        {
+            AssignOperatorResponse response = null;
+            ModelFactory modelFactory = new ModelFactory();
+
+            AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = modelFactory.ConvertFrom(response);
+
+            assignOperatorToMerchantResponseModel.ShouldBeNull();
+        }
     }
 }

@@ -19,6 +19,28 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="assignOperatorToMerchantViewModel">The assign operator to merchant view model.</param>
+        /// <returns></returns>
+        public AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
+        {
+            if (assignOperatorToMerchantViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(assignOperatorToMerchantViewModel));
+            }
+
+            AssignOperatorToMerchantModel model = new AssignOperatorToMerchantModel
+                                                  {
+                                                      MerchantNumber = assignOperatorToMerchantViewModel.MerchantNumber,
+                                                      TerminalNumber = assignOperatorToMerchantViewModel.TerminalNumber,
+                                                      OperatorId = assignOperatorToMerchantViewModel.OperatorId
+                                                  };
+
+            return model;
+        }
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchantBalanceModel">The merchant balance model.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">merchantBalanceModel</exception>

@@ -15,6 +15,13 @@
         /// <summary>
         /// Converts from.
         /// </summary>
+        /// <param name="assignOperatorToMerchantViewModel">The assign operator to merchant view model.</param>
+        /// <returns></returns>
+        AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
         /// <param name="merchantBalanceModel">The merchant balance model.</param>
         /// <returns></returns>
         MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel);

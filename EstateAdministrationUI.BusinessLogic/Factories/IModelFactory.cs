@@ -1,5 +1,6 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Factories
 {
+    using System;
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
@@ -244,5 +245,15 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         FileDetailsModel ConvertFrom(FileDetails source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source);
+
+
+        AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source);
     }
 }
