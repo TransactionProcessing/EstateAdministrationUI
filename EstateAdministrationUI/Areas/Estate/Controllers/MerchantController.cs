@@ -361,6 +361,7 @@
                 if (this.HttpContext.Request.Form.ContainsKey("endDate"))
                 {
                     endDateTime = DateTime.ParseExact(this.HttpContext.Request.Form["endDate"], "yyyy-MM-dd", null);
+                    endDateTime = endDateTime.AddDays(1);
                 }
 
                 List<MerchantBalanceHistory> merchantBalanceHistory =

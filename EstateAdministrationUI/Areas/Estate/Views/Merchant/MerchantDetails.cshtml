@@ -309,7 +309,8 @@
                 "serverSide": true, // for process server side
                 "filter": true, // this is for disable filter (search box)
                 "orderMulti": false, // for disable multiple column at once,
-                "paging": false,
+                "paging": true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 "ajax": {
                     "url": "GetMerchantBalanceHistoryAsJson?merchantId=@Model.MerchantId",
                     "type": "POST",
