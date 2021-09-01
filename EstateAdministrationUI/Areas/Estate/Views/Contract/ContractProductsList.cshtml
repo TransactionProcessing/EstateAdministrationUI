@@ -1,7 +1,7 @@
 ﻿@model ContractProductListViewModel
 
 @{
-    ViewBag.Title = "Products for Contract - @Model.Description";
+    ViewBag.Title = "Products for Contract - " + Model.Description;
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
@@ -57,6 +57,7 @@
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             "ajax": {
                 "url": "GetContractProductsListAsJson?contractId=@Model.ContractId",
                 "type": "POST",

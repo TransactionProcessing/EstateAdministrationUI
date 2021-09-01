@@ -447,11 +447,8 @@
             try
             {
                 List<MerchantBalanceHistoryResponse> merchantBalanceHistory =
-                    await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, cancellationToken);
-
-                // Filter the data on dates
-                merchantBalanceHistory = merchantBalanceHistory.Where(m => m.EntryDateTime.Date >= startDate && m.EntryDateTime.Date <= endDate).ToList();
-
+                    await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, startDate,endDate, cancellationToken);
+                
                 return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
             }
             catch(Exception ex)

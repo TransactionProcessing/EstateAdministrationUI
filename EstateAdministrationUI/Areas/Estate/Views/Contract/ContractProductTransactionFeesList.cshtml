@@ -1,7 +1,7 @@
 ﻿@model ContractProductTransactionFeesListViewModel
 
 @{
-    ViewBag.Title = "Transaction Fees for Product - @Model.ProductName";
+    ViewBag.Title = "Transaction Fees for Product - " + Model.ProductName;
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
@@ -58,6 +58,7 @@
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             "ajax": {
                 "url": "GetContractProductTransactionFeesListAsJson?contractId=@Model.ContractId&contractProductId=@Model.ContractProductId",
                 "type": "POST",
