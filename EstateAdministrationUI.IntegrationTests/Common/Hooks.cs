@@ -8,6 +8,7 @@
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
     using OpenQA.Selenium.Firefox;
+    using Shared.IntegrationTesting;
     using TechTalk.SpecFlow;
 
     [Binding]
@@ -42,7 +43,12 @@
                 FirefoxOptions options = new FirefoxOptions();
                 options.SetPreference("network.cookie.cookieBehavior", 0);
                 options.AcceptInsecureCertificates = true;
-                this.WebDriver = new FirefoxDriver(options);
+
+                await Retry.For(async () =>
+                                {
+                                    this.WebDriver = new FirefoxDriver(options);
+                                }, TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(60));
+                
                 this.WebDriver.Manage().Window.Maximize();
             }
 
