@@ -5,4 +5,11 @@
         Value,
         Count,
     }
+
+    public enum SettlementSchedule
+    {
+        Immediate,
+        Weekly,
+        Monthly
+    }
 }

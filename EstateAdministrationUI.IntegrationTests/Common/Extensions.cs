@@ -99,5 +99,21 @@
                                 dropdown.SelectByText(textToSelect);
                             });
         }
+
+        public static async Task<String> GetDropDownItemText(this IWebDriver webDriver, String dropdownId)
+        {
+            String selectedText = null;
+            await Retry.For(async () =>
+                            {
+                                IWebElement element = webDriver.FindElement(By.Id(dropdownId));
+
+                                element.ShouldNotBeNull();
+
+                                SelectElement dropdown = new SelectElement(element);
+                                selectedText = dropdown.SelectedOption.Text;
+                            });
+
+            return selectedText;
+        }
     }
 }

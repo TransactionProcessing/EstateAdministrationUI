@@ -13,6 +13,7 @@
     using FeeType = BusinessLogic.Models.FeeType;
     using CalculationType = BusinessLogic.Models.CalculationType;
     using FileLineProcessingResult = FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult;
+    using SettlementSchedule = BusinessLogic.Models.SettlementSchedule;
 
     public class TestData
     {
@@ -105,10 +106,11 @@
                 }
             };
 
-        public static CreateMerchantViewModel CreateMerchantViewModel =>
+        public static CreateMerchantViewModel CreateMerchantViewModel(Int32 settlementSchedule = 0) =>
             new CreateMerchantViewModel
             {
                 MerchantName = TestData.MerchantName,
+                SettlementSchedule = settlementSchedule,
                 ContactPhoneNumber = TestData.MerchantContactPhoneNumber,
                 ContactName = TestData.MerchantContactName,
                 ContactEmailAddress = TestData.MerchantContactEmailAddress,
@@ -122,11 +124,12 @@
                 AddressLine1 = TestData.MerchantAddressLine1
             };
 
-        public static MerchantModel MerchantModel =>
+        public static MerchantModel MerchantModel(SettlementSchedule settlementSchedule = SettlementSchedule.Immediate) =>
             new MerchantModel
             {
                 MerchantId = TestData.MerchantId,
                 MerchantName = TestData.MerchantName,
+                SettlementSchedule = settlementSchedule,
                 AvailableBalance = TestData.AvailableBalance,
                 EstateId = TestData.EstateId,
                 Balance = TestData.Balance,
@@ -235,10 +238,11 @@
                 Amount = Decimal.Parse(TestData.DepositAmount)
             };
 
-        public static CreateMerchantModel CreateMerchantModel =>
+        public static CreateMerchantModel CreateMerchantModel(SettlementSchedule settlementSchedule) =>
             new CreateMerchantModel
             {
                 MerchantName = TestData.MerchantName,
+                SettlementSchedule = settlementSchedule,
                 Contact = new ContactModel
                           {
                               ContactName = TestData.MerchantContactName,
@@ -276,10 +280,11 @@
             };
 
 
-        public static MerchantResponse MerchantResponse =>
+        public static MerchantResponse MerchantResponse(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule.Immediate) =>
             new MerchantResponse
             {
                 MerchantId = TestData.MerchantId,
+                SettlementSchedule = settlementSchedule,
                 Contacts = new List<ContactResponse>
                            {
                                new ContactResponse

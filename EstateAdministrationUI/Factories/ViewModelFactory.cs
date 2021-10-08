@@ -314,12 +314,17 @@
                                                                         ContactName = createMerchantViewModel.ContactName,
                                                                         ContactEmailAddress = createMerchantViewModel.ContactEmailAddress
                                                                     },
-                                                          MerchantName = createMerchantViewModel.MerchantName
+                                                          MerchantName = createMerchantViewModel.MerchantName,
+                                                          SettlementSchedule = createMerchantViewModel.SettlementSchedule switch {
+                                                              0 => SettlementSchedule.Immediate,
+                                                              1 => SettlementSchedule.Weekly,
+                                                              2 => SettlementSchedule.Monthly
+                                                          }
                                                       };
 
             return createMerchantModel;
         }
-
+        
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -430,6 +435,7 @@
             viewModel.MerchantId = merchantModel.MerchantId;
             viewModel.MerchantName = merchantModel.MerchantName;
             viewModel.Balance = merchantModel.Balance;
+            viewModel.SettlementSchedule = (Int32)merchantModel.SettlementSchedule;
             viewModel.AvailableBalance = merchantModel.AvailableBalance;
             viewModel.Addresses = this.ConvertFrom(merchantModel.Addresses);
             viewModel.Contacts = this.ConvertFrom(merchantModel.Contacts);

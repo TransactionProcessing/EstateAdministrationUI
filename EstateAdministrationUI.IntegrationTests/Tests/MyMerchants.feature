@@ -44,10 +44,10 @@ Background:
 	| estateuser[id]@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate [id] |
 
 	Given I create the following merchants
-	| MerchantName    | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName    |
-	| Test Merchant 1 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate [id] |
-	| Test Merchant 2 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant2.co.uk | Test Estate [id] |
-	| Test Merchant 3 | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant3.co.uk | Test Estate [id] |
+	| MerchantName    | SettlementSchedule | AddressLine1   | Town     | Region      | Country        | ContactName    | EmailAddress                 | EstateName       |
+	| Test Merchant 1 | Immediate          | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant1.co.uk | Test Estate [id] |
+	| Test Merchant 2 | Weekly             | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant2.co.uk | Test Estate [id] |
+	| Test Merchant 3 | Monthly            | Address Line 1 | TestTown | Test Region | United Kingdom | Test Contact 1 | testcontact1@merchant3.co.uk | Test Estate [id] |
 
 	When I assign the following  operator to the merchants
 	| OperatorName    | MerchantName    | MerchantNumber | TerminalNumber | EstateName    |
@@ -129,7 +129,9 @@ Scenario: Create New Merchant
 	When I click the Add New Merchant button
 	Then I am presented the new merchant screen
 	When I enter the following new merchant details
-	| MerchantName    | AddressLine1   | Town     | Region     | PostCode | Country        | ContactName    | ContactEmail                    | ContactPhoneNumber |
-	| Test Merchant 4 | Address Line 1 | TestTown | TestRegion | TE57 1NG | United Kingdom | Test Contact 4 | testcontact@testmerchant4.co.uk | 0123456789         |
+	| MerchantName    | SettlementSchedule |AddressLine1   | Town     | Region     | PostCode | Country        | ContactName    | ContactEmail                    | ContactPhoneNumber |
+	| Test Merchant 4 | Monthly            |Address Line 1 | TestTown | TestRegion | TE57 1NG | United Kingdom | Test Contact 4 | testcontact@testmerchant4.co.uk | 0123456789         |
 	When I click the Create Merchant button
-	Then I am presented the merchant details screen for 'Test Merchant 4' 
+	Then I am presented the merchant details screen for 'Test Merchant 4'
+	And the merchants settlement schedule is 'Monthly'
+	

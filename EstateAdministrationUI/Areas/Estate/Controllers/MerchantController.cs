@@ -200,15 +200,18 @@
                 CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
                 // All good with model, call the client to create the merchant
-                CreateMerchantResponseModel creteMerchantResponse =
+                CreateMerchantResponseModel createMerchantResponse =
                     await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
+
+                // TODO: Investigate some kind of spinner...
+                await Task.Delay(TimeSpan.FromSeconds(30));
 
                 // Merchant Created, redirect to the Merchant List screen
                 return this.RedirectToAction("GetMerchant",
                                              "Merchant",
                                              new
                                              {
-                                                 merchantId = creteMerchantResponse.MerchantId
+                                                 merchantId = createMerchantResponse.MerchantId
                                              });
             }
 

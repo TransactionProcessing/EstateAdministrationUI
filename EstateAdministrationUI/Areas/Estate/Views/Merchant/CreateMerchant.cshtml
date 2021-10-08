@@ -23,6 +23,14 @@
                                 <input asp-for="MerchantName" class="form-control form-control-user" name="merchantName" autofocus />
                             </div>
                             <div class="form-group">
+                                <label asp-for="SettlementSchedule" class="control-label">Settlement Schedule</label>
+                                <select asp-for="SettlementSchedule" class="form-control form-control-user" id="settlementScheduleList" name="settlementSchedule" autofocus >
+                                    <option value="0" selected>Immediate</option>
+                                    <option value="1">Weekly</option>
+                                    <option value="2">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <h4 class="h4 text-gray-900 mb-4">Address</h4>
                                 <label asp-for="AddressLine1" class="control-label">Address Line 1</label>
                                 <input asp-for="AddressLine1" class="form-control form-control-user" name="addressLine1" autofocus />

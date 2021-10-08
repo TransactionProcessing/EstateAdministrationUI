@@ -35,6 +35,9 @@
         /// </value>
         public String MerchantName { get; set; }
 
+        public SettlementSchedule SettlementSchedule { get; set; }
+
+
         #endregion
     }
 }

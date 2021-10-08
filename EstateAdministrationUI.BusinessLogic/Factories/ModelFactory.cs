@@ -11,6 +11,7 @@
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
+    using SettlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule;
     using SortDirection = EstateReporting.DataTransferObjects.SortDirection;
     using SortField = EstateReporting.DataTransferObjects.SortField;
 
@@ -794,7 +795,8 @@
                                               MerchantId = source.MerchantId,
                                               MerchantName = source.MerchantName,
                                               Balance = source.Balance,
-                                              AvailableBalance = source.AvailableBalance
+                                              AvailableBalance = source.AvailableBalance,
+                                              SettlementSchedule = ConvertFrom(source.SettlementSchedule)
                                           };
 
             if (source.Addresses != null && source.Addresses.Any())
@@ -904,10 +906,32 @@
                                                                  EmailAddress = source.Contact.ContactEmailAddress,
                                                                  PhoneNumber = source.Contact.ContactPhoneNumber
                                                              },
-                                                   Name = source.MerchantName
+                                                   Name = source.MerchantName,
+                                                   SettlementSchedule = ConvertFrom(source.SettlementSchedule)
                                                };
 
             return apiRequest;
+        }
+
+        private SettlementSchedule ConvertFrom(Models.SettlementSchedule settlementSchedule)
+        {
+            return settlementSchedule switch
+            {
+                Models.SettlementSchedule.Immediate => SettlementSchedule.Immediate,
+                Models.SettlementSchedule.Weekly => SettlementSchedule.Weekly,
+                Models.SettlementSchedule.Monthly=> SettlementSchedule.Monthly,
+            };
+        }
+
+        private Models.SettlementSchedule ConvertFrom(SettlementSchedule settlementSchedule)
+        {
+            return settlementSchedule switch
+            {
+                SettlementSchedule.Immediate => Models.SettlementSchedule.Immediate,
+                SettlementSchedule.Weekly => Models.SettlementSchedule.Weekly,
+                SettlementSchedule.Monthly => Models.SettlementSchedule.Monthly,
+                SettlementSchedule.NotSet => Models.SettlementSchedule.Immediate
+            };
         }
 
         /// <summary>

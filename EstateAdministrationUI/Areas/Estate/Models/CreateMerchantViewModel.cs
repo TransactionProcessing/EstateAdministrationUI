@@ -107,6 +107,8 @@
         /// </value>
         public String Town { get; set; }
 
+        public Int32 SettlementSchedule { get; set; }
+
         #endregion
     }
 }
