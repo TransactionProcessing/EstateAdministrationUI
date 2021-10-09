@@ -84,6 +84,8 @@
         /// </value>
         public List<MerchantOperatorViewModel> Operators { get; set; }
 
+        public Int32 SettlementSchedule { get; set; }
+
         #endregion
     }
 }

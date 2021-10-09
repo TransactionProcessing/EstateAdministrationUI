@@ -221,7 +221,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String traceFolder = null;
             if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
             {
-                traceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+                traceFolder = FdOs.IsWindows() ? $"F:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
             }
 
             Logging.Enabled();
@@ -315,6 +315,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                  testNetwork
                                                                                              },
                                                                                              this.EstateManagementContainerName,
+                                                                                             this.EstateReportingContainerName,
                                                                                              traceFolder,
                                                                                              dockerCredentials,
                                                                                              ($"estateUIClient{this.TestId.ToString("N")}", "Secret1"));
@@ -431,6 +432,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                          string imageName,
                                                          List<INetworkService> networkServices,
                                                          String estateManagementContainerName,
+                                                         String estateReportingtContainerName,
                                                          string hostFolder,
                                                          (string URL, string UserName, string Password)? dockerCredentials,
                                                          (string clientId, string clientSecret) clientDetails)
@@ -443,7 +445,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                               $"AppSettings:ClientSecret={clientDetails.clientSecret}",
                                                                               $"AppSettings:IsIntegrationTest=true",
                                                                               $"EstateManagementScope=estateManagement{this.TestId.ToString("N")}",
-                                                                              $"AppSettings:EstateManagementApi=http://{estateManagementContainerName}:{DockerHelper.EstateManagementDockerPort}")
+                                                                              $"AppSettings:EstateManagementApi=http://{estateManagementContainerName}:{DockerHelper.EstateManagementDockerPort}",
+                                                                              $"AppSettings:EstateReportingApi=http://{estateReportingtContainerName}:{DockerHelper.EstateReportingDockerPort}")
                                                              .UseImage(imageName).ExposePort(5004)
                                                              .UseNetwork(networkServices.ToArray());
 

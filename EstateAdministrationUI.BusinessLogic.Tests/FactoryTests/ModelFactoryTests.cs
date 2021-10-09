@@ -23,10 +23,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
     public class ModelFactoryTests
     {
-        [Fact]
-        public void ModelFactory_ConvertFrom_CreateMerchantModel_ModelIsConverted()
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate, EstateManagement.DataTransferObjects.SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly, EstateManagement.DataTransferObjects.SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly, EstateManagement.DataTransferObjects.SettlementSchedule.Monthly)]
+        public void ModelFactory_ConvertFrom_CreateMerchantModel_ModelIsConverted(SettlementSchedule settlementSchedule,
+                                                                                  EstateManagement.DataTransferObjects.SettlementSchedule expectedSettlementSchedule)
         {
-            CreateMerchantModel model = TestData.CreateMerchantModel;
+            CreateMerchantModel model = TestData.CreateMerchantModel(settlementSchedule);
 
             ModelFactory modelFactory = new ModelFactory();
 
@@ -48,6 +52,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             request.Address.PostalCode.ShouldBe(model.Address.PostalCode);
 
             request.Name.ShouldBe(model.MerchantName);
+            request.SettlementSchedule.ShouldBe(expectedSettlementSchedule);
         }
 
         [Fact]
@@ -212,10 +217,14 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
 
-        [Fact]
-        public void ModelFactory_ConvertFrom_MerchantResponse_ModelIsConverted()
+        [Theory]
+        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Immediate,SettlementSchedule.Immediate)]
+        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Weekly, SettlementSchedule.Weekly)]
+        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Monthly, SettlementSchedule.Monthly)]
+        public void ModelFactory_ConvertFrom_MerchantResponse_ModelIsConverted(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule,
+                                                                               Models.SettlementSchedule expectedSettlementSchedule)
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse(settlementSchedule);
 
             ModelFactory modelFactory = new ModelFactory();
 
@@ -223,6 +232,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             model.Balance.ShouldBe(response.Balance);
             model.MerchantId.ShouldBe(response.MerchantId);
+            model.SettlementSchedule.ShouldBe(expectedSettlementSchedule);
             model.MerchantName.ShouldBe(response.MerchantName);
             model.EstateId.ShouldBe(response.EstateId);
             model.AvailableBalance.ShouldBe(response.AvailableBalance);
@@ -275,7 +285,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullAddress_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Addresses = null;
 
             ModelFactory modelFactory = new ModelFactory();
@@ -322,7 +332,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyAddress_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Addresses = new List<AddressResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
@@ -369,7 +379,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullContacts_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Contacts = null;
 
             ModelFactory modelFactory = new ModelFactory();
@@ -421,7 +431,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyContacts_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Contacts = new List<ContactResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
@@ -473,7 +483,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullOperators_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Operators = null;
 
             ModelFactory modelFactory = new ModelFactory();
@@ -525,7 +535,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyOperators_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Operators = new List<MerchantOperatorResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
@@ -577,7 +587,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullDevices_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Devices = null;
 
             ModelFactory modelFactory = new ModelFactory();
@@ -632,7 +642,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyDevices_ModelIsConverted()
         {
-            MerchantResponse response = TestData.MerchantResponse;
+            MerchantResponse response = TestData.MerchantResponse();
             response.Devices = new Dictionary<Guid, String>();
 
             ModelFactory modelFactory = new ModelFactory();
@@ -699,7 +709,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
         {
             List<MerchantResponse> responseList = new List<MerchantResponse>
                                                   {
-                                                      TestData.MerchantResponse
+                                                      TestData.MerchantResponse()
                                                   };
 
             ModelFactory modelFactory = new ModelFactory();

@@ -10,6 +10,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Threading.Tasks;
     using Coypu;
     using Coypu.Drivers.Selenium;
+    using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using NLog.LayoutRenderers;
@@ -167,6 +168,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
                 {
                     Name = merchantName,
+                    SettlementSchedule = Enum.Parse<SettlementSchedule>(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule")),
                     Contact = new Contact
                     {
                         ContactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName"),
@@ -208,9 +210,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                     token = estateDetails.AccessToken;
                 }
 
-                MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
+                await Retry.For(async () =>
+                                {
+                                    MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
 
-                merchant.MerchantName.ShouldBe(merchantName);
+                                    merchant.MerchantName.ShouldBe(merchantName);
+                                });
             }
         }
 
@@ -600,7 +605,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                 }
 
                                 foundRowCount.ShouldBe(table.RowCount);
-                            }, TimeSpan.FromSeconds(120));
+                            }, TimeSpan.FromSeconds(180));
         }
 
         [When(@"I click the Make Deposit button for '(.*)' from the merchant list")]
@@ -718,6 +723,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             
             String contactPhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
             await this.WebDriver.FillIn("contactPhoneNumber", contactPhoneNumber);
+
+            String settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+            await this.WebDriver.SelectDropDownItemByText("settlementScheduleList", settlementSchedule);
         }
 
         [When(@"I click the Create Merchant button")]
@@ -782,6 +790,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String elementValue = element.GetProperty("value");
             elementValue.ShouldBe(merchantName);
         }
+
+        [Then(@"the merchants settlement schedule is '([^']*)'")]
+        public async Task ThenTheMerchantsSettlementScheduleIs(String settlementSchedule)
+        {
+            String selectedText = await this.WebDriver.GetDropDownItemText("settlementScheduleList");
+            selectedText.ShouldBe(settlementSchedule);
+        }
+
 
         [Then(@"the available balance for the merchant should be (.*)")]
         public void ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance)

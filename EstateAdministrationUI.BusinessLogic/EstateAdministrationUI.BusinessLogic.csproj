@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateManagement.Client" Version="1.0.13.1" />
+    <PackageReference Include="EstateManagement.Client" Version="1.0.15-build77" />
     <PackageReference Include="EstateReporting.Client" Version="1.0.16" />
     <PackageReference Include="FileProcessor.Client" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

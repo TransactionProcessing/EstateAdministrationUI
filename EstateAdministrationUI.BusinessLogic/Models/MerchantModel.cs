@@ -84,6 +84,8 @@
         /// </value>
         public List<MerchantOperatorModel> Operators { get; set; }
 
+        public SettlementSchedule SettlementSchedule { get; set; }
+
         #endregion
     }
 }

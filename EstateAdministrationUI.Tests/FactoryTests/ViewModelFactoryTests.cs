@@ -37,17 +37,21 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(model); });
         }
 
-        [Fact]
-        public void ViewModelFactory_ConvertFrom_CreateMerchantViewModel_ModelIsConverted()
+        [Theory]
+        [InlineData(0,SettlementSchedule.Immediate)]
+        [InlineData(1,SettlementSchedule.Weekly)]
+        [InlineData(2,SettlementSchedule.Monthly)]
+
+        public void ViewModelFactory_ConvertFrom_CreateMerchantViewModel_ModelIsConverted(Int32 settlementSchedule,SettlementSchedule expectedSettlementSchedule)
         {
-            CreateMerchantViewModel viewModel = TestData.CreateMerchantViewModel;
+            CreateMerchantViewModel viewModel = TestData.CreateMerchantViewModel(settlementSchedule);
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
             CreateMerchantModel model = viewModelFactory.ConvertFrom(viewModel);
 
             model.MerchantName.ShouldBe(viewModel.MerchantName);
-
+            model.SettlementSchedule.ShouldBe(expectedSettlementSchedule);
             model.Contact.ContactName.ShouldBe(viewModel.ContactName);
             model.Contact.ContactPhoneNumber.ShouldBe(viewModel.ContactPhoneNumber);
             model.Contact.ContactEmailAddress.ShouldBe(viewModel.ContactEmailAddress);
@@ -72,10 +76,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
         }
 
-        [Fact]
-        public void ViewModelFactory_ConvertFrom_MerchantModel_ModelIsConverted()
+        [Theory]
+        [InlineData(SettlementSchedule.Immediate)]
+        [InlineData(SettlementSchedule.Weekly)]
+        [InlineData(SettlementSchedule.Monthly)]
+        public void ViewModelFactory_ConvertFrom_MerchantModel_ModelIsConverted(SettlementSchedule settlementSchedule)
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel(settlementSchedule);
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
@@ -84,6 +91,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
             viewModel.MerchantName.ShouldBe(model.MerchantName);
+            viewModel.SettlementSchedule.ShouldBe((Int32)settlementSchedule);
             viewModel.EstateId.ShouldBe(model.EstateId);
             viewModel.AvailableBalance.ShouldBe(model.AvailableBalance);
             viewModel.Contacts.Count.ShouldBe(model.Contacts.Count);
@@ -136,7 +144,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_NullOperators_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Operators = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -190,7 +198,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_EmptyOperators_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Operators = new List<MerchantOperatorModel>();
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -244,7 +252,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_NullDevices_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Devices = null;
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
@@ -299,7 +307,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_EmptyDevices_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Devices = new Dictionary<Guid, String>();
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -355,7 +363,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_NullAddresses_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Addresses = null;
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
@@ -401,7 +409,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_EmptyAddresses_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Addresses = new List<AddressModel>();
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
@@ -447,7 +455,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_NullContacts_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Contacts = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -500,7 +508,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_MerchantModel_EmptyContacts_ModelIsConverted()
         {
-            MerchantModel model = TestData.MerchantModel;
+            MerchantModel model = TestData.MerchantModel();
             model.Contacts = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -565,7 +573,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
@@ -591,7 +599,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Addresses[0] = null;
 
@@ -618,7 +626,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Addresses = null;
 
@@ -645,7 +653,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Addresses = new List<AddressModel>();
 
@@ -672,7 +680,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Contacts[0] = null;
 
@@ -699,7 +707,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Contacts = null;
 
@@ -726,7 +734,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Contacts = new List<ContactModel>();
 
@@ -753,7 +761,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Devices = null;
 
@@ -780,7 +788,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Devices = new Dictionary<Guid, String>();
 
@@ -807,7 +815,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Operators[0] = null;
 
@@ -834,7 +842,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Operators = null;
 
@@ -861,7 +869,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
             modelList.First().Operators = new List<MerchantOperatorModel>();
 
@@ -1605,7 +1613,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>
                                             {
-                                                TestData.MerchantModel
+                                                TestData.MerchantModel()
                                             };
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();

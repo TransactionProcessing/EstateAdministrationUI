@@ -385,10 +385,11 @@
             try
             {
                 Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
-
+                
                 MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
-
+            
                 return this.ModelFactory.ConvertFrom(merchant);
+
             }
             catch(Exception ex)
             {

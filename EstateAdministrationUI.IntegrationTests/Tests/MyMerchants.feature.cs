@@ -220,6 +220,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
 #line hidden
             TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
                         "MerchantName",
+                        "SettlementSchedule",
                         "AddressLine1",
                         "Town",
                         "Region",
@@ -229,6 +230,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "EstateName"});
             table30.AddRow(new string[] {
                         "Test Merchant 1",
+                        "Immediate",
                         "Address Line 1",
                         "TestTown",
                         "Test Region",
@@ -238,6 +240,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Estate [id]"});
             table30.AddRow(new string[] {
                         "Test Merchant 2",
+                        "Weekly",
                         "Address Line 1",
                         "TestTown",
                         "Test Region",
@@ -247,6 +250,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Estate [id]"});
             table30.AddRow(new string[] {
                         "Test Merchant 3",
+                        "Monthly",
                         "Address Line 1",
                         "TestTown",
                         "Test Region",
@@ -737,6 +741,7 @@ this.FeatureBackground();
 #line hidden
                 TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
                             "MerchantName",
+                            "SettlementSchedule",
                             "AddressLine1",
                             "Town",
                             "Region",
@@ -747,6 +752,7 @@ this.FeatureBackground();
                             "ContactPhoneNumber"});
                 table39.AddRow(new string[] {
                             "Test Merchant 4",
+                            "Monthly",
                             "Address Line 1",
                             "TestTown",
                             "TestRegion",
@@ -763,6 +769,9 @@ this.FeatureBackground();
 #line hidden
 #line 135
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 4\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 136
+ testRunner.And("the merchants settlement schedule is \'Monthly\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
