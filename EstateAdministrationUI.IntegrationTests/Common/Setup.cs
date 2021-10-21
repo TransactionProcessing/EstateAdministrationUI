@@ -56,7 +56,7 @@
             DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
             if (enginePlatform == DockerEnginePlatform.Windows)
             {
-                sqlServerImageName = "tobiasfenster/mssql-server-dev-unsupported";
+                sqlServerImageName = "tobiasfenster/mssql-server-dev-unsupported:2019-cu13";
             }
 
             // Start the Database Server here
