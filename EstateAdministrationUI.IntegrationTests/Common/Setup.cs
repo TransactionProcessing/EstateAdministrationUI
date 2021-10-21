@@ -52,11 +52,11 @@
             logger.Initialise(LogManager.GetLogger("Specflow"), "Specflow");
             LogManager.AddHiddenAssembly(typeof(NlogLogger).Assembly);
 
-            String sqlServerImageName = "stuartferguson/subscriptionservicedatabasesqlserver";
+            String sqlServerImageName = "mcr.microsoft.com/mssql/server:2019-latest";
             DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
             if (enginePlatform == DockerEnginePlatform.Windows)
             {
-                sqlServerImageName = "stuartferguson/subscriptionservicedatabasesqlserverwindows";
+                sqlServerImageName = "tobiasfenster/mssql-server-dev-unsupported";
             }
 
             // Start the Database Server here
