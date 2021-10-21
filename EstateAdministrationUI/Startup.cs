@@ -170,8 +170,7 @@ namespace EstateAdministrationUI
 
             Action<String> loggerAction = message =>
                                           {
-                                              //Logger.LogInformation(message);
-                                              Console.WriteLine(message);
+                                              Logger.LogInformation(message);
                                           };
             Startup.Configuration.LogConfiguration(loggerAction);
 
