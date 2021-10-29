@@ -7,7 +7,7 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionsByWeekViewModel
+    public class DataByWeekViewModel
     {
         #region Properties
 
@@ -17,8 +17,7 @@
         /// <value>
         /// The transaction week view models.
         /// </value>
-        public List<TransactionWeekViewModel> TransactionWeekViewModels { get; set; }
-
+        public List<DataWeekViewModel> DataWeekViewModels { get; set; }
         #endregion
     }
 }

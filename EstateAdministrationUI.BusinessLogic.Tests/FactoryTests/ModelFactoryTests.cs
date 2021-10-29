@@ -1177,11 +1177,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+            DataByDateModel model = modelFactory.ConvertFrom(response);
 
-            model.TransactionDateModels.ShouldNotBeNull();
-            model.TransactionDateModels.ShouldNotBeEmpty();
-            model.TransactionDateModels.Count.ShouldBe(response.TransactionDayResponses.Count);
+            model.DataDateModels.ShouldNotBeNull();
+            model.DataDateModels.ShouldNotBeEmpty();
+            model.DataDateModels.Count.ShouldBe(response.TransactionDayResponses.Count);
         }
 
         [Fact]
@@ -1191,7 +1191,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+            DataByDateModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1204,7 +1204,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+            DataByDateModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1217,7 +1217,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByDateModel model = modelFactory.ConvertFrom(response);
+            DataByDateModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1229,11 +1229,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+            DataByWeekModel model = modelFactory.ConvertFrom(response);
 
-            model.TransactionWeekModels.ShouldNotBeNull();
-            model.TransactionWeekModels.ShouldNotBeEmpty();
-            model.TransactionWeekModels.Count.ShouldBe(response.TransactionWeekResponses.Count);
+            model.DataWeekModels.ShouldNotBeNull();
+            model.DataWeekModels.ShouldNotBeEmpty();
+            model.DataWeekModels.Count.ShouldBe(response.TransactionWeekResponses.Count);
         }
 
         [Fact]
@@ -1243,7 +1243,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+            DataByWeekModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1256,7 +1256,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+            DataByWeekModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1269,7 +1269,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByWeekModel model = modelFactory.ConvertFrom(response);
+            DataByWeekModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1281,11 +1281,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+            DataByMonthModel model = modelFactory.ConvertFrom(response);
 
-            model.TransactionMonthModels.ShouldNotBeNull();
-            model.TransactionMonthModels.ShouldNotBeEmpty();
-            model.TransactionMonthModels.Count.ShouldBe(response.TransactionMonthResponses.Count);
+            model.DataMonthModels.ShouldNotBeNull();
+            model.DataMonthModels.ShouldNotBeEmpty();
+            model.DataMonthModels.Count.ShouldBe(response.TransactionMonthResponses.Count);
         }
 
         [Fact]
@@ -1295,7 +1295,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+            DataByMonthModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1308,7 +1308,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+            DataByMonthModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1321,7 +1321,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMonthModel model = modelFactory.ConvertFrom(response);
+            DataByMonthModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1360,11 +1360,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+            DataByMerchantModel model = modelFactory.ConvertFrom(response);
 
-            model.TransactionMerchantModels.ShouldNotBeNull();
-            model.TransactionMerchantModels.ShouldNotBeEmpty();
-            model.TransactionMerchantModels.Count.ShouldBe(response.TransactionMerchantResponses.Count);
+            model.DataMerchantModels.ShouldNotBeNull();
+            model.DataMerchantModels.ShouldNotBeEmpty();
+            model.DataMerchantModels.Count.ShouldBe(response.TransactionMerchantResponses.Count);
         }
 
         [Fact]
@@ -1374,7 +1374,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+            DataByMerchantModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1387,7 +1387,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+            DataByMerchantModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1400,7 +1400,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByMerchantModel model = modelFactory.ConvertFrom(response);
+            DataByMerchantModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1434,11 +1434,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+            DataByOperatorModel model = modelFactory.ConvertFrom(response);
 
-            model.TransactionOperatorModels.ShouldNotBeNull();
-            model.TransactionOperatorModels.ShouldNotBeEmpty();
-            model.TransactionOperatorModels.Count.ShouldBe(response.TransactionOperatorResponses.Count);
+            model.DataOperatorModels.ShouldNotBeNull();
+            model.DataOperatorModels.ShouldNotBeEmpty();
+            model.DataOperatorModels.Count.ShouldBe(response.TransactionOperatorResponses.Count);
         }
 
         [Fact]
@@ -1448,7 +1448,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+            DataByOperatorModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1461,7 +1461,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+            DataByOperatorModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
@@ -1474,13 +1474,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            TransactionsByOperatorModel model = modelFactory.ConvertFrom(response);
+            DataByOperatorModel model = modelFactory.ConvertFrom(response);
 
             model.ShouldBeNull();
         }
-
-        //public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> source)
-
+        
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_ModelIsConverted()
         {

@@ -576,24 +576,24 @@
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public TransactionsByDateViewModel ConvertFrom(TransactionsByDateModel model)
+        public DataByDateViewModel ConvertFrom(DataByDateModel model)
         {
             if (model == null)
             {
-                return new TransactionsByDateViewModel();
+                return new DataByDateViewModel();
             }
 
-            TransactionsByDateViewModel viewModel = new TransactionsByDateViewModel();
-            viewModel.TransactionDateViewModels = new List<TransactionDateViewModel>();
-            foreach (TransactionDateModel transactionDateModel in model.TransactionDateModels)
+            DataByDateViewModel viewModel = new DataByDateViewModel();
+            viewModel.DataDateViewModels = new List<DataDateViewModel>();
+            foreach (DataDateModel transactionDateModel in model.DataDateModels)
             {
-                viewModel.TransactionDateViewModels.Add(new TransactionDateViewModel
-                                                        {
-                    CurrencyCode = transactionDateModel.CurrencyCode,
-                    Date = transactionDateModel.Date,
-                    NumberOfTransactions = transactionDateModel.NumberOfTransactions,
-                    ValueOfTransactions = transactionDateModel.ValueOfTransactions
-                                                        });
+                viewModel.DataDateViewModels.Add(new DataDateViewModel
+                {
+                                                     CurrencyCode = transactionDateModel.CurrencyCode,
+                                                     Date = transactionDateModel.Date,
+                                                     Count = transactionDateModel.Count,
+                                                     Value = transactionDateModel.Value
+                                                 });
             }
 
             return viewModel;
@@ -604,26 +604,26 @@
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public TransactionsByWeekViewModel ConvertFrom(TransactionsByWeekModel model)
+        public DataByWeekViewModel ConvertFrom(DataByWeekModel model)
         {
             if (model == null)
             {
-                return new TransactionsByWeekViewModel();
+                return new DataByWeekViewModel();
             }
 
-            TransactionsByWeekViewModel viewModel = new TransactionsByWeekViewModel();
-            viewModel.TransactionWeekViewModels = new List<TransactionWeekViewModel>();
+            DataByWeekViewModel viewModel = new DataByWeekViewModel();
+            viewModel.DataWeekViewModels = new List<DataWeekViewModel>();
             
-            foreach (TransactionWeekModel transactionWeekModel in model.TransactionWeekModels)
+            foreach (DataWeekModel transactionWeekModel in model.DataWeekModels)
             {
-                viewModel.TransactionWeekViewModels.Add(new TransactionWeekViewModel
-                                                        {
-                                                            CurrencyCode = transactionWeekModel.CurrencyCode,
-                                                            WeekNumber = transactionWeekModel.WeekNumber,
-                                                            Year = transactionWeekModel.Year,
-                                                            NumberOfTransactions = transactionWeekModel.NumberOfTransactions,
-                                                            ValueOfTransactions = transactionWeekModel.ValueOfTransactions
-                                                        });
+                viewModel.DataWeekViewModels.Add(new DataWeekViewModel
+                {
+                                                     CurrencyCode = transactionWeekModel.CurrencyCode,
+                                                     WeekNumber = transactionWeekModel.WeekNumber,
+                                                     Year = transactionWeekModel.Year,
+                                                     Count = transactionWeekModel.Count,
+                                                     Value = transactionWeekModel.Value
+                                                 });
             };
 
             return viewModel;
@@ -634,27 +634,27 @@
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model)
+        public DataByMonthViewModel ConvertFrom(DataByMonthModel model)
         {
             if (model == null)
             {
-                return new TransactionsByMonthViewModel();
+                return new DataByMonthViewModel();
             }
 
-            TransactionsByMonthViewModel viewModel = new TransactionsByMonthViewModel();
-            viewModel.TransactionMonthViewModels=new List<TransactionMonthViewModel>();
+            DataByMonthViewModel viewModel = new DataByMonthViewModel();
+            viewModel.DataMonthViewModels = new List<DataMonthViewModel>();
 
 
-            foreach (TransactionMonthModel transactionMonthModel in model.TransactionMonthModels)
+            foreach (DataMonthModel transactionMonthModel in model.DataMonthModels)
             {
-                viewModel.TransactionMonthViewModels.Add(new TransactionMonthViewModel
-                                                        {
-                                                            CurrencyCode = transactionMonthModel.CurrencyCode,
-                                                            MonthNumber = transactionMonthModel.MonthNumber,
-                                                            Year = transactionMonthModel.Year,
-                                                            NumberOfTransactions = transactionMonthModel.NumberOfTransactions,
-                                                            ValueOfTransactions = transactionMonthModel.ValueOfTransactions
-                                                        });
+                viewModel.DataMonthViewModels.Add(new DataMonthViewModel
+                {
+                                                      CurrencyCode = transactionMonthModel.CurrencyCode,
+                                                      MonthNumber = transactionMonthModel.MonthNumber,
+                                                      Year = transactionMonthModel.Year,
+                                                      Count = transactionMonthModel.Count,
+                                                      Value = transactionMonthModel.Value
+                                                  });
             }
 
             return viewModel;
@@ -665,56 +665,56 @@
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public TransactionsByMerchantViewModel ConvertFrom(TransactionsByMerchantModel model)
+        public DataByMerchantViewModel ConvertFrom(DataByMerchantModel model)
         {
             if (model == null)
             {
-                return new TransactionsByMerchantViewModel();
+                return new DataByMerchantViewModel();
             }
 
-            TransactionsByMerchantViewModel viewModel = new TransactionsByMerchantViewModel();
-            viewModel.TransactionMerchantViewModels = new List<TransactionMerchantViewModel>();
+            DataByMerchantViewModel viewModel = new DataByMerchantViewModel();
+            viewModel.DataMerchantViewModels = new List<DataMerchantViewModel>();
 
 
-            foreach (TransactionMerchantModel transactionMerchantModel in model.TransactionMerchantModels)
+            foreach (DataMerchantModel transactionMerchantModel in model.DataMerchantModels)
             {
-                viewModel.TransactionMerchantViewModels.Add(new TransactionMerchantViewModel
-                                                         {
+                viewModel.DataMerchantViewModels.Add(new DataMerchantViewModel
+                {
                                                              CurrencyCode = transactionMerchantModel.CurrencyCode,
                                                              MerchantId = transactionMerchantModel.MerchantId,
                                                              MerchantName = transactionMerchantModel.MerchantName,
-                                                             NumberOfTransactions = transactionMerchantModel.NumberOfTransactions,
-                                                             ValueOfTransactions = transactionMerchantModel.ValueOfTransactions
+                                                             Count = transactionMerchantModel.Count,
+                                                             Value = transactionMerchantModel.Value
                                                          });
             }
 
             return viewModel;
         }
-
+        
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public TransactionsByOperatorViewModel ConvertFrom(TransactionsByOperatorModel model)
+        public DataByOperatorViewModel ConvertFrom(DataByOperatorModel model)
         {
             if (model == null)
             {
-                return new TransactionsByOperatorViewModel();
+                return new DataByOperatorViewModel();
             }
 
-            TransactionsByOperatorViewModel viewModel = new TransactionsByOperatorViewModel();
-            viewModel.TransactionOperatorViewModels = new List<TransactionOperatorViewModel>();
+            DataByOperatorViewModel viewModel = new DataByOperatorViewModel();
+            viewModel.DataOperatorViewModels = new List<DataOperatorViewModel>();
 
-            foreach (TransactionOperatorModel transactionOperatorModel in model.TransactionOperatorModels)
+            foreach (DataOperatorModel transactionOperatorModel in model.DataOperatorModels)
             {
-                viewModel.TransactionOperatorViewModels.Add(new TransactionOperatorViewModel
-                                                            {
-                                                                ValueOfTransactions = transactionOperatorModel.ValueOfTransactions,
-                                                                CurrencyCode = transactionOperatorModel.CurrencyCode,
-                                                                NumberOfTransactions = transactionOperatorModel.NumberOfTransactions,
-                                                                OperatorName = transactionOperatorModel.OperatorName
-                                                            });
+                viewModel.DataOperatorViewModels.Add(new DataOperatorViewModel
+                {
+                                                         Value = transactionOperatorModel.Value,
+                                                         CurrencyCode = transactionOperatorModel.CurrencyCode,
+                                                         Count = transactionOperatorModel.Count,
+                                                         OperatorName = transactionOperatorModel.OperatorName
+                                                     });
             }
 
             return viewModel;

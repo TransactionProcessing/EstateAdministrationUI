@@ -15,7 +15,7 @@ function getChartColors()
         ];
     }
 
-function translateDailyTotals(data)
+function translateDailyTotals(data, valueLabel, countLabel)
     {
         var dataArray = [];
 
@@ -23,17 +23,17 @@ function translateDailyTotals(data)
             return [];
         }
 
-        if (data.transactionDateViewModels === null) {
+        if (data.dataDateViewModels === null) {
             return [];
         }
 
         // Add the labels first
         dataArray.push([
-            { label: "Date", type: "date" }, { label: "Value of Sales", type: "number" },
-            { label: "Number of Sales", type: "number" }
+            { label: "Date", type: "date" }, { label: valueLabel, type: "number" },
+            { label: countLabel, type: "number" }
         ]);
 
-        data.transactionDateViewModels.forEach((day) =>
+        data.dataDateViewModels.forEach((day) =>
         {
             // Parse the date
             var date = new Date(day.date);
@@ -43,7 +43,7 @@ function translateDailyTotals(data)
             var dateStringValue = "Date(" + date.getFullYear() + "," + date.getMonth()  + "," + date.getDate() + ")";
             console.log(dateStringValue);
             var item = {
-                c: [{ v: dateStringValue }, { v: day.valueOfTransactions / 10 }, { v: day.numberOfTransactions }]
+                c: [{ v: dateStringValue }, { v: day.value / 10 }, { v: day.count }]
             };
             dataArray.push(item);
         });
@@ -51,7 +51,7 @@ function translateDailyTotals(data)
         return dataArray;
     }
 
-function translateWeeklyTotals(data)
+function translateWeeklyTotals(data, valueLabel, countLabel)
     {
         var dataArray = [];
 
@@ -59,22 +59,22 @@ function translateWeeklyTotals(data)
             return [];
         }
 
-        if (data.transactionWeekViewModels === null) {
+        if (data.dataWeekViewModels === null) {
             return [];
         }
 
         // Add the labels first
         dataArray.push([
-            { label: "Week", type: "string" }, { label: "Value of Sales", type: "number" },
-            { label: "Number of Sales", type: "number" }
+            { label: "Week", type: "string" }, { label: valueLabel, type: "number" },
+            { label: countLabel, type: "number" }
         ]);
 
-        data.transactionWeekViewModels.forEach((week) =>
+        data.dataWeekViewModels.forEach((week) =>
         {
             var dateStringValue = "Wk " + week.weekNumber + " " + week.year;
 
             var item = {
-                c: [{ v: dateStringValue }, { v: week.valueOfTransactions / 10 }, { v: week.numberOfTransactions }]
+                c: [{ v: dateStringValue }, { v: week.value / 10 }, { v: week.count }]
             };
             dataArray.push(item);
         });
@@ -82,7 +82,7 @@ function translateWeeklyTotals(data)
         return dataArray;
     }
 
-function translateMonthTotals(data)
+function translateMonthTotals(data, valueLabel, countLabel)
     {
         var dataArray = [];
 
@@ -90,24 +90,24 @@ function translateMonthTotals(data)
             return [];
         }
 
-        if (data.transactionMonthViewModels === null) {
+        if (data.dataMonthViewModels === null) {
             return [];
         }
 
         // Add the labels first
         dataArray.push([
-            { label: "Month", type: "string" }, { label: "Value of Sales", type: "number" },
-            { label: "Number of Sales", type: "number" }
+            { label: "Month", type: "string" }, { label: valueLabel, type: "number" },
+            { label: countLabel, type: "number" }
         ]);
 
-        data.transactionMonthViewModels.forEach((month) =>
+        data.dataMonthViewModels.forEach((month) =>
         {
             var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
             var date = new Date(month.year, month.monthNumber - 1, 1);
             var dateStringValue = months[date.getMonth()] + " " + month.year;
 
             var item = {
-                c: [{ v: dateStringValue }, { v: month.valueOfTransactions / 10 }, { v: month.numberOfTransactions }]
+                c: [{ v: dateStringValue }, { v: month.value / 10 }, { v: month.count }]
             };
             dataArray.push(item);
         });
@@ -115,7 +115,7 @@ function translateMonthTotals(data)
         return dataArray;
 }
 
-function translateMerchantTotals(data, sortField)
+function translateMerchantTotals(data, sortField, valueLabel, countLabel)
 {
     var dataArray = [];
     
@@ -124,7 +124,7 @@ function translateMerchantTotals(data, sortField)
         return [];
     }
 
-    if (data.transactionMerchantViewModels === null)
+    if (data.dataMerchantViewModels === null)
     {
         return [];
     }
@@ -132,27 +132,27 @@ function translateMerchantTotals(data, sortField)
     if (sortField === '0')
     {
         dataArray.push([
-            { label: "Merchant", type: "string" }, { label: "Value of Sales", type: "number" }
+            { label: "Merchant", type: "string" }, { label: valueLabel, type: "number" }
         ]);
     }
     else
     {
         dataArray.push([
-            { label: "Merchant", type: "string" }, { label: "Number of Sales", type: "number" }
+            { label: "Merchant", type: "string" }, { label: countLabel, type: "number" }
         ]);
     }
 
-    data.transactionMerchantViewModels.forEach((merchant) =>
+    data.dataMerchantViewModels.forEach((merchant) =>
     {
         var merchantName = merchant.merchantName;
         var value = 0;
         if (sortField === '0')
         {
-            value = merchant.valueOfTransactions;
+            value = merchant.value;
         }
         else
         {
-            value = merchant.numberOfTransactions;
+            value = merchant.count;
         }
         var item = {
             c: [{ v: merchantName }, { v: value }]
@@ -162,36 +162,36 @@ function translateMerchantTotals(data, sortField)
     return dataArray;
 }
 
-function translateOperatorTotals(data, sortField) {
+function translateOperatorTotals(data, sortField, valueLabel, countLabel) {
     var dataArray = [];
 
     if (data === undefined || data === null) {
         return [];
     }
 
-    if (data.transactionOperatorViewModels === null) {
+    if (data.dataOperatorViewModels === null) {
         return [];
     }
     // Add the labels first
     if (sortField === '0') {
         dataArray.push([
-            { label: "Operator", type: "string" }, { label: "Value of Sales", type: "number" }
+            { label: "Operator", type: "string" }, { label: valueLabel, type: "number" }
         ]);
     }
     else {
         dataArray.push([
-            { label: "Operator", type: "string" }, { label: "Number of Sales", type: "number" }
+            { label: "Operator", type: "string" }, { label: countLabel, type: "number" }
         ]);
     }
 
-    data.transactionOperatorViewModels.forEach((operator) => {
+    data.dataOperatorViewModels.forEach((operator) => {
         var operatorName = operator.operatorName;
         var value = 0;
         if (sortField === '0') {
-            value = operator.valueOfTransactions;
+            value = operator.value;
         }
         else {
-            value = operator.numberOfTransactions;
+            value = operator.count;
         }
         var item = {
             c: [{ v: operatorName }, { v: value }]

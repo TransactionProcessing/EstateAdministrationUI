@@ -159,16 +159,16 @@
         {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            TransactionsByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
-                                                                                               this.User.Identity as ClaimsIdentity,
-                                                                                               startDate,
-                                                                                               endDate,
-                                                                                               merchantCount,
-                                                                                               sortDirection,
-                                                                                               sortField,
-                                                                                               cancellationToken);
-            
-            TransactionsByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            DataByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
+                                                                                       this.User.Identity as ClaimsIdentity,
+                                                                                       startDate,
+                                                                                       endDate,
+                                                                                       merchantCount,
+                                                                                       sortDirection,
+                                                                                       sortField,
+                                                                                       cancellationToken);
+
+            DataByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
             
             return this.Json(viewModel);
         }
@@ -194,16 +194,16 @@
         {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            TransactionsByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
-                                                                                               this.User.Identity as ClaimsIdentity,
-                                                                                               startDate,
-                                                                                               endDate,
-                                                                                               operatorCount,
-                                                                                               sortDirection,
-                                                                                               sortField,
-                                                                                               cancellationToken);
+            DataByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
+                                                                                       this.User.Identity as ClaimsIdentity,
+                                                                                       startDate,
+                                                                                       endDate,
+                                                                                       operatorCount,
+                                                                                       sortDirection,
+                                                                                       sortField,
+                                                                                       cancellationToken);
 
-            TransactionsByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            DataByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
             return this.Json(viewModel);
         }
 

@@ -4,11 +4,11 @@
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    public class TransactionsByMerchantModel
+    public class DataByMerchantModel
     {
         #region Properties
 
-        public List<TransactionMerchantModel> TransactionMerchantModels { get; set; }
+        public List<DataMerchantModel> DataMerchantModels { get; set; }
 
         #endregion
     }

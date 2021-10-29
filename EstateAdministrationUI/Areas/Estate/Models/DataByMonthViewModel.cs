@@ -1,4 +1,4 @@
-﻿namespace EstateAdministrationUI.BusinessLogic.Models
+﻿namespace EstateAdministrationUI.Areas.Estate.Models
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -7,17 +7,17 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionsByMonthModel
+    public class DataByMonthViewModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the transaction month models.
+        /// Gets or sets the transaction month view models.
         /// </summary>
         /// <value>
-        /// The transaction month models.
+        /// The transaction month view models.
         /// </value>
-        public List<TransactionMonthModel> TransactionMonthModels { get; set; }
+        public List<DataMonthViewModel> DataMonthViewModels { get; set; }
 
         #endregion
     }

@@ -1335,123 +1335,123 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByDateModel_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DateByDateModel_IsConverted()
         {
-            TransactionsByDateModel model = TestData.TransactionsByDateModel;
+            DataByDateModel model = TestData.DataByDateModel;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionDateViewModels.Count.ShouldBe(model.TransactionDateModels.Count);
+            viewModel.DataDateViewModels.Count.ShouldBe(model.DataDateModels.Count);
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByDateModel_ModelIsNull_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByDateModel_ModelIsNull_IsConverted()
         {
-            TransactionsByDateModel model = null;
+            DataByDateModel model = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByDateViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionDateViewModels.ShouldBeNull();
+            viewModel.DataDateViewModels.ShouldBeNull();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByWeekModel_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByWeekModel_IsConverted()
         {
-            TransactionsByWeekModel model = TestData.TransactionsByWeekModel;
+            DataByWeekModel model = TestData.DataByWeekModel;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionWeekViewModels.Count.ShouldBe(model.TransactionWeekModels.Count);
+            viewModel.DataWeekViewModels.Count.ShouldBe(model.DataWeekModels.Count);
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByWeekModel_ModelIsNull_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByWeekModel_ModelIsNull_IsConverted()
         {
-            TransactionsByWeekModel model = null;
+            DataByWeekModel model = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByWeekViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionWeekViewModels.ShouldBeNull();
+            viewModel.DataWeekViewModels.ShouldBeNull();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByMonthModel_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByMonthModel_IsConverted()
         {
-            TransactionsByMonthModel model = TestData.TransactionsByMonthModel;
+            DataByMonthModel model = TestData.DataByMonthModel;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionMonthViewModels.Count.ShouldBe(model.TransactionMonthModels.Count);
+            viewModel.DataMonthViewModels.Count.ShouldBe(model.DataMonthModels.Count);
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByMonthModel_ModelIsNull_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByMonthModel_ModelIsNull_IsConverted()
         {
-            TransactionsByMonthModel model = null;
+            DataByMonthModel model = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByMonthViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionMonthViewModels.ShouldBeNull();
+            viewModel.DataMonthViewModels.ShouldBeNull();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByMerchantModel_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByMerchantModel_IsConverted()
         {
-            TransactionsByMerchantModel model = TestData.TransactionsByMerchantModel;
+            DataByMerchantModel model = TestData.DataByMerchantModel;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionMerchantViewModels.Count.ShouldBe(model.TransactionMerchantModels.Count);
+            viewModel.DataMerchantViewModels.Count.ShouldBe(model.DataMerchantModels.Count);
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByMerchantModel_ModelIsNull_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByMerchantModel_ModelIsNull_IsConverted()
         {
-            TransactionsByMerchantModel model = null;
+            DataByMerchantModel model = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByMerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionMerchantViewModels.ShouldBeNull();
+            viewModel.DataMerchantViewModels.ShouldBeNull();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByOperatorModel_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByOperatorModel_IsConverted()
         {
-            TransactionsByOperatorModel model = TestData.TransactionsByOperatorModel;
+            DataByOperatorModel model = TestData.DataByOperatorModel;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByOperatorViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByOperatorViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionOperatorViewModels.Count.ShouldBe(model.TransactionOperatorModels.Count);
+            viewModel.DataOperatorViewModels.Count.ShouldBe(model.DataOperatorModels.Count);
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TransactionsByOperatorModel_ModelIsNull_IsConverted()
+        public void ViewModelFactory_ConvertFrom_DataByOperatorModel_ModelIsNull_IsConverted()
         {
-            TransactionsByOperatorModel model = null;
+            DataByOperatorModel model = null;
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            TransactionsByOperatorViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            DataByOperatorViewModel viewModel = viewModelFactory.ConvertFrom(model);
 
-            viewModel.TransactionOperatorViewModels.ShouldBeNull();
+            viewModel.DataOperatorViewModels.ShouldBeNull();
         }
 
         [Fact]

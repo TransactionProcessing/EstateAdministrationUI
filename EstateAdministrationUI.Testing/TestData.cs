@@ -598,16 +598,16 @@
                 }
             };
 
-        public static TransactionsByOperatorModel TransactionsByOperatorModel =>
-            new TransactionsByOperatorModel
+        public static DataByOperatorModel DataByOperatorModel =>
+            new DataByOperatorModel
             {
-                TransactionOperatorModels = new List<TransactionOperatorModel>
+                DataOperatorModels = new List<DataOperatorModel>
                                             {
-                                                new TransactionOperatorModel
+                                                new DataOperatorModel
                                                 {
                                                     CurrencyCode = String.Empty,
-                                                    NumberOfTransactions = 10,
-                                                    ValueOfTransactions = 1000,
+                                                    Count = 10,
+                                                    Value = 1000,
                                                     OperatorName = TestData.OperatorName
                                                 }
                                             }
@@ -628,17 +628,17 @@
                                                }
             };
 
-        public static TransactionsByMerchantModel TransactionsByMerchantModel => new TransactionsByMerchantModel
+        public static DataByMerchantModel DataByMerchantModel => new DataByMerchantModel
                                                                                  {
-                                                                                     TransactionMerchantModels = new List<TransactionMerchantModel>
+                                                                                     DataMerchantModels = new List<DataMerchantModel>
                                                                                                                  {
-                                                                                                                     new TransactionMerchantModel
+                                                                                                                     new DataMerchantModel
                                                                                                                      {
                                                                                                                          CurrencyCode = String.Empty,
                                                                                                                          MerchantId = TestData.MerchantId,
                                                                                                                          MerchantName = TestData.MerchantName,
-                                                                                                                         NumberOfTransactions = 10,
-                                                                                                                         ValueOfTransactions = 1000
+                                                                                                                         Count = 10,
+                                                                                                                         Value = 1000
                                                                                                                      }
                                                                                                                  }
                                                                                  };
@@ -898,26 +898,26 @@
                                           }
             };
 
-        public static TransactionsByDateModel TransactionsByDateModel =>
-            new TransactionsByDateModel
+        public static DataByDateModel DataByDateModel =>
+            new DataByDateModel
             {
-                TransactionDateModels = new List<TransactionDateModel>
-                                          {
-                                              new TransactionDateModel
-                                              {
-                                                  CurrencyCode = "KES",
-                                                  Date = new DateTime(2020,10,1),
-                                                  NumberOfTransactions = 10,
-                                                  ValueOfTransactions = 1000
-                                              },
-                                              new TransactionDateModel
-                                              {
-                                                  CurrencyCode = "KES",
-                                                  Date = new DateTime(2020,10,2),
-                                                  NumberOfTransactions = 20,
-                                                  ValueOfTransactions = 2000
-                                              }
-                                          }
+                DataDateModels = new List<DataDateModel>
+                                 {
+                                     new DataDateModel
+                                     {
+                                         CurrencyCode = "KES",
+                                         Date = new DateTime(2020,10,1),
+                                         Count = 10,
+                                         Value = 1000
+                                     },
+                                     new DataDateModel
+                                     {
+                                         CurrencyCode = "KES",
+                                         Date = new DateTime(2020,10,2),
+                                         Count = 20,
+                                         Value = 2000
+                                     }
+                                 }
             };
 
         public static TransactionsByWeekResponse TransactionsByWeekResponse =>
@@ -944,26 +944,26 @@
                                           }
             };
 
-        public static TransactionsByWeekModel TransactionsByWeekModel =>
-            new TransactionsByWeekModel
+        public static DataByWeekModel DataByWeekModel =>
+            new DataByWeekModel
             {
-                TransactionWeekModels = new List<TransactionWeekModel>
+                DataWeekModels = new List<DataWeekModel>
                                            {
-                                               new TransactionWeekModel
+                                               new DataWeekModel
                                                {
                                                    CurrencyCode = "KES",
                                                    WeekNumber = 1,
                                                    Year = 2020,
-                                                   NumberOfTransactions = 10,
-                                                   ValueOfTransactions = 1000
+                                                   Count = 10,
+                                                   Value = 1000
                                                },
-                                               new TransactionWeekModel
+                                               new DataWeekModel
                                                {
                                                    CurrencyCode = "KES",
                                                    WeekNumber = 2,
                                                    Year = 2020,
-                                                   NumberOfTransactions = 20,
-                                                   ValueOfTransactions = 2000
+                                                   Count = 20,
+                                                   Value = 2000
                                                }
                                            }
             };
@@ -992,28 +992,28 @@
                                            }
             };
 
-        public static TransactionsByMonthModel TransactionsByMonthModel =>
-            new TransactionsByMonthModel
+        public static DataByMonthModel DataByMonthModel =>
+            new DataByMonthModel
             {
-                TransactionMonthModels = new List<TransactionMonthModel>
-                                            {
-                                                new TransactionMonthModel
-                                                {
-                                                    CurrencyCode = "KES",
-                                                    MonthNumber = 1,
-                                                    Year = 2020,
-                                                    NumberOfTransactions = 10,
-                                                    ValueOfTransactions = 1000
-                                                },
-                                                new TransactionMonthModel
-                                                {
-                                                    CurrencyCode = "KES",
-                                                    MonthNumber = 2,
-                                                    Year = 2020,
-                                                    NumberOfTransactions = 20,
-                                                    ValueOfTransactions = 2000
-                                                }
-                                            }
+                DataMonthModels = new List<DataMonthModel>
+                                  {
+                                      new DataMonthModel
+                                      {
+                                          CurrencyCode = "KES",
+                                          MonthNumber = 1,
+                                          Year = 2020,
+                                          Count = 10,
+                                          Value = 1000
+                                      },
+                                      new DataMonthModel
+                                      {
+                                          CurrencyCode = "KES",
+                                          MonthNumber = 2,
+                                          Year = 2020,
+                                          Count = 20,
+                                          Value = 2000
+                                      }
+                                  }
             };
 
         public static TransactionForPeriodModel TransactionForPeriodModel =>

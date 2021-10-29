@@ -1,6 +1,5 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Factories
 {
-    using System;
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
@@ -11,7 +10,6 @@
     using SortDirectionDTO = EstateReporting.DataTransferObjects.SortDirection;
     using SortFieldModel = Models.SortField;
     using SortFieldDTO = EstateReporting.DataTransferObjects.SortField;
-
 
     /// <summary>
     /// 
@@ -26,6 +24,10 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         EstateModel ConvertFrom(EstateResponse source);
+
+        DataByMerchantModel ConvertFrom(SettlementByMerchantResponse source);
+
+        DataByOperatorModel ConvertFrom(SettlementByOperatorResponse source);
 
         /// <summary>
         /// Converts from.
@@ -160,8 +162,6 @@
         /// <returns></returns>
         AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source);
 
-        #endregion
-
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -181,28 +181,27 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source);
+        DataByDateModel ConvertFrom(TransactionsByDayResponse source);
+
+        DataByDateModel ConvertFrom(SettlementByDayResponse source);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source);
+        DataByWeekModel ConvertFrom(TransactionsByWeekResponse source);
+
+        DataByWeekModel ConvertFrom(SettlementByWeekResponse source);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source);
+        DataByMonthModel ConvertFrom(TransactionsByMonthResponse source);
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source);
+        DataByMonthModel ConvertFrom(SettlementByMonthResponse source);
 
         /// <summary>
         /// Converts from.
@@ -223,14 +222,14 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        TransactionsByMerchantModel ConvertFrom(TransactionsByMerchantResponse source);
+        DataByMerchantModel ConvertFrom(TransactionsByMerchantResponse source);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        TransactionsByOperatorModel ConvertFrom(TransactionsByOperatorResponse source);
+        DataByOperatorModel ConvertFrom(TransactionsByOperatorResponse source);
 
         /// <summary>
         /// Converts from.
@@ -253,7 +252,15 @@
         /// <returns></returns>
         AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source);
 
-
         AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source);
+
+        /// <summary>
+        /// Converts from.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source);
+
+        #endregion
     }
 }
