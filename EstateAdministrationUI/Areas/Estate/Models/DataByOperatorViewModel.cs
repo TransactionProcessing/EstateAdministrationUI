@@ -4,11 +4,11 @@
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    public class TransactionsByMerchantViewModel
+    public class DataByOperatorViewModel
     {
         #region Properties
-        
-        public List<TransactionMerchantViewModel> TransactionMerchantViewModels { get; set; }
+
+        public List<DataOperatorViewModel> DataOperatorViewModels { get; set; }
 
         #endregion
     }

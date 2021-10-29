@@ -30,9 +30,17 @@
                 <div class="card-body">
                     <h5>
                         Sort By:
+                        <select id="reportType" onchange="drawChart()">
+                            <option value="0" selected>Transactions</option>
+                            <option value="1">Settlement</option>
+                        </select>
+                    </h5>
+
+                    <h5>
+                        Sort By:
                         <select id="sortBy" onchange="drawChart()">
-                            <option value="0" selected>Sales Value</option>
-                            <option value="1">Sales Count</option>
+                            <option value="0" selected>Value</option>
+                            <option value="1">Count</option>
                         </select>
                     </h5>
                     <h5>
@@ -76,20 +84,30 @@
         var operatorCount = document.getElementById("operatorCount").value;
         var direction = document.getElementById("direction").value;
         var sortBy = document.getElementById("sortBy").value;
-        console.log(direction);
+        var reportType = document.getElementById("reportType").value;
 
         var drp = $('#dates').data('daterangepicker');
         var startDate = new Date(drp.startDate);
         var endDate = new Date(drp.endDate);
 
+        var urlbase = '';
+        if (reportType === '0')
+        {
+            urlbase = "GetSalesByOperatorAsJson?merchantCount=";
+        }
+        else
+        {
+            urlbase = "GetSettlementByOperatorAsJson?merchantCount=";
+        }
+
         var jsonData = $.ajax({
-            url: "GetSalesByOperatorAsJson?operatorCount=" + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
+            url: urlbase + operatorCount + "&sortDirection=" + direction + "&sortField=" + sortBy + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
             dataType: "json",
             async: false
         }).responseText;
         
         // Convert JSON value to google format array
-        var data = convertJsonToArray(jsonData, sortBy);
+        var data = convertJsonToArray(jsonData, sortBy, reportType);
         
         var options = setupChartOptions(operatorCount, direction, sortBy);
 
@@ -145,12 +163,27 @@
         return options;
     }
 
-    function convertJsonToArray(jsonData, sortField)
+    function convertJsonToArray(jsonData, sortField, dataType)
     {
         var data = JSON.parse(jsonData);
         var dataArray = [];
 
-        dataArray = translateOperatorTotals(data, sortField);
+        var valueLabel = '';
+        var countLabel = '';
+        if (dataType === '0') 
+        {
+            // sales
+            valueLabel = 'Value of Sales';
+            countLabel = 'Number of Sales';
+        }
+        else
+        {
+            // settlement
+            valueLabel = 'Value of Settlement';
+            countLabel = 'Number of Settled Sales';
+        }
+
+        dataArray = translateOperatorTotals(data, sortField, valueLabel, countLabel);
         
         return google.visualization.arrayToDataTable(dataArray);
     }

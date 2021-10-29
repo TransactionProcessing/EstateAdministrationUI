@@ -165,35 +165,35 @@
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        TransactionsByDateViewModel ConvertFrom(TransactionsByDateModel model);
+        DataByDateViewModel ConvertFrom(DataByDateModel model);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        TransactionsByWeekViewModel ConvertFrom(TransactionsByWeekModel model);
+        DataByWeekViewModel ConvertFrom(DataByWeekModel model);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        TransactionsByMonthViewModel ConvertFrom(TransactionsByMonthModel model);
+        DataByMonthViewModel ConvertFrom(DataByMonthModel model);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        TransactionsByMerchantViewModel ConvertFrom(TransactionsByMerchantModel model);
+        DataByMerchantViewModel ConvertFrom(DataByMerchantModel model);
 
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        TransactionsByOperatorViewModel ConvertFrom(TransactionsByOperatorModel model);
+        DataByOperatorViewModel ConvertFrom(DataByOperatorModel model);
 
         /// <summary>
         /// Converts from.

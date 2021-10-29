@@ -60,34 +60,34 @@
 
             if (timePeriod == "Day")
             {
-                TransactionsByDateModel model = await this.ApiClient.GetTransactionsByDate(accessToken,
-                                                                                           this.User.Identity as ClaimsIdentity,
-                                                                                           startDate,
-                                                                                           endDate,
-                                                                                           cancellationToken);
-                TransactionsByDateViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                DataByDateModel model = await this.ApiClient.GetTransactionsByDate(accessToken,
+                                                                                   this.User.Identity as ClaimsIdentity,
+                                                                                   startDate,
+                                                                                   endDate,
+                                                                                   cancellationToken);
+                DataByDateViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
                 return this.Json(viewModel);
             }
 
             if (timePeriod == "Week")
             {
-                TransactionsByWeekModel model = await this.ApiClient.GetTransactionsByWeek(accessToken,
-                                                                                           this.User.Identity as ClaimsIdentity,
-                                                                                           startDate,
-                                                                                           endDate,
-                                                                                           cancellationToken);
-                TransactionsByWeekViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                DataByWeekModel model = await this.ApiClient.GetTransactionsByWeek(accessToken,
+                                                                                   this.User.Identity as ClaimsIdentity,
+                                                                                   startDate,
+                                                                                   endDate,
+                                                                                   cancellationToken);
+                DataByWeekViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
                 return this.Json(viewModel);
             }
 
             if (timePeriod == "Month")
             {
-                TransactionsByMonthModel model = await this.ApiClient.GetTransactionsByMonth(accessToken,
-                                                                                             this.User.Identity as ClaimsIdentity,
-                                                                                             startDate,
-                                                                                             endDate,
-                                                                                             cancellationToken);
-                TransactionsByMonthViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                DataByMonthModel model = await this.ApiClient.GetTransactionsByMonth(accessToken,
+                                                                                     this.User.Identity as ClaimsIdentity,
+                                                                                     startDate,
+                                                                                     endDate,
+                                                                                     cancellationToken);
+                DataByMonthViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
                 return this.Json(viewModel);
             }
 
@@ -104,17 +104,84 @@
         {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            TransactionsByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
-                                                                                               this.User.Identity as ClaimsIdentity,
-                                                                                               startDate,
-                                                                                               endDate,
-                                                                                               merchantCount,
-                                                                                               sortDirection,
-                                                                                               sortField,
-                                                                                               cancellationToken);
+            DataByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
+                                                                                       this.User.Identity as ClaimsIdentity,
+                                                                                       startDate,
+                                                                                       endDate,
+                                                                                       merchantCount,
+                                                                                       sortDirection,
+                                                                                       sortField,
+                                                                                       cancellationToken);
 
-            TransactionsByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            DataByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
             return this.Json(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSettlementByMerchantAsJson([FromQuery] Int32 merchantCount,
+                                                                  [FromQuery] SortDirection sortDirection,
+                                                                  [FromQuery] SortField sortField,
+                                                                  [FromQuery] DateTime startDate,
+                                                                  [FromQuery] DateTime endDate,
+                                                                  CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            DataByMerchantModel model = await this.ApiClient.GetSettlementByMerchant(accessToken,
+                                                                                     this.User.Identity as ClaimsIdentity,
+                                                                                     startDate,
+                                                                                     endDate,
+                                                                                     merchantCount,
+                                                                                     sortDirection,
+                                                                                     sortField,
+                                                                                     cancellationToken);
+
+            DataByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            return this.Json(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSettlementByTimePeriodAsJson([FromQuery] String timePeriod,
+                                                                    [FromQuery] DateTime startDate,
+                                                                    [FromQuery] DateTime endDate,
+                                                                    CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            if (timePeriod == "Day")
+            {
+                DataByDateModel model = await this.ApiClient.GetSettlementByDate(accessToken,
+                                                                                   this.User.Identity as ClaimsIdentity,
+                                                                                   startDate,
+                                                                                   endDate,
+                                                                                   cancellationToken);
+                DataByDateViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                return this.Json(viewModel);
+            }
+
+            if (timePeriod == "Week")
+            {
+                DataByWeekModel model = await this.ApiClient.GetSettlementByWeek(accessToken,
+                                                                                   this.User.Identity as ClaimsIdentity,
+                                                                                   startDate,
+                                                                                   endDate,
+                                                                                   cancellationToken);
+                DataByWeekViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                return this.Json(viewModel);
+            }
+
+            if (timePeriod == "Month")
+            {
+                DataByMonthModel model = await this.ApiClient.GetSettlementByMonth(accessToken,
+                                                                                     this.User.Identity as ClaimsIdentity,
+                                                                                     startDate,
+                                                                                     endDate,
+                                                                                     cancellationToken);
+                DataByMonthViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                return this.Json(viewModel);
+            }
+
+            return null;
         }
 
         [HttpGet]
@@ -127,16 +194,39 @@
         {
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            TransactionsByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
-                                                                                               this.User.Identity as ClaimsIdentity,
-                                                                                               startDate,
-                                                                                               endDate,
-                                                                                               operatorCount,
-                                                                                               sortDirection,
-                                                                                               sortField,
-                                                                                               cancellationToken);
+            DataByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
+                                                                                       this.User.Identity as ClaimsIdentity,
+                                                                                       startDate,
+                                                                                       endDate,
+                                                                                       operatorCount,
+                                                                                       sortDirection,
+                                                                                       sortField,
+                                                                                       cancellationToken);
 
-            TransactionsByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            DataByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+            return this.Json(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSettlementByOperatorAsJson([FromQuery] Int32 operatorCount,
+                                                                  [FromQuery] SortDirection sortDirection,
+                                                                  [FromQuery] SortField sortField,
+                                                                  [FromQuery] DateTime startDate,
+                                                                  [FromQuery] DateTime endDate,
+                                                                  CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            DataByOperatorModel model = await this.ApiClient.GetSettlementByOperator(accessToken,
+                                                                                       this.User.Identity as ClaimsIdentity,
+                                                                                       startDate,
+                                                                                       endDate,
+                                                                                       operatorCount,
+                                                                                       sortDirection,
+                                                                                       sortField,
+                                                                                       cancellationToken);
+
+            DataByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
             return this.Json(viewModel);
         }
 

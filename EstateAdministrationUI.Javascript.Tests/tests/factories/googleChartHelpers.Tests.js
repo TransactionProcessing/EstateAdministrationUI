@@ -8,11 +8,13 @@ describe("Merchant Factory Tests",
         it("Merchant Dataset is converted - By Value",
             function()
             {
-                var viewModel = testData.getTransactionsByMerchantViewModel();
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '0');
+                var viewModel = testData.getDataByMerchantViewModel();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '0', valueLabel, countLabel);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
+                chai.expect(googleModel[0][1].label).to.equal(valueLabel);
 
                 chai.expect(googleModel[1].c[0].v).to.equal("Test Merchant 3");
                 chai.expect(googleModel[1].c[1].v).to.equal(62184);
@@ -33,11 +35,13 @@ describe("Merchant Factory Tests",
         it("Merchant Dataset is converted - By Count",
             function()
             {
-                var viewModel = testData.getTransactionsByMerchantViewModel();
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '1');
+                var viewModel = testData.getDataByMerchantViewModel();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '1', valueLabel, countLabel);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
+                chai.expect(googleModel[0][1].label).to.equal(countLabel);
 
                 chai.expect(googleModel[1].c[0].v).to.equal("Test Merchant 3");
                 chai.expect(googleModel[1].c[1].v).to.equal(434);
@@ -58,59 +62,64 @@ describe("Merchant Factory Tests",
         it("Merchant Dataset Null Merchant Models is converted - By Value",
             function()
             {
-                var viewModel = testData.getTransactionsByMerchantViewModelWithNullMerchantModels();
-
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel,'0');
+                var viewModel = testData.getDataByMerchantViewModelWithNullMerchantModels();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel,'0', valueLabel,countLabel);
 
                 chai.expect(googleModel.length).to.equal(0);
             });
 
         it("Merchant Dataset Null Merchant Models is converted - By Count",
             function () {
-                var viewModel = testData.getTransactionsByMerchantViewModelWithNullMerchantModels();
-
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '1');
+                var viewModel = testData.getDataByMerchantViewModelWithNullMerchantModels();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '1',valueLabel,countLabel);
 
                 chai.expect(googleModel.length).to.equal(0);
             });
 
         it("Merchant Dataset Empty Merchant Models is converted - By Value",
             function () {
-                var viewModel = testData.getTransactionsByMerchantViewModelWithEmptyMerchantModels();
-
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '0');
+                var viewModel = testData.getDataByMerchantViewModelWithEmptyMerchantModels();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel, '0',valueLabel,countLabel);
 
                 chai.expect(googleModel.length).to.equal(1);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
+                chai.expect(googleModel[0][1].label).to.equal(valueLabel);
             });
 
         it("Merchant Dataset Empty Merchant Models is converted - By Count",
             function()
             {
-                var viewModel = testData.getTransactionsByMerchantViewModelWithEmptyMerchantModels();
-
-                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel,'1');
+                var viewModel = testData.getDataByMerchantViewModelWithEmptyMerchantModels();
+                var valueLabel = "Value of Sales";
+                var countLabel = "Number Of Sales";
+                var googleModel = googleChartHelpers.translateMerchantTotals(viewModel,'1',valueLabel,countLabel);
 
                 chai.expect(googleModel.length).to.equal(1);
                 chai.expect(googleModel[0].length).to.equal(2);
                 chai.expect(googleModel[0][0].label).to.equal("Merchant");
-                chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
+                chai.expect(googleModel[0][1].label).to.equal(countLabel);
             });
     });
 
 describe("Daily Factory Tests", function () {
     it("Daily Dataset is converted", function()
     {
-        var viewModel = testData.getTransactionsByDateViewModel();
-
-        var googleModel = googleChartHelpers.translateDailyTotals(viewModel);
+        var viewModel = testData.getDataByDateViewModel();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateDailyTotals(viewModel, valueLabel, countLabel);
 
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Date");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
 
         chai.expect(googleModel[1].c[0].v).to.equal("Date(2020,10,1)");
         chai.expect(googleModel[1].c[1].v).to.equal(1000);
@@ -127,43 +136,47 @@ describe("Daily Factory Tests", function () {
 
     it("Null Daily Dataset is converted", function () {
         var viewModel = null;
-
-        var googleModel = googleChartHelpers.translateDailyTotals(viewModel);
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateDailyTotals(viewModel, valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Daily Dataset Null Date Models is converted", function () {
-        var viewModel = testData.getTransactionsByDateViewModelWithNullDateModels();
-
-        var googleModel = googleChartHelpers.translateDailyTotals(viewModel);
+        var viewModel = testData.getDataByDateViewModelWithNullDateModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateDailyTotals(viewModel, valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Daily Dataset Empty Date Models is converted", function () {
-        var viewModel = testData.getTransactionsByDateViewModelWithEmptyDateModels();
-
-        var googleModel = googleChartHelpers.translateDailyTotals(viewModel);
+        var viewModel = testData.getDataByDateViewModelWithEmptyDateModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateDailyTotals(viewModel, valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(1);
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Date");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
     });
 });
 
 describe("Weekly Factory Tests", function () {
     it("Weekly Dataset is converted", function () {
-        var viewModel = testData.getTransactionsByWeekViewModel();
-
-        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel);
+        var viewModel = testData.getDataByWeekViewModel();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel, valueLabel, countLabel);
 
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Week");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
 
         chai.expect(googleModel[1].c[0].v).to.equal("Wk 1 2020");
         chai.expect(googleModel[1].c[1].v).to.equal(1000);
@@ -180,43 +193,47 @@ describe("Weekly Factory Tests", function () {
 
     it("Null Weekly Dataset is converted", function () {
         var viewModel = null;
-
-        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel);
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel, valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Weekly Dataset Null Week Models is converted", function () {
-        var viewModel = testData.getTransactionsByWeekViewModelWithNullWeekModels();
-
-        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel);
+        var viewModel = testData.getDataByWeekViewModelWithNullWeekModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel, valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Weekly Dataset Empty Week Models is converted", function () {
-        var viewModel = testData.getTransactionsByWeekViewModelWithEmptyWeekModels();
-
-        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel);
+        var viewModel = testData.getDataByWeekViewModelWithEmptyWeekModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateWeeklyTotals(viewModel, valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(1);
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Week");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
     });
 });
 
 describe("Monthly Factory Tests", function () {
     it("Monthly Dataset is converted", function () {
-        var viewModel = testData.getTransactionsByMonthViewModel();
-
-        var googleModel = googleChartHelpers.translateMonthTotals(viewModel);
+        var viewModel = testData.getDataByMonthViewModel();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateMonthTotals(viewModel,valueLabel,countLabel);
 
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Month");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
 
         chai.expect(googleModel[1].c[0].v).to.equal("Jan 2020");
         chai.expect(googleModel[1].c[1].v).to.equal(1000);
@@ -233,40 +250,45 @@ describe("Monthly Factory Tests", function () {
 
     it("Null Monthly Dataset is converted", function () {
         var viewModel = null;
-
-        var googleModel = googleChartHelpers.translateMonthTotals(viewModel);
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateMonthTotals(viewModel, valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Monthly Dataset Null Week Models is converted", function () {
-        var viewModel = testData.getTransactionsByMonthViewModelWithNullMonthModels();
-
-        var googleModel = googleChartHelpers.translateMonthTotals(viewModel);
+        var viewModel = testData.getDataByMonthViewModelWithNullMonthModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateMonthTotals(viewModel, valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Monthly Dataset Empty Week Models is converted", function () {
-        var viewModel = testData.getTransactionsByMonthViewModelWithEmptyMonthModels();
-
-        var googleModel = googleChartHelpers.translateMonthTotals(viewModel);
+        var viewModel = testData.getDataByMonthViewModelWithEmptyMonthModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateMonthTotals(viewModel,valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(1);
         chai.expect(googleModel[0].length).to.equal(3);
         chai.expect(googleModel[0][0].label).to.equal("Month");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
-        chai.expect(googleModel[0][2].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
+        chai.expect(googleModel[0][2].label).to.equal(countLabel);
     });
 });
 
 describe("Operator Factory Tests", function () {
     it("Operator Dataset is converted - By Value", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModel();
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel, '0');
+        var viewModel = testData.getDataByOperatorViewModel();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel, '0', valueLabel, countLabel);
         chai.expect(googleModel[0].length).to.equal(2);
         chai.expect(googleModel[0][0].label).to.equal("Operator");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
 
         chai.expect(googleModel[1].c[0].v).to.equal("Test Operator 1");
         chai.expect(googleModel[1].c[1].v).to.equal(62184);
@@ -276,11 +298,13 @@ describe("Operator Factory Tests", function () {
     });
 
     it("Operator Dataset is converted - By Count", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModel();
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel, '1');
+        var viewModel = testData.getDataByOperatorViewModel();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel, '1', valueLabel, countLabel);
         chai.expect(googleModel[0].length).to.equal(2);
         chai.expect(googleModel[0][0].label).to.equal("Operator");
-        chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(countLabel);
 
         chai.expect(googleModel[1].c[0].v).to.equal("Test Operator 1");
         chai.expect(googleModel[1].c[1].v).to.equal(434);
@@ -290,42 +314,46 @@ describe("Operator Factory Tests", function () {
     });
 
     it("Operator Dataset Null Operator Models is converted - By Value", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModelWithNullOperatorModels();
-
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'0');
+        var viewModel = testData.getDataByOperatorViewModelWithNullOperatorModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'0', valueLabel,countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Operator Dataset Null Operator Models is converted - By Count", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModelWithNullOperatorModels();
-
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'1');
+        var viewModel = testData.getDataByOperatorViewModelWithNullOperatorModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'1', valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(0);
     });
 
     it("Operator Dataset Empty Operator Models is converted - By Value", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModelWithEmptyOperatorModels();
-
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'0');
+        var viewModel = testData.getDataByOperatorViewModelWithEmptyOperatorModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'0', valueLabel, countLabel);
 
         chai.expect(googleModel.length).to.equal(1);
         chai.expect(googleModel[0].length).to.equal(2);
         chai.expect(googleModel[0][0].label).to.equal("Operator");
-        chai.expect(googleModel[0][1].label).to.equal("Value of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(valueLabel);
     });
 
     it("Operator Dataset Empty Operator Models is converted - By Count", function () {
-        var viewModel = testData.getTransactionsByOperatorViewModelWithEmptyOperatorModels();
-
-        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'1');
+        var viewModel = testData.getDataByOperatorViewModelWithEmptyOperatorModels();
+        var valueLabel = "Value of Sales";
+        var countLabel = "Number Of Sales";
+        var googleModel = googleChartHelpers.translateOperatorTotals(viewModel,'1',valueLabel,countLabel);
 
         console.log(googleModel);
 
         chai.expect(googleModel.length).to.equal(1);
         chai.expect(googleModel[0].length).to.equal(2);
         chai.expect(googleModel[0][0].label).to.equal("Operator");
-        chai.expect(googleModel[0][1].label).to.equal("Number of Sales");
+        chai.expect(googleModel[0][1].label).to.equal(countLabel);
     });
 })

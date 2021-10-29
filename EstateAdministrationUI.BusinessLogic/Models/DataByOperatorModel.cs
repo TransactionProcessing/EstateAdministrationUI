@@ -1,4 +1,4 @@
-﻿namespace EstateAdministrationUI.Areas.Estate.Models
+﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -7,17 +7,17 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionsByDateViewModel
+    public class DataByOperatorModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the transaction date view models.
+        /// Gets or sets the transaction operator models.
         /// </summary>
         /// <value>
-        /// The transaction date view models.
+        /// The transaction operator models.
         /// </value>
-        public List<TransactionDateViewModel> TransactionDateViewModels { get; set; }
+        public List<DataOperatorModel> DataOperatorModels { get; set; }
 
         #endregion
     }

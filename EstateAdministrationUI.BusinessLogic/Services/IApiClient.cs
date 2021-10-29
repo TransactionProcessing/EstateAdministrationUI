@@ -290,11 +290,17 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
+        Task<DataByDateModel> GetTransactionsByDate(String accessToken,
                                                             ClaimsIdentity claimsIdentity,
                                                             DateTime startDate,
                                                             DateTime endDate,
                                                             CancellationToken cancellationToken);
+
+        Task<DataByDateModel> GetSettlementByDate(String accessToken,
+                                                    ClaimsIdentity claimsIdentity,
+                                                    DateTime startDate,
+                                                    DateTime endDate,
+                                                    CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the transactions by merchant.
@@ -308,7 +314,16 @@
         /// <param name="sortField">The sort field.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
+        Task<DataByMerchantModel> GetTransactionsByMerchant(String accessToken,
+                                                                    ClaimsIdentity claimsIdentity,
+                                                                    DateTime startDate,
+                                                                    DateTime endDate,
+                                                                    Int32 recordCount,
+                                                                    SortDirection sortDirection,
+                                                                    SortField sortField,
+                                                                    CancellationToken cancellationToken);
+
+        Task<DataByMerchantModel> GetSettlementByMerchant(String accessToken,
                                                                     ClaimsIdentity claimsIdentity,
                                                                     DateTime startDate,
                                                                     DateTime endDate,
@@ -326,11 +341,17 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
+        Task<DataByMonthModel> GetTransactionsByMonth(String accessToken,
                                                               ClaimsIdentity claimsIdentity,
                                                               DateTime startDate,
                                                               DateTime endDate,
                                                               CancellationToken cancellationToken);
+
+        Task<DataByMonthModel> GetSettlementByMonth(String accessToken,
+                                                      ClaimsIdentity claimsIdentity,
+                                                      DateTime startDate,
+                                                      DateTime endDate,
+                                                      CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the transactions by operator.
@@ -344,7 +365,16 @@
         /// <param name="sortField">The sort field.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TransactionsByOperatorModel> GetTransactionsByOperator(String accessToken,
+        Task<DataByOperatorModel> GetTransactionsByOperator(String accessToken,
+                                                                    ClaimsIdentity claimsIdentity,
+                                                                    DateTime startDate,
+                                                                    DateTime endDate,
+                                                                    Int32 recordCount,
+                                                                    SortDirection sortDirection,
+                                                                    SortField sortField,
+                                                                    CancellationToken cancellationToken);
+
+        Task<DataByOperatorModel> GetSettlementByOperator(String accessToken,
                                                                     ClaimsIdentity claimsIdentity,
                                                                     DateTime startDate,
                                                                     DateTime endDate,
@@ -362,11 +392,17 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
+        Task<DataByWeekModel> GetTransactionsByWeek(String accessToken,
                                                             ClaimsIdentity claimsIdentity,
                                                             DateTime startDate,
                                                             DateTime endDate,
                                                             CancellationToken cancellationToken);
+
+        Task<DataByWeekModel> GetSettlementByWeek(String accessToken,
+                                                    ClaimsIdentity claimsIdentity,
+                                                    DateTime startDate,
+                                                    DateTime endDate,
+                                                    CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the transactions for date period.

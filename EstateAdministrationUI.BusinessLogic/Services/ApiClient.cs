@@ -584,6 +584,23 @@
             return addTransactionFeeToContractProductResponseModel;
         }
 
+        public async Task<DataByWeekModel> GetSettlementByWeek(String accessToken,
+                                                               ClaimsIdentity claimsIdentity,
+                                                               DateTime startDate,
+                                                               DateTime endDate,
+                                                               CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            SettlementByWeekResponse response = await this.EstateReportingClient.GetSettlementForEstateByWeek(accessToken,
+                                                                                                              estateId,
+                                                                                                              startDate.ToString("yyyyMMdd"),
+                                                                                                              endDate.ToString("yyyyMMdd"),
+                                                                                                              cancellationToken);
+            DataByWeekModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
 
         /// <summary>
         /// Gets the transactions for date period.
@@ -624,7 +641,7 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<TransactionsByDateModel> GetTransactionsByDate(String accessToken,
+        public async Task<DataByDateModel> GetTransactionsByDate(String accessToken,
                                                                          ClaimsIdentity claimsIdentity,
                                                                          DateTime startDate,
                                                                          DateTime endDate,
@@ -637,7 +654,50 @@
                                                                                                                      startDate.ToString("yyyyMMdd"),
                                                                                                                      endDate.ToString("yyyyMMdd"),
                                                                                                                      cancellationToken);
-            TransactionsByDateModel model = this.ModelFactory.ConvertFrom(response);
+            DataByDateModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
+        public async Task<DataByDateModel> GetSettlementByDate(String accessToken,
+                                                               ClaimsIdentity claimsIdentity,
+                                                               DateTime startDate,
+                                                               DateTime endDate,
+                                                               CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            SettlementByDayResponse response = await this.EstateReportingClient.GetSettlementForEstateByDate(accessToken,
+                                                                                                             estateId,
+                                                                                                             startDate.ToString("yyyyMMdd"),
+                                                                                                             endDate.ToString("yyyyMMdd"),
+                                                                                                             cancellationToken);
+            DataByDateModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
+        public async Task<DataByOperatorModel> GetSettlementByOperator(String accessToken,
+                                                                       ClaimsIdentity claimsIdentity,
+                                                                       DateTime startDate,
+                                                                       DateTime endDate,
+                                                                       Int32 recordCount,
+                                                                       SortDirection sortDirection,
+                                                                       SortField sortField,
+                                                                       CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            SettlementByOperatorResponse response = await this.EstateReportingClient.GetSettlementForEstateByOperator(accessToken,
+                estateId,
+                startDate.ToString("yyyyMMdd"),
+                endDate.ToString("yyyyMMdd"),
+                recordCount,
+                this.ModelFactory.ConvertFrom(sortDirection),
+                this.ModelFactory.ConvertFrom(sortField),
+                cancellationToken);
+
+            DataByOperatorModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
         }
@@ -651,7 +711,7 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<TransactionsByWeekModel> GetTransactionsByWeek(String accessToken,
+        public async Task<DataByWeekModel> GetTransactionsByWeek(String accessToken,
                                                                          ClaimsIdentity claimsIdentity,
                                                                          DateTime startDate,
                                                                          DateTime endDate,
@@ -664,11 +724,11 @@
                                                                                                                      startDate.ToString("yyyyMMdd"),
                                                                                                                      endDate.ToString("yyyyMMdd"),
                                                                                                                      cancellationToken);
-            TransactionsByWeekModel model = this.ModelFactory.ConvertFrom(response);
+            DataByWeekModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
         }
-
+        
         /// <summary>
         /// Gets the transactions by month.
         /// </summary>
@@ -678,7 +738,7 @@
         /// <param name="endDate">The end date.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<TransactionsByMonthModel> GetTransactionsByMonth(String accessToken,
+        public async Task<DataByMonthModel> GetTransactionsByMonth(String accessToken,
                                                                            ClaimsIdentity claimsIdentity,
                                                                            DateTime startDate,
                                                                            DateTime endDate,
@@ -692,7 +752,26 @@
                 endDate.ToString("yyyyMMdd"),
                 cancellationToken);
 
-            TransactionsByMonthModel model = this.ModelFactory.ConvertFrom(response);
+            DataByMonthModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
+        }
+
+        public async Task<DataByMonthModel> GetSettlementByMonth(String accessToken,
+                                                                 ClaimsIdentity claimsIdentity,
+                                                                 DateTime startDate,
+                                                                 DateTime endDate,
+                                                                 CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            SettlementByMonthResponse response = await this.EstateReportingClient.GetSettlementForEstateByMonth(accessToken,
+                                                                                                                estateId,
+                                                                                                                startDate.ToString("yyyyMMdd"),
+                                                                                                                endDate.ToString("yyyyMMdd"),
+                                                                                                                cancellationToken);
+
+            DataByMonthModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
         }
@@ -709,7 +788,7 @@
         /// <param name="sortField">The sort field.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<TransactionsByMerchantModel> GetTransactionsByMerchant(String accessToken,
+        public async Task<DataByMerchantModel> GetTransactionsByMerchant(String accessToken,
                                                                                  ClaimsIdentity claimsIdentity,
                                                                                  DateTime startDate,
                                                                                  DateTime endDate,
@@ -730,25 +809,50 @@
                                                                                     this.ModelFactory.ConvertFrom(sortField),
                                                                                     cancellationToken);
 
-            TransactionsByMerchantModel model = this.ModelFactory.ConvertFrom(response);
+            DataByMerchantModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
+        }
 
+        public async Task<DataByMerchantModel> GetSettlementByMerchant(String accessToken,
+                                                                             ClaimsIdentity claimsIdentity,
+                                                                             DateTime startDate,
+                                                                             DateTime endDate,
+                                                                             Int32 recordCount,
+                                                                             SortDirection sortDirection,
+                                                                             SortField sortField,
+                                                                             CancellationToken cancellationToken)
+        {
+            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+
+            SettlementByMerchantResponse response =
+                await this.EstateReportingClient.GetSettlementForEstateByMerchant(accessToken,
+                                                                                    estateId,
+                                                                                    startDate.ToString("yyyyMMdd"),
+                                                                                    endDate.ToString("yyyyMMdd"),
+                                                                                    recordCount,
+                                                                                    this.ModelFactory.ConvertFrom(sortDirection),
+                                                                                    this.ModelFactory.ConvertFrom(sortField),
+                                                                                    cancellationToken);
+
+            DataByMerchantModel model = this.ModelFactory.ConvertFrom(response);
+
+            return model;
         }
 
         /// <summary>
-        /// Gets the transactions by operator.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="claimsIdentity">The claims identity.</param>
-        /// <param name="startDate">The start date.</param>
-        /// <param name="endDate">The end date.</param>
-        /// <param name="recordCount">The record count.</param>
-        /// <param name="sortDirection">The sort direction.</param>
-        /// <param name="sortField">The sort field.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<TransactionsByOperatorModel> GetTransactionsByOperator(String accessToken,
+            /// Gets the transactions by operator.
+            /// </summary>
+            /// <param name="accessToken">The access token.</param>
+            /// <param name="claimsIdentity">The claims identity.</param>
+            /// <param name="startDate">The start date.</param>
+            /// <param name="endDate">The end date.</param>
+            /// <param name="recordCount">The record count.</param>
+            /// <param name="sortDirection">The sort direction.</param>
+            /// <param name="sortField">The sort field.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns></returns>
+            public async Task<DataByOperatorModel> GetTransactionsByOperator(String accessToken,
                                                                                  ClaimsIdentity claimsIdentity,
                                                                                  DateTime startDate,
                                                                                  DateTime endDate,
@@ -768,11 +872,11 @@
                                                                                               this.ModelFactory.ConvertFrom(sortField),
                                                                                               cancellationToken);
 
-            TransactionsByOperatorModel model = this.ModelFactory.ConvertFrom(response);
+            DataByOperatorModel model = this.ModelFactory.ConvertFrom(response);
 
             return model;
         }
-
+        
         /// <summary>
         /// Gets the claim value.
         /// </summary>

@@ -3,40 +3,13 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionMerchantModel
+    public class DataMonthModel
     {
-        /// <summary>
-        /// Gets or sets the date.
-        /// </summary>
-        /// <value>
-        /// The date.
-        /// </value>
-        public String MerchantName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the merchant identifier.
-        /// </summary>
-        /// <value>
-        /// The merchant identifier.
-        /// </value>
-        public Guid MerchantId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the number of transactions.
-        /// </summary>
-        /// <value>
-        /// The number of transactions.
-        /// </value>
-        public Int32 NumberOfTransactions { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value of transactions.
-        /// </summary>
-        /// <value>
-        /// The value of transactions.
-        /// </value>
-        public Decimal ValueOfTransactions { get; set; }
+        #region Properties
 
         /// <summary>
         /// Gets or sets the currency code.
@@ -45,5 +18,39 @@
         /// The currency code.
         /// </value>
         public String CurrencyCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the month number.
+        /// </summary>
+        /// <value>
+        /// The month number.
+        /// </value>
+        public Int32 MonthNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of transactions.
+        /// </summary>
+        /// <value>
+        /// The number of transactions.
+        /// </value>
+        public Int32 Count { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value of transactions.
+        /// </summary>
+        /// <value>
+        /// The value of transactions.
+        /// </value>
+        public Decimal Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the year.
+        /// </summary>
+        /// <value>
+        /// The year.
+        /// </value>
+        public Int32 Year { get; set; }
+
+        #endregion
     }
 }

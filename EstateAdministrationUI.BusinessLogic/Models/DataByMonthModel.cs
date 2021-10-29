@@ -7,17 +7,17 @@
     /// 
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class TransactionsByWeekModel
+    public class DataByMonthModel
     {
         #region Properties
 
         /// <summary>
-        /// Gets or sets the transaction week models.
+        /// Gets or sets the transaction month models.
         /// </summary>
         /// <value>
-        /// The transaction week models.
+        /// The transaction month models.
         /// </value>
-        public List<TransactionWeekModel> TransactionWeekModels { get; set; }
+        public List<DataMonthModel> DataMonthModels { get; set; }
 
         #endregion
     }

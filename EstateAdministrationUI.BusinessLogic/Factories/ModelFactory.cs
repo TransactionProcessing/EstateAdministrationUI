@@ -46,6 +46,28 @@
             return model;
         }
 
+        public DataByOperatorModel ConvertFrom(SettlementByOperatorResponse source)
+        {
+            if (source == null || source.SettlementOperatorResponses == null || source.SettlementOperatorResponses.Any() == false)
+            {
+                return null;
+            }
+
+            DataByOperatorModel model = new DataByOperatorModel
+                                        {
+                                            DataOperatorModels = new List<DataOperatorModel>()
+                                        };
+
+            source.SettlementOperatorResponses.ForEach(t => model.DataOperatorModels.Add(new DataOperatorModel
+                                                                                          {
+                                                                                              CurrencyCode = t.CurrencyCode,
+                                                                                              Count = t.NumberOfTransactionsSettled,
+                                                                                              Value = t.ValueOfSettlement,
+                                                                                              OperatorName = t.OperatorName
+                                                                                          }));
+            return model;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
@@ -322,25 +344,47 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public TransactionsByDateModel ConvertFrom(TransactionsByDayResponse source)
+        public DataByDateModel ConvertFrom(TransactionsByDayResponse source)
         {
             if (source == null || source.TransactionDayResponses == null || source.TransactionDayResponses.Any() == false)
             {
                 return null;
             }
 
-            TransactionsByDateModel model = new TransactionsByDateModel
+            DataByDateModel model = new DataByDateModel
                                             {
-                                                TransactionDateModels = new List<TransactionDateModel>()
+                                                DataDateModels = new List<DataDateModel>()
                                             };
 
-            source.TransactionDayResponses.ForEach(t => model.TransactionDateModels.Add(new TransactionDateModel
+            source.TransactionDayResponses.ForEach(t => model.DataDateModels.Add(new DataDateModel
                                                                                         {
-                                                                                            NumberOfTransactions = t.NumberOfTransactions,
-                                                                                            ValueOfTransactions = t.ValueOfTransactions,
+                                                                                            Count = t.NumberOfTransactions,
+                                                                                            Value = t.ValueOfTransactions,
                                                                                             CurrencyCode = t.CurrencyCode,
                                                                                             Date = t.Date
                                                                                         }));
+            return model;
+        }
+
+        public DataByDateModel ConvertFrom(SettlementByDayResponse source)
+        {
+            if (source == null || source.SettlementDayResponses == null || source.SettlementDayResponses.Any() == false)
+            {
+                return null;
+            }
+
+            DataByDateModel model = new DataByDateModel
+                                    {
+                                        DataDateModels = new List<DataDateModel>()
+                                    };
+
+            source.SettlementDayResponses.ForEach(t => model.DataDateModels.Add(new DataDateModel
+                                                                                 {
+                                                                                     Count = t.NumberOfTransactionsSettled,
+                                                                                     Value = t.ValueOfSettlement,
+                                                                                     CurrencyCode = t.CurrencyCode,
+                                                                                     Date = t.Date
+                                                                                 }));
             return model;
         }
 
@@ -349,22 +393,22 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public TransactionsByWeekModel ConvertFrom(TransactionsByWeekResponse source)
+        public DataByWeekModel ConvertFrom(TransactionsByWeekResponse source)
         {
             if (source == null || source.TransactionWeekResponses == null || source.TransactionWeekResponses.Any() == false)
             {
                 return null;
             }
 
-            TransactionsByWeekModel model = new TransactionsByWeekModel
+            DataByWeekModel model = new DataByWeekModel
             {
-                                                TransactionWeekModels = new List<TransactionWeekModel>()
+                                                DataWeekModels = new List<DataWeekModel>()
                                             };
 
-            source.TransactionWeekResponses.ForEach(t => model.TransactionWeekModels.Add(new TransactionWeekModel
+            source.TransactionWeekResponses.ForEach(t => model.DataWeekModels.Add(new DataWeekModel
                                                                                         {
-                                                                                            NumberOfTransactions = t.NumberOfTransactions,
-                                                                                            ValueOfTransactions = t.ValueOfTransactions,
+                                                                                            Count = t.NumberOfTransactions,
+                                                                                            Value = t.ValueOfTransactions,
                                                                                             CurrencyCode = t.CurrencyCode,
                                                                                             WeekNumber = t.WeekNumber,
                                                                                             Year = t.Year
@@ -372,31 +416,77 @@
             return model;
         }
 
+        public DataByWeekModel ConvertFrom(SettlementByWeekResponse source)
+        {
+            if (source == null || source.SettlementWeekResponses == null || source.SettlementWeekResponses.Any() == false)
+            {
+                return null;
+            }
+
+            DataByWeekModel model = new DataByWeekModel
+                                    {
+                                        DataWeekModels = new List<DataWeekModel>()
+                                    };
+
+            source.SettlementWeekResponses.ForEach(t => model.DataWeekModels.Add(new DataWeekModel
+                                                                                  {
+                                                                                      Count = t.NumberOfTransactionsSettled,
+                                                                                      Value = t.ValueOfSettlement,
+                                                                                      CurrencyCode = t.CurrencyCode,
+                                                                                      WeekNumber = t.WeekNumber,
+                                                                                      Year = t.Year
+                                                                                  }));
+            return model;
+        }
+
         /// <summary>
         /// Converts from.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public TransactionsByMonthModel ConvertFrom(TransactionsByMonthResponse source)
+        public DataByMonthModel ConvertFrom(TransactionsByMonthResponse source)
         {
             if (source == null || source.TransactionMonthResponses == null || source.TransactionMonthResponses.Any() == false)
             {
                 return null;
             }
 
-            TransactionsByMonthModel model = new TransactionsByMonthModel
+            DataByMonthModel model = new DataByMonthModel
             {
-                                                TransactionMonthModels = new List<TransactionMonthModel>()
+                                                DataMonthModels = new List<DataMonthModel>()
                                             };
 
-            source.TransactionMonthResponses.ForEach(t => model.TransactionMonthModels.Add(new TransactionMonthModel
+            source.TransactionMonthResponses.ForEach(t => model.DataMonthModels.Add(new DataMonthModel
                                                                                           {
-                                                                                              NumberOfTransactions = t.NumberOfTransactions,
-                                                                                              ValueOfTransactions = t.ValueOfTransactions,
+                                                                                              Count = t.NumberOfTransactions,
+                                                                                              Value = t.ValueOfTransactions,
                                                                                               CurrencyCode = t.CurrencyCode,
                                                                                               MonthNumber = t.MonthNumber,
                                                                                               Year = t.Year
                                                                                           }));
+            return model;
+        }
+
+        public DataByMonthModel ConvertFrom(SettlementByMonthResponse source)
+        {
+            if (source == null || source.SettlementMonthResponses == null || source.SettlementMonthResponses.Any() == false)
+            {
+                return null;
+            }
+
+            DataByMonthModel model = new DataByMonthModel
+                                     {
+                                         DataMonthModels = new List<DataMonthModel>()
+                                     };
+
+            source.SettlementMonthResponses.ForEach(t => model.DataMonthModels.Add(new DataMonthModel
+                                                                                    {
+                                                                                        Count = t.NumberOfTransactionsSettled,
+                                                                                        Value = t.ValueOfSettlement,
+                                                                                        CurrencyCode = t.CurrencyCode,
+                                                                                        MonthNumber = t.MonthNumber,
+                                                                                        Year = t.Year
+                                                                                    }));
             return model;
         }
 
@@ -447,22 +537,45 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public TransactionsByMerchantModel ConvertFrom(TransactionsByMerchantResponse source)
+        public DataByMerchantModel ConvertFrom(TransactionsByMerchantResponse source)
         {
             if (source == null || source.TransactionMerchantResponses == null || source.TransactionMerchantResponses.Any() == false)
             {
                 return null;
             }
 
-            TransactionsByMerchantModel model = new TransactionsByMerchantModel
+            DataByMerchantModel model = new DataByMerchantModel
             {
-                                                    TransactionMerchantModels = new List<TransactionMerchantModel>()
+                                                    DataMerchantModels = new List<DataMerchantModel>()
                                                 };
 
-            source.TransactionMerchantResponses.ForEach(t => model.TransactionMerchantModels.Add(new TransactionMerchantModel
+            source.TransactionMerchantResponses.ForEach(t => model.DataMerchantModels.Add(new DataMerchantModel
                                                                                                  {
-                                                                                                     NumberOfTransactions = t.NumberOfTransactions,
-                                                                                                     ValueOfTransactions = t.ValueOfTransactions,
+                                                                                                     Count = t.NumberOfTransactions,
+                                                                                                     Value = t.ValueOfTransactions,
+                                                                                                     CurrencyCode = t.CurrencyCode,
+                                                                                                     MerchantId = t.MerchantId,
+                                                                                                     MerchantName = t.MerchantName
+                                                                                                 }));
+            return model;
+        }
+
+        public DataByMerchantModel ConvertFrom(SettlementByMerchantResponse source)
+        {
+            if (source == null || source.SettlementMerchantResponses == null || source.SettlementMerchantResponses.Any() == false)
+            {
+                return null;
+            }
+
+            DataByMerchantModel model = new DataByMerchantModel
+            {
+                                                    DataMerchantModels = new List<DataMerchantModel>()
+                                                };
+
+            source.SettlementMerchantResponses.ForEach(t => model.DataMerchantModels.Add(new DataMerchantModel
+            {
+                                                                                                     Count = t.NumberOfTransactionsSettled,
+                                                                                                     Value = t.ValueOfSettlement,
                                                                                                      CurrencyCode = t.CurrencyCode,
                                                                                                      MerchantId = t.MerchantId,
                                                                                                      MerchantName = t.MerchantName
@@ -475,23 +588,23 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public TransactionsByOperatorModel ConvertFrom(TransactionsByOperatorResponse source)
+        public DataByOperatorModel ConvertFrom(TransactionsByOperatorResponse source)
         {
             if (source == null || source.TransactionOperatorResponses == null || source.TransactionOperatorResponses.Any() == false)
             {
                 return null;
             }
 
-            TransactionsByOperatorModel model = new TransactionsByOperatorModel
+            DataByOperatorModel model = new DataByOperatorModel
                                                 {
-                                                    TransactionOperatorModels = new List<TransactionOperatorModel>()
+                                                    DataOperatorModels = new List<DataOperatorModel>()
                                                 };
 
-            source.TransactionOperatorResponses.ForEach(t=> model.TransactionOperatorModels.Add(new TransactionOperatorModel
+            source.TransactionOperatorResponses.ForEach(t=> model.DataOperatorModels.Add(new DataOperatorModel
                                                                                                 {
                                                                                                     CurrencyCode = t.CurrencyCode,
-                                                                                                    NumberOfTransactions = t.NumberOfTransactions,
-                                                                                                    ValueOfTransactions = t.ValueOfTransactions,
+                                                                                                    Count = t.NumberOfTransactions,
+                                                                                                    Value = t.ValueOfTransactions,
                                                                                                     OperatorName = t.OperatorName
                                                                                                 }));
             return model;
