@@ -16,7 +16,8 @@
         public static async Task FillIn(this IWebDriver webDriver,
                                         String elementName,
                                         String value,
-                                        Boolean clearExistingText = false)
+                                        Boolean clearExistingText = false,
+                                        TimeSpan? timeout = null)
         {
             await Retry.For(async () =>
                             {
@@ -29,11 +30,12 @@
                                     webElement.Clear();
                                 }
                                 webElement.SendKeys(value);
-                            });
+                            }, timeout);
         }
 
         public static async Task<IWebElement> FindButtonById(this IWebDriver webDriver,
-                                                             String buttonId)
+                                                             String buttonId,
+                                                             TimeSpan? timeout = null)
         {
             IWebElement element = null;
             await Retry.For(async () =>
@@ -41,12 +43,13 @@
                                 element = webDriver.FindElement(By.Id(buttonId));
 
                                 element.ShouldNotBeNull();
-                            });
+                            }, timeout);
             return element;
         }
 
         public static async Task<IWebElement> FindButtonByText(this IWebDriver webDriver,
-                                                               String buttonText)
+                                                               String buttonText,
+                                                               TimeSpan? timeout = null)
         {
             IWebElement element = null;
             await Retry.For(async () =>
@@ -58,7 +61,7 @@
                                 e.ShouldHaveSingleItem();
 
                                 element = e.Single();
-                            });
+                            },timeout);
             return element;
         }
 
@@ -86,7 +89,8 @@
             webElement.Click();
         }
 
-        public static async Task SelectDropDownItemByText(this IWebDriver webDriver, String dropdownId, String textToSelect)
+        public static async Task SelectDropDownItemByText(this IWebDriver webDriver, String dropdownId, String textToSelect,
+                                                          TimeSpan? timeout = null)
         {
             IWebElement element = null;
             await Retry.For(async () =>
@@ -97,10 +101,11 @@
 
                                 SelectElement dropdown = new SelectElement(element);
                                 dropdown.SelectByText(textToSelect);
-                            });
+                            }, timeout);
         }
 
-        public static async Task<String> GetDropDownItemText(this IWebDriver webDriver, String dropdownId)
+        public static async Task<String> GetDropDownItemText(this IWebDriver webDriver, String dropdownId,
+                                                             TimeSpan? timeout = null)
         {
             String selectedText = null;
             await Retry.For(async () =>
@@ -111,7 +116,7 @@
 
                                 SelectElement dropdown = new SelectElement(element);
                                 selectedText = dropdown.SelectedOption.Text;
-                            });
+                            },timeout);
 
             return selectedText;
         }

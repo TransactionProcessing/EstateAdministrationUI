@@ -1078,7 +1078,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Then(@"I am presented with a login screen")]
         public async Task ThenIAmPresentedWithALoginScreen()
         {
-            IWebElement loginButton = await this.WebDriver.FindButtonByText("Login");
+            IWebElement loginButton = await this.WebDriver.FindButtonByText("Login", TimeSpan.FromMinutes(2));
             loginButton.ShouldNotBeNull();
         }
 
