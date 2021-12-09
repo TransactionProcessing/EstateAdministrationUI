@@ -139,13 +139,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         public Int32 EstateManagementUIPort;
-
-        protected String SecurityServiceContainerName;
-
-        protected String EstateManagementContainerName;
+        
         protected String EstateManagementUiContainerName;
-
-        protected String EventStoreContainerName;
 
         public static IHostService GetDockerHost()
         {
@@ -218,11 +213,21 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IContainerService eventStoreContainer = this.SetupEventStoreContainer(eventStoreImageName, testNetwork);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-            
+
+            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
+            String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
+            String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
+
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"EstateRoleName=Estate{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"MerchantRoleName=Merchant{this.TestId.ToString("N")}");
+            estateManagementVariables.AddRange(new List<String>{
+                insecureEventStoreEnvironmentVariable,
+                persistentSubscriptionPollingInSeconds,
+                internalSubscriptionServiceCacheDuration
+            });
+            
 
             IContainerService estateManagementContainer = this.SetupEstateManagementContainer(        estateMangementImageName,
                                                                                                       new List<INetworkService>
@@ -240,7 +245,13 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                                                         testNetwork,
                                                                                                         Setup.DatabaseServerNetwork
                                                                                                     },
-                                                                                                    true);
+                                                                                                    true,
+                                                                                            additionalEnvironmentVariables:new List<String>
+                                                                                                {
+                                                                                                    insecureEventStoreEnvironmentVariable,
+                                                                                                    persistentSubscriptionPollingInSeconds,
+                                                                                                    internalSubscriptionServiceCacheDuration
+                                                                                                });
 
             IContainerService estateManagementUiContainer = SetupEstateManagementUIContainer(this.EstateManagementUiContainerName,
                                                                                              this.Logger,
