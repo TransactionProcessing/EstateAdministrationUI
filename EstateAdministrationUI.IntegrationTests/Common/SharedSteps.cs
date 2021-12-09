@@ -83,6 +83,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName).ConfigureAwait(false); },
+                                retryFor:TimeSpan.FromMinutes(2),
+                                retryInterval:TimeSpan.FromSeconds(30));
+            }
+
+            foreach (TableRow tableRow in table.Rows)
+            {
+                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
 
                 CreateEstateRequest createEstateRequest = new CreateEstateRequest
                                                           {

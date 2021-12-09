@@ -61,11 +61,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// The test identifier
         /// </summary>
         public Guid TestId;
-
-        protected String EstateReportingContainerName;
-
-        protected String SubscriptionServiceContainerName;
-
+        
         /// <summary>
         /// The containers
         /// </summary>
@@ -90,11 +86,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// The test networks
         /// </summary>
         protected List<INetworkService> TestNetworks;
-
-        /// <summary>
-        /// The logger
-        /// </summary>
-        private readonly NlogLogger Logger;
 
         #endregion
 
@@ -227,12 +218,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IContainerService eventStoreContainer = this.SetupEventStoreContainer(eventStoreImageName, testNetwork);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-
-            await Retry.For(async () =>
-                            {
-                                await this.PopulateSubscriptionServiceConfiguration().ConfigureAwait(false);
-                            }, retryFor: TimeSpan.FromMinutes(2), retryInterval: TimeSpan.FromSeconds(30));
-
+            
             List<String> estateManagementVariables = new List<String>();
             estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
             estateManagementVariables.Add($"EstateRoleName=Estate{this.TestId.ToString("N")}");
@@ -322,6 +308,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             settings.ConnectionName = "Specflow";
             settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
                                             {
+                                                Insecure = true,
                                                 Address = new Uri(connectionString),
                                             };
 
@@ -366,17 +353,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             Logger.LogInformation("Loaded projections");
         }
 
-        protected async Task PopulateSubscriptionServiceConfiguration()
+        public async Task PopulateSubscriptionServiceConfiguration(String estateName)
         {
             EventStorePersistentSubscriptionsClient client = new EventStorePersistentSubscriptionsClient(ConfigureEventStoreSettings(this.EventStoreHttpPort));
 
-            PersistentSubscriptionSettings settings = new PersistentSubscriptionSettings(resolveLinkTos: true);
-            await client.CreateAsync("$ce-EstateAggregate", "Reporting", settings);
-            await client.CreateAsync("$ce-MerchantAggregate", "Reporting", settings);
-            await client.CreateAsync("$ce-ContractAggregate", "Reporting", settings);
-            await client.CreateAsync("$ce-TransactionAggregate", "Reporting", settings);
+            PersistentSubscriptionSettings settings = new PersistentSubscriptionSettings(resolveLinkTos: true, StreamPosition.Start);
+            await client.CreateAsync(estateName.Replace(" ", ""), "Reporting", settings);
+            await client.CreateAsync($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management", settings);
         }
-        
+
         private IContainerService SetupEstateManagementUIContainer(string containerName, ILogger logger,
                                                          string imageName,
                                                          List<INetworkService> networkServices,
