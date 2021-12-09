@@ -57,7 +57,11 @@
                 EdgeOptions options = new EdgeOptions();
                 options.UseChromium = true;
                 options.AcceptInsecureCertificates = true;
-                this.WebDriver = new EdgeDriver(options);
+                //this.WebDriver = new EdgeDriver(options);
+                await Retry.For(async () =>
+                                {
+                                    this.WebDriver = new EdgeDriver(options);
+                                }, TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(60));
                 this.WebDriver.Manage().Window.Maximize();
             }
 
