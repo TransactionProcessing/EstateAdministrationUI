@@ -1064,8 +1064,7 @@
                                                     {
                                                         DepositDateTime = source.DepositDateTime,
                                                         Reference = source.Reference,
-                                                        Amount = source.Amount,
-                                                        Source = MerchantDepositSource.Manual // Hard code this currently
+                                                        Amount = source.Amount
                                                     };
 
             return apiRequest;

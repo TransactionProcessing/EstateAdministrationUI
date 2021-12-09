@@ -76,7 +76,6 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             request.Reference.ShouldBe(model.Reference);
             request.DepositDateTime.ShouldBe(model.DepositDateTime);
-            request.Source.ShouldBe(MerchantDepositSource.Manual);
             request.Amount.ShouldBe(model.Amount);
         }
 
