@@ -38,6 +38,9 @@
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </Compile>
+    <Content Include="tests\helpers\helpers.Tests.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="tests\testData.js">
       <SubType>Code</SubType>
     </Content>
@@ -46,6 +49,7 @@
     <Folder Include="src\" />
     <Folder Include="tests\factories\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\helpers\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>

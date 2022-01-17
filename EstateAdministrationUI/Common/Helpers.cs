@@ -93,5 +93,20 @@
 
             return result;
         }
+
+        public static DataTablesResult<T> GetErrorDataForDataTable<T>(String errorMessage)
+        {
+            return new DataTablesResult<T>
+                     {
+                         Data = null,
+                         Draw = 0,
+                         RecordsTotal = 0,
+                         RecordsFiltered = 0,
+                         Error = errorMessage
+                     };
+        }
+
+        public static String BuildUserErrorMessage(String errorMessage) => $"|{errorMessage}, please retry, if this issue persists raise a support request";
+
     }
 }

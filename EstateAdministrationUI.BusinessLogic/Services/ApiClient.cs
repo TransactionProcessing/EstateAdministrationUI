@@ -212,6 +212,10 @@
         {
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
+            try
+            {
+
+
             CreateContractRequest apiRequest = this.ModelFactory.ConvertFrom(createContractModel);
 
             CreateContractResponse apiResponse = await this.EstateClient.CreateContract(accessToken, estateId, apiRequest, cancellationToken);
@@ -219,6 +223,12 @@
             CreateContractResponseModel createContractResponseModel = this.ModelFactory.ConvertFrom(apiResponse);
 
             return createContractResponseModel;
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -324,11 +334,19 @@
                                                             ClaimsIdentity claimsIdentity,
                                                             CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            List<ContractResponse> contracts = await this.EstateClient.GetContracts(accessToken, estateId, cancellationToken);
+                List<ContractResponse> contracts = await this.EstateClient.GetContracts(accessToken, estateId, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(contracts);
+                return this.ModelFactory.ConvertFrom(contracts);
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex);
+                throw;
+            }
         }
 
         /// <summary>
