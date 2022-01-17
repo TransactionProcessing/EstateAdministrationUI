@@ -15,7 +15,6 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
     using Models;
     using Services;
     using Shared.Logger;
@@ -46,7 +45,7 @@
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileProcessingController"/> class.
+        /// Initializes a new instance of the <see cref="FileProcessingController" /> class.
         /// </summary>
         /// <param name="apiClient">The API client.</param>
         /// <param name="viewModelFactory">The view model factory.</param>
@@ -62,31 +61,62 @@
         #region Methods
 
         /// <summary>
-        /// Gets the file import log list.
+        /// Gets the file details.
         /// </summary>
+        /// <param name="fileId">The file identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetFileImportLogList(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetFileDetails([FromQuery] Guid fileId,
+                                                        CancellationToken cancellationToken)
         {
-            return this.View("FileImportLogList");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetFileImportLog([FromQuery] Guid fileImportLogId, CancellationToken cancellationToken)
-        {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-            FileImportLogModel fileImportLogModel = await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
-
-            if (fileImportLogModel == null)
+            try
             {
-                return this.RedirectToAction("GetFileImportLogList", "FileProcessing").WithWarning("Warning:", $"Failed to get File Import Log Record, please try again.");
-            }
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            return this.View("FileImportLog", this.ViewModelFactory.ConvertFrom(fileImportLogModel));
+                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
+
+                return this.View("FileDetails", this.ViewModelFactory.ConvertFrom(fileDetailsModel));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.View("FileDetails").WithWarning("File Details", Helpers.BuildUserErrorMessage("Failed to get File Details Record"));
+            }
         }
 
+        /// <summary>
+        /// Gets the file import log.
+        /// </summary>
+        /// <param name="fileImportLogId">The file import log identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetFileImportLog([FromQuery] Guid fileImportLogId,
+                                                          CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                FileImportLogModel fileImportLogModel =
+                    await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
+
+                return this.View("FileImportLog", this.ViewModelFactory.ConvertFrom(fileImportLogModel));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.View("FileImportLog").WithWarning("File Import Log", Helpers.BuildUserErrorMessage("Failed to get File Import Log Record"));
+            }
+        }
+
+        /// <summary>
+        /// Gets the file import log file list as json.
+        /// </summary>
+        /// <param name="fileImportLogId">The file import log identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> GetFileImportLogFileListAsJson([FromQuery] Guid fileImportLogId,
                                                                         CancellationToken cancellationToken)
@@ -105,8 +135,19 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting file import log"));
             }
+        }
+
+        /// <summary>
+        /// Gets the file import log list.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetFileImportLogList(CancellationToken cancellationToken)
+        {
+            return this.View("FileImportLogList");
         }
 
         /// <summary>
@@ -148,15 +189,65 @@
 
                 List<FileImportLogModel> importLogFileModelList =
                     await this.ApiClient.GetFileImportLogs(accessToken, this.User.Identity as ClaimsIdentity, merchantId, startDateTime, endDateTime, cancellationToken);
-                var importLogFileViewModelList = this.ViewModelFactory.ConvertFrom(importLogFileModelList);
+                List<FileImportLogViewModel> importLogFileViewModelList = this.ViewModelFactory.ConvertFrom(importLogFileModelList);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, importLogFileViewModelList));
             }
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting file import log list"));
             }
+        }
+
+        /// <summary>
+        /// Gets the file line list as json.
+        /// </summary>
+        /// <param name="fileId">The file identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetFileLineListAsJson([FromQuery] Guid fileId,
+                                                               CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
+
+                FileDetailsViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileDetailsModel);
+
+                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.FileLines));
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Failed to get File Details Record"));
+            }
+        }
+
+        /// <summary>
+        /// Gets the file profile list as json.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetFileProfileListAsJson(CancellationToken cancellationToken)
+        {
+            List<FileProfileViewModel> fileProfileViewModels = new List<FileProfileViewModel>();
+            fileProfileViewModels.Add(new FileProfileViewModel
+                                      {
+                                          FileProfileId = Guid.Parse("B2A59ABF-293D-4A6B-B81B-7007503C3476"),
+                                          FileProfileName = "Safaricom Topup"
+                                      });
+            fileProfileViewModels.Add(new FileProfileViewModel
+                                      {
+                                          FileProfileId = Guid.Parse("8806EDBC-3ED6-406B-9E5F-A9078356BE99"),
+                                          FileProfileName = "Voucher Issue"
+                                      });
+
+            return this.Json(fileProfileViewModels);
         }
 
         /// <summary>
@@ -180,83 +271,15 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantViewModel>()));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant list"));
             }
         }
 
         /// <summary>
-        /// Gets the file details.
+        /// Posts the upload file.
         /// </summary>
-        /// <param name="fileId">The file identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetFileDetails([FromQuery] Guid fileId, CancellationToken cancellationToken)
-        {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-            FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
-
-            if (fileDetailsModel == null)
-            {
-                return this.RedirectToAction("GetFileImportLog", "FileProcessing").WithWarning("Warning:", $"Failed to get File Details Record, please try again.");
-            }
-
-            return this.View("FileDetails", this.ViewModelFactory.ConvertFrom(fileDetailsModel));
-        }
-
-        /// <summary>
-        /// Gets the file line list as json.
-        /// </summary>
-        /// <param name="fileId">The file identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> GetFileLineListAsJson([FromQuery] Guid fileId,
-                                                               CancellationToken cancellationToken)
-        {
-            try
-            {
-                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-                FileDetailsModel fileDetailsModel =
-                    await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
-
-                FileDetailsViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileDetailsModel);
-
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.FileLines));
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<FileImportLogFileViewModel>()));
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> UploadFile(CancellationToken cancellationToken)
-        {
-            return this.View("UploadFile");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetFileProfileListAsJson(CancellationToken cancellationToken)
-        {
-            List<FileProfileViewModel> fileProfileViewModels = new List<FileProfileViewModel>();
-            fileProfileViewModels.Add(new FileProfileViewModel
-                                      {
-                                          FileProfileId = Guid.Parse("B2A59ABF-293D-4A6B-B81B-7007503C3476"),
-                                          FileProfileName = "Safaricom Topup"
-                                      });
-            fileProfileViewModels.Add(new FileProfileViewModel
-                                      {
-                                          FileProfileId = Guid.Parse("8806EDBC-3ED6-406B-9E5F-A9078356BE99"),
-                                          FileProfileName = "Voucher Issue"
-                                      });
-
-            return this.Json(fileProfileViewModels);
-        }
-
         [HttpPost]
         public async Task<IActionResult> PostUploadFile(CancellationToken cancellationToken)
         {
@@ -266,7 +289,7 @@
             {
                 return this.BadRequest(new
                                        {
-                                       message = "Missing merchantId form parameter"
+                                           message = "Missing merchantId form parameter"
                                        });
             }
 
@@ -275,7 +298,7 @@
                 return this.BadRequest(new
                                        {
                                            message = "Missing fileProfileId form parameter"
-                });
+                                       });
             }
 
             IFormFileCollection files = this.HttpContext.Request.Form.Files;
@@ -288,13 +311,36 @@
                 {
                     await file.CopyToAsync(ms, cancellationToken);
                     Byte[] fileBytes = ms.ToArray();
-                    Guid fileId = await this.ApiClient.UploadFile(accessToken, this.User.Identity as ClaimsIdentity, merchantId, fileProfileId, fileBytes, file.FileName, cancellationToken);
+                    Guid fileId = await this.ApiClient.UploadFile(accessToken,
+                                                                  this.User.Identity as ClaimsIdentity,
+                                                                  merchantId,
+                                                                  fileProfileId,
+                                                                  fileBytes,
+                                                                  file.FileName,
+                                                                  cancellationToken);
 
-                    return Ok(new { message = "File Processed Successfully" });
+                    return this.Ok(new
+                                   {
+                                       message = "File Processed Successfully"
+                                   });
                 }
             }
 
-            return this.BadRequest(new { message = "File is empty" });
+            return this.BadRequest(new
+                                   {
+                                       message = "File is empty"
+                                   });
+        }
+
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> UploadFile(CancellationToken cancellationToken)
+        {
+            return this.View("UploadFile");
         }
 
         #endregion

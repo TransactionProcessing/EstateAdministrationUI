@@ -360,11 +360,19 @@
                                                  ClaimsIdentity claimsIdentity,
                                                  CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            EstateResponse estate = await this.EstateClient.GetEstate(accessToken, estateId, cancellationToken);
+                EstateResponse estate = await this.EstateClient.GetEstate(accessToken, estateId, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(estate);
+                return this.ModelFactory.ConvertFrom(estate);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -380,11 +388,19 @@
                                                                Guid fileImportLogId,
                                                                CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            FileImportLog fileImportLog = await this.FileProcessorClient.GetFileImportLog(accessToken, fileImportLogId, estateId, null, cancellationToken);
+                FileImportLog fileImportLog = await this.FileProcessorClient.GetFileImportLog(accessToken, fileImportLogId, estateId, null, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(fileImportLog);
+                return this.ModelFactory.ConvertFrom(fileImportLog);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -493,11 +509,19 @@
                                                             ClaimsIdentity claimsIdentity,
                                                             CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            List<MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
+                List<MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
 
-            return this.ModelFactory.ConvertFrom(merchants);
+                return this.ModelFactory.ConvertFrom(merchants);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -539,6 +563,9 @@
                                                           Guid fileId,
                                                           CancellationToken cancellationToken)
         {
+            try
+            {
+                
             Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
             FileDetails fileDetails = await this.FileProcessorClient.GetFile(accessToken, estateId, fileId, cancellationToken);
@@ -546,6 +573,12 @@
             FileDetailsModel model = this.ModelFactory.ConvertFrom(fileDetails);
 
             return model;
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -565,13 +598,22 @@
                                                                       DateTime endDate,
                                                                       CancellationToken cancellationToken)
         {
-            Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
+            try
+            {
+                Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, EstateIdClaimType);
 
-            FileImportLogList fileImportLogs = await this.FileProcessorClient.GetFileImportLogs(accessToken, estateId, startDate, endDate, merchantId, cancellationToken);
+                FileImportLogList fileImportLogs =
+                    await this.FileProcessorClient.GetFileImportLogs(accessToken, estateId, startDate, endDate, merchantId, cancellationToken);
 
-            List<FileImportLogModel> fileImportLogModels = this.ModelFactory.ConvertFrom(fileImportLogs);
+                List<FileImportLogModel> fileImportLogModels = this.ModelFactory.ConvertFrom(fileImportLogs);
 
-            return fileImportLogModels;
+                return fileImportLogModels;
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
