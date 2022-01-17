@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
+    using Common;
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -58,11 +59,19 @@
         [HttpGet]
         public async Task<IActionResult> GetEstate(CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
 
-            return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
+                return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
+            }
+            catch(Exception ex)
+            {
+                // Something went wrong creating the contract
+                return this.View("EstateDetails").WithWarning("Estate Details", Helpers.BuildUserErrorMessage("Error getting estate information"));
+            }
         }
 
         /// <summary>

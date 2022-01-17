@@ -50,6 +50,15 @@
         [JsonProperty("recordsTotal")]
         public Int32 RecordsTotal { get; set; }
 
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
+        /// <value>
+        /// The error.
+        /// </value>
+        [JsonProperty("error")]
+        public String Error { get; set; }
+
         #endregion
     }
 }

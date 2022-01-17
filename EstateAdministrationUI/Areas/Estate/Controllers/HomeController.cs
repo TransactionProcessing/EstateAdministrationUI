@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Services;
+    using Shared.Logger;
 
     /// <summary>
     /// 
@@ -74,14 +75,7 @@
         [Route("GetTodaysTransactionsAsJson")]
         public async Task<IActionResult> GetTodaysTransactionsAsJson(CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-            TransactionForPeriodModel transactionModel =
-                await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.Today, cancellationToken);
-
-            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
-
-            return this.Json(viewModel);
+            return await GetTransactionsForPeriod(DatePeriod.Today, cancellationToken);
         }
 
         /// <summary>
@@ -93,13 +87,7 @@
         [Route("GetThisWeeksTransactionsAsJson")]
         public async Task<IActionResult> GetThisWeeksTransactionsAsJson(CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-            TransactionForPeriodModel transactionModel = await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.ThisWeek, cancellationToken);
-
-            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
-
-            return this.Json(viewModel);
+            return await GetTransactionsForPeriod(DatePeriod.ThisWeek, cancellationToken);
         }
 
         /// <summary>
@@ -111,13 +99,21 @@
         [Route("GetNumberOfMerchantsAsJson")]
         public async Task<IActionResult> GetNumberOfMerchantsAsJson(CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            List<MerchantModel> merchants = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                List<MerchantModel> merchants = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
 
-            MerchantCountViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchants.ToArray());
+                MerchantCountViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchants.ToArray());
 
-            return this.Json(viewModel);
+                return this.Json(viewModel);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -129,13 +125,27 @@
         [Route("GetThisMonthsTransactionsAsJson")]
         public async Task<IActionResult> GetThisMonthsTransactionsAsJson(CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            return await GetTransactionsForPeriod(DatePeriod.ThisMonth, cancellationToken);
+        }
 
-            TransactionForPeriodModel transactionModel = await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, DatePeriod.ThisMonth, cancellationToken);
+        private async Task<IActionResult> GetTransactionsForPeriod(DatePeriod period, CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
+                TransactionForPeriodModel transactionModel =
+                    await this.ApiClient.GetTransactionsForDatePeriod(accessToken, this.User.Identity as ClaimsIdentity, period, cancellationToken);
 
-            return this.Json(viewModel);
+                TransactionPeriodViewModel viewModel = this.ViewModelFactory.ConvertFrom(transactionModel);
+
+                return this.Json(viewModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -157,20 +167,28 @@
                                                                   [FromQuery] DateTime endDate,
                                                                   CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            DataByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
-                                                                                       this.User.Identity as ClaimsIdentity,
-                                                                                       startDate,
-                                                                                       endDate,
-                                                                                       merchantCount,
-                                                                                       sortDirection,
-                                                                                       sortField,
-                                                                                       cancellationToken);
+                DataByMerchantModel model = await this.ApiClient.GetTransactionsByMerchant(accessToken,
+                                                                                           this.User.Identity as ClaimsIdentity,
+                                                                                           startDate,
+                                                                                           endDate,
+                                                                                           merchantCount,
+                                                                                           sortDirection,
+                                                                                           sortField,
+                                                                                           cancellationToken);
 
-            DataByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
-            
-            return this.Json(viewModel);
+                DataByMerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+
+                return this.Json(viewModel);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -192,19 +210,27 @@
                                                                   [FromQuery] DateTime endDate,
                                                                   CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            DataByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
-                                                                                       this.User.Identity as ClaimsIdentity,
-                                                                                       startDate,
-                                                                                       endDate,
-                                                                                       operatorCount,
-                                                                                       sortDirection,
-                                                                                       sortField,
-                                                                                       cancellationToken);
+                DataByOperatorModel model = await this.ApiClient.GetTransactionsByOperator(accessToken,
+                                                                                           this.User.Identity as ClaimsIdentity,
+                                                                                           startDate,
+                                                                                           endDate,
+                                                                                           operatorCount,
+                                                                                           sortDirection,
+                                                                                           sortField,
+                                                                                           cancellationToken);
 
-            DataByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
-            return this.Json(viewModel);
+                DataByOperatorViewModel viewModel = this.ViewModelFactory.ConvertFrom(model);
+                return this.Json(viewModel);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
         }
 
         #endregion

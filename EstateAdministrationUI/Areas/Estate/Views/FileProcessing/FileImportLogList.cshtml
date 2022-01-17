@@ -52,7 +52,8 @@
 
             $("#fileImportLogList")
                 .on('error.dt', function (e, settings, techNote, message) {
-                    console.log('An error has been occurred getting a list of file import logs. Error reported by DataTables: ', message);
+                    var html = getAlertHtml('danger', 'File Import Logs', message);
+                    $("#alert").html(html);
                 })
                 .DataTable({
                     "processing": true, // for show progress bar

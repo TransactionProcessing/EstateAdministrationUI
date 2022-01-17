@@ -138,7 +138,6 @@
     }
 
     function drawTransactionsByOperatorChart() {
-        console.log('In drawTransactionsByOperatorChart');
         var operatorCount = 5;
         var direction = 1; // Top x
         var sortBy = '0'; // Sales Value
@@ -169,6 +168,9 @@
         }).fail(function(){
             $("#transactionsByOperatorchart_div").empty();
             $("#transactionsByOperatorchart_div").append("Sorry, not found any data for the selected date range.");
+
+            var html = getAlertHtml('danger', 'Transactions By Operator', "Error getting transactions by operator");
+            $("#alert").html(html);
         });
     }
 
@@ -203,6 +205,9 @@
         }).fail(function () {
             $("#transactionsByMerchantchart_div").empty();
             $("#transactionsByMerchantchart_div").append("Sorry, not found any data for the selected date range.");
+        
+            var html = getAlertHtml('danger', 'Transactions By Merchant', "Error getting transactions by merchant");
+            $("#alert").html(html);
         });
     }
 
@@ -257,6 +262,10 @@
     }).done(function (results) {
         var numberOfMerchantsLabel = document.getElementById("numberOfMerchantsLabel");
         numberOfMerchantsLabel.innerHTML = numberOfMerchantsLabel.innerHTML + " " + results.numberOfMerchants;
+    }).fail(function(jqXHR, textStatus)
+    {
+        var html = getAlertHtml('danger', 'Number of merchants', "Error getting number of merchants");
+        $("#alert").html(html);
     });
 
     $.ajax({
@@ -266,6 +275,10 @@
     }).done(function (results) {
         var todaysTransactionsLabel = document.getElementById("todaysTransactionsLabel");
         todaysTransactionsLabel.innerHTML = todaysTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    }).fail(function(jqXHR, textStatus)
+    {
+        var html = getAlertHtml('danger', 'Todays Transactions', "Error getting number transactions for today");
+        $("#alert").html(html);
     });
 
     $.ajax({
@@ -275,6 +288,10 @@
     }).done(function (results) {
         var thisWeeksTransactionsLabel = document.getElementById("thisWeeksTransactionsLabel");
         thisWeeksTransactionsLabel.innerHTML = thisWeeksTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    }).fail(function(jqXHR, textStatus)
+    {
+        var html = getAlertHtml('danger', 'This Weeks Transactions', "Error getting number transactions for this week");
+        $("#alert").html(html);
     });
 
     $.ajax({
@@ -284,5 +301,9 @@
     }).done(function (results) {
         var thisMonthsTransactionsLabel = document.getElementById("thisMonthsTransactionsLabel");
         thisMonthsTransactionsLabel.innerHTML = thisMonthsTransactionsLabel.innerHTML + " " + results.numberOfTransactions;
+    }).fail(function(jqXHR, textStatus)
+    {
+        var html = getAlertHtml('danger', 'This Months Transactions', "Error getting number transactions for this month");
+        $("#alert").html(html);
     });
 </script>
