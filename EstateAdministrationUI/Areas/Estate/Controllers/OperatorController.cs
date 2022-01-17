@@ -15,7 +15,6 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Newtonsoft.Json;
     using Services;
     using Shared.Logger;
 
@@ -54,6 +53,8 @@
 
         #endregion
 
+        #region Methods
+
         /// <summary>
         /// Creates the merchant.
         /// </summary>
@@ -74,21 +75,29 @@
             // Validate the model
             if (this.ValidateModel(viewModel))
             {
-                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                try
+                {
+                    String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                CreateOperatorModel createOperatorModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    CreateOperatorModel createOperatorModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
-                // All good with model, call the client to create the operator
-                CreateOperatorResponseModel createOperatorResponse =
-                    await this.ApiClient.CreateOperator(accessToken, this.User.Identity as ClaimsIdentity, createOperatorModel, cancellationToken);
+                    // All good with model, call the client to create the operator
+                    CreateOperatorResponseModel createOperatorResponse =
+                        await this.ApiClient.CreateOperator(accessToken, this.User.Identity as ClaimsIdentity, createOperatorModel, cancellationToken);
 
-                // Operator Created, redirect to the Operator List screen
-                return this.RedirectToAction("GetOperatorList",
-                                             "Operator",
-                                             new
-                                             {
-                                                 Area = "Estate"
-                                             });
+                    // Operator Created, redirect to the Operator List screen
+                    return this.RedirectToAction("GetOperatorList",
+                                                 "Operator",
+                                                 new
+                                                 {
+                                                     Area = "Estate"
+                                                 }).WithSuccess("Operator Created", $"Operator {createOperatorModel.OperatorName} created successfully");
+                }
+                catch(Exception e)
+                {
+                    return this.RedirectToAction("CreateOperator", "Operator")
+                               .WithWarning("Operator Not Created", Helpers.BuildUserErrorMessage("Operator not created successfully"));
+                }
             }
 
             // If we got this far, something failed, redisplay form
@@ -127,7 +136,7 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<OperatorListViewModel>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting operator list"));
             }
         }
 
@@ -140,5 +149,7 @@
         {
             return this.ModelState.IsValid;
         }
+
+        #endregion
     }
 }

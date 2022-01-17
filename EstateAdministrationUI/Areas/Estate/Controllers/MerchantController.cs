@@ -124,22 +124,22 @@
 
             try
             {
-                
-            await this.ApiClient.AssignOperatorToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
 
-            return this.RedirectToAction("GetMerchant",
-                                         new
-                                         {
-                                             merchantId = viewModel.MerchantId
-                                         }).WithSuccess("Operator Assigned Successfully", $"Operator Assigned successfully for Merchant");
-        }
-        catch (Exception e)
+                await this.ApiClient.AssignOperatorToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
+
+                return this.RedirectToAction("GetMerchant",
+                                             new
+                                             {
+                                                 merchantId = viewModel.MerchantId
+                                             }).WithSuccess("Operator Assigned Successfully", $"Operator Assigned successfully for Merchant");
+            }
+            catch(Exception e)
             {
                 return this.RedirectToAction("GetMerchant",
                                              new
                                              {
                                                  merchantId = viewModel.MerchantId
-                                             }).WithWarning("Operator Assign Failed", $"Failed to assign Operator to Merchant");
+                                             }).WithWarning("Operator Assign Failed", Helpers.BuildUserErrorMessage("Failed to assign Operator to Merchant"));
             }
         }
 
@@ -165,20 +165,21 @@
 
             try
             {
+                await this.ApiClient.AddDeviceToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
 
-            
-            await this.ApiClient.AddDeviceToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
-
-            return this.RedirectToAction("GetMerchant", new {
-                                                                merchantId = viewModel.MerchantId}).WithSuccess("Device Added Successfully", $"Device added successfully for Merchant");
+                return this.RedirectToAction("GetMerchant",
+                                             new
+                                             {
+                                                 merchantId = viewModel.MerchantId
+                                             }).WithSuccess("Device Added Successfully", $"Device added successfully for Merchant");
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return this.RedirectToAction("GetMerchant",
                                              new
                                              {
                                                  merchantId = viewModel.MerchantId
-                                             }).WithWarning("Device Add Failed", $"Failed to add device to Merchant");
+                                             }).WithWarning("Device Add Failed", Helpers.BuildUserErrorMessage("Failed to add device to Merchant"));
             }
         }
 
@@ -195,24 +196,32 @@
             // Validate the model
             if (this.ValidateModel(viewModel))
             {
-                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                try
+                {
+                    String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
-                // All good with model, call the client to create the merchant
-                CreateMerchantResponseModel createMerchantResponse =
-                    await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
+                    // All good with model, call the client to create the merchant
+                    CreateMerchantResponseModel createMerchantResponse =
+                        await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
 
-                // TODO: Investigate some kind of spinner...
-                await Task.Delay(TimeSpan.FromSeconds(30));
+                    // TODO: Investigate some kind of spinner...
+                    await Task.Delay(TimeSpan.FromSeconds(30));
 
-                // Merchant Created, redirect to the Merchant List screen
-                return this.RedirectToAction("GetMerchant",
-                                             "Merchant",
-                                             new
-                                             {
-                                                 merchantId = createMerchantResponse.MerchantId
-                                             });
+                    // Merchant Created, redirect to the Merchant List screen
+                    return this.RedirectToAction("GetMerchant",
+                                                 "Merchant",
+                                                 new
+                                                 {
+                                                     merchantId = createMerchantResponse.MerchantId
+                                                 });
+                }
+                catch(Exception e)
+                {
+                    // Something went wrong creating the contract
+                    return this.View("CreateMerchant").WithWarning("New Merchant", Helpers.BuildUserErrorMessage("Error creating the merchant"));
+                }
             }
 
             // If we got this far, something failed, redisplay form
@@ -229,16 +238,18 @@
         public async Task<IActionResult> GetMerchant([FromQuery] Guid merchantId,
                                                      CancellationToken cancellationToken)
         {
-            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-
-            MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
-            
-            if (merchantModel == null)
+            try
             {
-                return this.RedirectToAction("GetMerchantList", "Merchant").WithWarning("Warning:", $"Failed to get Merchant Record, please try again.");
-            }
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+
+                return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
+            }
+            catch(Exception e)
+            {
+                return this.RedirectToAction("GetMerchantList", "Merchant").WithWarning("Merchant Details:", Helpers.BuildUserErrorMessage("Failed to get Merchant Record"));
+            }
         }
 
         /// <summary>
@@ -265,7 +276,7 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new Dictionary<String, String>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant devices"));
             }
         }
 
@@ -306,7 +317,7 @@
             catch (Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantListViewModel>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant list"));
             }
         }
 
@@ -333,7 +344,7 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantOperatorViewModel>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant operators"));
             }
         }
 
@@ -381,7 +392,7 @@
             catch(Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantBalanceHistoryViewModel>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant balance history"));
             }
         }
 
@@ -393,7 +404,7 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                var merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                MerchantBalanceModel merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
 
                 MerchantBalanceViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalance);
 
@@ -402,7 +413,7 @@
             catch (Exception e)
             {
                 Logger.LogError(e);
-                return this.Json(Helpers.GetDataForDataTable(this.Request.Form, new List<MerchantBalanceHistoryViewModel>(), null));
+                return this.Json(Helpers.GetErrorDataForDataTable<String>("Error getting merchant balance"));
             }
         }
 
@@ -431,21 +442,29 @@
             // Validate the model
             if (this.ValidateModel(viewModel))
             {
-                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                try
+                {
+                    String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                MakeMerchantDepositModel makeMerchantDepositModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    MakeMerchantDepositModel makeMerchantDepositModel = this.ViewModelFactory.ConvertFrom(viewModel);
 
-                // All good with model, call the client to create the golf club
-                MakeMerchantDepositResponseModel makeMerchantDepositResponseModel =
-                    await this.ApiClient.MakeMerchantDeposit(accessToken,
-                                                             this.User.Identity as ClaimsIdentity,
-                                                             Guid.Parse(viewModel.MerchantId),
-                                                             makeMerchantDepositModel,
-                                                             cancellationToken);
+                    // All good with model, call the client to create the golf club
+                    MakeMerchantDepositResponseModel makeMerchantDepositResponseModel =
+                        await this.ApiClient.MakeMerchantDeposit(accessToken,
+                                                                 this.User.Identity as ClaimsIdentity,
+                                                                 Guid.Parse(viewModel.MerchantId),
+                                                                 makeMerchantDepositModel,
+                                                                 cancellationToken);
 
-                // Merchant Created, redirect to the Merchant List screen
-                return this.RedirectToAction("GetMerchantList", "Merchant")
-                           .WithSuccess("Deposit Successful", $"Deposit made successfully for Merchant - {viewModel.MerchantName}");
+                    // Merchant Created, redirect to the Merchant List screen
+                    return this.RedirectToAction("GetMerchantList", "Merchant")
+                               .WithSuccess("Deposit Successful", $"Deposit made successfully for Merchant - {viewModel.MerchantName}");
+                }
+                catch(Exception e)
+                {
+                    return this.RedirectToAction("MakeMerchantDeposit", "Merchant")
+                               .WithWarning("Deposit Unsuccessful", Helpers.BuildUserErrorMessage("Deposit made successfully for Merchant - {viewModel.MerchantName}"));
+                }
             }
 
             // If we got this far, something failed, redisplay form

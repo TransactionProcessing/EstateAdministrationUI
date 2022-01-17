@@ -239,7 +239,8 @@
 
         $("#merchantOperatorList")
             .on('error.dt', function (e, settings, techNote, message) {
-                console.log('An error has been occurred getting a list of merchant operators. Error reported by DataTables: ', message);
+                var html = getAlertHtml('danger', 'Merchant Operators', message);
+                $("#alert").html(html);
             }).DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": true, // for process server side
@@ -283,7 +284,8 @@
 
         $("#merchantDeviceList")
             .on('error.dt', function (e, settings, techNote, message) {
-                console.log('An error has been occurred getting a list of merchant devices. Error reported by DataTables: ', message);
+                var html = getAlertHtml('danger', 'Merchant Devices', message);
+                $("#alert").html(html);
             }).DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": true, // for process server side
@@ -311,7 +313,8 @@
 
         $("#merchantBalanceHistoryList")
             .on('error.dt', function (e, settings, techNote, message) {
-                console.log('An error has been occurred getting the merchant balance history. Error reported by DataTables: ', message);
+                var html = getAlertHtml('danger', 'Merchant Balance History', message);
+                $("#alert").html(html);
             }).DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": true, // for process server side

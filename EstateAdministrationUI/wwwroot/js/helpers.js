@@ -18,6 +18,8 @@ function getAlertHtml(type,
         userMessage = userMessageArray[0];
     }
 
+    userMessage = userMessage + ', please retry, if this issue persists raise a support request';
+
     var html = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">';
     html = html + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
     html = html + '<span aria-hidden="true">&times;</span>';

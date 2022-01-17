@@ -52,7 +52,8 @@
 
             $("#fileLineList")
                 .on('error.dt', function (e, settings, techNote, message) {
-                    console.log('An error has been occurred getting a list of file lines. Error reported by DataTables: ', message);
+                    var html = getAlertHtml('danger', 'Get File Lines', message);
+                    $("#alert").html(html);
                 })
                 .DataTable({
                     "processing": true, // for show progress bar
