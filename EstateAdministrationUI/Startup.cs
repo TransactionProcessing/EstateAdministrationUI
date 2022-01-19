@@ -55,27 +55,26 @@ namespace EstateAdministrationUI
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
+        private HttpClientHandler ApiEndpointHttpHandler(IServiceProvider serviceProvider)
+        {
+            return new HttpClientHandler
+                   {
+                       ServerCertificateCustomValidationCallback = (message,
+                                                                    cert,
+                                                                    chain,
+                                                                    errors) =>
+                                                                   {
+                                                                       return true;
+                                                                   }
+                   };
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigurationReader.Initialise(Startup.Configuration);
 
-            services.AddHealthChecks()
-                    .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "Authority")}/health"),
-                                 name: "Security Service",
-                                 httpMethod: HttpMethod.Get,
-                                 failureStatus: HealthStatus.Unhealthy,
-                                 tags: new string[] { "security", "authorisation" })
-                .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "EstateManagementApi")}/health"),
-                             name: "Estate Management Service",
-                             httpMethod: HttpMethod.Get,
-                             failureStatus: HealthStatus.Unhealthy,
-                             tags: new string[] { "application", "estatemanagement" })
-                .AddUrlGroup(new Uri($"{ConfigurationReader.GetValue("AppSettings", "EstateReportingApi")}/health"),
-                             name: "Estate Reporting Service",
-                             httpMethod: HttpMethod.Get,
-                             failureStatus: HealthStatus.Unhealthy,
-                             tags: new string[] { "application", "estatereporting" });
+            services.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService().AddEstateReportingService();
 
             services.AddControllersWithViews();
 

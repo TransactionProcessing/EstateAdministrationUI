@@ -19,7 +19,7 @@
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
 	  <PackageReference Include="Ductus.FluentDocker" Version="2.10.7" />
-	  <PackageReference Include="Shared.IntegrationTesting" Version="1.1.0" />
+	  <PackageReference Include="Shared.IntegrationTesting" Version="1.1.4" />
     <PackageReference Include="TransactionProcessor.Client" Version="1.0.17-build79" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
