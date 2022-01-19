@@ -155,10 +155,6 @@ namespace EstateAdministrationUI
                               ILoggerFactory loggerFactory)
         {
             String nlogConfigFilename = "nlog.config";
-            if (string.Compare(Startup.WebHostEnvironment.EnvironmentName, "Development", true) == 0)
-            {
-                nlogConfigFilename = $"nlog.{Startup.WebHostEnvironment.EnvironmentName}.config";
-            }
 
             loggerFactory.ConfigureNLog(Path.Combine(Startup.WebHostEnvironment.ContentRootPath, nlogConfigFilename));
             loggerFactory.AddNLog();
