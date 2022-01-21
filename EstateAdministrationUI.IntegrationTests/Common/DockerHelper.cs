@@ -397,7 +397,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             if (String.IsNullOrEmpty(hostFolder) == false)
             {
-                containerBuilder = containerBuilder.Mount(hostFolder, "/home", MountType.ReadWrite);
+                containerBuilder = containerBuilder.Mount(hostFolder, "/home/txnproc/trace", MountType.ReadWrite);
             }
 
             IContainerService containerService = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);

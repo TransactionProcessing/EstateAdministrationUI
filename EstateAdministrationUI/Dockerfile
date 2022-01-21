@@ -1,4 +1,4 @@
-FROM stuartferguson/txnprocbase:latest AS base
+FROM stuartferguson/txnprocbase AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim AS build
