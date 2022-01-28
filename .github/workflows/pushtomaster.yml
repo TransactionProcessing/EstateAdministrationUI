@@ -1,4 +1,4 @@
-name: Publish Pre-Release Nuget and Docker
+name: Publish Pre-Release Docker
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: "Publish Pre-Release Nugets and Docker"
+    name: "Publish Pre-Release Docker"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
         NODE_VERSION: '12.x'                # set this to the node version to use
