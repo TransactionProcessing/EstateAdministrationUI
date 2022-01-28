@@ -13,7 +13,7 @@ jobs:
         ASPNETCORE_ENVIRONMENT: "Production"
         NODE_VERSION: '12.x'                # set this to the node version to use
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2.3.4 
