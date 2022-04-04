@@ -6,8 +6,8 @@ on:
   repository_dispatch:
 
 jobs:
-  build:
-    name: "Nightly Build"
+  firefoxbuild:
+    name: "Nightly Build - Firefox"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
         NODE_VERSION: '12.x'                # set this to the node version to use
@@ -61,10 +61,128 @@ jobs:
         Browser: Firefox
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
+    - name: Create Issue on Failed workflow
+      if: ${{ failure() }}
+      uses: dacbd/create-issue-action@main
+      with:
+        token: ${{ github.token }}
+        title: Investigate Nightly Build Failure - Firefox
+        body: Url is ${{env.action_url}}
+        labels: nightlybuild
+
+  chromebuild:
+    name: "Nightly Build - Chrome"
+    env:
+        ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '12.x'                # set this to the node version to use
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2.3.4
+
+    - name: Set Up Variables
+      run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
+
+    - name: Trust Certificate
+      run: |
+        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1.4.4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore Nuget Packages
+      run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+
+    - name: Build Code
+      run: |
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+
+    - name: Run Unit Tests
+      run: |
+        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
+        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
+    
+    - name: Run Javascript Unit Tests
+      run: |
+        cd EstateAdministrationUI.Javascript.Tests
+        npm install
+        npm run test
+
+    - name: Build Docker Image
+      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+                
     - name: Run Integration Tests (Chrome)
       env:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+
+    - name: Create Issue on Failed workflow
+      if: ${{ failure() }}
+      uses: dacbd/create-issue-action@main
+      with:
+        token: ${{ github.token }}
+        title: Investigate Nightly Build Failure - Chrome
+        body: Url is ${{env.action_url}}
+        labels: nightlybuild
+
+  edgebuild:
+    name: "Nightly Build - Edge"
+    env:
+        ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '12.x'                # set this to the node version to use
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2.3.4
+
+    - name: Set Up Variables
+      run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
+
+    - name: Trust Certificate
+      run: |
+        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1.4.4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore Nuget Packages
+      run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+
+    - name: Build Code
+      run: |
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+
+    - name: Run Unit Tests
+      run: |
+        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
+        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
+    
+    - name: Run Javascript Unit Tests
+      run: |
+        cd EstateAdministrationUI.Javascript.Tests
+        npm install
+        npm run test
+
+    - name: Build Docker Image
+      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
 
     - name: Run Integration Tests (Edge)
       env:
@@ -78,7 +196,7 @@ jobs:
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ github.token }}
-        title: Investigate Nightly Build Failure
+        title: Investigate Nightly Build Failure - Edge
         body: Url is ${{env.action_url}}
         labels: nightlybuild
 
