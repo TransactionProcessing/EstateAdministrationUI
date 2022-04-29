@@ -3,7 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Net.Http;
+    using System.Runtime.Serialization;
     using System.Security.Claims;
+    using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
@@ -12,6 +15,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models;
+    using Newtonsoft.Json;
     using Services;
     using Shared.Logger;
 
@@ -64,6 +68,46 @@
         public IActionResult Index()
         {
             return this.View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("GetDetails")]
+        public string GetDetails([FromBody] object embedQuerString)
+        {
+            var embedClass = Newtonsoft.Json.JsonConvert.DeserializeObject<EmbedClass>(embedQuerString.ToString());
+
+            var embedQuery = embedClass.embedQuerString;
+            // User your user-email as embed_user_email
+            embedQuery += "&embed_user_email=" + EmbedProperties.UserEmail;
+            var embedDetailsUrl = "/embed/authorize?" + embedQuery.ToLower() + "&embed_signature=" + GetSignatureUrl(embedQuery.ToLower());
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(embedClass.dashboardServerApiUrl);
+                client.DefaultRequestHeaders.Accept.Clear();
+
+                var result = client.GetAsync(embedClass.dashboardServerApiUrl + embedDetailsUrl).Result;
+                string resultContent = result.Content.ReadAsStringAsync().Result;
+                return resultContent;
+            }
+
+        }
+
+        public string GetSignatureUrl(string queryString)
+        {
+            if (queryString != null)
+            {
+                var encoding = new System.Text.UTF8Encoding();
+                var keyBytes = encoding.GetBytes(EmbedProperties.EmbedSecret);
+                var messageBytes = encoding.GetBytes(queryString);
+                using (var hmacsha1 = new HMACSHA256(keyBytes))
+                {
+                    var hashMessage = hmacsha1.ComputeHash(messageBytes);
+                    return Convert.ToBase64String(hashMessage);
+                }
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -234,5 +278,90 @@
         }
 
         #endregion
+    }
+
+    public class EmbedProperties
+    {
+        //Dashboard Server BI URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
+        public static string RootUrl = "http://localhost/bi";
+
+        //For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
+        public static string SiteIdentifier = "site/site1";
+
+        //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
+        public static string Environment = "enterprise";
+
+        //Enter your BoldBI credentials here.
+        public static string UserEmail = "stuart_ferguson1development@outlook.com";
+
+        // Get the embedSecret key from Bold BI.Please refer this link(https://help.boldbi.com/embedded-bi/site-administration/embed-settings/)
+        public static string EmbedSecret = "5cmhwwl6ff4Qr7kQva9eTGbYxPpAyJXX";
+    }
+
+    [DataContract]
+    public class EmbedClass
+    {
+        [DataMember]
+        public string embedQuerString { get; set; }
+        [DataMember]
+        public string dashboardServerApiUrl { get; set; }
+    }
+
+    public class TokenObject
+    {
+        public string Message { get; set; }
+
+        public string Status { get; set; }
+
+        public string Token { get; set; }
+    }
+
+    public class Token
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty("token_type")]
+        public string TokenType
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty("expires_in")]
+        public string ExpiresIn
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty("email")]
+        public string Email
+        {
+            get;
+            set;
+        }
+
+        public string LoginResult
+        {
+            get;
+            set;
+        }
+
+        public string LoginStatusInfo
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty(".issued")]
+        public string Issued { get; set; }
+
+        [JsonProperty(".expires")]
+        public string Expires { get; set; }
     }
 }
