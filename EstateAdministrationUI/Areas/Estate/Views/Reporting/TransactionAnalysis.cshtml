@@ -1,231 +1,73 @@
-﻿@{
+﻿@using Shared;
+@using Shared.General
+@using EstateAdministrationUI.Common
+@inject IConfigurationService Configuration
+
+@{
     ViewBag.Title = "Transaction Analysis";
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.0-beta/jsrender.min.js"></script>
+<script type="text/javascript" src="https://cdn.boldbi.com/embedded-sdk/v4.2.68/embed-js.js"></script>
+
 <div class="container-fluid">
-    <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-4">Transaction Analysis</h1>
-    </div>
-    <div class="row">
-
-        <h4>
-            Select Date Range:
-            <input type="text" id="dates" style="width: 250px"/>
-        </h4>
-
-        <!-- Sales By Time Period -->
-        <div class="col-xl-12 col-lg-12">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        
-                    </h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h5>
-                        Sort By:
-                        <select id="reportType" onchange="drawChart()">
-                            <option value="0" selected>Transactions</option>
-                            <option value="1">Settlement</option>
-                        </select>
-                    </h5>
-                    
-                    <h5>
-                        Select Breakdown:
-                        <select id="timePeriod" onchange="drawChart()">
-                            <option value="Day" selected>By Day</option>
-                            <option value="Week">By Week</option>
-                            <option value="Month">By Month</option>
-                        </select>
-                    </h5>
-                    <div class="chart" id="chartCanvasParent">
-                        <div id="chart_div" style="height: 700px"></div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-            </div>
-        </div>
+    <div id="dashboard-container">
     </div>
 </div>
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="~/js/googleChartHelpers.js"></script>
-<script src="~/js/helpers.js"></script>
+    <script type="text/javascript">
 
-<script language="javascript">
-    // Load the Visualization API and the piechart package.
-    google.charts.load('current', { 'packages': ['corechart'] });
-
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
-
-    initDatePicker();
-
-    function drawChart()
-    {
-        var timePeriod = document.getElementById("timePeriod").value;
-
-        var drp = $('#dates').data('daterangepicker');
-        var startDate = new Date(drp.startDate);
-        var endDate = new Date(drp.endDate);
-        var reportType = document.getElementById("reportType").value;
-
-        var urlbase = '';
-        var messageTitle = '';
-        var message = '';
-        if (reportType === '0')
-        {
-            urlbase = "GetSalesByTimePeriodAsJson?timePeriod=";
-            messageTitle = "Sales By " + timePeriod;
-            message = "Error getting sales by " + timePeriod;
-        }
-        else
-        {
-            urlbase = "GetSettlementByTimePeriodAsJson?timePeriod=";
-            messageTitle = "Settlement By " + timePeriod;
-            message = "Error getting settlement by " + timePeriod;
-        }
-
-        var jsonData = $.ajax({
-            url: urlbase + timePeriod + "&startDate=" + startDate.yyyymmdd() + "&endDate=" + endDate.yyyymmdd(),
-            dataType: "json",
-            async: false
-        }).done(function (results) {
-
-        // Convert JSON value to google format array
-        var data = convertJsonToArray(jsonData, timePeriod, reportType);
+        $(document).ready(function() { renderDashboard(); });
         
-        var options = setupChartOptions(timePeriod);
-
-        if (data.getNumberOfRows() > 0)
+        function renderDashboard()
         {
-            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-        else
-        {
-            $("#chart_div").empty();
-            $("#chart_div").append("Sorry, not found any data for the selected date range.");
-            
-        }}).fail(function(jqXHR, textStatus)
-        {
-            var html = getAlertHtml('danger', messageTitle, message);
-            $("#alert").html(html);
-        });
-    }
+            // TODO: make this config i think
+            //For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
+            var siteIdentifier = '@Configuration.BoldBISiteIdentifier';
 
-    function setupChartOptions(timePeriod)
-    {
-        var hAxis = {};
-        var title = '';
-        switch (timePeriod) {
-            case "Day":
-                hAxis= { title: 'Date', format: 'dd/MM/yyyy' };
-                title = 'Sales Value and Count by Day';
-                break;
-            case "Week":
-                hAxis = { title: 'Week Number' };
-                title = 'Sales Value and Count by Week';
-                break;
-            case "Month":
-                hAxis = { title: 'Month' };
-                title = 'Sales Value and Count by Month';
-                break;
-        }
+            //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `onpremise`)
+            var environment = "onpremise";
 
-        var options = {
-            title: title,
-            hAxis: hAxis,
-            seriesType: 'bars',
-            series: { 1: { type: 'line' } },
-            colors: getChartColors(),
-            animation: {
-                startup: true,
-                duration: 1000,
-                easing: 'out'
+            //Item id of the dashboard in the Bold BI server 
+            var dashboardId = "63ff4001-2e50-4844-8a52-cb7d7fddcb49";
+
+            // Datasource in use (this is for the dynamic conn string)
+            var datasourceId = "ad80b975-de73-4751-a9f0-87301c7f43da";
+
+            // TODO: make this config i think
+            //Bold BI Server URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
+            var rootUrl = '@Configuration.BoldBIRootUri';
+
+            // TODO: make this config i think
+            //Url of the GetDetails(API) in this application
+            var authorizationUrl = '@Configuration.BoldBIAuthorisationUri';
+
+            try
+            {
+                var boldbiEmbedInstance = BoldBI.create({
+                    serverUrl: rootUrl + siteIdentifier,
+                    dashboardId: dashboardId,
+                    embedContainerId: "dashboard-container", // This should be the container id where you want to embed the dashboard
+                    embedType: BoldBI.EmbedType.Component,
+                    environment: environment,
+                    mode: BoldBI.Mode.View,
+                    height: "800px",
+                    width: "1400px",
+                    dynamicConnection: {
+                        isEnabled: true,
+                        identity: datasourceId + "|" + '@User.FindFirst("email").Value'
+                    },
+                    authorizationServer: {
+                        url: authorizationUrl
+                    }
+                });
+                boldbiEmbedInstance.loadDashboard();
             }
-        };
-
-        return options;
-    }
-
-    function convertJsonToArray(jsonData, timePeriod, dataType)
-    {
-        var data = JSON.parse(jsonData);
-        var dataArray = [];
-
-        var valueLabel = '';
-        var countLabel = '';
-        if (dataType === '0') 
-        {
-            // sales
-            valueLabel = 'Value of Sales';
-            countLabel = 'Number of Sales';
+            catch (error) {
+                console.log(error);
+            }
         }
-        else
-        {
-            // settlement
-            valueLabel = 'Value of Settlement';
-            countLabel = 'Number of Settled Sales';
-        }
-
-        switch (timePeriod)
-        {
-            case "Day":
-                dataArray = translateDailyTotals(data,valueLabel, countLabel);
-                break;
-            case "Week":
-                dataArray = translateWeeklyTotals(data,valueLabel, countLabel);
-                break;
-            case "Month":
-                dataArray = translateMonthTotals(data,valueLabel, countLabel);
-                break;
-        }
-        
-        return google.visualization.arrayToDataTable(dataArray);
-    }
-    
-    function initDatePicker() {
-
-        var startDate = moment().subtract(29, 'days');
-        var endDate = moment();
-        var minDate = moment().subtract(1, 'years');
-        var maxDate = moment();
-
-        $('input[id="dates"]').daterangepicker({
-            opens: 'left',
-            startDate: startDate,
-            endDate: endDate,
-            minDate: minDate,
-            maxDate: maxDate,
-            locale: {
-                format: "DD/MM/YYYY"
-            },
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                }
-        }, function (start, end, label) {
-            drawChart();
-        });
-    }
-
-    Date.prototype.yyyymmdd = function () {
-        var yyyy = this.getFullYear();
-        var mm = this.getMonth() < 9 ? "0" + (this.getMonth() + 1) : (this.getMonth() + 1); // getMonth() is zero-based
-        var dd = this.getDate() < 10 ? "0" + this.getDate() : this.getDate();
-
-        return "".concat(yyyy).concat('-').concat(mm).concat('-').concat(dd);
-    };
-</script>
+    </script>

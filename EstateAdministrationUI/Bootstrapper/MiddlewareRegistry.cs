@@ -4,6 +4,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using BusinessLogic.Factories;
+    using Common;
     using EstateManagement.Client;
     using EstateReporting.Client;
     using Factories;
@@ -99,8 +100,8 @@
 
     public class ClientRegistry : ServiceRegistry
     {
-        public ClientRegistry()
-        {
+        public ClientRegistry() {
+            this.AddSingleton<IConfigurationService, ConfigurationService>();
             this.AddSingleton<IApiClient, ApiClient>();
             this.AddSingleton<IEstateClient, EstateClient>();
             this.AddSingleton<IFileProcessorClient, FileProcessorClient>();
