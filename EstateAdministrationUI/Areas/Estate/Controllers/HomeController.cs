@@ -10,6 +10,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
+    using Common;
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,8 @@
         /// </summary>
         private readonly IViewModelFactory ViewModelFactory;
 
+        private readonly IConfigurationService ConfigurationService;
+
         #endregion
 
         #region Constructors
@@ -50,10 +53,12 @@
         /// <param name="apiClient">The API client.</param>
         /// <param name="viewModelFactory">The view model factory.</param>
         public HomeController(IApiClient apiClient,
-                              IViewModelFactory viewModelFactory)
+                              IViewModelFactory viewModelFactory,
+                              IConfigurationService configurationService)
         {
             this.ApiClient = apiClient;
             this.ViewModelFactory = viewModelFactory;
+            this.ConfigurationService = configurationService;
         }
 
         #endregion
@@ -75,11 +80,11 @@
         [Route("GetDetails")]
         public string GetDetails([FromBody] object embedQuerString)
         {
-            var embedClass = Newtonsoft.Json.JsonConvert.DeserializeObject<EmbedClass>(embedQuerString.ToString());
+            var embedClass = JsonConvert.DeserializeObject<EmbedClass>(embedQuerString.ToString());
 
             var embedQuery = embedClass.embedQuerString;
             // User your user-email as embed_user_email
-            embedQuery += "&embed_user_email=" + EmbedProperties.UserEmail;
+            embedQuery += "&embed_user_email=" + this.ConfigurationService.BoldBIUserEmail;
             var embedDetailsUrl = "/embed/authorize?" + embedQuery.ToLower() + "&embed_signature=" + GetSignatureUrl(embedQuery.ToLower());
 
             using (var client = new HttpClient())
@@ -99,7 +104,7 @@
             if (queryString != null)
             {
                 var encoding = new System.Text.UTF8Encoding();
-                var keyBytes = encoding.GetBytes(EmbedProperties.EmbedSecret);
+                var keyBytes = encoding.GetBytes(this.ConfigurationService.BoldBIEmbedSecret);
                 var messageBytes = encoding.GetBytes(queryString);
                 using (var hmacsha1 = new HMACSHA256(keyBytes))
                 {
@@ -280,29 +285,12 @@
         #endregion
     }
 
-    public class EmbedProperties
-    {
-        //Dashboard Server BI URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
-        public static string RootUrl = "http://localhost/bi";
-
-        //For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
-        public static string SiteIdentifier = "site/site1";
-
-        //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
-        public static string Environment = "enterprise";
-
-        //Enter your BoldBI credentials here.
-        public static string UserEmail = "stuart_ferguson1development@outlook.com";
-
-        // Get the embedSecret key from Bold BI.Please refer this link(https://help.boldbi.com/embedded-bi/site-administration/embed-settings/)
-        public static string EmbedSecret = "5cmhwwl6ff4Qr7kQva9eTGbYxPpAyJXX";
-    }
-
     [DataContract]
     public class EmbedClass
     {
         [DataMember]
         public string embedQuerString { get; set; }
+
         [DataMember]
         public string dashboardServerApiUrl { get; set; }
     }
