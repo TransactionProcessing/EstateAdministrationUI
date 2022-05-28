@@ -32,10 +32,10 @@
             var environment = "onpremise";
 
             //Item id of the dashboard in the Bold BI server 
-            var dashboardId = "9d23be7b-3078-419b-950b-7c2918ddf9b1";
+            var dashboardId = "@Configuration.BoldBIDashboardId("Home")";
 
             // Datasource in use (this is for the dynamic conn string)
-            var datasourceId = "ad80b975-de73-4751-a9f0-87301c7f43da";
+            var datasourceId = "@Configuration.BoldBIDashboardDataSourceId("Home")";
 
             // TODO: make this config i think
             //Bold BI Server URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)

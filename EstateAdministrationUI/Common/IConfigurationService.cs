@@ -17,5 +17,15 @@
         String BoldBIUserEmail { get; }
 
         #endregion
+
+        #region Methods
+
+        String BoldBIDashboardDataSourceId(String dashboardName);
+
+        (String dashboardId, String dataSourceId) BoldBIDashboardDetails(String dashboardName);
+
+        public String BoldBIDashboardId(String dashboardName);
+
+        #endregion
     }
 }

@@ -19,7 +19,7 @@
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
-	  <PackageReference Include="Shared" Version="1.1.5" />
+	  <PackageReference Include="Shared" Version="1.2.4" />
 	  <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="5.0.1" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
   </ItemGroup>
@@ -29,6 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.staging.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
