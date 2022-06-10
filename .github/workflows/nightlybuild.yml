@@ -29,7 +29,12 @@ jobs:
       uses: actions/setup-node@v1.4.4
       with:
         node-version: ${{ env.NODE_VERSION }}
-    
+
+    - name: Install NET 6
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'
+        
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -93,7 +98,12 @@ jobs:
       uses: actions/setup-node@v1.4.4
       with:
         node-version: ${{ env.NODE_VERSION }}
-    
+
+    - name: Install NET 6
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'
+        
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -152,6 +162,11 @@ jobs:
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
         Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+
+    - name: Install NET 6
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
