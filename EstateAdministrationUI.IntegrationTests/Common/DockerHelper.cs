@@ -173,7 +173,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.HostTraceFolder = null;
             if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
             {
-                this.HostTraceFolder = FdOs.IsWindows() ? $"F:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
+                this.HostTraceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
             }
 
             Logging.Enabled();
@@ -301,32 +301,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await LoadEventStoreProjections(this.EventStoreHttpPort).ConfigureAwait(false);
         }
 
-        private static EventStoreClientSettings ConfigureEventStoreSettings(Int32 eventStoreHttpPort)
-        {
-            String connectionString = $"http://127.0.0.1:{eventStoreHttpPort}";
-
-            EventStoreClientSettings settings = new EventStoreClientSettings();
-            settings.CreateHttpMessageHandler = () => new SocketsHttpHandler
-                                                      {
-                                                          SslOptions =
-                                                          {
-                                                              RemoteCertificateValidationCallback = (sender,
-                                                                                                     certificate,
-                                                                                                     chain,
-                                                                                                     errors) => true,
-                                                          }
-                                                      };
-            settings.ConnectionName = "Specflow";
-            settings.ConnectivitySettings = new EventStoreClientConnectivitySettings
-                                            {
-                                                Insecure = true,
-                                                Address = new Uri(connectionString),
-                                            };
-
-            settings.DefaultCredentials = new UserCredentials("admin", "changeit");
-            return settings;
-        }
-        
         public async Task PopulateSubscriptionServiceConfiguration(String estateName)
         {
             List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new List<(String streamName, String groupName, Int32 maxRetries)>();
