@@ -164,12 +164,45 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
             throw new Exception("Unknown Engine Type");
         }
+
+        protected override String GenerateEventStoreConnectionString()
+        {
+            // TODO: this could move to shared
+            String eventStoreAddress = $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}";
+            if (this.IsSecureEventStore)
+            {
+                eventStoreAddress = $"{eventStoreAddress}?tls=true&tlsVerifyCert=false";
+            }
+            else
+            {
+                eventStoreAddress = $"{eventStoreAddress}?tls=false&tlsVerifyCert=false";
+            }
+
+            return eventStoreAddress;
+        }
+
+        public Boolean IsSecureEventStore { get; private set; }
+
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
         /// <param name="scenarioName">Name of the scenario.</param>
         public override async Task StartContainersForScenarioRun(String scenarioName)
         {
+            String IsSecureEventStoreEnvVar = Environment.GetEnvironmentVariable("IsSecureEventStore");
+
+            if (IsSecureEventStoreEnvVar == null)
+            {
+                // No env var set so default to insecure
+                this.IsSecureEventStore = false;
+            }
+            else
+            {
+                // We have the env var so we set the secure flag based on the value in the env var
+                Boolean.TryParse(IsSecureEventStoreEnvVar, out Boolean isSecure);
+                this.IsSecureEventStore = isSecure;
+            }
+
             this.HostTraceFolder = null;
             if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
             {
@@ -211,10 +244,16 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 eventStoreImageName = "stuartferguson/eventstore";
             }
 
-            IContainerService eventStoreContainer = this.SetupEventStoreContainer(eventStoreImageName, testNetwork);
+            IContainerService eventStoreContainer =
+                this.SetupEventStoreContainer(eventStoreImageName, testNetwork, isSecure: this.IsSecureEventStore);
             this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
 
-            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=true";
+            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=True";
+            if (this.IsSecureEventStore)
+            {
+                insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=False";
+            }
+
             String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
             String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
 
@@ -298,16 +337,16 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
 
-            await LoadEventStoreProjections(this.EventStoreHttpPort).ConfigureAwait(false);
+            await LoadEventStoreProjections(this.EventStoreHttpPort, this.IsSecureEventStore).ConfigureAwait(false);
         }
 
-        public async Task PopulateSubscriptionServiceConfiguration(String estateName)
+        public async Task PopulateSubscriptionServiceConfiguration(String estateName, Boolean isSecureEventStore)
         {
             List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new List<(String streamName, String groupName, Int32 maxRetries)>();
             subscriptions.Add((estateName.Replace(" ", ""), "Reporting", 5));
             subscriptions.Add(($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management", 0));
             subscriptions.Add(($"TransactionProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "Transaction Processor", 0));
-            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions);
+            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions, isSecureEventStore);
         }
 
         private IContainerService SetupEstateManagementUIContainer(string containerName, ILogger logger,

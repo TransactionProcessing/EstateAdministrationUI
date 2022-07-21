@@ -83,7 +83,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName).ConfigureAwait(false); },
+                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName, this.TestingContext.DockerHelper.IsSecureEventStore).ConfigureAwait(false); },
                                 retryFor:TimeSpan.FromMinutes(2),
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
@@ -1093,8 +1093,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [When(@"I login with the username '(.*)' and password '(.*)'")]
         public async Task WhenILoginWithTheUsernameAndPassword(String userName, String password)
         {
-            await this.WebDriver.FillIn("Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
-            await this.WebDriver.FillIn("Password", password);
+            await this.WebDriver.FillIn("Input.Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+            await this.WebDriver.FillIn("Input.Password", password);
             await this.WebDriver.ClickButtonByText("Login");
         }
 
