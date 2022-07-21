@@ -107,13 +107,6 @@
         /// <summary>
         /// Converts from.
         /// </summary>
-        /// <param name="merchantModels">The merchant models.</param>
-        /// <returns></returns>
-        MerchantCountViewModel ConvertFrom(MerchantModel[] merchantModels);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
         /// <param name="contractModels">The contract models.</param>
         /// <returns></returns>
         List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels);
@@ -152,49 +145,7 @@
         /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
         /// <returns></returns>
         AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        TransactionPeriodViewModel ConvertFrom(TransactionForPeriodModel model);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        DataByDateViewModel ConvertFrom(DataByDateModel model);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        DataByWeekViewModel ConvertFrom(DataByWeekModel model);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        DataByMonthViewModel ConvertFrom(DataByMonthModel model);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        DataByMerchantViewModel ConvertFrom(DataByMerchantModel model);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
-        DataByOperatorViewModel ConvertFrom(DataByOperatorModel model);
-
+        
         /// <summary>
         /// Converts from.
         /// </summary>

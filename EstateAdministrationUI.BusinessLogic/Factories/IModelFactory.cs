@@ -7,9 +7,7 @@
     using FileProcessor.DataTransferObjects.Responses;
     using Models;
     using SortDirectionModel = Models.SortDirection;
-    using SortDirectionDTO = EstateReporting.DataTransferObjects.SortDirection;
     using SortFieldModel = Models.SortField;
-    using SortFieldDTO = EstateReporting.DataTransferObjects.SortField;
 
     /// <summary>
     /// 
@@ -24,10 +22,6 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         EstateModel ConvertFrom(EstateResponse source);
-
-        DataByMerchantModel ConvertFrom(SettlementByMerchantResponse source);
-
-        DataByOperatorModel ConvertFrom(SettlementByOperatorResponse source);
 
         /// <summary>
         /// Converts from.
@@ -179,61 +173,6 @@
         /// <summary>
         /// Converts from.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        DataByDateModel ConvertFrom(TransactionsByDayResponse source);
-
-        DataByDateModel ConvertFrom(SettlementByDayResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        DataByWeekModel ConvertFrom(TransactionsByWeekResponse source);
-
-        DataByWeekModel ConvertFrom(SettlementByWeekResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        DataByMonthModel ConvertFrom(TransactionsByMonthResponse source);
-
-        DataByMonthModel ConvertFrom(SettlementByMonthResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="sortDirection">The sort direction.</param>
-        /// <returns></returns>
-        SortDirectionDTO ConvertFrom(SortDirectionModel sortDirection);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="sortField">The sort field.</param>
-        /// <returns></returns>
-        SortFieldDTO ConvertFrom(SortFieldModel sortField);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        DataByMerchantModel ConvertFrom(TransactionsByMerchantResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        DataByOperatorModel ConvertFrom(TransactionsByOperatorResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
         /// <param name="merchantBalanceHistory">The merchant balance history.</param>
         /// <returns></returns>
         List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> merchantBalanceHistory);
@@ -253,13 +192,6 @@
         AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source);
 
         AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source);
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        TransactionForPeriodModel ConvertToPeriodModel(TransactionsByDayResponse source);
 
         #endregion
     }

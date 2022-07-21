@@ -34,10 +34,6 @@
     <Content Include="app.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Compile Include="tests\factories\googleChartHelpers.Tests.js">
-      <SubType>Code</SubType>
-      <TestFramework>Mocha</TestFramework>
-    </Compile>
     <Content Include="tests\helpers\helpers.Tests.js">
       <SubType>Code</SubType>
     </Content>
