@@ -1093,8 +1093,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [When(@"I login with the username '(.*)' and password '(.*)'")]
         public async Task WhenILoginWithTheUsernameAndPassword(String userName, String password)
         {
-            await this.WebDriver.FillIn("Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
-            await this.WebDriver.FillIn("Password", password);
+            await this.WebDriver.FillIn("Input.Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+            await this.WebDriver.FillIn("Input.Password", password);
             await this.WebDriver.ClickButtonByText("Login");
         }
 
