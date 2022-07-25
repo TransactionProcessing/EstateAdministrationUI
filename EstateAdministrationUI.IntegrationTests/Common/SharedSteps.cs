@@ -18,7 +18,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
-    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;

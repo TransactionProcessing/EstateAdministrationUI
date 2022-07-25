@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using BoDi;
-    using Microsoft.Edge.SeleniumTools;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
+    using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using Shared.IntegrationTesting;
     using TechTalk.SpecFlow;
