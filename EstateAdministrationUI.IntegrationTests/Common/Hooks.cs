@@ -46,7 +46,7 @@
             {
                 FirefoxOptions options = new FirefoxOptions();
                 options.AcceptInsecureCertificates = true;
-                options.AddArguments("-headless");
+                options.AddArguments("--headless");
                 options.LogLevel = FirefoxDriverLogLevel.Debug;
                 FirefoxDriverService x = FirefoxDriverService.CreateDefaultService();
                 
