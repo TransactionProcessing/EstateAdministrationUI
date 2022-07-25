@@ -72,16 +72,18 @@
         public void AfterScenario() {
             if (this.WebDriver != null)
             {
-                var driverLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Driver);
+                if (Logger.IsInitialised) {
 
-                foreach (LogEntry driverLog in driverLogs) {
-                    Logger.LogInformation(driverLog.Message);
-                }
+                    var driverLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Driver);
 
-                var browserLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Browser);
-                foreach (LogEntry browserLog in browserLogs)
-                {
-                    Logger.LogInformation(browserLog.Message);
+                    foreach (LogEntry driverLog in driverLogs) {
+                        Logger.LogInformation(driverLog.Message);
+                    }
+
+                    var browserLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Browser);
+                    foreach (LogEntry browserLog in browserLogs) {
+                        Logger.LogInformation(browserLog.Message);
+                    }
                 }
 
                 this.WebDriver.Quit(); //.Dispose();
