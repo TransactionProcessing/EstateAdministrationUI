@@ -62,7 +62,7 @@
             }
 
             this.WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
-
+            this.WebDriver.Manage().Window.Maximize();
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
 
