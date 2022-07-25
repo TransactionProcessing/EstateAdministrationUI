@@ -26,7 +26,8 @@
         public async Task BeforeScenario()
         {
             String? browser = Environment.GetEnvironmentVariable("Browser");
-            //browser = "Firefox";
+            //browser = "Edge";
+
             if (browser == null || browser == "Chrome")
             {
                 ChromeOptions options = new ChromeOptions();
@@ -34,36 +35,33 @@
                 options.AddArguments("--no-sandbox");
                 options.AddArguments("--disable-dev-shm-usage");
                 options.AcceptInsecureCertificates = true;
-                this.WebDriver = new ChromeDriver(options);
-                this.WebDriver.Manage().Window.Maximize();
+
+                ChromeDriverService x = ChromeDriverService.CreateDefaultService();
+
+                this.WebDriver = new ChromeDriver(x, options, TimeSpan.FromMinutes(3));
             }
 
             if (browser == "Firefox")
             {
                 FirefoxOptions options = new FirefoxOptions();
-                options.SetPreference("network.cookie.cookieBehavior", 0);
                 options.AcceptInsecureCertificates = true;
+                options.AddArguments("-headless");
+                options.LogLevel = FirefoxDriverLogLevel.Debug;
+                FirefoxDriverService x = FirefoxDriverService.CreateDefaultService();
 
-                await Retry.For(async () =>
-                                {
-                                    this.WebDriver = new FirefoxDriver(options);
-                                }, TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(60));
-                
-                this.WebDriver.Manage().Window.Maximize();
+                this.WebDriver = new FirefoxDriver(x, options, TimeSpan.FromMinutes(3));
             }
 
             if (browser == "Edge")
             {
                 EdgeOptions options = new EdgeOptions();
-                options.UseChromium = true;
                 options.AcceptInsecureCertificates = true;
-                //this.WebDriver = new EdgeDriver(options);
-                await Retry.For(async () =>
-                                {
-                                    this.WebDriver = new EdgeDriver(options);
-                                }, TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(60));
-                this.WebDriver.Manage().Window.Maximize();
+                EdgeDriverService x = EdgeDriverService.CreateDefaultService();
+
+                this.WebDriver = new EdgeDriver(x, options, TimeSpan.FromMinutes(3));
             }
+
+            this.WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
 
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
