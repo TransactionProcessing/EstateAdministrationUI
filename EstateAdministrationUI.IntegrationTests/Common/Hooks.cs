@@ -9,6 +9,7 @@
     using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using Shared.IntegrationTesting;
+    using Shared.Logger;
     using TechTalk.SpecFlow;
 
     [Binding]
@@ -26,7 +27,7 @@
         public async Task BeforeScenario()
         {
             String? browser = Environment.GetEnvironmentVariable("Browser");
-            //browser = "Edge";
+            browser = "Firefox";
 
             if (browser == null || browser == "Chrome")
             {
@@ -45,10 +46,10 @@
             {
                 FirefoxOptions options = new FirefoxOptions();
                 options.AcceptInsecureCertificates = true;
-                options.AddArguments("-headless");
+                //options.AddArguments("-headless");
                 options.LogLevel = FirefoxDriverLogLevel.Debug;
                 FirefoxDriverService x = FirefoxDriverService.CreateDefaultService();
-
+                
                 this.WebDriver = new FirefoxDriver(x, options, TimeSpan.FromMinutes(3));
             }
 
@@ -61,16 +62,28 @@
                 this.WebDriver = new EdgeDriver(x, options, TimeSpan.FromMinutes(3));
             }
 
-            this.WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(30));
+            this.WebDriver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(45));
             this.WebDriver.Manage().Window.Maximize();
+            
             this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
 
         [AfterScenario(Order = 0)]
-        public void AfterScenario()
-        {
+        public void AfterScenario() {
             if (this.WebDriver != null)
             {
+                var driverLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Driver);
+
+                foreach (LogEntry driverLog in driverLogs) {
+                    Logger.LogInformation(driverLog.Message);
+                }
+
+                var browserLogs = this.WebDriver.Manage().Logs.GetLog(LogType.Browser);
+                foreach (LogEntry browserLog in browserLogs)
+                {
+                    Logger.LogInformation(browserLog.Message);
+                }
+
                 this.WebDriver.Quit(); //.Dispose();
             }
         }
