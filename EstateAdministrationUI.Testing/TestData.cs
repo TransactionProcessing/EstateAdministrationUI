@@ -130,9 +130,7 @@
                 MerchantId = TestData.MerchantId,
                 MerchantName = TestData.MerchantName,
                 SettlementSchedule = settlementSchedule,
-                AvailableBalance = TestData.AvailableBalance,
                 EstateId = TestData.EstateId,
-                Balance = TestData.Balance,
                 Addresses = new List<AddressModel>
                             {
                                 new AddressModel
@@ -297,7 +295,6 @@
                            },
                 EstateId = TestData.EstateId,
                 MerchantName = TestData.MerchantName,
-                AvailableBalance = TestData.AvailableBalance,
                 Devices = new Dictionary<Guid, String>
                           {
                               {TestData.DeviceId, TestData.DeviceIdentifier}
@@ -312,7 +309,6 @@
                                     Name = TestData.MerchantName
                                 }
                             },
-                Balance = TestData.Balance,
                 Addresses = new List<AddressResponse>
                             {
                                 new AddressResponse
@@ -579,24 +575,24 @@
                              }
         };
 
-        public static List<MerchantBalanceHistoryResponse> MerchantBalanceHistoryResponseList =>
-            new List<MerchantBalanceHistoryResponse>
-            {
-                new MerchantBalanceHistoryResponse
-                {
-                    Balance = TestData.Balance,
-                    MerchantId = TestData.MerchantId,
-                    Reference = TestData.DepositReference,
-                    ChangeAmount = TestData.DepositAmountDecimal,
-                    EntryDateTime = TestData.DepositDateTime,
-                    EntryType = "C",
-                    EstateId = TestData.EstateId,
-                    EventId = TestData.EventId,
-                    In = TestData.DepositAmountDecimal,
-                    Out = null,
-                    TransactionId = TestData.TransactionId
-                }
-            };
+        //public static List<Merh> MerchantBalanceHistoryResponseList =>
+        //    new List<MerchantBalanceHistoryResponse>
+        //    {
+        //        new MerchantBalanceHistoryResponse
+        //        {
+        //            Balance = TestData.Balance,
+        //            MerchantId = TestData.MerchantId,
+        //            Reference = TestData.DepositReference,
+        //            ChangeAmount = TestData.DepositAmountDecimal,
+        //            EntryDateTime = TestData.DepositDateTime,
+        //            EntryType = "C",
+        //            EstateId = TestData.EstateId,
+        //            EventId = TestData.EventId,
+        //            In = TestData.DepositAmountDecimal,
+        //            Out = null,
+        //            TransactionId = TestData.TransactionId
+        //        }
+        //    };
 
         public static AddTransactionFeeForProductToContractResponse AddTransactionFeeForProductToContractResponse =>
             new AddTransactionFeeForProductToContractResponse

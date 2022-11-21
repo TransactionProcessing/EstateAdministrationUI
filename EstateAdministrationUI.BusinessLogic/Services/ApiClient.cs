@@ -20,6 +20,8 @@
     using FileProcessor.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Shared.Logger;
+    using TransactionProcessor.Client;
+    using TransactionProcessor.DataTransferObjects;
     using SortDirection = BusinessLogic.Models.SortDirection;
     using SortField = BusinessLogic.Models.SortField;
 
@@ -47,6 +49,8 @@
         /// </summary>
         private readonly IFileProcessorClient FileProcessorClient;
 
+        private readonly ITransactionProcessorClient TransactionProcessorClient;
+
         /// <summary>
         /// The model factory
         /// </summary>
@@ -66,11 +70,13 @@
         public ApiClient(IEstateClient estateClient,
                          IEstateReportingClient estateReportingClient,
                          IFileProcessorClient fileProcessorClient,
+                         ITransactionProcessorClient transactionProcessorClient,
                          IModelFactory modelFactory)
         {
             this.EstateClient = estateClient;
             this.EstateReportingClient = estateReportingClient;
             this.FileProcessorClient = fileProcessorClient;
+            this.TransactionProcessorClient = transactionProcessorClient;
             this.ModelFactory = modelFactory;
         }
 
@@ -564,7 +570,7 @@
             {
                 Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, ApiClient.EstateIdClaimType);
 
-                MerchantBalanceResponse merchantBalance = await this.EstateClient.GetMerchantBalance(accessToken, estateId, merchantId, cancellationToken);
+                MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(accessToken, estateId, merchantId, cancellationToken);
 
                 return this.ModelFactory.ConvertFrom(merchantBalance);
             }
@@ -596,8 +602,8 @@
 
             try
             {
-                List<MerchantBalanceHistoryResponse> merchantBalanceHistory =
-                    await this.EstateClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, startDate, endDate, cancellationToken);
+                List<MerchantBalanceChangedEntryResponse> merchantBalanceHistory =
+                    await this.TransactionProcessorClient.GetMerchantBalanceHistory(accessToken, estateId, merchantId, startDate, endDate, cancellationToken);
 
                 return this.ModelFactory.ConvertFrom(merchantBalanceHistory);
             }
@@ -698,7 +704,7 @@
                                                UserId = userId
                                            };
 
-            var apiResponse = await this.FileProcessorClient.UploadFile(accessToken, fileName, fileData, apiRequest, cancellationToken);
+            Guid apiResponse = await this.FileProcessorClient.UploadFile(accessToken, fileName, fileData, apiRequest, cancellationToken);
 
             return apiResponse;
         }

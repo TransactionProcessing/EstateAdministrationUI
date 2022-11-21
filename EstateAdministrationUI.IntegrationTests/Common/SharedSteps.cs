@@ -18,7 +18,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
-    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
@@ -83,7 +82,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName, this.TestingContext.DockerHelper.IsSecureEventStore).ConfigureAwait(false); },
+                await Retry.For(async () => { await this.TestingContext.DockerHelper.CreateEstateSubscriptions(estateName).ConfigureAwait(false); },
                                 retryFor:TimeSpan.FromMinutes(2),
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
@@ -795,7 +794,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             IWebElement element = this.WebDriver.FindElement(By.Id("MerchantName"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             elementValue.ShouldBe(merchantName);
         }
 
@@ -812,7 +811,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             Decimal actualBalance = Decimal.Parse(elementValue);
             actualBalance.ShouldBe(availableBalance);
         }
@@ -825,7 +824,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IWebElement element = this.WebDriver.FindElement(By.Id("EstateName"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             elementValue.ShouldBe(SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
         }
 
@@ -1028,8 +1027,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 String postLogoutRedirectUris = SpecflowTableHelper.GetStringRowValue(tableRow, "PostLogoutRedirectUris");
 
                 scopes = scopes.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUIPort.ToString());
-                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUIPort.ToString());
+                redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
+                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
 
                 CreateClientRequest createClientRequest = new CreateClientRequest
                 {
@@ -1073,7 +1072,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Given(@"I am on the application home page")]
         public void GivenIAmOnTheApplicationHomePage()
         {
-            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUIPort}");
+            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUiPort}");
             this.WebDriver.Title.ShouldBe("Welcome");
         }
 
