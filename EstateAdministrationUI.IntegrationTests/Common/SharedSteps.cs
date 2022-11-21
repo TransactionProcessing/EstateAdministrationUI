@@ -8,8 +8,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Coypu;
-    using Coypu.Drivers.Selenium;
+    //using Coypu;
+    //using Coypu.Drivers.Selenium;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
