@@ -56,37 +56,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// The security service client
         /// </summary>
         public ISecurityServiceClient SecurityServiceClient;
-
-        /// <summary>
-        /// The test identifier
-        /// </summary>
-        public Guid TestId;
         
-        /// <summary>
-        /// The containers
-        /// </summary>
-        protected List<IContainerService> Containers;
-
-        /// <summary>
-        /// The estate management API port
-        /// </summary>
-        protected Int32 EstateManagementApiPort;
-
-        /// <summary>
-        /// The event store HTTP port
-        /// </summary>
-        protected Int32 EventStoreHttpPort;
-
-        /// <summary>
-        /// The security service port
-        /// </summary>
-        protected Int32 SecurityServicePort;
-
-        /// <summary>
-        /// The test networks
-        /// </summary>
-        protected List<INetworkService> TestNetworks;
-
         #endregion
 
         #region Constructors
@@ -125,11 +95,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             await this.StartEstateManagementUiContainer(this.TestNetworks);
             
-            // Cache the ports
-            //this.EstateManagementUiPort = estateManagementUiContainer.ToHostExposedEndpoint("5004/tcp").Port;
-
             // Setup the base address resolvers
-            String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementApiPort}";
+            String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
 
             HttpClientHandler clientHandler = new HttpClientHandler
                                               {
@@ -157,7 +124,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
             environmentVariables.Add($"EstateManagementScope=estateManagement{this.TestId.ToString("N")}");
             ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(this.EstateManagementUiContainerName)
-                                                             .UseImageDetails(("estatemanagementui", false))
+                                                             .UseImageDetails(("estateadministrationui", false))
                                                              .WithEnvironment(environmentVariables.ToArray()).UseNetwork(networkServices.ToArray()).ExposePort(5004)
                                                              .MountHostFolder(this.HostTraceFolder).SetDockerCredentials(this.DockerCredentials);
 
@@ -170,7 +137,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
 
             //  Do a health check here
-            this.CallbackHandlerPort = builtContainer.ToHostExposedEndpoint($"{DockerPorts.CallbackHandlerDockerPort}/tcp").Port;
+            this.CallbackHandlerPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
             Trace("Estate Management UI Started");
 

@@ -23,7 +23,7 @@
     {
         public MiddlewareRegistry()
         {
-            this.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService().AddEstateReportingService();
+            this.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService();
             
             this.AddAuthentication(options =>
                                    {
@@ -105,7 +105,6 @@
             this.AddSingleton<IApiClient, ApiClient>();
             this.AddSingleton<IEstateClient, EstateClient>();
             this.AddSingleton<IFileProcessorClient, FileProcessorClient>();
-            this.AddSingleton<IEstateReportingClient, EstateReportingClient>();
             this.AddSingleton<Func<String, String>>(container => (serviceName) =>
                                                                  {
                                                                      return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
