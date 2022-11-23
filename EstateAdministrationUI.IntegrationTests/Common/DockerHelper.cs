@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Data;
+    using System.Diagnostics;
     using System.Diagnostics.Eventing.Reader;
     using System.IO;
     using System.Linq;
@@ -31,12 +32,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Shared.Logger;
     using TransactionProcessor.Client;
     using ILogger = Shared.Logger.ILogger;
-
-    public enum DockerEnginePlatform
-    {
-        Linux,
-        Windows
-    }
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -86,6 +81,50 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.EstateManagementUiContainerName = $"estateadministrationui{this.TestId:N}";
         }
 
+        private static void AddEntryToHostsFile(String ipaddress,
+                                                String hostname)
+        {
+            if (BaseDockerHelper.GetDockerEnginePlatform() == Shared.IntegrationTesting.DockerEnginePlatform.Windows)
+            {
+                using (StreamWriter w = File.AppendText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts")))
+                {
+                    w.WriteLine($"{ipaddress} {hostname}");
+                }
+            }
+            else if (BaseDockerHelper.GetDockerEnginePlatform() == Shared.IntegrationTesting.DockerEnginePlatform.Linux)
+            {
+                DockerHelper.ExecuteBashCommand($"echo {ipaddress} {hostname} | sudo tee -a /etc/hosts");
+            }
+        }
+
+        /// <summary>
+        /// Executes the bash command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        private static void ExecuteBashCommand(String command)
+        {
+            // according to: https://stackoverflow.com/a/15262019/637142
+            // thans to this we will pass everything as one command
+            command = command.Replace("\"", "\"\"");
+
+            var proc = new Process
+                       {
+                           StartInfo = new ProcessStartInfo
+                                       {
+                                           FileName = "/bin/bash",
+                                           Arguments = "-c \"" + command + "\"",
+                                           UseShellExecute = false,
+                                           RedirectStandardOutput = true,
+                                           CreateNoWindow = true
+                                       }
+                       };
+            Console.WriteLine(proc.StartInfo.Arguments);
+
+            proc.Start();
+            proc.WaitForExit();
+        }
+
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -95,7 +134,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await base.StartContainersForScenarioRun(scenarioName);
 
             await this.StartEstateManagementUiContainer(this.TestNetworks, this.SecurityServicePort);
-            
+
+            DockerHelper.AddEntryToHostsFile("127.0.0.1", SecurityServiceContainerName);
+            DockerHelper.AddEntryToHostsFile("localhost", SecurityServiceContainerName);
+
             // Setup the base address resolvers
             String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
 

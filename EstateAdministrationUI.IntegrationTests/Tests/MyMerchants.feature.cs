@@ -86,9 +86,9 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
                         "Role Name"});
             table21.AddRow(new string[] {
-                        "Estate[id]"});
+                        "Estate"});
             table21.AddRow(new string[] {
-                        "Merchant[id]"});
+                        "Merchant"});
 #line 6
  testRunner.Given("I create the following roles", ((string)(null)), table21, "Given ");
 #line hidden
@@ -97,7 +97,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "DisplayName",
                         "Description"});
             table22.AddRow(new string[] {
-                        "estateManagement[id]",
+                        "estateManagement",
                         "Estate Managememt REST Scope",
                         "A scope for Estate Managememt REST"});
 #line 11
@@ -110,10 +110,10 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Scopes",
                         "UserClaims"});
             table23.AddRow(new string[] {
-                        "estateManagement[id]",
+                        "estateManagement",
                         "Estate Managememt REST",
                         "Secret1",
-                        "estateManagement[id]",
+                        "estateManagement",
                         "merchantId,estateId,role"});
 #line 15
  testRunner.Given("I create the following api resources", ((string)(null)), table23, "Given ");
@@ -150,41 +150,44 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "RedirectUris",
                         "PostLogoutRedirectUris",
                         "RequireConsent",
-                        "AllowOfflineAccess"});
+                        "AllowOfflineAccess",
+                        "ClientUri"});
             table25.AddRow(new string[] {
-                        "serviceClient[id]",
+                        "serviceClient",
                         "Service Client",
                         "Secret1",
-                        "estateManagement[id]",
+                        "estateManagement",
                         "client_credentials",
+                        "",
                         "",
                         "",
                         "",
                         ""});
             table25.AddRow(new string[] {
-                        "estateUIClient[id]",
+                        "estateUIClient",
                         "Merchant Client",
                         "Secret1",
-                        "estateManagement[id],openid,email,profile",
+                        "estateManagement,openid,email,profile",
                         "hybrid",
                         "https://localhost:[port]/signin-oidc",
                         "https://localhost:[port]/signout-oidc",
                         "false",
-                        "true"});
+                        "true",
+                        "https://[url]:[port]"});
 #line 25
  testRunner.Given("I create the following clients", ((string)(null)), table25, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId"});
             table26.AddRow(new string[] {
-                        "serviceClient[id]"});
+                        "serviceClient"});
 #line 30
  testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table26, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
             table27.AddRow(new string[] {
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 34
  testRunner.Given("I have created the following estates", ((string)(null)), table27, "Given ");
 #line hidden
@@ -194,8 +197,8 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "RequireCustomMerchantNumber",
                         "RequireCustomTerminalNumber"});
             table28.AddRow(new string[] {
-                        "Test Estate [id]",
-                        "Test Operator [id]",
+                        "Test Estate",
+                        "Test Operator",
                         "True",
                         "True"});
 #line 38
@@ -208,11 +211,11 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "FamilyName",
                         "EstateName"});
             table29.AddRow(new string[] {
-                        "estateuser[id]@testestate1.co.uk",
+                        "estateuser@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 42
  testRunner.And("I have created the following security users", ((string)(null)), table29, "And ");
 #line hidden
@@ -235,7 +238,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "United Kingdom",
                         "Test Contact 1",
                         "testcontact1@merchant1.co.uk",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table30.AddRow(new string[] {
                         "Test Merchant 2",
                         "Weekly",
@@ -245,7 +248,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "United Kingdom",
                         "Test Contact 1",
                         "testcontact1@merchant2.co.uk",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table30.AddRow(new string[] {
                         "Test Merchant 3",
                         "Monthly",
@@ -255,7 +258,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "United Kingdom",
                         "Test Contact 1",
                         "testcontact1@merchant3.co.uk",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 46
  testRunner.Given("I create the following merchants", ((string)(null)), table30, "Given ");
 #line hidden
@@ -266,23 +269,23 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "TerminalNumber",
                         "EstateName"});
             table31.AddRow(new string[] {
-                        "Test Operator [id]",
+                        "Test Operator",
                         "Test Merchant 1",
                         "00000001",
                         "10000001",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table31.AddRow(new string[] {
-                        "Test Operator [id]",
+                        "Test Operator",
                         "Test Merchant 2",
                         "00000001",
                         "10000001",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table31.AddRow(new string[] {
-                        "Test Operator [id]",
+                        "Test Operator",
                         "Test Merchant 3",
                         "00000001",
                         "10000001",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 52
  testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table31, "When ");
 #line hidden
@@ -294,26 +297,26 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "MerchantName",
                         "EstateName"});
             table32.AddRow(new string[] {
-                        "merchantuser1[id]@testmerchant1.co.uk",
+                        "merchantuser1@testmerchant1.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 1",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table32.AddRow(new string[] {
-                        "merchantuser1[id]@testmerchant2.co.uk",
+                        "merchantuser1@testmerchant2.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 2",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table32.AddRow(new string[] {
-                        "merchantuser1[id]@testmerchant3.co.uk",
+                        "merchantuser1@testmerchant3.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 3",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 58
  testRunner.When("I create the following security users", ((string)(null)), table32, "When ");
 #line hidden
@@ -324,15 +327,15 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             table33.AddRow(new string[] {
                         "TestDevice1",
                         "Test Merchant 1",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table33.AddRow(new string[] {
                         "TestDevice2",
                         "Test Merchant 2",
-                        "Test Estate [id]"});
+                        "Test Estate"});
             table33.AddRow(new string[] {
                         "TestDevice3",
                         "Test Merchant 3",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 64
  testRunner.When("I add the following devices to the merchant", ((string)(null)), table33, "When ");
 #line hidden
@@ -346,8 +349,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  testRunner.Then("I am presented with a login screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 76
- testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'123456" +
-                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 78
  testRunner.Then("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

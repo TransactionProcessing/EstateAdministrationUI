@@ -307,7 +307,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table11.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
 #line 65
  testRunner.And("the following operator details are in the list", ((string)(null)), table11, "And ");
 #line hidden
@@ -345,7 +345,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table12.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
 #line 72
  testRunner.And("the following operator details are in the list", ((string)(null)), table12, "And ");
 #line hidden
@@ -371,7 +371,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table14.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
                 table14.AddRow(new string[] {
                             "Test New Operator"});
 #line 82
@@ -420,7 +420,7 @@ this.FeatureBackground();
                             "OperatorName",
                             "ContractDescription"});
                 table15.AddRow(new string[] {
-                            "Test Operator [id]",
+                            "Test Operator",
                             "Test Contract"});
 #line 94
  testRunner.When("I enter the following new contract details", ((string)(null)), table15, "When ");
