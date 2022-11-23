@@ -8,7 +8,6 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using Areas.Estate.Models;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using Factories;
     using FileProcessor.DataTransferObjects.Responses;
     using Microsoft.AspNetCore.Identity;

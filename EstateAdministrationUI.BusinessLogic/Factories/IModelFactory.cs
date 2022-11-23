@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Models;
     using TransactionProcessor.DataTransferObjects;

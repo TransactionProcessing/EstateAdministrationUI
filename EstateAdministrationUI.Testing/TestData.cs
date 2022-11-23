@@ -6,7 +6,6 @@
     using BusinessLogic.Models;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
     using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;

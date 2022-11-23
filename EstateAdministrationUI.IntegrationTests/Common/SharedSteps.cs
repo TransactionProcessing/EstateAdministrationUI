@@ -1026,9 +1026,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 // Get the post logout redirect uris
                 String postLogoutRedirectUris = SpecflowTableHelper.GetStringRowValue(tableRow, "PostLogoutRedirectUris");
 
-                scopes = scopes.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                redirectUris = redirectUris.Replace("[url]", "localhost");
                 redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
+                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[url]", "localhost");
                 postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
+
+                String clientUri = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientUri");
+                clientUri = clientUri.Replace("[url]", "localhost");
+                clientUri = clientUri.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
 
                 CreateClientRequest createClientRequest = new CreateClientRequest
                 {
@@ -1041,25 +1046,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                     ClientPostLogoutRedirectUris = string.IsNullOrEmpty(postLogoutRedirectUris) ? null : postLogoutRedirectUris.Split(",").ToList(),
                     ClientDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
                     RequireConsent = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireConsent"),
-                    AllowOfflineAccess = SpecflowTableHelper.GetBooleanValue(tableRow, "AllowOfflineAccess")
-
+                    AllowOfflineAccess = SpecflowTableHelper.GetBooleanValue(tableRow, "AllowOfflineAccess"),
+                    ClientUri = clientUri
                 };
-
-                // Do the replacement on the Uris
-                //if (createClientRequest.ClientRedirectUris != null && createClientRequest.ClientRedirectUris.Any())
-                //{
-                //    foreach (String clientRedirectUri in createClientRequest.ClientRedirectUris)
-                //    {
-                //        clientRedirectUri
-                //    }
-                //    createClientRequest.ClientRedirectUris.ForEach(c => c = c.Replace("[port]", this.TestingContext.DockerHelper.SecurityServiceTestUIPort.ToString()));
-                //}
-
-                //if (createClientRequest.ClientPostLogoutRedirectUris != null && createClientRequest.ClientPostLogoutRedirectUris.Any())
-                //{
-                //    createClientRequest.ClientPostLogoutRedirectUris.ForEach(c => c = c.Replace("[port]", this.TestingContext.DockerHelper.SecurityServiceTestUIPort.ToString()));
-                //}
-
+                
                 CreateClientResponse createClientResponse = await this.CreateClient(createClientRequest, CancellationToken.None).ConfigureAwait(false);
 
                 createClientResponse.ShouldNotBeNull();

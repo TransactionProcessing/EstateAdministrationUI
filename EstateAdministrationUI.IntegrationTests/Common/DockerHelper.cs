@@ -82,6 +82,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
         public override void SetupContainerNames() {
             base.SetupContainerNames();
+            this.SecurityServiceContainerName = $"identity-server";
             this.EstateManagementUiContainerName = $"estateadministrationui{this.TestId:N}";
         }
 
@@ -93,7 +94,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             await base.StartContainersForScenarioRun(scenarioName);
 
-            await this.StartEstateManagementUiContainer(this.TestNetworks);
+            await this.StartEstateManagementUiContainer(this.TestNetworks, this.SecurityServicePort);
             
             // Setup the base address resolvers
             String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
@@ -111,22 +112,29 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                               };
             HttpClient httpClient = new HttpClient(clientHandler);
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
-            Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
+            //Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
+            Func<String, String> securityServiceBaseAddressResolver = api => $"https://127.0.0.1:{this.SecurityServicePort}";
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
         }
         
-        private async Task<IContainerService> StartEstateManagementUiContainer(List<INetworkService> networkServices)
+        private async Task<IContainerService> StartEstateManagementUiContainer(List<INetworkService> networkServices,
+                                                                               Int32 securityServiceContainerPort)
         {
             Trace("About to Start Estate Management UI Container");
 
             List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
-            environmentVariables.Add($"AppSettings:Authority=https://sferguson.ddns.net:55001");
-            environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
-            environmentVariables.Add($"EstateManagementScope=estateManagement{this.TestId.ToString("N")}");
+            environmentVariables.Add($"AppSettings:Authority=https://identity-server:{securityServiceContainerPort}");
+            //environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
+            environmentVariables.Add($"ASPNETCORE_ENVIRONMENT=Development");
+            environmentVariables.Add($"EstateManagementScope=estateManagement");
+            environmentVariables.Add("urls=https://*:5004");
+            environmentVariables.Add($"AppSettings:ClientId=estateUIClient");
+            environmentVariables.Add($"AppSettings:ClientSecret=Secret1");
+
             ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(this.EstateManagementUiContainerName)
-                                                             .UseImageDetails(("estateadministrationui", false))
-                                                             .WithEnvironment(environmentVariables.ToArray()).UseNetwork(networkServices.ToArray()).ExposePort(5004)
-                                                             .MountHostFolder(this.HostTraceFolder).SetDockerCredentials(this.DockerCredentials);
+                                                             .UseImageDetails(("estateadministrationui", false)).WithEnvironment(environmentVariables.ToArray())
+                                                             .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
+                                                             .SetDockerCredentials(this.DockerCredentials);
 
 
             IContainerService builtContainer = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
@@ -137,17 +145,55 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
 
             //  Do a health check here
-            this.CallbackHandlerPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
+            this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
             Trace("Estate Management UI Started");
-
+            this.Containers.Add(builtContainer);
             //await Retry.For(async () => {
-                                //String healthCheck =
-                                    //await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
+            //String healthCheck =
+            //await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
 
-                                //var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
-                                //result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Service Type: {containerType} Details {healthCheck}");
-                            //});
+            //var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
+            //result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Service Type: {containerType} Details {healthCheck}");
+            //});
+
+            return builtContainer;
+        }
+
+        public override async Task<IContainerService> SetupSecurityServiceContainer(INetworkService networkService,
+                                                                              List<String> additionalEnvironmentVariables = null)
+        {
+            this.Trace("About to Start Security Container");
+
+            List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
+            environmentVariables.Add($"ServiceOptions:PublicOrigin=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
+            environmentVariables.Add($"ServiceOptions:IssuerUrl=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
+            environmentVariables.Add("ASPNETCORE_ENVIRONMENT=IntegrationTest");
+            environmentVariables.Add($"urls=https://*:{DockerPorts.SecurityServiceDockerPort}");
+
+            if (additionalEnvironmentVariables != null)
+            {
+                environmentVariables.AddRange(additionalEnvironmentVariables);
+            }
+
+            ContainerBuilder securityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
+                                                                     .WithEnvironment(environmentVariables.ToArray())
+                                                                     .UseImageDetails(this.GetImageDetails(ContainerType.SecurityService))
+                                                                     .ExposePort(DockerPorts.SecurityServiceDockerPort, DockerPorts.SecurityServiceDockerPort)
+                                                                     .MountHostFolder(this.HostTraceFolder)
+                                                                     .SetDockerCredentials(this.DockerCredentials);
+
+            // Now build and return the container                
+            IContainerService builtContainer = securityServiceContainer.Build().Start().WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
+
+            networkService.Attach(builtContainer, false);
+
+            this.Trace("Security Service Container Started");
+            this.Containers.Add(builtContainer);
+
+            //  Do a health check here
+            this.SecurityServicePort = builtContainer.ToHostExposedEndpoint($"{DockerPorts.SecurityServiceDockerPort}/tcp").Port;
+            await this.DoHealthCheck(ContainerType.SecurityService);
 
             return builtContainer;
         }

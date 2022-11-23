@@ -14,8 +14,6 @@
     using EstateManagement.Client;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.Client;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.Client;
     using FileProcessor.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
@@ -38,11 +36,6 @@
         /// The estate client
         /// </summary>
         private readonly IEstateClient EstateClient;
-
-        /// <summary>
-        /// The estate reporting client
-        /// </summary>
-        private readonly IEstateReportingClient EstateReportingClient;
 
         /// <summary>
         /// The file processor client
@@ -68,13 +61,11 @@
         /// <param name="fileProcessorClient">The file processor client.</param>
         /// <param name="modelFactory">The model factory.</param>
         public ApiClient(IEstateClient estateClient,
-                         IEstateReportingClient estateReportingClient,
                          IFileProcessorClient fileProcessorClient,
                          ITransactionProcessorClient transactionProcessorClient,
                          IModelFactory modelFactory)
         {
             this.EstateClient = estateClient;
-            this.EstateReportingClient = estateReportingClient;
             this.FileProcessorClient = fileProcessorClient;
             this.TransactionProcessorClient = transactionProcessorClient;
             this.ModelFactory = modelFactory;

@@ -5,7 +5,6 @@
     using System.Linq;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
