@@ -9,7 +9,6 @@ namespace EstateAdministrationUI
     using Bootstrapper;
     using BusinessLogic.Factories;
     using EstateManagement.Client;
-    using EstateReporting.Client;
     using Factories;
     using FileProcessor.Client;
     using HealthChecks.UI.Client;

@@ -86,7 +86,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Role Name"});
             table1.AddRow(new string[] {
-                        "Estate[id]"});
+                        "Estate"});
 #line 6
  testRunner.Given("I create the following roles", ((string)(null)), table1, "Given ");
 #line hidden
@@ -95,7 +95,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "DisplayName",
                         "Description"});
             table2.AddRow(new string[] {
-                        "estateManagement[id]",
+                        "estateManagement",
                         "Estate Managememt REST Scope",
                         "A scope for Estate Managememt REST"});
 #line 10
@@ -108,10 +108,10 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Scopes",
                         "UserClaims"});
             table3.AddRow(new string[] {
-                        "estateManagement[id]",
+                        "estateManagement",
                         "Estate Managememt REST",
                         "Secret1",
-                        "estateManagement[id]",
+                        "estateManagement",
                         "merchantId,estateId,role"});
 #line 14
  testRunner.Given("I create the following api resources", ((string)(null)), table3, "Given ");
@@ -148,41 +148,44 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "RedirectUris",
                         "PostLogoutRedirectUris",
                         "RequireConsent",
-                        "AllowOfflineAccess"});
+                        "AllowOfflineAccess",
+                        "ClientUri"});
             table5.AddRow(new string[] {
-                        "serviceClient[id]",
+                        "serviceClient",
                         "Service Client",
                         "Secret1",
-                        "estateManagement[id]",
+                        "estateManagement",
                         "client_credentials",
+                        "",
                         "",
                         "",
                         "",
                         ""});
             table5.AddRow(new string[] {
-                        "estateUIClient[id]",
+                        "estateUIClient",
                         "Merchant Client",
                         "Secret1",
-                        "estateManagement[id],openid,email,profile",
+                        "estateManagement,openid,email,profile",
                         "hybrid",
-                        "https://localhost:[port]/signin-oidc",
-                        "https://localhost:[port]/signout-oidc",
+                        "https://[url]:[port]/signin-oidc",
+                        "https://[url]:[port]/signout-oidc",
                         "false",
-                        "true"});
+                        "true",
+                        "https://[url]:[port]"});
 #line 24
  testRunner.Given("I create the following clients", ((string)(null)), table5, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId"});
             table6.AddRow(new string[] {
-                        "serviceClient[id]"});
+                        "serviceClient"});
 #line 29
  testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table6, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
             table7.AddRow(new string[] {
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 33
  testRunner.Given("I have created the following estates", ((string)(null)), table7, "Given ");
 #line hidden
@@ -192,8 +195,8 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "RequireCustomMerchantNumber",
                         "RequireCustomTerminalNumber"});
             table8.AddRow(new string[] {
-                        "Test Estate [id]",
-                        "Test Operator [id]",
+                        "Test Estate",
+                        "Test Operator",
                         "True",
                         "True"});
 #line 37
@@ -206,11 +209,11 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "FamilyName",
                         "EstateName"});
             table9.AddRow(new string[] {
-                        "estateuser[id]@testestate1.co.uk",
+                        "estateuser@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
-                        "Test Estate [id]"});
+                        "Test Estate"});
 #line 41
  testRunner.And("I have created the following security users", ((string)(null)), table9, "And ");
 #line hidden
@@ -224,8 +227,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  testRunner.Then("I am presented with a login screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 51
- testRunner.When("I login with the username \'estateuser[id]@testestate1.co.uk\' and password \'123456" +
-                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 53
  testRunner.Then("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -267,7 +269,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "EstateName"});
                 table10.AddRow(new string[] {
-                            "Test Estate [id]"});
+                            "Test Estate"});
 #line 58
  testRunner.And("My Estate Details will be shown", ((string)(null)), table10, "And ");
 #line hidden
@@ -305,7 +307,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table11.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
 #line 65
  testRunner.And("the following operator details are in the list", ((string)(null)), table11, "And ");
 #line hidden
@@ -343,7 +345,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table12.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
 #line 72
  testRunner.And("the following operator details are in the list", ((string)(null)), table12, "And ");
 #line hidden
@@ -369,7 +371,7 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table14.AddRow(new string[] {
-                            "Test Operator [id]"});
+                            "Test Operator"});
                 table14.AddRow(new string[] {
                             "Test New Operator"});
 #line 82
@@ -418,7 +420,7 @@ this.FeatureBackground();
                             "OperatorName",
                             "ContractDescription"});
                 table15.AddRow(new string[] {
-                            "Test Operator [id]",
+                            "Test Operator",
                             "Test Contract"});
 #line 94
  testRunner.When("I enter the following new contract details", ((string)(null)), table15, "When ");

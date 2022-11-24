@@ -8,8 +8,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Coypu;
-    using Coypu.Drivers.Selenium;
+    //using Coypu;
+    //using Coypu.Drivers.Selenium;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
@@ -18,7 +18,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
-    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
@@ -83,7 +82,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             foreach (TableRow tableRow in table.Rows)
             {
                 String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                await Retry.For(async () => { await this.TestingContext.DockerHelper.PopulateSubscriptionServiceConfiguration(estateName, this.TestingContext.DockerHelper.IsSecureEventStore).ConfigureAwait(false); },
+                await Retry.For(async () => { await this.TestingContext.DockerHelper.CreateEstateSubscriptions(estateName).ConfigureAwait(false); },
                                 retryFor:TimeSpan.FromMinutes(2),
                                 retryInterval:TimeSpan.FromSeconds(30));
             }
@@ -666,9 +665,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         [Then(@"I am presented the make merchant deposit screen")]
-        public void ThenIAmPresentedTheMakeMerchantDepositScreen()
-        {
-            this.WebDriver.Title.ShouldBe("Make Merchant Deposit");
+        public async Task ThenIAmPresentedTheMakeMerchantDepositScreen() {
+            await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Make Merchant Deposit"); });
         }
 
         [When(@"I make the following deposit")]
@@ -795,7 +793,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             IWebElement element = this.WebDriver.FindElement(By.Id("MerchantName"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             elementValue.ShouldBe(merchantName);
         }
 
@@ -812,7 +810,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             Decimal actualBalance = Decimal.Parse(elementValue);
             actualBalance.ShouldBe(availableBalance);
         }
@@ -825,7 +823,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             IWebElement element = this.WebDriver.FindElement(By.Id("EstateName"));
             element.ShouldNotBeNull();
-            String elementValue = element.GetProperty("value");
+            String elementValue = element.GetDomProperty("value");
             elementValue.ShouldBe(SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
         }
 
@@ -1027,9 +1025,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 // Get the post logout redirect uris
                 String postLogoutRedirectUris = SpecflowTableHelper.GetStringRowValue(tableRow, "PostLogoutRedirectUris");
 
-                scopes = scopes.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUIPort.ToString());
-                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUIPort.ToString());
+                redirectUris = redirectUris.Replace("[url]", "localhost");
+                redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
+                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[url]", "localhost");
+                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
+
+                String clientUri = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientUri");
+                clientUri = clientUri.Replace("[url]", "localhost");
+                clientUri = clientUri.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
 
                 CreateClientRequest createClientRequest = new CreateClientRequest
                 {
@@ -1042,25 +1045,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                     ClientPostLogoutRedirectUris = string.IsNullOrEmpty(postLogoutRedirectUris) ? null : postLogoutRedirectUris.Split(",").ToList(),
                     ClientDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
                     RequireConsent = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireConsent"),
-                    AllowOfflineAccess = SpecflowTableHelper.GetBooleanValue(tableRow, "AllowOfflineAccess")
-
+                    AllowOfflineAccess = SpecflowTableHelper.GetBooleanValue(tableRow, "AllowOfflineAccess"),
+                    ClientUri = clientUri
                 };
-
-                // Do the replacement on the Uris
-                //if (createClientRequest.ClientRedirectUris != null && createClientRequest.ClientRedirectUris.Any())
-                //{
-                //    foreach (String clientRedirectUri in createClientRequest.ClientRedirectUris)
-                //    {
-                //        clientRedirectUri
-                //    }
-                //    createClientRequest.ClientRedirectUris.ForEach(c => c = c.Replace("[port]", this.TestingContext.DockerHelper.SecurityServiceTestUIPort.ToString()));
-                //}
-
-                //if (createClientRequest.ClientPostLogoutRedirectUris != null && createClientRequest.ClientPostLogoutRedirectUris.Any())
-                //{
-                //    createClientRequest.ClientPostLogoutRedirectUris.ForEach(c => c = c.Replace("[port]", this.TestingContext.DockerHelper.SecurityServiceTestUIPort.ToString()));
-                //}
-
+                
                 CreateClientResponse createClientResponse = await this.CreateClient(createClientRequest, CancellationToken.None).ConfigureAwait(false);
 
                 createClientResponse.ShouldNotBeNull();
@@ -1073,7 +1061,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         [Given(@"I am on the application home page")]
         public void GivenIAmOnTheApplicationHomePage()
         {
-            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUIPort}");
+            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUiPort}");
             this.WebDriver.Title.ShouldBe("Welcome");
         }
 
@@ -1099,7 +1087,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         [Then(@"I am presented with the Estate Administrator Dashboard")]
-        public void ThenIAmPresentedWithTheEstateAdministratorDashboard()
+        public async Task ThenIAmPresentedWithTheEstateAdministratorDashboard()
         {
             if (this.WebDriver.Title != "Dashboard")
             {
@@ -1108,7 +1096,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 var stringVersion = screenshot.AsBase64EncodedString;
                 Console.WriteLine(stringVersion);
             }
-            this.WebDriver.Title.ShouldBe("Dashboard");
+
+            await Retry.For(async () => {
+                                this.WebDriver.Title.ShouldBe("Dashboard");
+                            });
+
         }
 
         private async Task ClickElementInTable(String tableId,

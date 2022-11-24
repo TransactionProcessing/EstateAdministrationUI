@@ -5,15 +5,15 @@ Background:
 
 	Given I create the following roles
 	| Role Name  |
-	| Estate[id] |
+	| Estate |
 
 	Given I create the following api scopes
 	| Name                 | DisplayName                  | Description                        |
-	| estateManagement[id] | Estate Managememt REST Scope | A scope for Estate Managememt REST |
+	| estateManagement | Estate Managememt REST Scope | A scope for Estate Managememt REST |
 
 	Given I create the following api resources
 	| Name                 | DisplayName            | Secret  | Scopes           | UserClaims               |
-	| estateManagement[id] | Estate Managememt REST | Secret1 | estateManagement[id] | merchantId,estateId,role |
+	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId,estateId,role |
 
 	Given I create the following identity resources
 	| Name    | DisplayName          | Description                                                 | UserClaims                                                             |
@@ -22,25 +22,25 @@ Background:
 	| email   | Email                | Email and Email Verified Flags                              | email_verified,email                                                   |
 
 	Given I create the following clients
-	| ClientId           | Name            | Secret  | Scopes                                    | GrantTypes         | RedirectUris                        | PostLogoutRedirectUris               | RequireConsent | AllowOfflineAccess |
-	| serviceClient[id]  | Service Client  | Secret1 | estateManagement[id]                      | client_credentials |                                     |                                      |                |                    |
-	| estateUIClient[id] | Merchant Client | Secret1 | estateManagement[id],openid,email,profile | hybrid             | https://localhost:[port]/signin-oidc | https://localhost:[port]/signout-oidc | false          | true               |
+	| ClientId       | Name            | Secret  | Scopes                                | GrantTypes         | RedirectUris                     | PostLogoutRedirectUris            | RequireConsent | AllowOfflineAccess | ClientUri            |
+	| serviceClient  | Service Client  | Secret1 | estateManagement                      | client_credentials |                                  |                                   |                |                    |                      |
+	| estateUIClient | Merchant Client | Secret1 | estateManagement,openid,email,profile | hybrid             | https://[url]:[port]/signin-oidc | https://[url]:[port]/signout-oidc | false          | true               | https://[url]:[port] |
 
 	Given I have a token to access the estate management resource
-	| ClientId          |
-	| serviceClient[id] |
+	| ClientId      |
+	| serviceClient |
 
 	Given I have created the following estates
-	| EstateName       |
-	| Test Estate [id] |
+	| EstateName  |
+	| Test Estate |
 
 	And I have created the following operators
-	| EstateName       | OperatorName       | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
-	| Test Estate [id] | Test Operator [id] | True                        | True                        |
+	| EstateName  | OperatorName  | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
+	| Test Estate | Test Operator | True                        | True                        |
 
 	And I have created the following security users
-	| EmailAddress                     | Password | GivenName  | FamilyName | EstateName       |
-	| estateuser[id]@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate [id] |
+	| EmailAddress                 | Password | GivenName  | FamilyName | EstateName  |
+	| estateuser@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate |
 
 	Given I am on the application home page
 
@@ -48,7 +48,7 @@ Background:
 	
 	Then I am presented with a login screen
 	
-	When I login with the username 'estateuser[id]@testestate1.co.uk' and password '123456'
+	When I login with the username 'estateuser@testestate1.co.uk' and password '123456'
 	
 	Then I am presented with the Estate Administrator Dashboard
 
@@ -57,21 +57,21 @@ Scenario: View Estate
 	Then I am presented with the Estate Details Screen
 	And My Estate Details will be shown
 	| EstateName       |
-	| Test Estate [id] |
+	| Test Estate |
 
 Scenario: View My Operators
 	Given I click on the My Operators sidebar option
 	Then I am presented with the Operators List Screen
 	And the following operator details are in the list
 	| OperatorName       |
-	| Test Operator [id] |
+	| Test Operator |
 
 Scenario: Create New Operator
 	Given I click on the My Operators sidebar option
 	Then I am presented with the Operators List Screen
 	And the following operator details are in the list
 	| OperatorName       |
-	| Test Operator [id] |
+	| Test Operator |
 	When I click the Add New Operator button
 	Then I am presented the new operator screen
 	When I enter the following new operator details
@@ -81,7 +81,7 @@ Scenario: Create New Operator
 	Then I am presented with the Operators List Screen
 	And the following operator details are in the list
 	| OperatorName       |
-	| Test Operator [id] |
+	| Test Operator |
 	| Test New Operator |
 
 @PRTest
@@ -93,7 +93,7 @@ Scenario: Create New Contract
 	Then I am presented the new contract screen
 	When I enter the following new contract details
 	| OperatorName       | ContractDescription |
-	| Test Operator [id] | Test Contract       |
+	| Test Operator | Test Contract       |
 	When I click the Create Contract button
 	Then I am presented with the Contracts List Screen
 	And the following contract details are in the list
