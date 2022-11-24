@@ -84,14 +84,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         private static void AddEntryToHostsFile(String ipaddress,
                                                 String hostname)
         {
-            if (BaseDockerHelper.GetDockerEnginePlatform() == Shared.IntegrationTesting.DockerEnginePlatform.Windows)
+            if (FdOs.IsWindows())
             {
                 using (StreamWriter w = File.AppendText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts")))
                 {
                     w.WriteLine($"{ipaddress} {hostname}");
                 }
             }
-            else if (BaseDockerHelper.GetDockerEnginePlatform() == Shared.IntegrationTesting.DockerEnginePlatform.Linux)
+            else if (FdOs.IsLinux())
             {
                 DockerHelper.ExecuteBashCommand($"echo {ipaddress} {hostname} | sudo tee -a /etc/hosts");
             }

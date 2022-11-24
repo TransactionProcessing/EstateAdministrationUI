@@ -614,9 +614,6 @@ this.FeatureBackground();
 #line 118
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 119
- testRunner.And("the available balance for the merchant should be 1000.00", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
             }
             this.ScenarioCleanup();
         }

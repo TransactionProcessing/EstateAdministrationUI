@@ -1088,7 +1088,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         [Then(@"I am presented with the Estate Administrator Dashboard")]
-        public void ThenIAmPresentedWithTheEstateAdministratorDashboard()
+        public async Task ThenIAmPresentedWithTheEstateAdministratorDashboard()
         {
             if (this.WebDriver.Title != "Dashboard")
             {
@@ -1097,7 +1097,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 var stringVersion = screenshot.AsBase64EncodedString;
                 Console.WriteLine(stringVersion);
             }
-            this.WebDriver.Title.ShouldBe("Dashboard");
+
+            await Retry.For(async () => {
+                                this.WebDriver.Title.ShouldBe("Dashboard");
+                            });
+
         }
 
         private async Task ClickElementInTable(String tableId,
