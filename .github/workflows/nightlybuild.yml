@@ -30,10 +30,10 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install NET 6
+    - name: Install NET 7
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
         
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -99,10 +99,10 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install NET 6
+    - name: Install NET 7
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
         
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -163,10 +163,10 @@ jobs:
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
         Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
-    - name: Install NET 6
+    - name: Install NET 7
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -215,38 +215,38 @@ jobs:
         body: Url is ${{env.action_url}}
         labels: nightlybuild
 
-  codecoverage:
-    name: "Nightly Build - Code Coverage"
-    env:
-        ASPNETCORE_ENVIRONMENT: "Production"
+  #codecoverage:
+  #  name: "Nightly Build - Code Coverage"
+  #  env:
+  #      ASPNETCORE_ENVIRONMENT: "Production"
 
-    runs-on: ubuntu-latest
+  #  runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2.3.4
+  #  steps:
+  #  - uses: actions/checkout@v2.3.4
 
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+  #  - name: Restore Nuget Packages
+  #    run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
 
-    - name: Build Code
-      run: dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+  #  - name: Build Code
+  #    run: dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
 
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
+  #  - name: Run Unit Tests
+  #    run: |
+  #      echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+  #      dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
+  #      dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
     
-    - name: Setup Node.js for use with actions
-      uses: actions/setup-node@v1.4.4
+  #  - name: Setup Node.js for use with actions
+  #    uses: actions/setup-node@v1.4.4
     
-    - name: Combine Coverage
-      run: |
-        npm i lcov-result-merger
-        ./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*.info' 'lcov.info' 
+  #  - name: Combine Coverage
+  #    run: |
+  #      npm i lcov-result-merger
+  #      ./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*.info' 'lcov.info' 
     
-    - name: Upload Code Coverage
-      uses: coverallsapp/github-action@master
-      with:
-          github-token: ${{ secrets.github_token }}
-          path-to-lcov: lcov.info
+  #  - name: Upload Code Coverage
+  #    uses: coverallsapp/github-action@master
+  #    with:
+  #        github-token: ${{ secrets.github_token }}
+  #        path-to-lcov: lcov.info

@@ -6,7 +6,6 @@
     using BusinessLogic.Factories;
     using Common;
     using EstateManagement.Client;
-    using EstateReporting.Client;
     using Factories;
     using FileProcessor.Client;
     using IdentityModel;
@@ -18,12 +17,13 @@
     using Services;
     using Shared.Extensions;
     using Shared.General;
+    using TransactionProcessor.Client;
 
     public class MiddlewareRegistry :ServiceRegistry
     {
         public MiddlewareRegistry()
         {
-            this.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService().AddEstateReportingService();
+            this.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService();
             
             this.AddAuthentication(options =>
                                    {
@@ -105,7 +105,7 @@
             this.AddSingleton<IApiClient, ApiClient>();
             this.AddSingleton<IEstateClient, EstateClient>();
             this.AddSingleton<IFileProcessorClient, FileProcessorClient>();
-            this.AddSingleton<IEstateReportingClient, EstateReportingClient>();
+            this.AddSingleton<ITransactionProcessorClient, TransactionProcessorClient>();
             this.AddSingleton<Func<String, String>>(container => (serviceName) =>
                                                                  {
                                                                      return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;

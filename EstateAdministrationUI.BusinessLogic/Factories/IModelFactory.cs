@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Models;
+    using TransactionProcessor.DataTransferObjects;
     using SortDirectionModel = Models.SortDirection;
     using SortFieldModel = Models.SortField;
 
@@ -175,7 +175,7 @@
         /// </summary>
         /// <param name="merchantBalanceHistory">The merchant balance history.</param>
         /// <returns></returns>
-        List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> merchantBalanceHistory);
+        List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceChangedEntryResponse> merchantBalanceHistory);
 
         /// <summary>
         /// Converts from.

@@ -5,6 +5,7 @@ using System.Text;
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Data;
+    using System.Diagnostics;
     using System.Diagnostics.Eventing.Reader;
     using System.IO;
     using System.Linq;
@@ -32,12 +33,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using TransactionProcessor.Client;
     using ILogger = Shared.Logger.ILogger;
 
-    public enum DockerEnginePlatform
-    {
-        Linux,
-        Windows
-    }
-
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
         #region Fields
@@ -56,37 +51,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// The security service client
         /// </summary>
         public ISecurityServiceClient SecurityServiceClient;
-
-        /// <summary>
-        /// The test identifier
-        /// </summary>
-        public Guid TestId;
         
-        /// <summary>
-        /// The containers
-        /// </summary>
-        protected List<IContainerService> Containers;
-
-        /// <summary>
-        /// The estate management API port
-        /// </summary>
-        protected Int32 EstateManagementApiPort;
-
-        /// <summary>
-        /// The event store HTTP port
-        /// </summary>
-        protected Int32 EventStoreHttpPort;
-
-        /// <summary>
-        /// The security service port
-        /// </summary>
-        protected Int32 SecurityServicePort;
-
-        /// <summary>
-        /// The test networks
-        /// </summary>
-        protected List<INetworkService> TestNetworks;
-
         #endregion
 
         #region Constructors
@@ -95,93 +60,70 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// Initializes a new instance of the <see cref="DockerHelper"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public DockerHelper(NlogLogger logger)
+        public DockerHelper()
         {
-            this.Logger = logger;
-            this.Containers = new List<IContainerService>();
-            this.TestNetworks = new List<INetworkService>();
+            this.TestingContext = new TestingContext();
         }
 
         #endregion
 
         #region Methods
-
-
-        public static INetworkService SetupTestNetwork(String networkName)
-        {
-            DockerEnginePlatform engineType = DockerHelper.GetDockerEnginePlatform();
-            
-            if (engineType == DockerEnginePlatform.Windows)
-            {
-                var docker = DockerHelper.GetDockerHost();
-                var network = docker.GetNetworks().Where(nw => nw.Name == networkName).SingleOrDefault();
-                if (network == null)
-                {
-                    network = docker.CreateNetwork(networkName,
-                                                       new NetworkCreateParams
-                                                       {
-                                                           Driver = "nat",
-                                                       });
-                }
-
-                return network;
-            }
-
-            if (engineType == DockerEnginePlatform.Linux)
-            {
-                // Build a network
-                NetworkBuilder networkService = new Builder().UseNetwork(networkName).ReuseIfExist();
-
-                return networkService.Build();
-            }
-
-            return null;
-        }
-
-        public Int32 EstateManagementUIPort;
+        
+        public Int32 EstateManagementUiPort;
         
         protected String EstateManagementUiContainerName;
 
-        public static IHostService GetDockerHost()
-        {
-            IList<IHostService> hosts = new Hosts().Discover();
-            IHostService docker = hosts.FirstOrDefault(x => x.IsNative) ?? hosts.FirstOrDefault(x => x.Name == "default");
-            return docker;
+        private readonly TestingContext TestingContext;
+
+        public override void SetupContainerNames() {
+            base.SetupContainerNames();
+            this.SecurityServiceContainerName = $"identity-server";
+            this.EstateManagementUiContainerName = $"estateadministrationui{this.TestId:N}";
         }
 
-        public static DockerEnginePlatform GetDockerEnginePlatform()
+        private static void AddEntryToHostsFile(String ipaddress,
+                                                String hostname)
         {
-            IHostService docker = DockerHelper.GetDockerHost();
-
-            if (docker.Host.IsLinuxEngine())
+            if (FdOs.IsWindows())
             {
-                return DockerEnginePlatform.Linux;
+                using (StreamWriter w = File.AppendText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts")))
+                {
+                    w.WriteLine($"{ipaddress} {hostname}");
+                }
             }
-
-            if (docker.Host.IsWindowsEngine())
+            else if (FdOs.IsLinux())
             {
-                return DockerEnginePlatform.Windows;
+                DockerHelper.ExecuteBashCommand($"echo {ipaddress} {hostname} | sudo tee -a /etc/hosts");
             }
-            throw new Exception("Unknown Engine Type");
         }
 
-        protected override String GenerateEventStoreConnectionString()
+        /// <summary>
+        /// Executes the bash command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        private static void ExecuteBashCommand(String command)
         {
-            // TODO: this could move to shared
-            String eventStoreAddress = $"esdb://admin:changeit@{this.EventStoreContainerName}:{DockerHelper.EventStoreHttpDockerPort}";
-            if (this.IsSecureEventStore)
-            {
-                eventStoreAddress = $"{eventStoreAddress}?tls=true&tlsVerifyCert=false";
-            }
-            else
-            {
-                eventStoreAddress = $"{eventStoreAddress}?tls=false&tlsVerifyCert=false";
-            }
+            // according to: https://stackoverflow.com/a/15262019/637142
+            // thans to this we will pass everything as one command
+            command = command.Replace("\"", "\"\"");
 
-            return eventStoreAddress;
+            var proc = new Process
+                       {
+                           StartInfo = new ProcessStartInfo
+                                       {
+                                           FileName = "/bin/bash",
+                                           Arguments = "-c \"" + command + "\"",
+                                           UseShellExecute = false,
+                                           RedirectStandardOutput = true,
+                                           CreateNoWindow = true
+                                       }
+                       };
+            Console.WriteLine(proc.StartInfo.Arguments);
+
+            proc.Start();
+            proc.WaitForExit();
         }
-
-        public Boolean IsSecureEventStore { get; private set; }
 
         /// <summary>
         /// Starts the containers for scenario run.
@@ -189,137 +131,15 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// <param name="scenarioName">Name of the scenario.</param>
         public override async Task StartContainersForScenarioRun(String scenarioName)
         {
-            String IsSecureEventStoreEnvVar = Environment.GetEnvironmentVariable("IsSecureEventStore");
+            await base.StartContainersForScenarioRun(scenarioName);
 
-            if (IsSecureEventStoreEnvVar == null)
-            {
-                // No env var set so default to insecure
-                this.IsSecureEventStore = false;
-            }
-            else
-            {
-                // We have the env var so we set the secure flag based on the value in the env var
-                Boolean.TryParse(IsSecureEventStoreEnvVar, out Boolean isSecure);
-                this.IsSecureEventStore = isSecure;
-            }
+            await this.StartEstateManagementUiContainer(this.TestNetworks, this.SecurityServicePort);
 
-            this.HostTraceFolder = null;
-            if (DockerHelper.GetDockerEnginePlatform() == DockerEnginePlatform.Linux)
-            {
-                this.HostTraceFolder = FdOs.IsWindows() ? $"C:\\home\\txnproc\\trace\\{scenarioName}" : $"//home//txnproc//trace//{scenarioName}";
-            }
-
-            Logging.Enabled();
-
-            Guid testGuid = Guid.NewGuid();
-            this.TestId = testGuid;
-
-            this.Logger.LogInformation($"Test Id is {testGuid}");
-
-            // Setup the container names
-            this.SecurityServiceContainerName = $"sferguson.ddns.net";
-            this.EstateManagementContainerName = $"estate{testGuid:N}";
-            this.EstateReportingContainerName = $"estatereporting{testGuid:N}";
-            this.EstateManagementUiContainerName = $"estateadministrationui{testGuid:N}";
-            this.EventStoreContainerName = $"eventstore{testGuid:N}";
-
-            String eventStoreAddress = $"http://{this.EventStoreContainerName}";
-            this.ClientDetails = ("serviceClient", "Secret1");
-            this.SqlServerDetails = (Setup.SqlServerContainerName, Setup.SqlUserName, Setup.SqlPassword);
-            this.DockerCredentials = ("https://www.docker.com", "stuartferguson", "Sc0tland");
-
-            INetworkService testNetwork = DockerHelper.SetupTestNetwork($"testnetwork{this.TestId:N}");
-            this.TestNetworks.Add(testNetwork);
-
-            // Setup the docker image names
-            String eventStoreImageName = "eventstore/eventstore:21.10.0-buster-slim";
-            String estateMangementImageName = "stuartferguson/estatemanagement";
-            String estateReportingImageName = "stuartferguson/estatereporting";
-
-            DockerEnginePlatform enginePlatform = DockerHelper.GetDockerEnginePlatform();
-            if (enginePlatform == DockerEnginePlatform.Windows)
-            {
-                estateMangementImageName = "stuartferguson/estatemanagementwindows";
-                estateReportingImageName = "stuartferguson/estatereportingwindows";
-                eventStoreImageName = "stuartferguson/eventstore";
-            }
-
-            IContainerService eventStoreContainer =
-                this.SetupEventStoreContainer(eventStoreImageName, testNetwork, isSecure: this.IsSecureEventStore);
-            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint($"{DockerHelper.EventStoreHttpDockerPort}/tcp").Port;
-
-            String insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=True";
-            if (this.IsSecureEventStore)
-            {
-                insecureEventStoreEnvironmentVariable = "EventStoreSettings:Insecure=False";
-            }
-
-            String persistentSubscriptionPollingInSeconds = "AppSettings:PersistentSubscriptionPollingInSeconds=10";
-            String internalSubscriptionServiceCacheDuration = "AppSettings:InternalSubscriptionServiceCacheDuration=0";
-
-            List<String> estateManagementVariables = new List<String>();
-            estateManagementVariables.Add($"SecurityConfiguration:ApiName=estateManagement{this.TestId.ToString("N")}");
-            estateManagementVariables.Add($"EstateRoleName=Estate{this.TestId.ToString("N")}");
-            estateManagementVariables.Add($"MerchantRoleName=Merchant{this.TestId.ToString("N")}");
-            estateManagementVariables.AddRange(new List<String>{
-                insecureEventStoreEnvironmentVariable,
-                persistentSubscriptionPollingInSeconds,
-                internalSubscriptionServiceCacheDuration
-            });
-            
-
-            IContainerService estateManagementContainer = this.SetupEstateManagementContainer(        estateMangementImageName,
-                                                                                                      new List<INetworkService>
-                                                                                                      {
-                                                                                                          testNetwork,
-                                                                                                          Setup.DatabaseServerNetwork
-                                                                                                      },
-                                                                                                      securityServicePort:55001,
-                                                                                                      additionalEnvironmentVariables:estateManagementVariables,
-                                                                                                      forceLatestImage:true);
-
-            IContainerService estateReportingContainer = this.SetupEstateReportingContainer(        estateReportingImageName,
-                                                                                                    new List<INetworkService>
-                                                                                                    {
-                                                                                                        testNetwork,
-                                                                                                        Setup.DatabaseServerNetwork
-                                                                                                    },
-                                                                                                    true,
-                                                                                            additionalEnvironmentVariables:new List<String>
-                                                                                                {
-                                                                                                    insecureEventStoreEnvironmentVariable,
-                                                                                                    persistentSubscriptionPollingInSeconds,
-                                                                                                    internalSubscriptionServiceCacheDuration
-                                                                                                });
-
-            IContainerService estateManagementUiContainer = SetupEstateManagementUIContainer(this.EstateManagementUiContainerName,
-                                                                                             this.Logger,
-                                                                                             "estateadministrationui",
-                                                                                             new List<INetworkService>
-                                                                                             {
-                                                                                                 testNetwork
-                                                                                             },
-                                                                                             this.EstateManagementContainerName,
-                                                                                             this.EstateReportingContainerName,
-                                                                                             this.HostTraceFolder,
-                                                                                             this.DockerCredentials,
-                                                                                             ($"estateUIClient{this.TestId.ToString("N")}", "Secret1"));
-
-            this.Containers.AddRange(new List<IContainerService>
-                                     {
-                                         eventStoreContainer,
-                                         estateManagementContainer,
-                                         estateReportingContainer,
-                                         estateManagementUiContainer
-                                     });
-
-            // Cache the ports
-            this.EstateManagementApiPort = estateManagementContainer.ToHostExposedEndpoint("5000/tcp").Port;
-            this.EventStoreHttpPort = eventStoreContainer.ToHostExposedEndpoint("2113/tcp").Port;
-            this.EstateManagementUIPort = estateManagementUiContainer.ToHostExposedEndpoint("5004/tcp").Port;
+            DockerHelper.AddEntryToHostsFile("127.0.0.1", SecurityServiceContainerName);
+            DockerHelper.AddEntryToHostsFile("localhost", SecurityServiceContainerName);
 
             // Setup the base address resolvers
-            String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementApiPort}";
+            String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
 
             HttpClientHandler clientHandler = new HttpClientHandler
                                               {
@@ -334,53 +154,90 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                               };
             HttpClient httpClient = new HttpClient(clientHandler);
             this.EstateClient = new EstateClient(EstateManagementBaseAddressResolver, httpClient);
-            Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
+            //Func<String, String> securityServiceBaseAddressResolver = api => $"https://sferguson.ddns.net:55001";
+            Func<String, String> securityServiceBaseAddressResolver = api => $"https://127.0.0.1:{this.SecurityServicePort}";
             this.SecurityServiceClient = new SecurityServiceClient(securityServiceBaseAddressResolver, httpClient);
-
-            await LoadEventStoreProjections(this.EventStoreHttpPort, this.IsSecureEventStore).ConfigureAwait(false);
         }
-
-        public async Task PopulateSubscriptionServiceConfiguration(String estateName, Boolean isSecureEventStore)
+        
+        private async Task<IContainerService> StartEstateManagementUiContainer(List<INetworkService> networkServices,
+                                                                               Int32 securityServiceContainerPort)
         {
-            List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new List<(String streamName, String groupName, Int32 maxRetries)>();
-            subscriptions.Add((estateName.Replace(" ", ""), "Reporting", 5));
-            subscriptions.Add(($"EstateManagementSubscriptionStream_{estateName.Replace(" ", "")}", "Estate Management", 0));
-            subscriptions.Add(($"TransactionProcessorSubscriptionStream_{estateName.Replace(" ", "")}", "Transaction Processor", 0));
-            await this.PopulateSubscriptionServiceConfiguration(this.EventStoreHttpPort, subscriptions, isSecureEventStore);
-        }
+            Trace("About to Start Estate Management UI Container");
 
-        private IContainerService SetupEstateManagementUIContainer(string containerName, ILogger logger,
-                                                         string imageName,
-                                                         List<INetworkService> networkServices,
-                                                         String estateManagementContainerName,
-                                                         String estateReportingtContainerName,
-                                                         string hostFolder,
-                                                         (string URL, string UserName, string Password)? dockerCredentials,
-                                                         (string clientId, string clientSecret) clientDetails)
-        {
-            logger.LogInformation("About to Start Estate Management UI Container");
-            
-            ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(containerName)
-                                                             .WithEnvironment($"AppSettings:Authority=https://sferguson.ddns.net:55001",
-                                                                              $"AppSettings:ClientId={clientDetails.clientId}",
-                                                                              $"AppSettings:ClientSecret={clientDetails.clientSecret}",
-                                                                              $"AppSettings:IsIntegrationTest=true",
-                                                                              $"EstateManagementScope=estateManagement{this.TestId.ToString("N")}",
-                                                                              $"AppSettings:EstateManagementApi=http://{estateManagementContainerName}:{DockerHelper.EstateManagementDockerPort}",
-                                                                              $"AppSettings:EstateReportingApi=http://{estateReportingtContainerName}:{DockerHelper.EstateReportingDockerPort}")
-                                                             .UseImage(imageName).ExposePort(5004)
-                                                             .UseNetwork(networkServices.ToArray());
+            List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
+            environmentVariables.Add($"AppSettings:Authority=https://identity-server:{securityServiceContainerPort}");
+            //environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
+            environmentVariables.Add($"ASPNETCORE_ENVIRONMENT=Development");
+            environmentVariables.Add($"EstateManagementScope=estateManagement");
+            environmentVariables.Add("urls=https://*:5004");
+            environmentVariables.Add($"AppSettings:ClientId=estateUIClient");
+            environmentVariables.Add($"AppSettings:ClientSecret=Secret1");
 
-            if (String.IsNullOrEmpty(hostFolder) == false)
+            ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(this.EstateManagementUiContainerName)
+                                                             .UseImageDetails(("estateadministrationui", false)).WithEnvironment(environmentVariables.ToArray())
+                                                             .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
+                                                             .SetDockerCredentials(this.DockerCredentials);
+
+
+            IContainerService builtContainer = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
+
+            foreach (INetworkService networkService in networkServices)
             {
-                containerBuilder = containerBuilder.Mount(hostFolder, "/home/txnproc/trace", MountType.ReadWrite);
+                networkService.Attach(builtContainer, false);
             }
 
-            IContainerService containerService = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
+            //  Do a health check here
+            this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
-            Console.Out.WriteLine("Started Estate Management UI");
+            Trace("Estate Management UI Started");
+            this.Containers.Add(builtContainer);
+            //await Retry.For(async () => {
+            //String healthCheck =
+            //await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
 
-            return containerService;
+            //var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
+            //result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Service Type: {containerType} Details {healthCheck}");
+            //});
+
+            return builtContainer;
+        }
+
+        public override async Task<IContainerService> SetupSecurityServiceContainer(INetworkService networkService,
+                                                                              List<String> additionalEnvironmentVariables = null)
+        {
+            this.Trace("About to Start Security Container");
+
+            List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
+            environmentVariables.Add($"ServiceOptions:PublicOrigin=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
+            environmentVariables.Add($"ServiceOptions:IssuerUrl=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
+            environmentVariables.Add("ASPNETCORE_ENVIRONMENT=IntegrationTest");
+            environmentVariables.Add($"urls=https://*:{DockerPorts.SecurityServiceDockerPort}");
+
+            if (additionalEnvironmentVariables != null)
+            {
+                environmentVariables.AddRange(additionalEnvironmentVariables);
+            }
+
+            ContainerBuilder securityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
+                                                                     .WithEnvironment(environmentVariables.ToArray())
+                                                                     .UseImageDetails(this.GetImageDetails(ContainerType.SecurityService))
+                                                                     .ExposePort(DockerPorts.SecurityServiceDockerPort, DockerPorts.SecurityServiceDockerPort)
+                                                                     .MountHostFolder(this.HostTraceFolder)
+                                                                     .SetDockerCredentials(this.DockerCredentials);
+
+            // Now build and return the container                
+            IContainerService builtContainer = securityServiceContainer.Build().Start().WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
+
+            networkService.Attach(builtContainer, false);
+
+            this.Trace("Security Service Container Started");
+            this.Containers.Add(builtContainer);
+
+            //  Do a health check here
+            this.SecurityServicePort = builtContainer.ToHostExposedEndpoint($"{DockerPorts.SecurityServiceDockerPort}/tcp").Port;
+            await this.DoHealthCheck(ContainerType.SecurityService);
+
+            return builtContainer;
         }
 
         /// <summary>
@@ -388,24 +245,29 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// </summary>
         public override async Task StopContainersForScenarioRun()
         {
-            if (this.Containers.Any())
-            {
-                foreach (IContainerService containerService in this.Containers)
-                {
-                    containerService.StopOnDispose = true;
-                    containerService.RemoveOnDispose = true;
-                    containerService.Dispose();
-                }
-            }
+            await this.RemoveEstateReadModel().ConfigureAwait(false);
 
-            if (this.TestNetworks.Any())
-            {
-                foreach (INetworkService networkService in this.TestNetworks)
-                {
-                    networkService.Stop();
-                    networkService.Remove(true);
-                }
-            }
+            await base.StopContainersForScenarioRun();
+        }
+
+        private async Task RemoveEstateReadModel()
+        {
+            //List<Guid> estateIdList = this.TestingContext.GetAllEstateIds();
+
+            //foreach (Guid estateId in estateIdList)
+            //{
+            //    String databaseName = $"EstateReportingReadModel{estateId}";
+
+            //    // Build the connection string (to master)
+            //    String connectionString = Setup.GetLocalConnectionString(databaseName);
+            //    await Retry.For(async () =>
+            //                    {
+            //                        EstateReportingSqlServerContext context = new EstateReportingSqlServerContext(connectionString);
+            //                        await context.Database.EnsureDeletedAsync(CancellationToken.None);
+            //                    },
+            //                    retryFor: TimeSpan.FromMinutes(2),
+            //                    retryInterval: TimeSpan.FromSeconds(30));
+            //}
         }
 
         #endregion

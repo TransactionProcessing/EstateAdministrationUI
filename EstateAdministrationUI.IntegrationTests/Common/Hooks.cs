@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using BoDi;
-    using Microsoft.Edge.SeleniumTools;
+    //using Microsoft.Edge.SeleniumTools;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
+    using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using Shared.IntegrationTesting;
     using TechTalk.SpecFlow;
@@ -55,9 +56,8 @@
             if (browser == "Edge")
             {
                 EdgeOptions options = new EdgeOptions();
-                options.UseChromium = true;
                 options.AcceptInsecureCertificates = true;
-                //this.WebDriver = new EdgeDriver(options);
+                
                 await Retry.For(async () =>
                                 {
                                     this.WebDriver = new EdgeDriver(options);

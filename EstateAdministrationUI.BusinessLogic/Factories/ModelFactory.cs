@@ -5,14 +5,13 @@
     using System.Linq;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using EstateReporting.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
     using SettlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule;
-    
+    using TransactionProcessor.DataTransferObjects;
     /// <summary>
     /// 
     /// </summary>
@@ -341,7 +340,7 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceHistoryResponse> source)
+        public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceChangedEntryResponse> source)
         {
             if (source == null || source.Any() == false)
             {
@@ -357,14 +356,14 @@
                                              MerchantId = s.MerchantId,
                                              Balance = s.Balance,
                                              ChangeAmount = s.ChangeAmount,
-                                             EntryDateTime = s.EntryDateTime,
-                                             EntryType = s.EntryType,
+                                             EntryDateTime = s.DateTime,
+                                             EntryType = s.DebitOrCredit,
                                              EstateId = s.EstateId,
-                                             EventId = s.EventId,
-                                             In = s.In,
-                                             Out = s.Out,
+                                             EventId = s.OriginalEventId,
+                                             //In = s.In,
+                                             //Out = s.Out,
                                              Reference = s.Reference,
-                                             TransactionId = s.TransactionId
+                                             //TransactionId = s.TransactionId
                                                          
                                          });
                                });
@@ -633,8 +632,7 @@
                                               EstateId = source.EstateId,
                                               MerchantId = source.MerchantId,
                                               MerchantName = source.MerchantName,
-                                              Balance = source.Balance,
-                                              AvailableBalance = source.AvailableBalance,
+
                                               SettlementSchedule = ConvertFrom(source.SettlementSchedule)
                                           };
 
