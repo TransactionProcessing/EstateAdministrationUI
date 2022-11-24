@@ -665,9 +665,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         }
 
         [Then(@"I am presented the make merchant deposit screen")]
-        public void ThenIAmPresentedTheMakeMerchantDepositScreen()
-        {
-            this.WebDriver.Title.ShouldBe("Make Merchant Deposit");
+        public async Task ThenIAmPresentedTheMakeMerchantDepositScreen() {
+            await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Make Merchant Deposit"); });
         }
 
         [When(@"I make the following deposit")]
