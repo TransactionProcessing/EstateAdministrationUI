@@ -412,9 +412,9 @@
             viewModel.EstateId = merchantModel.EstateId;
             viewModel.MerchantId = merchantModel.MerchantId;
             viewModel.MerchantName = merchantModel.MerchantName;
-            //viewModel.Balance = merchantModel.Balance;
+            viewModel.Balance = merchantModel.Balance;
             viewModel.SettlementSchedule = (Int32)merchantModel.SettlementSchedule;
-            //viewModel.AvailableBalance = merchantModel.AvailableBalance;
+            viewModel.AvailableBalance = merchantModel.AvailableBalance;
             viewModel.Addresses = this.ConvertFrom(merchantModel.Addresses);
             viewModel.Contacts = this.ConvertFrom(merchantModel.Contacts);
             viewModel.Operators = this.ConvertFrom(merchantModel.Operators);

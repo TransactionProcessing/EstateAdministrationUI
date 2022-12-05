@@ -3,21 +3,14 @@
     using System;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using BusinessLogic.Factories;
-    using Common;
-    using EstateManagement.Client;
-    using Factories;
-    using FileProcessor.Client;
     using IdentityModel;
     using Lamar;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
-    using Services;
     using Shared.Extensions;
     using Shared.General;
-    using TransactionProcessor.Client;
 
     public class MiddlewareRegistry :ServiceRegistry
     {
@@ -95,31 +88,6 @@
                                                                        return true;
                                                                    }
                    };
-        }
-    }
-
-    public class ClientRegistry : ServiceRegistry
-    {
-        public ClientRegistry() {
-            this.AddSingleton<IConfigurationService, ConfigurationService>();
-            this.AddSingleton<IApiClient, ApiClient>();
-            this.AddSingleton<IEstateClient, EstateClient>();
-            this.AddSingleton<IFileProcessorClient, FileProcessorClient>();
-            this.AddSingleton<ITransactionProcessorClient, TransactionProcessorClient>();
-            this.AddSingleton<Func<String, String>>(container => (serviceName) =>
-                                                                 {
-                                                                     return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
-                                                                 });
-            this.AddSingleton<HttpClient>();
-        }
-    }
-
-    public class FactoryRegistry : ServiceRegistry
-    {
-        public FactoryRegistry()
-        {
-            this.AddSingleton<IModelFactory, ModelFactory>();
-            this.AddSingleton<IViewModelFactory, ViewModelFactory>();
         }
     }
 }

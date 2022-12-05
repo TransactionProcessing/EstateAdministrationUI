@@ -116,7 +116,7 @@ Scenario: Make Merchant Deposit
 	Then I am presented with the Merchants List Screen
 	When I select 'Test Merchant 1' from the merchant list
 	Then I am presented the merchant details screen for 'Test Merchant 1'
-	#And the available balance for the merchant should be 1000.00
+	And the available balance for the merchant should be 1000.00
 
 Scenario: Create New Merchant
 	Given I click on the My Merchants sidebar option

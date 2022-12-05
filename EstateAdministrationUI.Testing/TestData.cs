@@ -7,6 +7,7 @@
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Responses;
     using FileProcessor.DataTransferObjects.Responses;
+    using TransactionProcessor.DataTransferObjects;
     using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
     using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
@@ -276,6 +277,13 @@
                 AddressId = TestData.AddressId
             };
 
+        public static MerchantBalanceResponse MerchantBalanceResponse =>
+            new MerchantBalanceResponse() {
+                                              Balance = TestData.Balance,
+                                              AvailableBalance = TestData.AvailableBalance,
+                                              EstateId = TestData.EstateId,
+                                              MerchantId = TestData.MerchantId
+                                          };
 
         public static MerchantResponse MerchantResponse(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule.Immediate) =>
             new MerchantResponse
@@ -500,23 +508,36 @@
 
         public static DTOCalculationType DTOTransactionFeeCalculationType = DTOCalculationType.Fixed;
 
+        public static List<MerchantBalanceChangedEntryResponse> MerchantBalanceChangedEntryResponseList => new List<MerchantBalanceChangedEntryResponse>
+                                                                                                       {
+                                                                                                           new MerchantBalanceChangedEntryResponse
+                                                                                                           {
+                                                                                                               Balance = TestData.Balance,
+                                                                                                               MerchantId = TestData.MerchantId,
+                                                                                                               Reference = TestData.DepositReference,
+                                                                                                               ChangeAmount = TestData.DepositAmountDecimal,
+                                                                                                               DateTime= TestData.DepositDateTime,
+                                                                                                               DebitOrCredit = "C",
+                                                                                                               EstateId = TestData.EstateId,
+                                                                                                               OriginalEventId = TestData.EventId
+                                                                                                           }
+                                                                                                       };
+
         public static List<MerchantBalanceHistory> MerchantBalanceHistoryList => new List<MerchantBalanceHistory>
-                                                                                {
-                                                                                    new MerchantBalanceHistory
-                                                                                    {
-                                                                                        Balance = TestData.Balance,
-                                                                                        MerchantId = TestData.MerchantId,
-                                                                                        Reference = TestData.DepositReference,
-                                                                                        ChangeAmount = TestData.DepositAmountDecimal,
-                                                                                        EntryDateTime = TestData.DepositDateTime,
-                                                                                        EntryType = "C",
-                                                                                        EstateId = TestData.EstateId,
-                                                                                        EventId = TestData.EventId,
-                                                                                        In = TestData.DepositAmountDecimal,
-                                                                                        Out = null,
-                                                                                        TransactionId = TestData.TransactionId
-                                                                                    }
-                                                                                };
+                                                                                 {
+                                                                                     new MerchantBalanceHistory
+                                                                                     {
+                                                                                         Balance = TestData.Balance,
+                                                                                         MerchantId = TestData.MerchantId,
+                                                                                         Reference = TestData.DepositReference,
+                                                                                         ChangeAmount = TestData.DepositAmountDecimal,
+                                                                                         EntryDateTime= TestData.DepositDateTime,
+                                                                                         EntryType = "C",
+                                                                                         In = TestData.DepositAmountDecimal,
+                                                                                         EstateId = TestData.EstateId,
+                                                                                         EventId = TestData.EventId
+                                                                                     }
+                                                                                 };
 
         public static Guid EventId = Guid.Parse("2EF14DC4-C234-4175-BCA1-D5AB7F58943E");
 

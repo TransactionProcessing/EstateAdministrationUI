@@ -534,8 +534,9 @@
                 Guid estateId = ApiClient.GetClaimValue<Guid>(claimsIdentity, ApiClient.EstateIdClaimType);
 
                 MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
+                MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(accessToken, estateId, merchantId, cancellationToken);
 
-                return this.ModelFactory.ConvertFrom(merchant);
+                return this.ModelFactory.ConvertFrom(merchant,merchantBalance);
             }
             catch(Exception ex)
             {
