@@ -100,6 +100,14 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "estateManagement",
                         "Estate Managememt REST Scope",
                         "A scope for Estate Managememt REST"});
+            table22.AddRow(new string[] {
+                        "transactionProcessor",
+                        "Transaction Processor REST Scope",
+                        "Scope for Transaction Processor REST"});
+            table22.AddRow(new string[] {
+                        "fileProcessor",
+                        "File Processor REST Scope",
+                        "Scope for File Processor REST"});
 #line 11
  testRunner.Given("I create the following api scopes", ((string)(null)), table22, "Given ");
 #line hidden
@@ -115,7 +123,19 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Secret1",
                         "estateManagement",
                         "merchantId,estateId,role"});
-#line 15
+            table23.AddRow(new string[] {
+                        "transactionProcessor",
+                        "Transaction Processor REST",
+                        "Secret1",
+                        "transactionProcessor",
+                        "merchantId,estateId,role"});
+            table23.AddRow(new string[] {
+                        "fileProcessor",
+                        "File Processor REST",
+                        "Secret1",
+                        "fileProcessor",
+                        "merchantId,estateId,role"});
+#line 17
  testRunner.Given("I create the following api resources", ((string)(null)), table23, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
@@ -138,7 +158,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Email",
                         "Email and Email Verified Flags",
                         "email_verified,email"});
-#line 19
+#line 23
  testRunner.Given("I create the following identity resources", ((string)(null)), table24, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
@@ -156,7 +176,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "serviceClient",
                         "Service Client",
                         "Secret1",
-                        "estateManagement",
+                        "estateManagement,transactionProcessor",
                         "client_credentials",
                         "",
                         "",
@@ -167,28 +187,28 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "estateUIClient",
                         "Merchant Client",
                         "Secret1",
-                        "estateManagement,openid,email,profile",
+                        "estateManagement,fileProcessor,transactionProcessor,openid,email,profile",
                         "hybrid",
                         "https://localhost:[port]/signin-oidc",
                         "https://localhost:[port]/signout-oidc",
                         "false",
                         "true",
                         "https://[url]:[port]"});
-#line 25
+#line 29
  testRunner.Given("I create the following clients", ((string)(null)), table25, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                         "ClientId"});
             table26.AddRow(new string[] {
                         "serviceClient"});
-#line 30
+#line 34
  testRunner.Given("I have a token to access the estate management resource", ((string)(null)), table26, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                         "EstateName"});
             table27.AddRow(new string[] {
                         "Test Estate"});
-#line 34
+#line 38
  testRunner.Given("I have created the following estates", ((string)(null)), table27, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
@@ -201,7 +221,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Operator",
                         "True",
                         "True"});
-#line 38
+#line 42
  testRunner.And("I have created the following operators", ((string)(null)), table28, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
@@ -216,7 +236,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "TestEstate",
                         "User1",
                         "Test Estate"});
-#line 42
+#line 46
  testRunner.And("I have created the following security users", ((string)(null)), table29, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
@@ -259,7 +279,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Contact 1",
                         "testcontact1@merchant3.co.uk",
                         "Test Estate"});
-#line 46
+#line 50
  testRunner.Given("I create the following merchants", ((string)(null)), table30, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
@@ -286,7 +306,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "00000001",
                         "10000001",
                         "Test Estate"});
-#line 52
+#line 56
  testRunner.When("I assign the following  operator to the merchants", ((string)(null)), table31, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
@@ -317,7 +337,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "User1",
                         "Test Merchant 3",
                         "Test Estate"});
-#line 58
+#line 62
  testRunner.When("I create the following security users", ((string)(null)), table32, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
@@ -336,22 +356,22 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "TestDevice3",
                         "Test Merchant 3",
                         "Test Estate"});
-#line 64
+#line 68
  testRunner.When("I add the following devices to the merchant", ((string)(null)), table33, "When ");
 #line hidden
-#line 70
+#line 74
  testRunner.Given("I am on the application home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 72
+#line 76
  testRunner.And("I click on the Sign In Button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 74
+#line 78
  testRunner.Then("I am presented with a login screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 76
+#line 80
  testRunner.When("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 78
+#line 82
  testRunner.Then("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
         }
@@ -369,7 +389,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Dashboard", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 80
+#line 84
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -394,7 +414,7 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View My Merchants", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 82
+#line 86
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -407,10 +427,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 83
+#line 87
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 84
+#line 88
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
@@ -445,7 +465,7 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 85
+#line 89
  testRunner.And("the following merchants details are in the list", ((string)(null)), table34, "And ");
 #line hidden
             }
@@ -460,7 +480,7 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Single Merchant", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 91
+#line 95
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -473,10 +493,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 92
+#line 96
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 93
+#line 97
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
@@ -511,13 +531,13 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 94
+#line 98
  testRunner.And("the following merchants details are in the list", ((string)(null)), table35, "And ");
 #line hidden
-#line 99
+#line 103
  testRunner.When("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 100
+#line 104
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -534,7 +554,7 @@ this.FeatureBackground();
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Make Merchant Deposit", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 103
+#line 107
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -547,10 +567,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 104
+#line 108
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 105
+#line 109
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
@@ -585,13 +605,13 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 106
+#line 110
  testRunner.And("the following merchants details are in the list", ((string)(null)), table36, "And ");
 #line hidden
-#line 111
+#line 115
  testRunner.When("I click the Make Deposit button for \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 112
+#line 116
  testRunner.Then("I am presented the make merchant deposit screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
@@ -602,19 +622,19 @@ this.FeatureBackground();
                             "1000",
                             "Today",
                             "Test Deposit 1"});
-#line 113
+#line 117
  testRunner.When("I make the following deposit", ((string)(null)), table37, "When ");
 #line hidden
-#line 116
+#line 120
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 117
+#line 121
  testRunner.When("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 118
+#line 122
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 119
+#line 123
  testRunner.And("the available balance for the merchant should be 1000.00", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -629,7 +649,7 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Merchant", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 121
+#line 125
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -642,10 +662,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 122
+#line 126
  testRunner.Given("I click on the My Merchants sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 123
+#line 127
  testRunner.Then("I am presented with the Merchants List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
@@ -680,13 +700,13 @@ this.FeatureBackground();
                             "0",
                             "1",
                             "1"});
-#line 124
+#line 128
  testRunner.And("the following merchants details are in the list", ((string)(null)), table38, "And ");
 #line hidden
-#line 129
+#line 133
  testRunner.When("I click the Add New Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 130
+#line 134
  testRunner.Then("I am presented the new merchant screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
@@ -711,16 +731,16 @@ this.FeatureBackground();
                             "Test Contact 4",
                             "testcontact@testmerchant4.co.uk",
                             "0123456789"});
-#line 131
+#line 135
  testRunner.When("I enter the following new merchant details", ((string)(null)), table39, "When ");
 #line hidden
-#line 134
+#line 138
  testRunner.When("I click the Create Merchant button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 135
+#line 139
  testRunner.Then("I am presented the merchant details screen for \'Test Merchant 4\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 136
+#line 140
  testRunner.And("the merchants settlement schedule is \'Monthly\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

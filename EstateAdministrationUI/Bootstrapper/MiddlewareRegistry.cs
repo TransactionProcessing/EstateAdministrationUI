@@ -52,9 +52,9 @@
                                               options.Scope.Add("email");
                                               options.Scope.Add("offline_access");
 
-                                              String? estateManagementScope =
-                                                  Environment.GetEnvironmentVariable("EstateManagementScope");
-                                              options.Scope.Add(String.IsNullOrEmpty(estateManagementScope) ? "estateManagement" : estateManagementScope);
+                                              options.Scope.Add("estateManagement");
+                                              options.Scope.Add("fileProcessor");
+                                              options.Scope.Add("transactionProcessor");
 
                                               options.ClaimActions.MapAllExcept("iss",
                                                                                 "nbf",

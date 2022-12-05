@@ -11,10 +11,14 @@ Background:
 	Given I create the following api scopes
 	| Name                 | DisplayName                  | Description                        |
 	| estateManagement | Estate Managememt REST Scope | A scope for Estate Managememt REST |
+	| transactionProcessor | Transaction Processor REST Scope | Scope for Transaction Processor REST |
+	| fileProcessor | File Processor REST Scope | Scope for File Processor REST |
 
 	Given I create the following api resources
 	| Name             | DisplayName            | Secret  | Scopes           | UserClaims               |
 	| estateManagement | Estate Managememt REST | Secret1 | estateManagement | merchantId,estateId,role |
+	| transactionProcessor | Transaction Processor REST | Secret1 | transactionProcessor | merchantId,estateId,role |
+	| fileProcessor | File Processor REST | Secret1 | fileProcessor | merchantId,estateId,role |
 
 	Given I create the following identity resources
 	| Name    | DisplayName          | Description                                                 | UserClaims                                                             |
@@ -23,9 +27,9 @@ Background:
 	| email   | Email                | Email and Email Verified Flags                              | email_verified,email                                                   |
 
 	Given I create the following clients
-	| ClientId       | Name            | Secret  | Scopes                                | GrantTypes         | RedirectUris                         | PostLogoutRedirectUris                | RequireConsent | AllowOfflineAccess |ClientUri            |
-	| serviceClient  | Service Client  | Secret1 | estateManagement                      | client_credentials |                                      |                                       |                |                    |                     |
-	| estateUIClient | Merchant Client | Secret1 | estateManagement,openid,email,profile | hybrid             | https://localhost:[port]/signin-oidc | https://localhost:[port]/signout-oidc | false          | true               |https://[url]:[port] |
+	| ClientId       | Name            | Secret  | Scopes                                                                   | GrantTypes         | RedirectUris                         | PostLogoutRedirectUris                | RequireConsent | AllowOfflineAccess | ClientUri            |
+	| serviceClient  | Service Client  | Secret1 | estateManagement,transactionProcessor                                    | client_credentials |                                      |                                       |                |                    |                      |
+	| estateUIClient | Merchant Client | Secret1 | estateManagement,fileProcessor,transactionProcessor,openid,email,profile | hybrid             | https://localhost:[port]/signin-oidc | https://localhost:[port]/signout-oidc | false          | true               | https://[url]:[port] |
 
 	Given I have a token to access the estate management resource
 	| ClientId          |

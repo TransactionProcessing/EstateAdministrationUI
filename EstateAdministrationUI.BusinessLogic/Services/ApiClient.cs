@@ -17,6 +17,7 @@
     using FileProcessor.Client;
     using FileProcessor.DataTransferObjects;
     using FileProcessor.DataTransferObjects.Responses;
+    using Shared.General;
     using Shared.Logger;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;

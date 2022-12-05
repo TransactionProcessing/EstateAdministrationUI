@@ -806,13 +806,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
 
         [Then(@"the available balance for the merchant should be (.*)")]
-        public void ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance)
-        {
-            IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
-            element.ShouldNotBeNull();
-            String elementValue = element.GetDomProperty("value");
-            Decimal actualBalance = Decimal.Parse(elementValue);
-            actualBalance.ShouldBe(availableBalance);
+        public async Task ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance) {
+            await Retry.For(async () => {
+                                IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
+                                element.ShouldNotBeNull();
+                                String elementValue = element.GetDomProperty("value");
+                                Decimal actualBalance = Decimal.Parse(elementValue);
+                                actualBalance.ShouldBe(availableBalance);
+                            }, TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(30));
         }
 
 
