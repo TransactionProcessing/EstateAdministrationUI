@@ -517,7 +517,7 @@
 
             foreach (MerchantResponse merchantResponse in source)
             {
-                MerchantModel merchantModel = this.ConvertFrom(merchantResponse);
+                MerchantModel merchantModel = this.ConvertFrom(merchantResponse, null);
 
                 models.Add(merchantModel);
             }
@@ -620,70 +620,75 @@
         /// <param name="source">The source.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">source</exception>
-        public MerchantModel ConvertFrom(MerchantResponse source)
+        public MerchantModel ConvertFrom(MerchantResponse merchantResponse, MerchantBalanceResponse merchantBalanceResponse)
         {
-            if (source == null)
+            if (merchantResponse == null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(merchantResponse));
             }
 
             MerchantModel merchantModel = new MerchantModel
                                           {
-                                              EstateId = source.EstateId,
-                                              MerchantId = source.MerchantId,
-                                              MerchantName = source.MerchantName,
+                                              EstateId = merchantResponse.EstateId,
+                                              MerchantId = merchantResponse.MerchantId,
+                                              MerchantName = merchantResponse.MerchantName,
 
-                                              SettlementSchedule = ConvertFrom(source.SettlementSchedule)
+                                              SettlementSchedule = ConvertFrom(merchantResponse.SettlementSchedule)
                                           };
 
-            if (source.Addresses != null && source.Addresses.Any())
+            if (merchantResponse.Addresses != null && merchantResponse.Addresses.Any())
             {
                 merchantModel.Addresses = new List<AddressModel>();
-                source.Addresses.ForEach(a => merchantModel.Addresses.Add(new AddressModel
-                                                                          {
-                                                                              AddressId = a.AddressId,
-                                                                              AddressLine1 = a.AddressLine1,
-                                                                              AddressLine2 = a.AddressLine2,
-                                                                              AddressLine3 = a.AddressLine3,
-                                                                              AddressLine4 = a.AddressLine4,
-                                                                              Country = a.Country,
-                                                                              PostalCode = a.PostalCode,
-                                                                              Region = a.Region,
-                                                                              Town = a.Town,
-                                                                          }));
+                merchantResponse.Addresses.ForEach(a => merchantModel.Addresses.Add(new AddressModel
+                                                                                    {
+                                                                                        AddressId = a.AddressId,
+                                                                                        AddressLine1 = a.AddressLine1,
+                                                                                        AddressLine2 = a.AddressLine2,
+                                                                                        AddressLine3 = a.AddressLine3,
+                                                                                        AddressLine4 = a.AddressLine4,
+                                                                                        Country = a.Country,
+                                                                                        PostalCode = a.PostalCode,
+                                                                                        Region = a.Region,
+                                                                                        Town = a.Town,
+                                                                                    }));
             }
 
-            if (source.Contacts != null && source.Contacts.Any())
+            if (merchantResponse.Contacts != null && merchantResponse.Contacts.Any())
             {
                 merchantModel.Contacts = new List<ContactModel>();
-                source.Contacts.ForEach(c => merchantModel.Contacts.Add(new ContactModel
-                                                                        {
-                                                                            ContactEmailAddress = c.ContactEmailAddress,
-                                                                            ContactId = c.ContactId,
-                                                                            ContactName = c.ContactName,
-                                                                            ContactPhoneNumber = c.ContactPhoneNumber
-                                                                        }));
+                merchantResponse.Contacts.ForEach(c => merchantModel.Contacts.Add(new ContactModel
+                                                                                  {
+                                                                                      ContactEmailAddress = c.ContactEmailAddress,
+                                                                                      ContactId = c.ContactId,
+                                                                                      ContactName = c.ContactName,
+                                                                                      ContactPhoneNumber = c.ContactPhoneNumber
+                                                                                  }));
             }
 
-            if (source.Operators != null && source.Operators.Any())
+            if (merchantResponse.Operators != null && merchantResponse.Operators.Any())
             {
                 merchantModel.Operators = new List<MerchantOperatorModel>();
-                source.Operators.ForEach(o => merchantModel.Operators.Add(new MerchantOperatorModel
-                                                                          {
-                                                                              MerchantNumber = o.MerchantNumber,
-                                                                              Name = o.Name,
-                                                                              OperatorId = o.OperatorId,
-                                                                              TerminalNumber = o.TerminalNumber
-                                                                          }));
+                merchantResponse.Operators.ForEach(o => merchantModel.Operators.Add(new MerchantOperatorModel
+                                                                                    {
+                                                                                        MerchantNumber = o.MerchantNumber,
+                                                                                        Name = o.Name,
+                                                                                        OperatorId = o.OperatorId,
+                                                                                        TerminalNumber = o.TerminalNumber
+                                                                                    }));
             }
 
-            if (source.Devices != null && source.Devices.Any())
+            if (merchantResponse.Devices != null && merchantResponse.Devices.Any())
             {
                 merchantModel.Devices = new Dictionary<Guid, String>();
-                foreach (KeyValuePair<Guid, String> merchantResponseDevice in source.Devices)
+                foreach (KeyValuePair<Guid, String> merchantResponseDevice in merchantResponse.Devices)
                 {
                     merchantModel.Devices.Add(merchantResponseDevice.Key, merchantResponseDevice.Value);
                 }
+            }
+
+            if (merchantBalanceResponse != null) {
+                merchantModel.AvailableBalance = merchantBalanceResponse.AvailableBalance;
+                merchantModel.Balance = merchantBalanceResponse.Balance;
             }
 
             return merchantModel;

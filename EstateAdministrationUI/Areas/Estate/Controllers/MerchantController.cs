@@ -17,6 +17,7 @@
     using Models;
     using Newtonsoft.Json;
     using Services;
+    using Shared.General;
     using Shared.Logger;
 
     [ExcludeFromCodeCoverage]
@@ -403,10 +404,14 @@
             try
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                
+                Logger.LogInformation("[GetMerchantBalanceAsJson] - About to get merchant balance");
 
                 MerchantBalanceModel merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
 
+                Logger.LogInformation($"[GetMerchantBalanceAsJson] - Got merchant balance model - [{merchantBalance.AvailableBalance}]");
                 MerchantBalanceViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalance);
+                Logger.LogInformation($"[GetMerchantBalanceAsJson] - Got merchant balance viewModel - [{merchantBalance.AvailableBalance}]");
 
                 return this.Json(viewModel);
             }

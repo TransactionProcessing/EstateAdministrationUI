@@ -222,10 +222,11 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                                                                Models.SettlementSchedule expectedSettlementSchedule)
         {
             MerchantResponse response = TestData.MerchantResponse(settlementSchedule);
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response, merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.SettlementSchedule.ShouldBe(expectedSettlementSchedule);
@@ -275,17 +276,81 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantResponse_NullBalance_ModelIsConverted()
+        {
+            MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = null;
+
+            ModelFactory modelFactory = new ModelFactory();
+
+            MerchantModel model = modelFactory.ConvertFrom(response, merchantBalanceResponse);
+
+            model.MerchantId.ShouldBe(response.MerchantId);
+            model.MerchantName.ShouldBe(response.MerchantName);
+            model.EstateId.ShouldBe(response.EstateId);
+            model.Contacts.Count.ShouldBe(response.Contacts.Count);
+            response.Contacts.ForEach(c =>
+            {
+                // Find the contact in the view model
+                ContactModel modelContact = model.Contacts.SingleOrDefault(mc => mc.ContactId == c.ContactId);
+                modelContact.ShouldNotBeNull();
+                modelContact.ContactName.ShouldBe(c.ContactName);
+                modelContact.ContactPhoneNumber.ShouldBe(c.ContactPhoneNumber);
+                modelContact.ContactEmailAddress.ShouldBe(c.ContactEmailAddress);
+            });
+
+            model.Devices.Count.ShouldBe(response.Devices.Count);
+            foreach (KeyValuePair<Guid, String> device in response.Devices)
+            {
+                response.Devices.ContainsKey(device.Key).ShouldBeTrue();
+                response.Devices.ContainsValue(device.Value).ShouldBeTrue();
+            }
+
+
+            model.Operators.Count.ShouldBe(response.Operators.Count);
+            response.Operators.ForEach(o =>
+            {
+                // Find the operator in the view model
+                MerchantOperatorModel modelOperator = model.Operators.SingleOrDefault(mo => mo.OperatorId == o.OperatorId);
+                modelOperator.ShouldNotBeNull();
+                modelOperator.Name.ShouldBe(o.Name);
+                modelOperator.TerminalNumber.ShouldBe(o.TerminalNumber);
+                modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
+            });
+            model.Addresses.Count.ShouldBe(response.Addresses.Count);
+            response.Addresses.ForEach(a =>
+                                       {
+                                           // Find the operator in the view model
+                                           AddressModel modelAddress = model.Addresses.SingleOrDefault(ma => ma.AddressId == a.AddressId);
+                                           modelAddress.ShouldNotBeNull();
+                                           modelAddress.AddressLine1.ShouldBe(a.AddressLine1);
+                                           modelAddress.AddressLine2.ShouldBe(a.AddressLine2);
+                                           modelAddress.AddressLine3.ShouldBe(a.AddressLine3);
+                                           modelAddress.AddressLine4.ShouldBe(a.AddressLine4);
+                                           modelAddress.Country.ShouldBe(a.Country);
+                                           modelAddress.PostalCode.ShouldBe(a.PostalCode);
+                                           modelAddress.Region.ShouldBe(a.Region);
+                                           modelAddress.Town.ShouldBe(a.Town);
+                                       });
+            model.Balance.ShouldBe(0);
+            model.AvailableBalance.ShouldBe(0);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullAddress_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Addresses = null;
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response, merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -320,17 +385,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
                                        });
             model.Addresses.ShouldBeNull();
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyAddress_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Addresses = new List<AddressResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -365,17 +433,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelOperator.MerchantNumber.ShouldBe(o.MerchantNumber);
                                        });
             model.Addresses.ShouldBeNull();
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullContacts_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Contacts = null;
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -415,17 +486,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyContacts_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Contacts = new List<ContactResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -465,17 +539,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullOperators_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Operators = null;
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
             
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -515,17 +592,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyOperators_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Operators = new List<MerchantOperatorResponse>();
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -565,17 +645,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullDevices_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Devices = null;
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -618,17 +701,20 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyDevices_ModelIsConverted()
         {
             MerchantResponse response = TestData.MerchantResponse();
+            MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Devices = new Dictionary<Guid, String>();
 
             ModelFactory modelFactory = new ModelFactory();
 
-            MerchantModel model = modelFactory.ConvertFrom(response);
+            MerchantModel model = modelFactory.ConvertFrom(response,merchantBalanceResponse);
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -671,6 +757,8 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
                                            modelAddress.Region.ShouldBe(a.Region);
                                            modelAddress.Town.ShouldBe(a.Town);
                                        });
+            model.Balance.ShouldBe(merchantBalanceResponse.Balance);
+            model.AvailableBalance.ShouldBe(merchantBalanceResponse.AvailableBalance);
         }
 
         [Fact]
@@ -680,7 +768,7 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
 
             ModelFactory modelFactory = new ModelFactory();
 
-            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
+            Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response,null); });
         }
 
         [Fact]
@@ -1147,42 +1235,42 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
             Should.Throw<ArgumentNullException>(() => { modelFactory.ConvertFrom(response); });
         }
         
-        [Fact(Skip = "To be fixed")]
+        [Fact]
         public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_ModelIsConverted()
         {
-            //List<MerchantBalanceHistoryResponse> response = TestData.MerchantBalanceHistoryResponseList;
+            List<MerchantBalanceChangedEntryResponse> response = TestData.MerchantBalanceChangedEntryResponseList;
 
-            //ModelFactory modelFactory = new ModelFactory();
+            ModelFactory modelFactory = new ModelFactory();
 
-            //List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
 
-            //model.ShouldNotBeNull();
-            //model.ShouldNotBeEmpty();
-            //model.Count.ShouldBe(response.Count);
+            model.ShouldNotBeNull();
+            model.ShouldNotBeEmpty();
+            model.Count.ShouldBe(response.Count);
         }
 
-        [Fact(Skip = "To be fixed")]
+        [Fact]
         public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_NullResponse_ErrorThrown()
         {
-            //List<MerchantBalanceHistoryResponse> response = null;
+            List<MerchantBalanceChangedEntryResponse> response = null;
 
-            //ModelFactory modelFactory = new ModelFactory();
+            ModelFactory modelFactory = new ModelFactory();
 
-            //List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
 
-            //model.ShouldBeNull();
+            model.ShouldBeNull();
         }
 
-        [Fact(Skip = "To be fixed")]
+        [Fact]
         public void ModelFactory_ConvertFrom_MerchantBalanceHistoryResponseList_EmptyResponse_ErrorThrown()
         {
-            //List<MerchantBalanceHistoryResponse> response = new List<MerchantBalanceHistoryResponse>();
+            List<MerchantBalanceChangedEntryResponse> response = new List<MerchantBalanceChangedEntryResponse>();
 
-            //ModelFactory modelFactory = new ModelFactory();
+            ModelFactory modelFactory = new ModelFactory();
 
-            //List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
+            List<MerchantBalanceHistory> model = modelFactory.ConvertFrom(response);
 
-            //model.ShouldBeNull();
+            model.ShouldBeNull();
         }
 
         [Fact]
