@@ -202,8 +202,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             return builtContainer;
         }
 
-        public override async Task<IContainerService> SetupSecurityServiceContainer(INetworkService networkService,
-                                                                              List<String> additionalEnvironmentVariables = null)
+        public override async Task<IContainerService> SetupSecurityServiceContainer(List<INetworkService> networkServices,
+                                                                                    List<String> additionalEnvironmentVariables = null)
         {
             this.Trace("About to Start Security Container");
 
@@ -212,6 +212,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             environmentVariables.Add($"ServiceOptions:IssuerUrl=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
             environmentVariables.Add("ASPNETCORE_ENVIRONMENT=IntegrationTest");
             environmentVariables.Add($"urls=https://*:{DockerPorts.SecurityServiceDockerPort}");
+
+            environmentVariables.Add($"ServiceOptions:PasswordOptions:RequiredLength=6");
+            environmentVariables.Add($"ServiceOptions:PasswordOptions:RequireDigit=false");
+            environmentVariables.Add($"ServiceOptions:PasswordOptions:RequireUpperCase=false");
+            environmentVariables.Add($"ServiceOptions:UserOptions:RequireUniqueEmail=false");
+            environmentVariables.Add($"ServiceOptions:SignInOptions:RequireConfirmedEmail=false");
 
             if (additionalEnvironmentVariables != null)
             {
@@ -228,7 +234,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             // Now build and return the container                
             IContainerService builtContainer = securityServiceContainer.Build().Start().WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
 
-            networkService.Attach(builtContainer, false);
+            foreach (INetworkService networkService in networkServices)
+            {
+                networkService.Attach(builtContainer, false);
+            }
 
             this.Trace("Security Service Container Started");
             this.Containers.Add(builtContainer);
@@ -269,7 +278,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             //                    retryInterval: TimeSpan.FromSeconds(30));
             //}
         }
-
+        
         #endregion
     }
 }
