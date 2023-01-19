@@ -164,7 +164,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             Trace("About to Start Estate Management UI Container");
 
-            List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
+            List<String> environmentVariables = this.GetCommonEnvironmentVariables();
             environmentVariables.Add($"AppSettings:Authority=https://identity-server:{securityServiceContainerPort}");
             //environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
             environmentVariables.Add($"ASPNETCORE_ENVIRONMENT=Development");
@@ -202,12 +202,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             return builtContainer;
         }
 
-        public override async Task<IContainerService> SetupSecurityServiceContainer(List<INetworkService> networkServices,
-                                                                                    List<String> additionalEnvironmentVariables = null)
+        public override async Task<IContainerService> SetupSecurityServiceContainer(List<INetworkService> networkServices)
         {
             this.Trace("About to Start Security Container");
 
-            List<String> environmentVariables = this.GetCommonEnvironmentVariables(DockerPorts.SecurityServiceDockerPort);
+            List<String> environmentVariables = this.GetCommonEnvironmentVariables();
             environmentVariables.Add($"ServiceOptions:PublicOrigin=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
             environmentVariables.Add($"ServiceOptions:IssuerUrl=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
             environmentVariables.Add("ASPNETCORE_ENVIRONMENT=IntegrationTest");
@@ -218,12 +217,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             environmentVariables.Add($"ServiceOptions:PasswordOptions:RequireUpperCase=false");
             environmentVariables.Add($"ServiceOptions:UserOptions:RequireUniqueEmail=false");
             environmentVariables.Add($"ServiceOptions:SignInOptions:RequireConfirmedEmail=false");
-
-            if (additionalEnvironmentVariables != null)
-            {
-                environmentVariables.AddRange(additionalEnvironmentVariables);
-            }
-
+            
             ContainerBuilder securityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
                                                                      .WithEnvironment(environmentVariables.ToArray())
                                                                      .UseImageDetails(this.GetImageDetails(ContainerType.SecurityService))
