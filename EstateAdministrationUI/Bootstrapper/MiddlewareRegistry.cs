@@ -1,6 +1,7 @@
 ﻿namespace EstateAdministrationUI.Bootstrapper
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net.Http;
     using System.Threading.Tasks;
     using IdentityModel;
@@ -12,6 +13,7 @@
     using Shared.Extensions;
     using Shared.General;
 
+    [ExcludeFromCodeCoverage]
     public class MiddlewareRegistry :ServiceRegistry
     {
         public MiddlewareRegistry()

@@ -652,7 +652,8 @@
                 DisplayText = TestData.ContractProductDisplayText,
                 TransactionFees = null,
                 ContractId = TestData.ContactId,
-                IsVariable = false
+                IsVariable = false,
+                ProductType = "1"
             };
 
         public static CreateContractProductViewModel CreateContractProductViewModelWithNullValue =>
@@ -663,7 +664,8 @@
                 DisplayText = TestData.ContractProductDisplayText,
                 TransactionFees = null,
                 ContractId = TestData.ContactId,
-                IsVariable = true
+                IsVariable = true,
+                ProductType = "1"
             };
 
         public static AddProductToContractResponse AddProductToContractResponse =>
@@ -700,7 +702,7 @@
                 TransactionFeeId = TestData.TransactionFeeId
             };
 
-        public static ContractProductModel ContractProductModel =>
+        public static ContractProductModel ContractProductModel(Int32 productType) =>
             new ContractProductModel
             {
                 EstateId = TestData.EstateId,
@@ -710,6 +712,7 @@
                 ContractProductId = TestData.ContractProductId,
                 ProductName = TestData.ContractProductName,
                 DisplayText = TestData.ContractProductDisplayText,
+                ProductType = productType,
                 NumberOfTransactionFees = 1,
                 ContractProductTransactionFees = new List<ContractProductTransactionFeeModel>
                                                  {
@@ -772,7 +775,7 @@
                 OperatorName = TestData.OperatorName,
                 ContractProducts = new List<ContractProductModel>
                                    {
-                                       TestData.ContractProductModel
+                                       TestData.ContractProductModel(1),
                                    },
                 NumberOfProducts = 1
             };

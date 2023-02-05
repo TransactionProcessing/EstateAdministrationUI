@@ -119,6 +119,7 @@
     }
 
     [DataContract]
+    [ExcludeFromCodeCoverage]
     public class EmbedClass
     {
         [DataMember]
@@ -128,6 +129,7 @@
         public string dashboardServerApiUrl { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class TokenObject
     {
         public string Message { get; set; }
@@ -137,6 +139,7 @@
         public string Token { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class Token
     {
         [JsonProperty("access_token")]

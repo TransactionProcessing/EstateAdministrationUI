@@ -441,6 +441,25 @@
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetContractProductTypeListAsJson(CancellationToken cancellationToken)
+        {
+            try
+            {
+                String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+                List<ContractProductTypeModel> contractProductTypeList= await this.ApiClient.GetContractProductTypeList(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+
+                List<ContractProductTypeViewModel> contractProductTypeViewModels = this.ViewModelFactory.ConvertFrom(contractProductTypeList);
+
+                return this.Json(contractProductTypeViewModels);
+            }
+            catch (Exception e)
+            {
+                return this.Json(Helpers.GetErrorDataForDataTable<String>(Helpers.BuildUserErrorMessage("Error getting contract product type list")));
+            }
+        }
+
         /// <summary>
         /// Validates the model.
         /// </summary>

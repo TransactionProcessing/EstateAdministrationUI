@@ -1,6 +1,7 @@
 ﻿namespace EstateAdministrationUI.Bootstrapper;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using Common;
 using EstateManagement.Client;
@@ -11,6 +12,7 @@ using Services;
 using Shared.General;
 using TransactionProcessor.Client;
 
+[ExcludeFromCodeCoverage]
 public class ClientRegistry : ServiceRegistry
 {
     public ClientRegistry() {

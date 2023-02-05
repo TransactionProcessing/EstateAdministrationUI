@@ -76,6 +76,8 @@
         /// </value>
         public String ProductName { get; set; }
 
+        public Int32 ProductType { get; set; }
+
         /// <summary>
         /// Gets or sets the value.
         /// </summary>

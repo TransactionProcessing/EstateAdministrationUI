@@ -1,37 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EstateAdministrationUI.IntegrationTests.Common
 {
-    using System.Data;
     using System.Diagnostics;
-    using System.Diagnostics.Eventing.Reader;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Net.Http;
-    using System.Threading;
     using System.Threading.Tasks;
-    using Ductus.FluentDocker;
     using Ductus.FluentDocker.Builders;
-    using Ductus.FluentDocker.Commands;
     using Ductus.FluentDocker.Common;
-    using Ductus.FluentDocker.Executors;
-    using Ductus.FluentDocker.Extensions;
-    using Ductus.FluentDocker.Model.Builders;
-    using Ductus.FluentDocker.Model.Containers;
-    using Ductus.FluentDocker.Model.Networks;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
-    using EventStore.Client;
-    using Microsoft.Data.SqlClient;
     using SecurityService.Client;
     using Shared.IntegrationTesting;
-    using Shared.Logger;
-    using TransactionProcessor.Client;
-    using ILogger = Shared.Logger.ILogger;
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
