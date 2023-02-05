@@ -59,6 +59,8 @@
         /// </value>
         public String ProductName { get; set; }
 
+        public String ProductType { get; set; }
+
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
@@ -68,5 +70,12 @@
         public String Value { get; set; }
 
         #endregion
+    }
+
+    public enum ProductType{
+        NotSet,
+        MobileTopup,
+        Voucher,
+        BillPayment,
     }
 }

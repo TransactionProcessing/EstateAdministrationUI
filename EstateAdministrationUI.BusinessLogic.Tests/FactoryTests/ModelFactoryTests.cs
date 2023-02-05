@@ -16,8 +16,6 @@ namespace EstateAdministrationUI.BusinessLogic.Tests.FactoryTests
     using Testing;
     using TransactionProcessor.DataTransferObjects;
     using Xunit;
-    using ModelSortDirection = Models.SortDirection;
-    using ModelSortField = Models.SortField;
 
     public class ModelFactoryTests
     {

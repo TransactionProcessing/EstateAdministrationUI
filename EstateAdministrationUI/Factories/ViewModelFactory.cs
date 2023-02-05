@@ -5,6 +5,8 @@
     using System.Linq;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
+    using LamarCodeGeneration.Frames;
+    using NuGet.Protocol.Core.Types;
     using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
 
     /// <summary>
@@ -16,11 +18,6 @@
     {
         #region Methods
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="assignOperatorToMerchantViewModel">The assign operator to merchant view model.</param>
-        /// <returns></returns>
         public AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
         {
             if (assignOperatorToMerchantViewModel == null)
@@ -38,12 +35,6 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalanceModel">The merchant balance model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">merchantBalanceModel</exception>
         public MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel)
         {
             if (merchantBalanceModel == null)
@@ -62,12 +53,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="addMerchantDeviceViewModel">The add merchant device view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">addMerchantDeviceViewModel</exception>
         public AddMerchantDeviceModel ConvertFrom(AddMerchantDeviceViewModel addMerchantDeviceViewModel)
         {
             if (addMerchantDeviceViewModel == null)
@@ -82,12 +67,6 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="estateModel">The estate model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">estateModel</exception>
         public EstateViewModel ConvertFrom(EstateModel estateModel)
         {
             if (estateModel == null)
@@ -104,12 +83,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="contractModel">The contract model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">contractModel</exception>
         public ContractProductListViewModel ConvertFrom(ContractModel contractModel)
         {
             if (contractModel == null)
@@ -135,6 +108,7 @@
                                                                                               ContractProductId = c.ContractProductId,
                                                                                               DisplayText = c.DisplayText,
                                                                                               ProductName = c.ProductName,
+                                                                                              ProductType = GetProductTypeName((ProductType)c.ProductType),
                                                                                               Value = c.Value.HasValue ? c.Value.Value.ToString() : "Variable",
                                                                                               NumberOfTransactionFees = c.ContractProductTransactionFees.Count
                                                                                           });
@@ -144,12 +118,14 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="contractProduct">The contract product.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">contractProduct</exception>
+        private String GetProductTypeName(ProductType productType) =>
+            productType switch{
+                ProductType.BillPayment => "Bill Payment",
+                ProductType.MobileTopup => "Mobile Topup",
+                ProductType.Voucher => "Voucher",
+                _ => "Not Set"
+            };
+
         public ContractProductTransactionFeesListViewModel ConvertFrom(ContractProductModel contractProduct)
         {
             if (contractProduct == null)
@@ -188,12 +164,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="createOperatorViewModel">The create operator view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">createOperatorViewModel</exception>
         public CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel)
         {
             if (createOperatorViewModel == null)
@@ -211,12 +181,6 @@
             return createOperatorModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="createContractViewModel">The create contract view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">createContractViewModel</exception>
         public CreateContractModel ConvertFrom(CreateContractViewModel createContractViewModel)
         {
             if (createContractViewModel == null)
@@ -233,13 +197,6 @@
             return createContractModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="estateOperatorModels">The estate operator models.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">estateOperatorModels</exception>
         public List<OperatorListViewModel> ConvertFrom(Guid estateId,
                                                        List<EstateOperatorModel> estateOperatorModels)
         {
@@ -255,13 +212,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="estateId">The estate identifier.</param>
-        /// <param name="estateOperatorModel">The estate operator model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">estateOperatorModel</exception>
         public OperatorListViewModel ConvertFrom(Guid estateId,
                                                  EstateOperatorModel estateOperatorModel)
         {
@@ -282,12 +232,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="createMerchantViewModel">The create merchant view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">createMerchantViewModel</exception>
         public CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)
         {
             if (createMerchantViewModel == null)
@@ -325,12 +269,6 @@
             return createMerchantModel;
         }
         
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantModels">The merchant models.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">merchantModels</exception>
         public List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels)
         {
             if (merchantModels == null || merchantModels.Any() == false)
@@ -363,12 +301,6 @@
             return viewModels;
         }
         
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="contractModels">The contract models.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">contractModels</exception>
         public List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels)
         {
             if (contractModels == null)
@@ -394,12 +326,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantModel">The merchant model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">merchantModel</exception>
         public MerchantViewModel ConvertFrom(MerchantModel merchantModel)
         {
             if (merchantModel == null)
@@ -423,11 +349,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="merchantBalanceModel">The merchant balance model.</param>
-        /// <returns></returns>
         public MerchantBalanceHistoryListViewModel ConvertFrom(List<MerchantBalanceHistory> merchantBalanceModel)
         {
             if (merchantBalanceModel == null)
@@ -459,12 +380,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="makeMerchantDepositViewModel">The make merchant deposit view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">makeMerchantDepositViewModel</exception>
         public MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel)
         {
             if (makeMerchantDepositViewModel == null)
@@ -482,12 +397,6 @@
             return makeMerchantDepositModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="createContractProductViewModel">The create contract product view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">createContractProductViewModel</exception>
         public AddProductToContractModel ConvertFrom(CreateContractProductViewModel createContractProductViewModel)
         {
             if (createContractProductViewModel == null)
@@ -500,16 +409,11 @@
             addProductToContractModel.Value = createContractProductViewModel.Value;
             addProductToContractModel.DisplayText = createContractProductViewModel.DisplayText;
             addProductToContractModel.ProductName = createContractProductViewModel.ProductName;
+            addProductToContractModel.ProductType = Int32.Parse(createContractProductViewModel.ProductType);
 
             return addProductToContractModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="createContractProductTransactionFeeViewModel">The create contract product transaction fee view model.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">createContractProductTransactionFeeViewModel</exception>
         public AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel)
         {
             if (createContractProductTransactionFeeViewModel == null)
@@ -530,11 +434,6 @@
             return addTransactionFeeToContractProductModel;
         }
         
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="models">The models.</param>
-        /// <returns></returns>
         public List<FileImportLogViewModel> ConvertFrom(List<FileImportLogModel> models)
         {
             if (models == null || models.Any() == false)
@@ -552,11 +451,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The models.</param>
-        /// <returns></returns>
         public FileImportLogViewModel ConvertFrom(FileImportLogModel model)
         {
             if (model == null)
@@ -595,11 +489,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
         public FileDetailsViewModel ConvertFrom(FileDetailsModel model)
         {
             if (model == null)
@@ -656,11 +545,18 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
+        public List<ContractProductTypeViewModel> ConvertFrom(List<ContractProductTypeModel> contractProductTypeModels){
+            List<ContractProductTypeViewModel> result = new List<ContractProductTypeViewModel>();
+
+            foreach (ContractProductTypeModel contractProductTypeModel in contractProductTypeModels){
+                result.Add(new ContractProductTypeViewModel{
+                                                               Description = contractProductTypeModel.Description,
+                                                               ProductType = contractProductTypeModel.ProductType.ToString()
+                                                           });
+            }
+            return result;
+        }
+
         private (FileLineProcessingResult result,String stringResult) ConvertFrom(BusinessLogic.Models.FileLineProcessingResult model)
         {
             (FileLineProcessingResult, String) viewModel = (FileLineProcessingResult.Unknown,"Unknown");
@@ -692,11 +588,6 @@
             return viewModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="deviceModels">The device models.</param>
-        /// <returns></returns>
         private Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
         {
             Dictionary<String, String> viewModels = new Dictionary<String, String>();
@@ -714,11 +605,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="addressModels">The address models.</param>
-        /// <returns></returns>
         private List<AddressViewModel> ConvertFrom(List<AddressModel> addressModels)
         {
             List<AddressViewModel> viewModels = new List<AddressViewModel>();
@@ -736,11 +622,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="addressModel">The address model.</param>
-        /// <returns></returns>
         private AddressViewModel ConvertFrom(AddressModel addressModel)
         {
             return new AddressViewModel
@@ -757,11 +638,6 @@
                    };
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="contactModels">The contact models.</param>
-        /// <returns></returns>
         private List<ContactViewModel> ConvertFrom(List<ContactModel> contactModels)
         {
             List<ContactViewModel> viewModels = new List<ContactViewModel>();
@@ -779,11 +655,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="contactModel">The contact model.</param>
-        /// <returns></returns>
         private ContactViewModel ConvertFrom(ContactModel contactModel)
         {
             return new ContactViewModel
@@ -795,11 +666,6 @@
                    };
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="operatorModels">The operator models.</param>
-        /// <returns></returns>
         private List<MerchantOperatorViewModel> ConvertFrom(List<MerchantOperatorModel> operatorModels)
         {
             List<MerchantOperatorViewModel> viewModels = new List<MerchantOperatorViewModel>();
@@ -817,11 +683,6 @@
             return viewModels;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="operatorModel">The operator model.</param>
-        /// <returns></returns>
         private MerchantOperatorViewModel ConvertFrom(MerchantOperatorModel operatorModel)
         {
             return new MerchantOperatorViewModel

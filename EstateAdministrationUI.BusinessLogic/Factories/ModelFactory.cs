@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using FileProcessor.DataTransferObjects.Responses;
@@ -174,7 +175,8 @@
                                                                       {
                                                                           Value = source.Value,
                                                                           ProductName = source.ProductName,
-                                                                          DisplayText = source.DisplayText
+                                                                          DisplayText = source.DisplayText,
+                                                                          ProductType = (ProductType)source.ProductType,
                                                                       };
 
             return addProductToContractRequest;
@@ -291,48 +293,6 @@
                                                                                                               };
 
             return addTransactionFeeToContractProductResponseModel;
-        }
-        
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="sortDirection">The sort direction.</param>
-        /// <returns></returns>
-        public SortDirection ConvertFrom(Models.SortDirection sortDirection)
-        {
-            SortDirection result = SortDirection.Ascending;
-            switch (sortDirection)
-            {
-                case Models.SortDirection.Ascending:
-                    result = SortDirection.Ascending;
-                    break;
-                case Models.SortDirection.Descending:
-                    result = SortDirection.Descending;
-                    break;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="sortField">The sort field.</param>
-        /// <returns></returns>
-        public SortField ConvertFrom(Models.SortField sortField)
-        {
-            SortField result = SortField.Value;
-            switch (sortField)
-            {
-                case Models.SortField.Value:
-                    result = SortField.Value;
-                    break;
-                case Models.SortField.Count:
-                    result = SortField.Count;
-                    break;
-            }
-
-            return result;
         }
         
         /// <summary>
@@ -586,6 +546,7 @@
                                                                                             DisplayText = p.DisplayText,
                                                                                             Value = p.Value,
                                                                                             ProductName = p.Name,
+                                                                                            ProductType = (Int32)p.ProductType,
                                                                                             ContractProductId = p.ProductId,
                                                                                             ContractProductTransactionFees =
                                                                                                 new List<ContractProductTransactionFeeModel>()

@@ -28,6 +28,8 @@
         /// </value>
         public String DisplayText { get; set; }
 
+        public String ProductType { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the product.
         /// </summary>

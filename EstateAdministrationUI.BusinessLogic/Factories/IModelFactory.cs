@@ -6,8 +6,6 @@
     using FileProcessor.DataTransferObjects.Responses;
     using Models;
     using TransactionProcessor.DataTransferObjects;
-    using SortDirectionModel = Models.SortDirection;
-    using SortFieldModel = Models.SortField;
 
     /// <summary>
     /// 

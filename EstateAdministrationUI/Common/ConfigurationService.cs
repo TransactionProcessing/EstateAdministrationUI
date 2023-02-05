@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using Shared.Exceptions;
     using Shared.General;
 
+    [ExcludeFromCodeCoverage]
     public class ConfigurationService : IConfigurationService
     {
         #region Properties

@@ -7,6 +7,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
     using System.Linq;
     using Areas.Estate.Models;
     using BusinessLogic.Models;
+    using Castle.Components.DictionaryAdapter;
     using Factories;
     using Shouldly;
     using Testing;
@@ -1129,10 +1130,14 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 });
         }
 
-        [Fact]
-        public void ViewModelFactory_ConvertFrom_ContractProductModel_IsConverted()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void ViewModelFactory_ConvertFrom_ContractProductModel_IsConverted(Int32 productType)
         {
-            ContractProductModel model = TestData.ContractProductModel;
+            ContractProductModel model = TestData.ContractProductModel(productType);
 
             ViewModelFactory viewModelFactory = new ViewModelFactory();
 
@@ -1252,6 +1257,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             model.Value.ShouldBe(viewModel.Value);
             model.DisplayText.ShouldBe(viewModel.DisplayText);
             model.ProductName.ShouldBe(viewModel.ProductName);
+            model.ProductType.ShouldBe(Int32.Parse(viewModel.ProductType));
         }
 
         [Fact]
@@ -1266,6 +1272,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             model.Value.ShouldBeNull();
             model.DisplayText.ShouldBe(viewModel.DisplayText);
             model.ProductName.ShouldBe(viewModel.ProductName);
+            model.ProductType.ShouldBe(Int32.Parse(viewModel.ProductType));
         }
 
         [Fact]
@@ -1560,6 +1567,25 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 {
                                                     viewModelFactory.ConvertFrom(viewModel);
                                                 });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ContractProductTypeModelList_ListConverted(){
+            List<ContractProductTypeModel> modelList = new List<ContractProductTypeModel>{
+                                                                                             new ContractProductTypeModel{
+                                                                                                                             Description = "Test ProductType",
+                                                                                                                             ProductType = 1
+                                                                                                                         }
+                                                                                         };
+
+            ViewModelFactory viewModelFactory = new ViewModelFactory();
+
+            List<ContractProductTypeViewModel> contractProductTypeViewModels = viewModelFactory.ConvertFrom(modelList);
+
+            contractProductTypeViewModels.Count.ShouldBe(modelList.Count);
+            contractProductTypeViewModels.Single().Description.ShouldBe(modelList.Single().Description);
+            contractProductTypeViewModels.Single().ProductType.ShouldBe(modelList.Single().ProductType.ToString());
+
         }
     }
 }

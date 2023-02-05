@@ -37,14 +37,4 @@
 
         #endregion
     }
-
-    [ExcludeFromCodeCoverage]
-    public class AssignOperatorToMerchantResponseModel
-    {
-        public Guid EstateId { get; set; }
-
-        public Guid MerchantId { get; set; }
-
-        public Guid OperatorId { get; set; }
-    }
 }

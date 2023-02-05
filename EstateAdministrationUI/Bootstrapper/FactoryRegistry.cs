@@ -4,7 +4,9 @@ using BusinessLogic.Factories;
 using Factories;
 using Lamar;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
+[ExcludeFromCodeCoverage]
 public class FactoryRegistry : ServiceRegistry
 {
     public FactoryRegistry()
