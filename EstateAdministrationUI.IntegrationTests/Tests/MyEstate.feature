@@ -109,8 +109,8 @@ Scenario: Create New Contract
 	When I click the Add New Product button
 	Then I am presented the new product screen
 	When I enter the following new product details
-	| ProductName         | DisplayText | Value  |
-	| 100 KES Topup       | 100 KES     | 100.00 |
+	| ProductName   | DisplayText | Value  | ProductType  |
+	| 100 KES Topup | 100 KES     | 100.00 | Mobile Topup |
 	When I click the Create Product button
 	Then I am presented with the Products List Screen
 	And the following product details are in the list

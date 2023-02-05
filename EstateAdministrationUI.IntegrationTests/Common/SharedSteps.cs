@@ -1191,9 +1191,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             String productName = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductName");
             String displayText = SpecflowTableHelper.GetStringRowValue(productDetails, "DisplayText");
             String productValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+            String productType = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductType");
 
             await this.WebDriver.FillIn("productName", productName);
             await this.WebDriver.FillIn("displayText", displayText);
+            await this.WebDriver.SelectDropDownItemByText("productTypeList", productType);
+
             if (String.IsNullOrEmpty(productValue))
             {
                 // Set the IsVariable flag
