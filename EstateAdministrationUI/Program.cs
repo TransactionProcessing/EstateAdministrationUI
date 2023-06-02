@@ -29,6 +29,7 @@ namespace EstateAdministrationUI
                                                                   .AddJsonFile("hosting.development.json", optional:true).AddEnvironmentVariables().Build();
 
             IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
+            hostBuilder.UseWindowsService();
             hostBuilder.UseLamar();
             hostBuilder.ConfigureWebHostDefaults(webBuilder =>
                                                  {
