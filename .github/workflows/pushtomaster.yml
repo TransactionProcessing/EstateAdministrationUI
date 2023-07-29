@@ -21,7 +21,7 @@ jobs:
         fetch-depth: 0
         
     - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -29,7 +29,7 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         
     - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/transactionprocessing/api/v3/index.json
+      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
 
     - name: Build Code
       run: |
