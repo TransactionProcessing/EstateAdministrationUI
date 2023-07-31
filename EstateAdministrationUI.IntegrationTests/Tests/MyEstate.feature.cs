@@ -473,11 +473,13 @@ this.FeatureBackground();
                 TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "ProductName",
                             "DisplayText",
-                            "Value"});
+                            "Value",
+                            "ProductType"});
                 table17.AddRow(new string[] {
                             "100 KES Topup",
                             "100 KES",
-                            "100.00"});
+                            "100.00",
+                            "Mobile Topup"});
 #line 111
  testRunner.When("I enter the following new product details", ((string)(null)), table17, "When ");
 #line hidden
