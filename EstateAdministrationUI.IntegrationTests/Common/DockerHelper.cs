@@ -106,7 +106,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             proc.Start();
             proc.WaitForExit();
         }
-
+        
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -116,10 +116,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await base.StartContainersForScenarioRun(scenarioName);
 
             await this.StartEstateManagementUiContainer(this.TestNetworks, this.SecurityServicePort);
-
-            DockerHelper.AddEntryToHostsFile("127.0.0.1", SecurityServiceContainerName);
-            DockerHelper.AddEntryToHostsFile("localhost", SecurityServiceContainerName);
-
+            
             // Setup the base address resolvers
             String EstateManagementBaseAddressResolver(String api) => $"http://127.0.0.1:{this.EstateManagementPort}";
 
@@ -188,6 +185,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         {
             this.Trace("About to Start Security Container");
 
+            DockerHelper.AddEntryToHostsFile("127.0.0.1", SecurityServiceContainerName);
+            DockerHelper.AddEntryToHostsFile("localhost", SecurityServiceContainerName);
+
             List<String> environmentVariables = this.GetCommonEnvironmentVariables();
             environmentVariables.Add($"ServiceOptions:PublicOrigin=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
             environmentVariables.Add($"ServiceOptions:IssuerUrl=https://{this.SecurityServiceContainerName}:{DockerPorts.SecurityServiceDockerPort}");
@@ -208,7 +208,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                      .SetDockerCredentials(this.DockerCredentials);
 
             // Now build and return the container                
-            IContainerService builtContainer = securityServiceContainer.Build().Start().WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
+            IContainerService builtContainer = securityServiceContainer.Build().Start();//.WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
 
             foreach (INetworkService networkService in networkServices)
             {
