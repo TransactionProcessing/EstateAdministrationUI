@@ -35,25 +35,14 @@
         /// </summary>
         private readonly IApiClient ApiClient;
 
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
-
+        
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContractController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public ContractController(IApiClient apiClient,
-                                  IViewModelFactory viewModelFactory)
+        
+        public ContractController(IApiClient apiClient)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
         }
 
         #endregion
@@ -90,11 +79,14 @@
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                    CreateContractModel createContractModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    CreateContractModel createContractModel = ViewModelFactory.ConvertFrom(viewModel);
+
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
                     // All good with model, call the client to create the golf club
                     CreateContractResponseModel createContractResponseModel =
-                        await this.ApiClient.CreateContract(accessToken, this.User.Identity as ClaimsIdentity, createContractModel, cancellationToken);
+                        await this.ApiClient.CreateContract(accessToken, Guid.Empty,
+                                                            estateId, createContractModel, cancellationToken);
 
                     // Merchant Created, redirect to the Merchant List screen
                     return this.RedirectToAction("GetContractList", "Contract")
@@ -144,12 +136,15 @@
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                    AddProductToContractModel addProductToContractModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+                    AddProductToContractModel addProductToContractModel = ViewModelFactory.ConvertFrom(viewModel);
 
                     // All good with model, call the client
                     AddProductToContractResponseModel addProductToContractResponse =
                         await this.ApiClient.AddProductToContract(accessToken,
-                                                                  this.User.Identity as ClaimsIdentity,
+                                                                  Guid.Empty,
+                                                                  estateId,
                                                                   viewModel.ContractId,
                                                                   addProductToContractModel,
                                                                   cancellationToken);
@@ -209,12 +204,15 @@
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                    AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+                    AddTransactionFeeToContractProductModel addTransactionFeeToContractProductModel = ViewModelFactory.ConvertFrom(viewModel);
 
                     // All good with model, call the client
                     AddTransactionFeeToContractProductResponseModel addTransactionFeeToContractProductResponse =
                         await this.ApiClient.AddTransactionFeeToContractProduct(accessToken,
-                                                                                this.User.Identity as ClaimsIdentity,
+                                                                                Guid.Empty,
+                                                                                estateId,
                                                                                 viewModel.ContractId,
                                                                                 viewModel.ContractProductId,
                                                                                 addTransactionFeeToContractProductModel,
@@ -269,9 +267,12 @@
                 String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                List<ContractModel> contractList = await this.ApiClient.GetContracts(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                List<ContractListViewModel> contractViewModels = this.ViewModelFactory.ConvertFrom(contractList);
+                List<ContractModel> contractList = await this.ApiClient.GetContracts(accessToken, Guid.Empty,
+                                                                                     estateId, cancellationToken);
+
+                List<ContractListViewModel> contractViewModels = ViewModelFactory.ConvertFrom(contractList);
 
                 Logger.LogDebug($"contract list count is {contractViewModels.Count}");
 
@@ -305,9 +306,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                ContractProductListViewModel viewModel = this.ViewModelFactory.ConvertFrom(contract);
+                ContractModel contract = await this.ApiClient.GetContract(accessToken, Guid.Empty,
+                                                                          estateId, contractId, cancellationToken);
+
+                ContractProductListViewModel viewModel = ViewModelFactory.ConvertFrom(contract);
 
                 return this.View("ContractProductsList", viewModel);
             }
@@ -335,9 +339,12 @@
 
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                ContractModel contract = await this.ApiClient.GetContract(accessToken, this.User.Identity as ClaimsIdentity, contractId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                ContractProductListViewModel contractProductListViewModel = this.ViewModelFactory.ConvertFrom(contract);
+                ContractModel contract = await this.ApiClient.GetContract(accessToken, Guid.Empty,
+                                                                          estateId, contractId, cancellationToken);
+
+                ContractProductListViewModel contractProductListViewModel = ViewModelFactory.ConvertFrom(contract);
 
                 Expression<Func<ContractProductViewModel, Boolean>> whereClause = c => c.ProductName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
                                                                                        c.DisplayText.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
@@ -366,10 +373,13 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                ContractProductModel contractProduct =
-                    await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                ContractProductTransactionFeesListViewModel viewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
+                ContractProductModel contractProduct =
+                    await this.ApiClient.GetContractProduct(accessToken, Guid.Empty,
+                                                            estateId, contractId, contractProductId, cancellationToken);
+
+                ContractProductTransactionFeesListViewModel viewModel = ViewModelFactory.ConvertFrom(contractProduct);
 
                 return this.View("ContractProductTransactionFeesList", viewModel);
             }
@@ -399,10 +409,13 @@
 
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                ContractProductModel contractProduct =
-                    await this.ApiClient.GetContractProduct(accessToken, this.User.Identity as ClaimsIdentity, contractId, contractProductId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                ContractProductTransactionFeesListViewModel contractProductTransactionFeesViewModel = this.ViewModelFactory.ConvertFrom(contractProduct);
+                ContractProductModel contractProduct =
+                    await this.ApiClient.GetContractProduct(accessToken, Guid.Empty,
+                                                            estateId, contractId, contractProductId, cancellationToken);
+
+                ContractProductTransactionFeesListViewModel contractProductTransactionFeesViewModel = ViewModelFactory.ConvertFrom(contractProduct);
 
                 Expression<Func<ContractProductTransactionFeesViewModel, Boolean>> whereClause =
                     c => c.Description.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
@@ -429,9 +442,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+                EstateModel estate = await this.ApiClient.GetEstate(accessToken, Guid.Empty,
+                                                                    estateId, cancellationToken);
+
+                List<OperatorListViewModel> operatorViewModels = ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
 
                 return this.Json(operatorViewModels);
             }
@@ -448,9 +464,9 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                List<ContractProductTypeModel> contractProductTypeList= await this.ApiClient.GetContractProductTypeList(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                List<ContractProductTypeModel> contractProductTypeList= await this.ApiClient.GetContractProductTypeList(accessToken, cancellationToken);
 
-                List<ContractProductTypeViewModel> contractProductTypeViewModels = this.ViewModelFactory.ConvertFrom(contractProductTypeList);
+                List<ContractProductTypeViewModel> contractProductTypeViewModels = ViewModelFactory.ConvertFrom(contractProductTypeList);
 
                 return this.Json(contractProductTypeViewModels);
             }

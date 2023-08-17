@@ -35,29 +35,18 @@
         /// The API client
         /// </summary>
         private readonly IApiClient ApiClient;
-
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
+        
 
         private readonly IConfigurationService ConfigurationService;
 
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HomeController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
+        
         public HomeController(IApiClient apiClient,
-                              IViewModelFactory viewModelFactory,
                               IConfigurationService configurationService)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
             this.ConfigurationService = configurationService;
         }
 

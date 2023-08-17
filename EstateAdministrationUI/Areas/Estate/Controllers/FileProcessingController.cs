@@ -35,25 +35,12 @@
         /// </summary>
         private readonly IApiClient ApiClient;
 
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
-
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileProcessingController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public FileProcessingController(IApiClient apiClient,
-                                        IViewModelFactory viewModelFactory)
+        public FileProcessingController(IApiClient apiClient)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
         }
 
         #endregion
@@ -74,9 +61,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                return this.View("FileDetails", this.ViewModelFactory.ConvertFrom(fileDetailsModel));
+                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, Guid.Empty,
+                                                                                        estateId, fileId, cancellationToken);
+
+                return this.View("FileDetails", ViewModelFactory.ConvertFrom(fileDetailsModel));
             }
             catch(Exception e)
             {
@@ -99,10 +89,13 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                FileImportLogModel fileImportLogModel =
-                    await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                return this.View("FileImportLog", this.ViewModelFactory.ConvertFrom(fileImportLogModel));
+                FileImportLogModel fileImportLogModel =
+                    await this.ApiClient.GetFileImportLog(accessToken, Guid.Empty,
+                                                          estateId, fileImportLogId, cancellationToken);
+
+                return this.View("FileImportLog", ViewModelFactory.ConvertFrom(fileImportLogModel));
             }
             catch(Exception e)
             {
@@ -125,10 +118,13 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                FileImportLogModel fileImportLogModel =
-                    await this.ApiClient.GetFileImportLog(accessToken, this.User.Identity as ClaimsIdentity, fileImportLogId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                FileImportLogViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileImportLogModel);
+                FileImportLogModel fileImportLogModel =
+                    await this.ApiClient.GetFileImportLog(accessToken, Guid.Empty,
+                                                          estateId, fileImportLogId, cancellationToken);
+
+                FileImportLogViewModel viewModel = ViewModelFactory.ConvertFrom(fileImportLogModel);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Files));
             }
@@ -187,9 +183,12 @@
 
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
                 List<FileImportLogModel> importLogFileModelList =
-                    await this.ApiClient.GetFileImportLogs(accessToken, this.User.Identity as ClaimsIdentity, merchantId, startDateTime, endDateTime, cancellationToken);
-                List<FileImportLogViewModel> importLogFileViewModelList = this.ViewModelFactory.ConvertFrom(importLogFileModelList);
+                    await this.ApiClient.GetFileImportLogs(accessToken, Guid.Empty,
+                                                           estateId, merchantId, startDateTime, endDateTime, cancellationToken);
+                List<FileImportLogViewModel> importLogFileViewModelList = ViewModelFactory.ConvertFrom(importLogFileModelList);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, importLogFileViewModelList));
             }
@@ -214,9 +213,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, this.User.Identity as ClaimsIdentity, fileId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                FileDetailsViewModel viewModel = this.ViewModelFactory.ConvertFrom(fileDetailsModel);
+                FileDetailsModel fileDetailsModel = await this.ApiClient.GetFileDetails(accessToken, Guid.Empty,
+                                                                                        estateId, fileId, cancellationToken);
+
+                FileDetailsViewModel viewModel = ViewModelFactory.ConvertFrom(fileDetailsModel);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.FileLines));
             }
@@ -262,9 +264,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                var merchantModelList = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                var merchantViewModelList = this.ViewModelFactory.ConvertFrom(merchantModelList);
+                var merchantModelList = await this.ApiClient.GetMerchants(accessToken, Guid.Empty,
+                                                                          estateId, cancellationToken);
+
+                var merchantViewModelList = ViewModelFactory.ConvertFrom(merchantModelList);
 
                 return this.Json(merchantViewModelList);
             }
@@ -302,6 +307,8 @@
             }
 
             IFormFileCollection files = this.HttpContext.Request.Form.Files;
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+            Guid userId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, "sub");
             Guid merchantId = Guid.Parse(this.Request.Form["merchantId"]);
             Guid fileProfileId = Guid.Parse(this.Request.Form["fileProfileId"]);
             IFormFile file = files.First();
@@ -312,8 +319,10 @@
                     await file.CopyToAsync(ms, cancellationToken);
                     Byte[] fileBytes = ms.ToArray();
                     Guid fileId = await this.ApiClient.UploadFile(accessToken,
-                                                                  this.User.Identity as ClaimsIdentity,
+                                                                  Guid.Empty, 
+                                                                  estateId,
                                                                   merchantId,
+                                                                  userId,
                                                                   fileProfileId,
                                                                   fileBytes,
                                                                   file.FileName,

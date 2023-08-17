@@ -8,17 +8,12 @@
     using LamarCodeGeneration.Frames;
     using NuGet.Protocol.Core.Types;
     using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="EstateAdministrationUI.Factories.IViewModelFactory" />
-    /// <seealso cref="IViewModelFactory" />
-    public class ViewModelFactory : IViewModelFactory
+    
+    public static class ViewModelFactory
     {
         #region Methods
 
-        public AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
+        public static AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
         {
             if (assignOperatorToMerchantViewModel == null)
             {
@@ -35,7 +30,7 @@
             return model;
         }
 
-        public MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel)
+        public static MerchantBalanceViewModel ConvertFrom(MerchantBalanceModel merchantBalanceModel)
         {
             if (merchantBalanceModel == null)
             {
@@ -53,7 +48,7 @@
             return viewModel;
         }
 
-        public AddMerchantDeviceModel ConvertFrom(AddMerchantDeviceViewModel addMerchantDeviceViewModel)
+        public static AddMerchantDeviceModel ConvertFrom(AddMerchantDeviceViewModel addMerchantDeviceViewModel)
         {
             if (addMerchantDeviceViewModel == null)
             {
@@ -67,7 +62,7 @@
             return model;
         }
 
-        public EstateViewModel ConvertFrom(EstateModel estateModel)
+        public static EstateViewModel ConvertFrom(EstateModel estateModel)
         {
             if (estateModel == null)
             {
@@ -83,7 +78,7 @@
             return viewModel;
         }
 
-        public ContractProductListViewModel ConvertFrom(ContractModel contractModel)
+        public static ContractProductListViewModel ConvertFrom(ContractModel contractModel)
         {
             if (contractModel == null)
             {
@@ -118,7 +113,7 @@
             return viewModel;
         }
 
-        private String GetProductTypeName(ProductType productType) =>
+        public static String GetProductTypeName(ProductType productType) =>
             productType switch{
                 ProductType.BillPayment => "Bill Payment",
                 ProductType.MobileTopup => "Mobile Topup",
@@ -126,7 +121,7 @@
                 _ => "Not Set"
             };
 
-        public ContractProductTransactionFeesListViewModel ConvertFrom(ContractProductModel contractProduct)
+        public static ContractProductTransactionFeesListViewModel ConvertFrom(ContractProductModel contractProduct)
         {
             if (contractProduct == null)
             {
@@ -164,7 +159,7 @@
             return viewModel;
         }
 
-        public CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel)
+        public static CreateOperatorModel ConvertFrom(CreateOperatorViewModel createOperatorViewModel)
         {
             if (createOperatorViewModel == null)
             {
@@ -181,7 +176,7 @@
             return createOperatorModel;
         }
 
-        public CreateContractModel ConvertFrom(CreateContractViewModel createContractViewModel)
+        public static CreateContractModel ConvertFrom(CreateContractViewModel createContractViewModel)
         {
             if (createContractViewModel == null)
             {
@@ -197,8 +192,8 @@
             return createContractModel;
         }
 
-        public List<OperatorListViewModel> ConvertFrom(Guid estateId,
-                                                       List<EstateOperatorModel> estateOperatorModels)
+        public static List<OperatorListViewModel> ConvertFrom(Guid estateId,
+                                                              List<EstateOperatorModel> estateOperatorModels)
         {
             if (estateOperatorModels == null || estateOperatorModels.Any() == false)
             {
@@ -207,13 +202,13 @@
 
             List<OperatorListViewModel> viewModels = new List<OperatorListViewModel>();
 
-            estateOperatorModels.ForEach(eo => viewModels.Add(this.ConvertFrom(estateId, eo)));
+            estateOperatorModels.ForEach(eo => viewModels.Add(ConvertFrom(estateId, eo)));
 
             return viewModels;
         }
 
-        public OperatorListViewModel ConvertFrom(Guid estateId,
-                                                 EstateOperatorModel estateOperatorModel)
+        public static OperatorListViewModel ConvertFrom(Guid estateId,
+                                                        EstateOperatorModel estateOperatorModel)
         {
             if (estateOperatorModel == null)
             {
@@ -232,7 +227,7 @@
             return viewModel;
         }
 
-        public CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)
+        public static CreateMerchantModel ConvertFrom(CreateMerchantViewModel createMerchantViewModel)
         {
             if (createMerchantViewModel == null)
             {
@@ -269,7 +264,7 @@
             return createMerchantModel;
         }
         
-        public List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels)
+        public static List<MerchantListViewModel> ConvertFrom(List<MerchantModel> merchantModels)
         {
             if (merchantModels == null || merchantModels.Any() == false)
             {
@@ -301,7 +296,7 @@
             return viewModels;
         }
         
-        public List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels)
+        public static List<ContractListViewModel> ConvertFrom(List<ContractModel> contractModels)
         {
             if (contractModels == null)
             {
@@ -326,7 +321,7 @@
             return viewModels;
         }
 
-        public MerchantViewModel ConvertFrom(MerchantModel merchantModel)
+        public static MerchantViewModel ConvertFrom(MerchantModel merchantModel)
         {
             if (merchantModel == null)
             {
@@ -341,15 +336,15 @@
             viewModel.Balance = merchantModel.Balance;
             viewModel.SettlementSchedule = (Int32)merchantModel.SettlementSchedule;
             viewModel.AvailableBalance = merchantModel.AvailableBalance;
-            viewModel.Addresses = this.ConvertFrom(merchantModel.Addresses);
-            viewModel.Contacts = this.ConvertFrom(merchantModel.Contacts);
-            viewModel.Operators = this.ConvertFrom(merchantModel.Operators);
-            viewModel.Devices = this.ConvertFrom(merchantModel.Devices);
+            viewModel.Addresses = ConvertFrom(merchantModel.Addresses);
+            viewModel.Contacts = ConvertFrom(merchantModel.Contacts);
+            viewModel.Operators = ConvertFrom(merchantModel.Operators);
+            viewModel.Devices = ConvertFrom(merchantModel.Devices);
 
             return viewModel;
         }
 
-        public MerchantBalanceHistoryListViewModel ConvertFrom(List<MerchantBalanceHistory> merchantBalanceModel)
+        public static MerchantBalanceHistoryListViewModel ConvertFrom(List<MerchantBalanceHistory> merchantBalanceModel)
         {
             if (merchantBalanceModel == null)
             {
@@ -380,7 +375,7 @@
             return viewModel;
         }
 
-        public MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel)
+        public static MakeMerchantDepositModel ConvertFrom(MakeMerchantDepositViewModel makeMerchantDepositViewModel)
         {
             if (makeMerchantDepositViewModel == null)
             {
@@ -397,7 +392,7 @@
             return makeMerchantDepositModel;
         }
 
-        public AddProductToContractModel ConvertFrom(CreateContractProductViewModel createContractProductViewModel)
+        public static AddProductToContractModel ConvertFrom(CreateContractProductViewModel createContractProductViewModel)
         {
             if (createContractProductViewModel == null)
             {
@@ -414,7 +409,7 @@
             return addProductToContractModel;
         }
 
-        public AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel)
+        public static AddTransactionFeeToContractProductModel ConvertFrom(CreateContractProductTransactionFeeViewModel createContractProductTransactionFeeViewModel)
         {
             if (createContractProductTransactionFeeViewModel == null)
             {
@@ -434,7 +429,7 @@
             return addTransactionFeeToContractProductModel;
         }
         
-        public List<FileImportLogViewModel> ConvertFrom(List<FileImportLogModel> models)
+        public static List<FileImportLogViewModel> ConvertFrom(List<FileImportLogModel> models)
         {
             if (models == null || models.Any() == false)
             {
@@ -445,13 +440,13 @@
 
             foreach (FileImportLogModel fileImportLogModel in models)
             {
-                viewModels.Add(this.ConvertFrom(fileImportLogModel));
+                viewModels.Add(ConvertFrom(fileImportLogModel));
             }
 
             return viewModels;
         }
 
-        public FileImportLogViewModel ConvertFrom(FileImportLogModel model)
+        public static FileImportLogViewModel ConvertFrom(FileImportLogModel model)
         {
             if (model == null)
             {
@@ -489,7 +484,7 @@
             return viewModel;
         }
 
-        public FileDetailsViewModel ConvertFrom(FileDetailsModel model)
+        public static FileDetailsViewModel ConvertFrom(FileDetailsModel model)
         {
             if (model == null)
             {
@@ -532,7 +527,7 @@
                                                           };
 
                     // Translate the processing result
-                    (FileLineProcessingResult result, String stringResult) processingResult = this.ConvertFrom(modelFileLine.ProcessingResult);
+                    (FileLineProcessingResult result, String stringResult) processingResult = ConvertFrom(modelFileLine.ProcessingResult);
 
                     fileLineViewModel.ProcessingResult = processingResult.result;
                     fileLineViewModel.ProcessingResultString = processingResult.stringResult;
@@ -545,7 +540,7 @@
             return viewModel;
         }
 
-        public List<ContractProductTypeViewModel> ConvertFrom(List<ContractProductTypeModel> contractProductTypeModels){
+        public static List<ContractProductTypeViewModel> ConvertFrom(List<ContractProductTypeModel> contractProductTypeModels){
             List<ContractProductTypeViewModel> result = new List<ContractProductTypeViewModel>();
 
             foreach (ContractProductTypeModel contractProductTypeModel in contractProductTypeModels){
@@ -557,9 +552,8 @@
             return result;
         }
 
-        private (FileLineProcessingResult result,String stringResult) ConvertFrom(BusinessLogic.Models.FileLineProcessingResult model)
-        {
-            (FileLineProcessingResult, String) viewModel = (FileLineProcessingResult.Unknown,"Unknown");
+        public static (FileLineProcessingResult result,String stringResult) ConvertFrom(BusinessLogic.Models.FileLineProcessingResult model){
+            (FileLineProcessingResult, String) viewModel;
             switch (model)
             {
                 case BusinessLogic.Models.FileLineProcessingResult.Failed:
@@ -588,7 +582,7 @@
             return viewModel;
         }
 
-        private Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
+        private static Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
         {
             Dictionary<String, String> viewModels = new Dictionary<String, String>();
 
@@ -605,7 +599,7 @@
             return viewModels;
         }
 
-        private List<AddressViewModel> ConvertFrom(List<AddressModel> addressModels)
+        private static List<AddressViewModel> ConvertFrom(List<AddressModel> addressModels)
         {
             List<AddressViewModel> viewModels = new List<AddressViewModel>();
 
@@ -616,13 +610,13 @@
 
             foreach (AddressModel model in addressModels)
             {
-                viewModels.Add(this.ConvertFrom(model));
+                viewModels.Add(ConvertFrom(model));
             }
 
             return viewModels;
         }
 
-        private AddressViewModel ConvertFrom(AddressModel addressModel)
+        private static AddressViewModel ConvertFrom(AddressModel addressModel)
         {
             return new AddressViewModel
                    {
@@ -638,7 +632,7 @@
                    };
         }
 
-        private List<ContactViewModel> ConvertFrom(List<ContactModel> contactModels)
+        private static List<ContactViewModel> ConvertFrom(List<ContactModel> contactModels)
         {
             List<ContactViewModel> viewModels = new List<ContactViewModel>();
 
@@ -649,13 +643,13 @@
 
             foreach (ContactModel model in contactModels)
             {
-                viewModels.Add(this.ConvertFrom(model));
+                viewModels.Add(ConvertFrom(model));
             }
 
             return viewModels;
         }
 
-        private ContactViewModel ConvertFrom(ContactModel contactModel)
+        private static ContactViewModel ConvertFrom(ContactModel contactModel)
         {
             return new ContactViewModel
                    {
@@ -666,7 +660,7 @@
                    };
         }
 
-        private List<MerchantOperatorViewModel> ConvertFrom(List<MerchantOperatorModel> operatorModels)
+        private static List<MerchantOperatorViewModel> ConvertFrom(List<MerchantOperatorModel> operatorModels)
         {
             List<MerchantOperatorViewModel> viewModels = new List<MerchantOperatorViewModel>();
 
@@ -677,13 +671,13 @@
 
             foreach (MerchantOperatorModel model in operatorModels)
             {
-                viewModels.Add(this.ConvertFrom(model));
+                viewModels.Add(ConvertFrom(model));
             }
 
             return viewModels;
         }
 
-        private MerchantOperatorViewModel ConvertFrom(MerchantOperatorModel operatorModel)
+        private static MerchantOperatorViewModel ConvertFrom(MerchantOperatorModel operatorModel)
         {
             return new MerchantOperatorViewModel
                    {
