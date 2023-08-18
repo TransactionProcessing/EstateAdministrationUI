@@ -25,26 +25,15 @@
         /// The API client
         /// </summary>
         private readonly IApiClient ApiClient;
-
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
+        
 
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HomeController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public EstateController(IApiClient apiClient,
-                                IViewModelFactory viewModelFactory)
+        
+        public EstateController(IApiClient apiClient)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
         }
 
         #endregion
@@ -63,9 +52,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                return this.View("EstateDetails", this.ViewModelFactory.ConvertFrom(estateDetails));
+                EstateModel estateDetails = await this.ApiClient.GetEstate(accessToken, Guid.Empty,
+                                                                           estateId, cancellationToken);
+
+                return this.View("EstateDetails", ViewModelFactory.ConvertFrom(estateDetails));
             }
             catch(Exception ex)
             {

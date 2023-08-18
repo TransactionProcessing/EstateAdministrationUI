@@ -13,21 +13,12 @@
     using FileLineProcessingResult = Models.FileLineProcessingResult;
     using SettlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule;
     using TransactionProcessor.DataTransferObjects;
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="EstateAdministrationUI.BusinessLogic.Factories.IModelFactory" />
-    public class ModelFactory : IModelFactory
+    
+    public static class ModelFactory
     {
         #region Methods
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public EstateModel ConvertFrom(EstateResponse source)
+        
+        public static EstateModel ConvertFrom(EstateResponse source)
         {
             if (source == null)
             {
@@ -38,19 +29,13 @@
                                 {
                                     EstateId = source.EstateId,
                                     EstateName = source.EstateName,
-                                    Operators = this.ConvertOperators(source.Operators),
-                                    SecurityUsers = this.ConvertSecurityUsers(source.SecurityUsers)
+                                    Operators = ConvertOperators(source.Operators),
+                                    SecurityUsers = ConvertSecurityUsers(source.SecurityUsers)
                                 };
             return model;
         }
         
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public MerchantBalanceModel ConvertFrom(MerchantBalanceResponse source)
+        public static MerchantBalanceModel ConvertFrom(MerchantBalanceResponse source)
         {
             if (source == null)
             {
@@ -67,14 +52,8 @@
 
             return model;
         }
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateOperatorRequest ConvertFrom(CreateOperatorModel source)
+        
+        public static CreateOperatorRequest ConvertFrom(CreateOperatorModel source)
         {
             if (source == null)
             {
@@ -91,13 +70,7 @@
             return apiRequest;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateContractRequest ConvertFrom(CreateContractModel source)
+        public static CreateContractRequest ConvertFrom(CreateContractModel source)
         {
             if (source == null)
             {
@@ -113,13 +86,7 @@
             return apiRequest;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source)
+        public static CreateOperatorResponseModel ConvertFrom(CreateOperatorResponse source)
         {
             if (source == null)
             {
@@ -135,13 +102,7 @@
             return createOperatorResponseModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateContractResponseModel ConvertFrom(CreateContractResponse source)
+        public static CreateContractResponseModel ConvertFrom(CreateContractResponse source)
         {
             if (source == null)
             {
@@ -158,13 +119,7 @@
             return createOperatorResponseModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public AddProductToContractRequest ConvertFrom(AddProductToContractModel source)
+        public static AddProductToContractRequest ConvertFrom(AddProductToContractModel source)
         {
             if (source == null)
             {
@@ -182,7 +137,7 @@
             return addProductToContractRequest;
         }
 
-        public AddMerchantDeviceRequest ConvertFrom(AddMerchantDeviceModel source)
+        public static AddMerchantDeviceRequest ConvertFrom(AddMerchantDeviceModel source)
         {
             if (source == null)
             {
@@ -197,13 +152,7 @@
             return addMerchantDeviceRequest;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public AddMerchantDeviceResponseModel ConvertFrom(AddMerchantDeviceResponse source)
+        public static AddMerchantDeviceResponseModel ConvertFrom(AddMerchantDeviceResponse source)
         {
             if (source == null)
             {
@@ -220,13 +169,7 @@
             return addMerchantDeviceResponseModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source)
+        public static AddProductToContractResponseModel ConvertFrom(AddProductToContractResponse source)
         {
             if (source == null)
             {
@@ -243,13 +186,7 @@
             return addProductToContractResponseModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public AddTransactionFeeForProductToContractRequest ConvertFrom(AddTransactionFeeToContractProductModel source)
+        public static AddTransactionFeeForProductToContractRequest ConvertFrom(AddTransactionFeeToContractProductModel source)
         {
             if (source == null)
             {
@@ -271,13 +208,7 @@
 
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source)
+        public static AddTransactionFeeToContractProductResponseModel ConvertFrom(AddTransactionFeeForProductToContractResponse source)
         {
             if (source == null)
             {
@@ -294,13 +225,8 @@
 
             return addTransactionFeeToContractProductResponseModel;
         }
-        
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        public List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceChangedEntryResponse> source)
+
+        public static List<MerchantBalanceHistory> ConvertFrom(List<MerchantBalanceChangedEntryResponse> source)
         {
             if (source == null || source.Any() == false)
             {
@@ -331,12 +257,7 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        public FileDetailsModel ConvertFrom(FileDetails source)
+        public static FileDetailsModel ConvertFrom(FileDetails source)
         {
             if (source == null)
             {
@@ -371,7 +292,7 @@
                                     {
                                         LineData = sourceFileLine.LineData,
                                         LineNumber = sourceFileLine.LineNumber,
-                                        ProcessingResult = this.ConvertFrom(sourceFileLine.ProcessingResult),
+                                        ProcessingResult = ConvertFrom(sourceFileLine.ProcessingResult),
                                         RejectionReason = sourceFileLine.RejectionReason,
                                         TransactionId = sourceFileLine.TransactionId
                                     });
@@ -380,12 +301,7 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        public AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source)
+        public static AssignOperatorRequest ConvertFrom(AssignOperatorToMerchantModel source)
         {
             if (source == null)
             {
@@ -402,12 +318,7 @@
             return assignOperatorRequest;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        public AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source)
+        public static AssignOperatorToMerchantResponseModel ConvertFrom(AssignOperatorResponse source)
         {
             if (source == null)
             {
@@ -424,12 +335,7 @@
             return assignOperatorToMerchantResponseModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="dto">The dto.</param>
-        /// <returns></returns>
-        private FileLineProcessingResult ConvertFrom(FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult dto)
+        public static FileLineProcessingResult ConvertFrom(FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult dto)
         {
             FileLineProcessingResult model = FileLineProcessingResult.Unknown;
             switch (dto)
@@ -460,13 +366,7 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
+        public static List<MerchantModel> ConvertFrom(List<MerchantResponse> source)
         {
             if (source == null)
             {
@@ -477,21 +377,15 @@
 
             foreach (MerchantResponse merchantResponse in source)
             {
-                MerchantModel merchantModel = this.ConvertFrom(merchantResponse, null);
+                MerchantModel merchantModel = ConvertFrom(merchantResponse, null);
 
                 models.Add(merchantModel);
             }
 
             return models;
         }
-
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public List<ContractModel> ConvertFrom(List<ContractResponse> source)
+        
+        public static List<ContractModel> ConvertFrom(List<ContractResponse> source)
         {
             if (source == null)
             {
@@ -502,7 +396,7 @@
 
             foreach (ContractResponse contractResponse in source)
             {
-                ContractModel contractModel = this.ConvertFrom(contractResponse);
+                ContractModel contractModel = ConvertFrom(contractResponse);
 
                 models.Add(contractModel);
             }
@@ -510,13 +404,7 @@
             return models;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public ContractModel ConvertFrom(ContractResponse source)
+        public static ContractModel ConvertFrom(ContractResponse source)
         {
             if (source == null)
             {
@@ -575,13 +463,7 @@
             return contractModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public MerchantModel ConvertFrom(MerchantResponse merchantResponse, MerchantBalanceResponse merchantBalanceResponse)
+        public static MerchantModel ConvertFrom(MerchantResponse merchantResponse, MerchantBalanceResponse merchantBalanceResponse)
         {
             if (merchantResponse == null)
             {
@@ -655,13 +537,7 @@
             return merchantModel;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
+        public static CreateMerchantResponseModel ConvertFrom(CreateMerchantResponse source)
         {
             if (source == null)
             {
@@ -677,13 +553,7 @@
                    };
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public CreateMerchantRequest ConvertFrom(CreateMerchantModel source)
+        public static CreateMerchantRequest ConvertFrom(CreateMerchantModel source)
         {
             if (source == null)
             {
@@ -716,7 +586,7 @@
             return apiRequest;
         }
 
-        private SettlementSchedule ConvertFrom(Models.SettlementSchedule settlementSchedule)
+        public static SettlementSchedule ConvertFrom(Models.SettlementSchedule settlementSchedule)
         {
             return settlementSchedule switch
             {
@@ -726,7 +596,7 @@
             };
         }
 
-        private Models.SettlementSchedule ConvertFrom(SettlementSchedule settlementSchedule)
+        public static Models.SettlementSchedule ConvertFrom(SettlementSchedule settlementSchedule)
         {
             return settlementSchedule switch
             {
@@ -737,13 +607,7 @@
             };
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public MakeMerchantDepositRequest ConvertFrom(MakeMerchantDepositModel source)
+        public static MakeMerchantDepositRequest ConvertFrom(MakeMerchantDepositModel source)
         {
             if (source == null)
             {
@@ -760,13 +624,7 @@
             return apiRequest;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public List<FileImportLogModel> ConvertFrom(FileImportLogList source)
+        public static List<FileImportLogModel> ConvertFrom(FileImportLogList source)
         {
             if (source == null)
             {
@@ -779,19 +637,14 @@
             {
                 foreach (FileImportLog sourceFileImportLog in source.FileImportLogs)
                 {
-                    models.Add(this.ConvertFrom(sourceFileImportLog));
+                    models.Add(ConvertFrom(sourceFileImportLog));
                 }
             }
 
             return models;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        public FileImportLogModel ConvertFrom(FileImportLog source)
+        public static FileImportLogModel ConvertFrom(FileImportLog source)
         {
             FileImportLogModel model = new FileImportLogModel
                                        {
@@ -824,13 +677,7 @@
             return model;
         }
 
-        /// <summary>
-        /// Converts from.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">source</exception>
-        public MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
+        public static MakeMerchantDepositResponseModel ConvertFrom(MakeMerchantDepositResponse source)
         {
             if (source == null)
             {
@@ -845,13 +692,7 @@
                    };
         }
 
-        /// <summary>
-        /// Converts the operators.
-        /// </summary>
-        /// <param name="estateResponseOperators">The estate response operators.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">estateResponseOperators</exception>
-        private List<EstateOperatorModel> ConvertOperators(List<EstateOperatorResponse> estateResponseOperators)
+        public static List<EstateOperatorModel> ConvertOperators(List<EstateOperatorResponse> estateResponseOperators)
         {
             if (estateResponseOperators == null || estateResponseOperators.Any() == false)
             {
@@ -873,13 +714,7 @@
             return models;
         }
 
-        /// <summary>
-        /// Converts the security users.
-        /// </summary>
-        /// <param name="estateResponseSecurityUsers">The estate response security users.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">estateResponseSecurityUsers</exception>
-        private List<SecurityUserModel> ConvertSecurityUsers(List<SecurityUserResponse> estateResponseSecurityUsers)
+        public static List<SecurityUserModel> ConvertSecurityUsers(List<SecurityUserResponse> estateResponseSecurityUsers)
         {
             if (estateResponseSecurityUsers == null || estateResponseSecurityUsers.Any() == false)
             {

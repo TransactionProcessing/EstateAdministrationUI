@@ -65,7 +65,6 @@ namespace EstateAdministrationUI
 
             services.IncludeRegistry<MiddlewareRegistry>();
             services.IncludeRegistry<ClientRegistry>();
-            services.IncludeRegistry<FactoryRegistry>();
 
             Startup.Container = new Container(services);
         }

@@ -29,26 +29,14 @@
         /// The API client
         /// </summary>
         private readonly IApiClient ApiClient;
-
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
-
+        
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HomeController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public OperatorController(IApiClient apiClient,
-                                  IViewModelFactory viewModelFactory)
+        
+        public OperatorController(IApiClient apiClient)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
         }
 
         #endregion
@@ -79,11 +67,14 @@
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                    CreateOperatorModel createOperatorModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+                    CreateOperatorModel createOperatorModel = ViewModelFactory.ConvertFrom(viewModel);
 
                     // All good with model, call the client to create the operator
                     CreateOperatorResponseModel createOperatorResponse =
-                        await this.ApiClient.CreateOperator(accessToken, this.User.Identity as ClaimsIdentity, createOperatorModel, cancellationToken);
+                        await this.ApiClient.CreateOperator(accessToken, Guid.Empty,
+                                                            estateId, createOperatorModel, cancellationToken);
 
                     // Operator Created, redirect to the Operator List screen
                     return this.RedirectToAction("GetOperatorList",
@@ -125,9 +116,12 @@
 
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+                EstateModel estate = await this.ApiClient.GetEstate(accessToken, Guid.Empty,
+                                                                    estateId, cancellationToken);
+
+                List<OperatorListViewModel> operatorViewModels = ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
 
                 Expression<Func<OperatorListViewModel, Boolean>> whereClause = m => m.OperatorName.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
 

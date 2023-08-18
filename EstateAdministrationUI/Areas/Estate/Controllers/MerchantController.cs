@@ -31,26 +31,14 @@
         /// The API client
         /// </summary>
         private readonly IApiClient ApiClient;
-
-        /// <summary>
-        /// The view model factory
-        /// </summary>
-        private readonly IViewModelFactory ViewModelFactory;
-
+        
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MerchantController" /> class.
-        /// </summary>
-        /// <param name="apiClient">The API client.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public MerchantController(IApiClient apiClient,
-                                  IViewModelFactory viewModelFactory)
+        
+        public MerchantController(IApiClient apiClient)
         {
             this.ApiClient = apiClient;
-            this.ViewModelFactory = viewModelFactory;
         }
 
         #endregion
@@ -87,11 +75,15 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                EstateModel estate = await this.ApiClient.GetEstate(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
-                
-                List<OperatorListViewModel> operatorViewModels = this.ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                EstateModel estate = await this.ApiClient.GetEstate(accessToken, Guid.Empty,
+                                                                    estateId, cancellationToken);
+                
+                List<OperatorListViewModel> operatorViewModels = ViewModelFactory.ConvertFrom(estate.EstateId, estate.Operators);
+
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, Guid.Empty,
+                                                                               estateId, merchantId, cancellationToken);
 
                 List<OperatorListViewModel> availableOperators = new List<OperatorListViewModel>();
                 foreach (OperatorListViewModel operatorListViewModel in operatorViewModels)
@@ -121,12 +113,15 @@
 
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            AssignOperatorToMerchantModel model = this.ViewModelFactory.ConvertFrom(viewModel);
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            AssignOperatorToMerchantModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             try
             {
 
-                await this.ApiClient.AssignOperatorToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
+                await this.ApiClient.AssignOperatorToMerchant(accessToken, Guid.Empty,
+                                                              estateId, viewModel.MerchantId, model, cancellationToken);
 
                 return this.RedirectToAction("GetMerchant",
                                              new
@@ -162,11 +157,14 @@
 
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            AddMerchantDeviceModel model = this.ViewModelFactory.ConvertFrom(viewModel);
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            AddMerchantDeviceModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             try
             {
-                await this.ApiClient.AddDeviceToMerchant(accessToken, this.User.Identity as ClaimsIdentity, viewModel.MerchantId, model, cancellationToken);
+                await this.ApiClient.AddDeviceToMerchant(accessToken, Guid.Empty,
+                                                         estateId, viewModel.MerchantId, model, cancellationToken);
 
                 return this.RedirectToAction("GetMerchant",
                                              new
@@ -201,11 +199,14 @@
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                    CreateMerchantModel createMerchantModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+                    CreateMerchantModel createMerchantModel = ViewModelFactory.ConvertFrom(viewModel);
 
                     // All good with model, call the client to create the merchant
                     CreateMerchantResponseModel createMerchantResponse =
-                        await this.ApiClient.CreateMerchant(accessToken, this.User.Identity as ClaimsIdentity, createMerchantModel, cancellationToken);
+                        await this.ApiClient.CreateMerchant(accessToken, Guid.Empty,
+                                                            estateId, createMerchantModel, cancellationToken);
 
                     // TODO: Investigate some kind of spinner...
                     await Task.Delay(TimeSpan.FromSeconds(30));
@@ -243,9 +244,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                return this.View("MerchantDetails", this.ViewModelFactory.ConvertFrom(merchantModel));
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, Guid.Empty,
+                                                                               estateId, merchantId, cancellationToken);
+
+                return this.View("MerchantDetails", ViewModelFactory.ConvertFrom(merchantModel));
             }
             catch(Exception e)
             {
@@ -268,9 +272,12 @@
 
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, Guid.Empty,
+                                                                               estateId, merchantId, cancellationToken);
+
+                MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(merchantModel);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Devices));
             }
@@ -306,9 +313,12 @@
                 String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                List<MerchantModel> merchantList = await this.ApiClient.GetMerchants(accessToken, this.User.Identity as ClaimsIdentity, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                List<MerchantListViewModel> merchantViewModels = this.ViewModelFactory.ConvertFrom(merchantList);
+                List<MerchantModel> merchantList = await this.ApiClient.GetMerchants(accessToken, Guid.Empty,
+                                                                                     estateId, cancellationToken);
+
+                List<MerchantListViewModel> merchantViewModels = ViewModelFactory.ConvertFrom(merchantList);
 
                 Expression<Func<MerchantListViewModel, Boolean>> whereClause = m => m.MerchantName.Contains(searchValue, StringComparison.OrdinalIgnoreCase) ||
                                                                                     m.Town.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
@@ -336,9 +346,12 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                MerchantViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantModel);
+                MerchantModel merchantModel = await this.ApiClient.GetMerchant(accessToken, Guid.Empty,
+                                                                               estateId, merchantId, cancellationToken);
+
+                MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(merchantModel);
 
                 return this.Json(Helpers.GetDataForDataTable(this.Request.Form, viewModel.Operators));
             }
@@ -363,6 +376,8 @@
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
                 // Start and End Date 
                 // Set the defaults
                 DateTime startDateTime = DateTime.Now.AddDays(-1).Date;
@@ -380,9 +395,10 @@
                 }
 
                 List<MerchantBalanceHistory> merchantBalanceHistory =
-                    await this.ApiClient.GetMerchantBalanceHistory(accessToken, this.User.Identity as ClaimsIdentity, merchantId, startDateTime, endDateTime, cancellationToken);
+                    await this.ApiClient.GetMerchantBalanceHistory(accessToken, Guid.Empty,
+                                                                   estateId, merchantId, startDateTime, endDateTime, cancellationToken);
 
-                MerchantBalanceHistoryListViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalanceHistory);
+                MerchantBalanceHistoryListViewModel viewModel = ViewModelFactory.ConvertFrom(merchantBalanceHistory);
 
                 // Search Value from (Search box)  
                 String searchValue = this.HttpContext.Request.Form["search[value]"].FirstOrDefault();
@@ -404,13 +420,16 @@
             try
             {
                 String accessToken = await this.HttpContext.GetTokenAsync("access_token");
-                
+
+                Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
                 Logger.LogInformation("[GetMerchantBalanceAsJson] - About to get merchant balance");
 
-                MerchantBalanceModel merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, this.User.Identity as ClaimsIdentity, merchantId, cancellationToken);
+                MerchantBalanceModel merchantBalance = await this.ApiClient.GetMerchantBalance(accessToken, Guid.Empty,
+                                                                                               estateId, merchantId, cancellationToken);
 
                 Logger.LogInformation($"[GetMerchantBalanceAsJson] - Got merchant balance model - [{merchantBalance.AvailableBalance}]");
-                MerchantBalanceViewModel viewModel = this.ViewModelFactory.ConvertFrom(merchantBalance);
+                MerchantBalanceViewModel viewModel = ViewModelFactory.ConvertFrom(merchantBalance);
                 Logger.LogInformation($"[GetMerchantBalanceAsJson] - Got merchant balance viewModel - [{merchantBalance.AvailableBalance}]");
 
                 return this.Json(viewModel);
@@ -450,13 +469,15 @@
                 try
                 {
                     String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                    Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-                    MakeMerchantDepositModel makeMerchantDepositModel = this.ViewModelFactory.ConvertFrom(viewModel);
+                    MakeMerchantDepositModel makeMerchantDepositModel = ViewModelFactory.ConvertFrom(viewModel);
 
                     // All good with model, call the client to create the golf club
                     MakeMerchantDepositResponseModel makeMerchantDepositResponseModel =
                         await this.ApiClient.MakeMerchantDeposit(accessToken,
-                                                                 this.User.Identity as ClaimsIdentity,
+                                                                 Guid.Empty,
+                                                                 estateId,
                                                                  Guid.Parse(viewModel.MerchantId),
                                                                  makeMerchantDepositModel,
                                                                  cancellationToken);

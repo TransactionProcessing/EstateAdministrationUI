@@ -12,6 +12,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
     using Shouldly;
     using Testing;
     using Xunit;
+    using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
 
     public class ViewModelFactoryTests
     {
@@ -20,9 +21,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             EstateModel model = TestData.EstateModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            EstateViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            EstateViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.EstateId.ShouldBe(model.EstateId);
             viewModel.EstateName.ShouldBe(model.EstateName);
@@ -33,9 +32,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             EstateModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(model); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
         }
 
         [Theory]
@@ -47,9 +44,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateMerchantViewModel viewModel = TestData.CreateMerchantViewModel(settlementSchedule);
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            CreateMerchantModel model = viewModelFactory.ConvertFrom(viewModel);
+            CreateMerchantModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.MerchantName.ShouldBe(viewModel.MerchantName);
             model.SettlementSchedule.ShouldBe(expectedSettlementSchedule);
@@ -72,9 +67,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateMerchantViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(viewModel); });
         }
 
         [Theory]
@@ -85,9 +78,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantModel model = TestData.MerchantModel(settlementSchedule);
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -148,9 +139,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MerchantModel model = TestData.MerchantModel();
             model.Operators = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -202,9 +191,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MerchantModel model = TestData.MerchantModel();
             model.Operators = new List<MerchantOperatorModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -255,9 +242,8 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantModel model = TestData.MerchantModel();
             model.Devices = null;
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -311,9 +297,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MerchantModel model = TestData.MerchantModel();
             model.Devices = new Dictionary<Guid, String>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -366,9 +350,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantModel model = TestData.MerchantModel();
             model.Addresses = null;
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -412,9 +394,8 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantModel model = TestData.MerchantModel();
             model.Addresses = new List<AddressModel>();
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
 
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -459,9 +440,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MerchantModel model = TestData.MerchantModel();
             model.Contacts = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -512,9 +491,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             MerchantModel model = TestData.MerchantModel();
             model.Contacts = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             //viewModel.Balance.ShouldBe(model.Balance);
             viewModel.MerchantId.ShouldBe(model.MerchantId);
@@ -564,9 +541,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(model); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
         }
 
         [Fact]
@@ -577,9 +552,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 TestData.MerchantModel()
                                             };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -604,9 +577,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Addresses[0] = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -631,9 +602,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Addresses = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -658,9 +627,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Addresses = new List<AddressModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -685,9 +652,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Contacts[0] = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -712,9 +677,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Contacts = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -739,9 +702,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Contacts = new List<ContactModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -766,9 +727,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Devices = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -793,9 +752,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Devices = new Dictionary<Guid, String>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -820,9 +777,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Operators[0] = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -847,9 +802,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Operators = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -874,9 +827,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
             modelList.First().Operators = new List<MerchantOperatorModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<MerchantListViewModel> viewModelList = viewModelFactory.ConvertFrom(modelList);
+            List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 
             MerchantListViewModel viewModel = viewModelList.SingleOrDefault();
             viewModel.ShouldNotBeNull();
@@ -897,9 +848,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(modelList); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(modelList); });
         }
 
         [Fact]
@@ -907,9 +856,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantModel> modelList = new List<MerchantModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(modelList); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(modelList); });
         }
 
         [Fact]
@@ -917,9 +864,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MakeMerchantDepositViewModel viewModel = TestData.MakeMerchantDepositViewModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MakeMerchantDepositModel model = viewModelFactory.ConvertFrom(viewModel);
+            MakeMerchantDepositModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.MerchantId.ShouldBe(Guid.Parse(viewModel.MerchantId));
             model.DepositDateTime.ShouldBe(DateTime.ParseExact(viewModel.DepositDate, "dd/MM/yyyy", null));
@@ -932,9 +877,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MakeMerchantDepositViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(viewModel); });
         }
 
         [Fact]
@@ -942,9 +885,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateOperatorViewModel viewModel = TestData.CreateOperatorViewModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            CreateOperatorModel model = viewModelFactory.ConvertFrom(viewModel);
+            CreateOperatorModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.OperatorName.ShouldBe(viewModel.OperatorName);
             model.RequireCustomTerminalNumber.ShouldBe(viewModel.RequireCustomTerminalNumber);
@@ -956,9 +897,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateOperatorViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(viewModel); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(viewModel); });
         }
 
         [Fact]
@@ -966,9 +905,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             EstateOperatorModel model = TestData.EstateOperatorModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            OperatorListViewModel viewModel = viewModelFactory.ConvertFrom(TestData.EstateId, model);
+            OperatorListViewModel viewModel = ViewModelFactory.ConvertFrom(TestData.EstateId, model);
 
             viewModel.EstateId.ShouldBe(TestData.EstateId);
             viewModel.OperatorName.ShouldBe(model.Name);
@@ -982,9 +919,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             EstateOperatorModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            Should.Throw<ArgumentNullException>(() => { viewModelFactory.ConvertFrom(TestData.EstateId, model); });
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(TestData.EstateId, model); });
         }
 
         [Fact]
@@ -995,9 +930,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                       TestData.EstateOperatorModel
                                                   };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<OperatorListViewModel> viewModelList = viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+            List<OperatorListViewModel> viewModelList = ViewModelFactory.ConvertFrom(TestData.EstateId, modelList);
 
             viewModelList.ShouldNotBeNull();
             viewModelList.ShouldNotBeEmpty();
@@ -1014,11 +947,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<EstateOperatorModel> modelList = new List<EstateOperatorModel>();
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+                                                    ViewModelFactory.ConvertFrom(TestData.EstateId, modelList);
                                                 });
         }
 
@@ -1027,11 +958,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<EstateOperatorModel> modelList = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(TestData.EstateId, modelList);
+                                                    ViewModelFactory.ConvertFrom(TestData.EstateId, modelList);
                                                 });
         }
 
@@ -1040,9 +969,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractViewModel viewModel = TestData.CreateContractViewModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            CreateContractModel model = viewModelFactory.ConvertFrom(viewModel);
+            CreateContractModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.OperatorId.ShouldBe(viewModel.OperatorId);
             model.Description.ShouldBe(viewModel.ContractDescription);
@@ -1053,11 +980,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                    ViewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
 
@@ -1066,9 +991,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractModel model = TestData.ContractModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ContractId.ShouldBe(model.ContractId);
             viewModel.Description.ShouldBe(model.Description);
@@ -1080,9 +1003,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractModel model = TestData.ContractModelNullProducts;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ContractId.ShouldBe(model.ContractId);
             viewModel.Description.ShouldBe(model.Description);
@@ -1094,9 +1015,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractModel model = TestData.ContractModelEmptyProducts;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ContractId.ShouldBe(model.ContractId);
             viewModel.Description.ShouldBe(model.Description);
@@ -1108,9 +1027,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractModel model = TestData.ContractModelWithNullValueProduct;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ContractId.ShouldBe(model.ContractId);
             viewModel.Description.ShouldBe(model.Description);
@@ -1122,11 +1039,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(model);
+                                                    ViewModelFactory.ConvertFrom(model);
                                                 });
         }
 
@@ -1139,9 +1054,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractProductModel model = TestData.ContractProductModel(productType);
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductTransactionFeesListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.Description.ShouldBe(model.Description);
             viewModel.Value.ShouldBe(model.Value.ToString());
@@ -1156,9 +1069,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractProductModel model = TestData.ContractProductModelNullValue;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductTransactionFeesListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.Description.ShouldBe(model.Description);
             viewModel.Value.ShouldBe("Variable");
@@ -1173,9 +1084,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractProductModel model = TestData.ContractProductModelNullFees;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductTransactionFeesListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.Description.ShouldBe(model.Description);
             viewModel.Value.ShouldBe(model.Value.ToString());
@@ -1190,9 +1099,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractProductModel model = TestData.ContractProductModelEmptyFeeList;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            ContractProductTransactionFeesListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            ContractProductTransactionFeesListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.Description.ShouldBe(model.Description);
             viewModel.Value.ShouldBe(model.Value.ToString());
@@ -1207,11 +1114,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             ContractProductModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(model);
+                                                    ViewModelFactory.ConvertFrom(model);
                                                 });
         }
 
@@ -1223,9 +1128,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                 TestData.ContractModel
                                             };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<ContractListViewModel> viewModels = viewModelFactory.ConvertFrom(modelList);
+            List<ContractListViewModel> viewModels = ViewModelFactory.ConvertFrom(modelList);
 
             viewModels.ShouldHaveSingleItem();
             ContractListViewModel viewModel = viewModels.Single();
@@ -1237,11 +1140,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<ContractModel> modelList = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(modelList);
+                                                    ViewModelFactory.ConvertFrom(modelList);
                                                 });
         }
 
@@ -1250,9 +1151,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractProductViewModel viewModel = TestData.CreateContractProductViewModelWithValue;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            AddProductToContractModel model = viewModelFactory.ConvertFrom(viewModel);
+            AddProductToContractModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.Value.ShouldBe(viewModel.Value);
             model.DisplayText.ShouldBe(viewModel.DisplayText);
@@ -1265,9 +1164,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractProductViewModel viewModel = TestData.CreateContractProductViewModelWithNullValue;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            AddProductToContractModel model = viewModelFactory.ConvertFrom(viewModel);
+            AddProductToContractModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.Value.ShouldBeNull();
             model.DisplayText.ShouldBe(viewModel.DisplayText);
@@ -1280,11 +1177,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractProductViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                    ViewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
 
@@ -1293,9 +1188,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractProductTransactionFeeViewModel viewModel = TestData.CreateContractProductTransactionFeeViewModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            AddTransactionFeeToContractProductModel model = viewModelFactory.ConvertFrom(viewModel);
+            AddTransactionFeeToContractProductModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.Value.ShouldBe(viewModel.Value);
             model.CalculationType.ShouldBe((CalculationType)(viewModel.CalculationType -1));
@@ -1308,11 +1201,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             CreateContractProductTransactionFeeViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                    ViewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
         
@@ -1321,9 +1212,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantBalanceHistory> model = TestData.MerchantBalanceHistoryList;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantBalanceHistoryListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantBalanceHistoryListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.MerchantBalanceHistoryViewModels.Count.ShouldBe(model.Count);
         }
@@ -1333,9 +1222,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<MerchantBalanceHistory> model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-            
-            MerchantBalanceHistoryListViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantBalanceHistoryListViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.MerchantBalanceHistoryViewModels.ShouldBeNull();
         }
@@ -1349,9 +1236,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             };
 
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+            List<FileImportLogViewModel> viewModel = ViewModelFactory.ConvertFrom(modelList);
 
             viewModel.ShouldNotBeNull();
             viewModel.Count.ShouldBe(modelList.Count);
@@ -1385,9 +1270,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<FileImportLogModel> modelList = null;
             
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+            List<FileImportLogViewModel> viewModel = ViewModelFactory.ConvertFrom(modelList);
 
             viewModel.ShouldNotBeNull();
             viewModel.ShouldBeEmpty();
@@ -1398,9 +1281,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             FileImportLogModel model = null;
             
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            FileImportLogViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            FileImportLogViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ShouldBeNull();
         }
@@ -1410,9 +1291,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<FileImportLogModel> modelList = new List<FileImportLogModel>();
             
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<FileImportLogViewModel> viewModel = viewModelFactory.ConvertFrom(modelList);
+            List<FileImportLogViewModel> viewModel = ViewModelFactory.ConvertFrom(modelList);
 
             viewModel.ShouldNotBeNull();
             viewModel.ShouldBeEmpty();
@@ -1423,9 +1302,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             FileDetailsModel model = TestData.FileDetailsModel;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            FileDetailsViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            FileDetailsViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ShouldNotBeNull();
             viewModel.UserId.ShouldBe(model.UserId);
@@ -1463,9 +1340,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             FileDetailsModel response = null;
 
-            ViewModelFactory modelFactory = new ViewModelFactory();
-
-            FileDetailsViewModel viewModel = modelFactory.ConvertFrom(response);
+            FileDetailsViewModel viewModel = ViewModelFactory.ConvertFrom(response);
 
             viewModel.ShouldBeNull();
         }
@@ -1481,9 +1356,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                              MerchantId = TestData.MerchantId
                                          };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            MerchantBalanceViewModel viewModel = viewModelFactory.ConvertFrom(model);
+            MerchantBalanceViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
             viewModel.ShouldNotBeNull();
             viewModel.EstateId.ShouldBe(model.EstateId);
@@ -1497,11 +1370,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             MerchantBalanceModel model = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(model);
+                                                    ViewModelFactory.ConvertFrom(model);
                                                 });
         }
 
@@ -1514,9 +1385,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                    MerchantId = TestData.MerchantId
                                                };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            AddMerchantDeviceModel model = viewModelFactory.ConvertFrom(viewModel);
+            AddMerchantDeviceModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.ShouldNotBeNull();
             model.DeviceIdentifier.ShouldBe(viewModel.DeviceIdentifier);
@@ -1527,11 +1396,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             AddMerchantDeviceViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                    ViewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
 
@@ -1546,9 +1413,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                               TerminalNumber = TestData.TerminalNumber
                                                           };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            AssignOperatorToMerchantModel model = viewModelFactory.ConvertFrom(viewModel);
+            AssignOperatorToMerchantModel model = ViewModelFactory.ConvertFrom(viewModel);
 
             model.ShouldNotBeNull();
             model.OperatorId.ShouldBe(viewModel.OperatorId);
@@ -1561,11 +1426,9 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             AssignOperatorToMerchantViewModel viewModel = null;
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
             Should.Throw<ArgumentNullException>(() =>
                                                 {
-                                                    viewModelFactory.ConvertFrom(viewModel);
+                                                    ViewModelFactory.ConvertFrom(viewModel);
                                                 });
         }
 
@@ -1578,14 +1441,37 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                                                                                          }
                                                                                          };
 
-            ViewModelFactory viewModelFactory = new ViewModelFactory();
-
-            List<ContractProductTypeViewModel> contractProductTypeViewModels = viewModelFactory.ConvertFrom(modelList);
+            List<ContractProductTypeViewModel> contractProductTypeViewModels = ViewModelFactory.ConvertFrom(modelList);
 
             contractProductTypeViewModels.Count.ShouldBe(modelList.Count);
             contractProductTypeViewModels.Single().Description.ShouldBe(modelList.Single().Description);
             contractProductTypeViewModels.Single().ProductType.ShouldBe(modelList.Single().ProductType.ToString());
+        }
 
+        [Theory]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.Failed, FileLineProcessingResult.Failed, "Failed")]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.Ignored, FileLineProcessingResult.Ignored, "Ignored")]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.NotProcessed, FileLineProcessingResult.NotProcessed, "Not Processed")]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.Rejected, FileLineProcessingResult.Rejected, "Rejected")]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.Successful, FileLineProcessingResult.Successful, "Successful")]
+        [InlineData(BusinessLogic.Models.FileLineProcessingResult.Unknown, FileLineProcessingResult.Unknown, "Unknown")]
+        [InlineData((BusinessLogic.Models.FileLineProcessingResult)99, FileLineProcessingResult.Unknown, "Unknown")]
+
+        public void ViewModelFactory_ConvertFrom_FileLineProcessingResult_ResultConverted(BusinessLogic.Models.FileLineProcessingResult processingResult, 
+                                                                                          FileLineProcessingResult expectedResult, String stringResult){
+            (FileLineProcessingResult result, String stringResult) result = ViewModelFactory.ConvertFrom(processingResult);
+            result.result.ShouldBe(expectedResult);
+            result.stringResult.ShouldBe(stringResult);
+        }
+
+        [Theory]
+        [InlineData(ProductType.BillPayment, "Bill Payment")]
+        [InlineData(ProductType.MobileTopup, "Mobile Topup")]
+        [InlineData(ProductType.Voucher, "Voucher")]
+        public void ViewModelFactory_GetProductTypeName_TypeConverted(ProductType productType, String expectedValue){
+            String result = ViewModelFactory.GetProductTypeName(productType);
+
+            result.ShouldBe(expectedValue);
         }
     }
 }

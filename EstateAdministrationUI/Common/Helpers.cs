@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Security.Claims;
     using Areas.Estate.Models;
     using BusinessLogic.Common;
     using Microsoft.AspNetCore.Http;
@@ -13,6 +15,21 @@
     [ExcludeFromCodeCoverage]
     public class Helpers
     {
+        public const String EstateIdClaimType = "estateId";
+
+        public static T GetClaimValue<T>(ClaimsIdentity claimsIdentity,
+                                          String claimType)
+        {
+            if (!claimsIdentity.HasClaim(x => x.Type.ToLower() == claimType.ToLower()))
+            {
+                throw new InvalidOperationException($"User {claimsIdentity.Name} does not have Claim [{claimType}]");
+            }
+
+            Claim claim = claimsIdentity.Claims.Single(x => x.Type.ToLower() == claimType.ToLower());
+            return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(claim.Value);
+        }
+
+
         /// <summary>
         /// Gets the data for data table.
         /// </summary>
