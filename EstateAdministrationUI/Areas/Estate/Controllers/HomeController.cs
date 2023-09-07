@@ -3,17 +3,23 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Net.Http;
     using System.Runtime.Serialization;
     using System.Security.Claims;
     using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Web;
     using BusinessLogic.Models;
     using Common;
+    using EstateReportingAPI.Client;
+    using EstateReportingAPI.DataTransferObjects;
+    using EstateReportingAPI.DataTrasferObjects;
     using Factories;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Newtonsoft.Json;
@@ -39,15 +45,19 @@
 
         private readonly IConfigurationService ConfigurationService;
 
+        private readonly IEstateReportingApiClient EstateReportingApiClient;
+
         #endregion
 
         #region Constructors
         
         public HomeController(IApiClient apiClient,
-                              IConfigurationService configurationService)
+                              IConfigurationService configurationService,
+                              IEstateReportingApiClient estateReportingApiClient)
         {
             this.ApiClient = apiClient;
             this.ConfigurationService = configurationService;
+            this.EstateReportingApiClient = estateReportingApiClient;
         }
 
         #endregion
@@ -64,117 +74,190 @@
             return this.View();
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        [Route("GetDetails")]
-        public string GetDetails([FromBody] object embedQuerString)
+        [Route("GetTodaysTransactionsAsJson")]
+        public async Task<IActionResult> GetTodaysTransactionsAsJson(CancellationToken cancellationToken)
         {
-            var embedClass = JsonConvert.DeserializeObject<EmbedClass>(embedQuerString.ToString());
+            var response = await this.EstateReportingApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), DateTime.Now, cancellationToken);
 
-            var embedQuery = embedClass.embedQuerString;
-            // User your user-email as embed_user_email
-            embedQuery += "&embed_user_email=" + this.ConfigurationService.BoldBIUserEmail;
-            var embedDetailsUrl = "/embed/authorize?" + embedQuery.ToLower() + "&embed_signature=" + GetSignatureUrl(embedQuery.ToLower());
+            var model = new{
+                               ValueOfTransactions = response.TodaysSalesValue
+                           };
 
-            using (var client = new HttpClient())
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        [Route("GetComparisonDateTransactionsAsJson")]
+        public async Task<IActionResult> GetComparisonDateTransactionsAsJson(CancellationToken cancellationToken)
+        {
+            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
+            var comparisonDate = qs["comparisonDate"];
+            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+
+            var response = 
+                await this.EstateReportingApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), d, cancellationToken);
+
+            var todaysModel = new
+                        {
+                ValueOfTransactions = response.TodaysSalesValue
+            };
+
+            var comparisonModel = new
+                                  {
+                                      ValueOfTransactions = response.ComparisonSalesValue
+                                  };
+            
+            var variance = ((todaysModel.ValueOfTransactions - comparisonModel.ValueOfTransactions) / todaysModel.ValueOfTransactions);
+
+            var model = new
             {
-                client.BaseAddress = new Uri(embedClass.dashboardServerApiUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
+                ValueOfTransactions = comparisonModel.ValueOfTransactions,
+                Label = "Yesterdays Sales",
+                Variance = variance
+            };
 
-                var result = client.GetAsync(embedClass.dashboardServerApiUrl + embedDetailsUrl).Result;
-                string resultContent = result.Content.ReadAsStringAsync().Result;
-                return resultContent;
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        [Route("GetTodaysSettlementAsJson")]
+        public async Task<IActionResult> GetYesterdaysSettlementAsJson(CancellationToken cancellationToken)
+        {
+            var response = await this.EstateReportingApiClient.GetTodaysSettlement(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), DateTime.Now, cancellationToken);
+
+            var model = new
+                        {
+                            ValueOfSettlement = response.TodaysSettlementValue
+                        };
+
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        [Route("GetComparisonDateSettlementAsJson")]
+        public async Task<IActionResult> GetComparisonDateSettlementAsJson(CancellationToken cancellationToken)
+        {
+            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
+            var comparisonDate = qs["comparisonDate"];
+            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+
+            var response =
+                await this.EstateReportingApiClient.GetTodaysSettlement(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), d, cancellationToken);
+
+            var todaysModel = new
+                              {
+                                  ValueOfSettlement = response.TodaysSettlementValue
+                              };
+
+            var comparisonModel = new
+            {
+                ValueOfSettlement = response.ComparisonSettlementValue,
+
+            };
+
+            var variance = ((todaysModel.ValueOfSettlement - comparisonModel.ValueOfSettlement) / todaysModel.ValueOfSettlement);
+
+            var model = new
+                        {
+                            ValueOfSettlement = comparisonModel.ValueOfSettlement,
+                            Label = "Yesterdays Settlement",
+                            Variance = variance
+                        };
+
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        [Route("GetComparisonDatesAsJson")]
+        public async Task<IActionResult> GetComparisonDatesAsJson(CancellationToken cancellationToken){
+            List<(String value, String text)> datesList = new List<(String, String)>();
+
+            List<ComparisonDate> response =
+                await this.EstateReportingApiClient.GetComparisonDates(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
+
+            foreach (ComparisonDate comparisonDate in response){
+                datesList.Add((comparisonDate.Date.ToString("yyyy-MM-dd"), comparisonDate.Description));
             }
+
+            return this.Json(datesList);
+        }
+
+        [HttpPost]
+        [Route("GetSalesValueByHourAsJson")]
+        public async Task<IActionResult> GetSalesValueByHourAsJson(CancellationToken cancellationToken){
+
+            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
+            var comparisonDate = qs["comparisonDate"];
+            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+            
+            var model = new
+            {
+                transactionHourViewModels = new List<HourValueModel>()
+            };
+
+            List<TodaysSalesValueByHour> response =
+                await this.EstateReportingApiClient.GetTodaysSalesValueByHour(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), d, cancellationToken);
+
+            response = response.OrderBy(r => r.Hour).ToList();
+
+            foreach (TodaysSalesValueByHour todaysSalesValueByHour in response){
+                model.transactionHourViewModels.Add(new HourValueModel(){
+                                                                            ComparisonValue = todaysSalesValueByHour.ComparisonSalesValue,
+                                                                            Hour = todaysSalesValueByHour.Hour,
+                                                                            TodaysValue = todaysSalesValueByHour.TodaysSalesValue
+                                                                        });
+            }
+
+            return this.Json(model);
 
         }
 
-        public string GetSignatureUrl(string queryString)
+        [HttpPost]
+        [Route("GetSalesCountByHourAsJson")]
+        public async Task<IActionResult> GetSalesCountByHourAsJson(CancellationToken cancellationToken)
         {
-            if (queryString != null)
+            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
+            var comparisonDate = qs["comparisonDate"];
+            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+
+            var model = new
             {
-                var encoding = new System.Text.UTF8Encoding();
-                var keyBytes = encoding.GetBytes(this.ConfigurationService.BoldBIEmbedSecret);
-                var messageBytes = encoding.GetBytes(queryString);
-                using (var hmacsha1 = new HMACSHA256(keyBytes))
-                {
-                    var hashMessage = hmacsha1.ComputeHash(messageBytes);
-                    return Convert.ToBase64String(hashMessage);
-                }
+                transactionHourViewModels = new List<HourCountModel>()
+            };
+
+            var response =
+                await this.EstateReportingApiClient.GetTodaysSalesCountByHour(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), d, cancellationToken);
+
+            response = response.OrderBy(r => r.Hour).ToList();
+
+            foreach (var todaysSalesCountByHour in response)
+            {
+                model.transactionHourViewModels.Add(new HourCountModel()
+                                                    {
+                                                        ComparisonCount = todaysSalesCountByHour.ComparisonSalesCount,
+                                                        Hour = todaysSalesCountByHour.Hour,
+                                                        TodaysCount = todaysSalesCountByHour.TodaysSalesCount
+                                                    });
             }
-            return string.Empty;
+
+            return this.Json(model);
+
+        }
+
+        public class HourValueModel{
+            public Int32 Hour{ get; set; }
+            public Decimal TodaysValue{ get; set; }
+            public Decimal ComparisonValue { get; set; }
+        }
+
+        public class HourCountModel
+        {
+            public Int32 Hour { get; set; }
+            public Decimal TodaysCount { get; set; }
+            public Decimal ComparisonCount { get; set; }
         }
 
         #endregion
-    }
-
-    [DataContract]
-    [ExcludeFromCodeCoverage]
-    public class EmbedClass
-    {
-        [DataMember]
-        public string embedQuerString { get; set; }
-
-        [DataMember]
-        public string dashboardServerApiUrl { get; set; }
-    }
-
-    [ExcludeFromCodeCoverage]
-    public class TokenObject
-    {
-        public string Message { get; set; }
-
-        public string Status { get; set; }
-
-        public string Token { get; set; }
-    }
-
-    [ExcludeFromCodeCoverage]
-    public class Token
-    {
-        [JsonProperty("access_token")]
-        public string AccessToken
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty("token_type")]
-        public string TokenType
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty("expires_in")]
-        public string ExpiresIn
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty("email")]
-        public string Email
-        {
-            get;
-            set;
-        }
-
-        public string LoginResult
-        {
-            get;
-            set;
-        }
-
-        public string LoginStatusInfo
-        {
-            get;
-            set;
-        }
-
-        [JsonProperty(".issued")]
-        public string Issued { get; set; }
-
-        [JsonProperty(".expires")]
-        public string Expires { get; set; }
     }
 }

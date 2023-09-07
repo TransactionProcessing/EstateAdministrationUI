@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using Common;
 using EstateManagement.Client;
+using EstateReportingAPI.Client;
 using FileProcessor.Client;
 using Lamar;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ public class ClientRegistry : ServiceRegistry
         this.AddSingleton<IEstateClient, EstateClient>();
         this.AddSingleton<IFileProcessorClient, FileProcessorClient>();
         this.AddSingleton<ITransactionProcessorClient, TransactionProcessorClient>();
+        this.AddSingleton<IEstateReportingApiClient, EstateReportingApiClient>();
         this.AddSingleton<Func<String, String>>(container => (serviceName) =>
                                                              {
                                                                  return ConfigurationReader.GetBaseServerUri(serviceName).OriginalString;
