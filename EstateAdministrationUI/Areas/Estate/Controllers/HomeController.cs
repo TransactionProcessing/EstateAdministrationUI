@@ -93,6 +93,7 @@
         {
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
             var comparisonDate = qs["comparisonDate"];
+            var comparisonDateLabel = qs["comparisonDateLabel"];
             DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
 
             var response = 
@@ -113,7 +114,7 @@
             var model = new
             {
                 ValueOfTransactions = comparisonModel.ValueOfTransactions,
-                Label = "Yesterdays Sales",
+                Label = $"{comparisonDateLabel} Sales",
                 Variance = variance
             };
 
@@ -140,6 +141,7 @@
         {
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
             var comparisonDate = qs["comparisonDate"];
+            var comparisonDateLabel = qs["comparisonDateLabel"];
             DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
 
             var response =
@@ -161,7 +163,7 @@
             var model = new
                         {
                             ValueOfSettlement = comparisonModel.ValueOfSettlement,
-                            Label = "Yesterdays Settlement",
+                            Label = $"{comparisonDateLabel} Settlement",
                             Variance = variance
                         };
 

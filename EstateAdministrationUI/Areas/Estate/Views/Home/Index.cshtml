@@ -67,19 +67,23 @@
 
     $(document).ready(function () {
         const select = document.getElementById('ComparisonDateSelect');
-        select.addEventListener("change", (event) => {
-            const selectedValue = event.target.value;
-            dateComparisonChanged(selectedValue);
+        select.addEventListener("change", (event) => {                       
+            const selectedOption = select.options[select.selectedIndex];
+
+            const selectedText = selectedOption.text;
+            const selectedValue = selectedOption.value;
+
+            dateComparisonChanged(selectedValue, selectedText);
         });
         initDatePicker();        
     });
 
-    function dateComparisonChanged(selectedValue){               
+    function dateComparisonChanged(selectedValue, text){               
         getTodaysTransactionsAsJson();
-        getComparisonDateTransactionsAsJson(selectedValue)
+        getComparisonDateTransactionsAsJson(selectedValue,text)
         
         getTodaysSettlementAsJson();
-        getComparisonDateSettlementAsJson(selectedValue);
+        getComparisonDateSettlementAsJson(selectedValue, text);
 
         drawCharts();
     }
@@ -95,9 +99,9 @@
         });
     }
 
-    function getComparisonDateTransactionsAsJson(comparisonDate) {
+    function getComparisonDateTransactionsAsJson(comparisonDate, comparisonDateLabel) {
         $.ajax({
-            url: "GetComparisonDateTransactionsAsJson?comparisonDate=" + comparisonDate,
+            url: "GetComparisonDateTransactionsAsJson?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel,
             type: "POST",
             dataType: 'json'
         }).done(function (results) {
@@ -120,15 +124,15 @@
             type: "POST",
             dataType: 'json'
         }).done(function (results) {
-            console.log(JSON.stringify(results));
+            //console.log(JSON.stringify(results));
             const formattedCurrency = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.valueOfSettlement);
             setInnnerHtml("todaysSettlementLabel", formattedCurrency);
         });
     }
     
-    function getComparisonDateSettlementAsJson(comparisonDate) {
+    function getComparisonDateSettlementAsJson(comparisonDate, comparisonDateLabel) {
         $.ajax({
-            url: "GetComparisonDateSettlementAsJson?comparisonDate=" + comparisonDate,
+            url: "GetComparisonDateSettlementAsJson?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel,
             type: "POST",
             dataType: 'json'
         }).done(function (results) {
@@ -169,7 +173,7 @@
         var data = JSON.parse(jsonData);
         var dataArray = [];
 
-        console.log(type);
+        //console.log(type);
         // TODO: Factory method
         if (type === 1) 
         {
@@ -186,13 +190,17 @@
 
     function drawCharts(){
         // Get the comparison date
-        var comparisonDate = document.getElementById("ComparisonDateSelect").value;
+        var comparisonDateSelect = document.getElementById("ComparisonDateSelect");;
+        const selectedOption = comparisonDateSelect.options[comparisonDateSelect.selectedIndex];
 
-        drawSalesValueByHourChart(comparisonDate);
-        drawSalesCountByHourChart(comparisonDate);
+        const comparisonDateLabel = selectedOption.text;
+        const comparisonDate = selectedOption.value;
+                
+        drawSalesValueByHourChart(comparisonDate, comparisonDateLabel);
+        drawSalesCountByHourChart(comparisonDate, comparisonDateLabel);
     }
 
-    function drawSalesValueByHourChart(comparisonDate) {
+    function drawSalesValueByHourChart(comparisonDate, comparisonDateLabel) {
         var salesValueByHourJsonData = $.ajax({
             url: "GetSalesValueByHourAsJson?comparisonDate=" + comparisonDate,
             dataType: "json",
@@ -203,7 +211,7 @@
         // Convert JSON value to google format array
         var valueByHourData = convertJsonToArray(salesValueByHourJsonData, 1);
 
-        var options = setupChartOptions('Sales Value Comparison - Today vs ' + comparisonDate , 'Hour');
+        var options = setupChartOptions('Sales Value Comparison - Today vs ' + comparisonDateLabel, 'Hour');
 
         if (valueByHourData.getNumberOfRows() > 0) {
             var chart = new google.visualization.LineChart(document.getElementById('salesvaluebyhourchart'));
@@ -215,7 +223,7 @@
         }
     }
 
-    function drawSalesCountByHourChart(comparisonDate) {
+    function drawSalesCountByHourChart(comparisonDate, comparisonDateLabel) {
         var salesValueByCountJsonData = $.ajax({
             url: "GetSalesCountByHourAsJson?comparisonDate=" + comparisonDate,
             dataType: "json",
@@ -227,7 +235,7 @@
 
         // Convert JSON value to google format array
         var countByHourData = convertJsonToArray(salesValueByCountJsonData, 2);
-        var options = setupChartOptions('Sales Count Comparison - Today vs ' + comparisonDate, 'Hour');
+        var options = setupChartOptions('Sales Count Comparison - Today vs ' + comparisonDateLabel, 'Hour');
 
         if (countByHourData.getNumberOfRows() > 0) {
             var chart = new google.visualization.LineChart(document.getElementById('salescountbyhourchart'));
