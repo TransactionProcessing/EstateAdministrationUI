@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="EstateReportingAPI.Client" Version="2023.9.1" />
 	  <PackageReference Include="Lamar" Version="8.1.0" />
 	  <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="8.1.0" />
 	  <PackageReference Include="IdentityModel" Version="6.0.0" />
