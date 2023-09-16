@@ -73,22 +73,8 @@
         {
             return this.View();
         }
-
+        
         [HttpPost]
-        [Route("GetTodaysTransactionsAsJson")]
-        public async Task<IActionResult> GetTodaysTransactionsAsJson(CancellationToken cancellationToken)
-        {
-            var response = await this.EstateReportingApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), DateTime.Now, cancellationToken);
-
-            var model = new{
-                               ValueOfTransactions = response.TodaysSalesValue
-                           };
-
-            return this.Json(model);
-        }
-
-        [HttpPost]
-        [Route("GetComparisonDateTransactionsAsJson")]
         public async Task<IActionResult> GetComparisonDateTransactionsAsJson(CancellationToken cancellationToken)
         {
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
@@ -109,11 +95,12 @@
                                       ValueOfTransactions = response.ComparisonSalesValue
                                   };
             
-            var variance = ((todaysModel.ValueOfTransactions - comparisonModel.ValueOfTransactions) / todaysModel.ValueOfTransactions);
+            var variance = (todaysModel.ValueOfTransactions - comparisonModel.ValueOfTransactions).SafeDivision(todaysModel.ValueOfTransactions);
 
             var model = new
             {
-                ValueOfTransactions = comparisonModel.ValueOfTransactions,
+                TodaysValueOfTransactions = todaysModel.ValueOfTransactions,
+                ComparisonValueOfTransactions = comparisonModel.ValueOfTransactions,
                 Label = $"{comparisonDateLabel} Sales",
                 Variance = variance
             };
@@ -122,7 +109,6 @@
         }
 
         [HttpPost]
-        [Route("GetTodaysSettlementAsJson")]
         public async Task<IActionResult> GetYesterdaysSettlementAsJson(CancellationToken cancellationToken)
         {
             var response = await this.EstateReportingApiClient.GetTodaysSettlement(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), DateTime.Now, cancellationToken);
@@ -136,7 +122,6 @@
         }
 
         [HttpPost]
-        [Route("GetComparisonDateSettlementAsJson")]
         public async Task<IActionResult> GetComparisonDateSettlementAsJson(CancellationToken cancellationToken)
         {
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
@@ -158,12 +143,13 @@
 
             };
 
-            var variance = ((todaysModel.ValueOfSettlement - comparisonModel.ValueOfSettlement) / todaysModel.ValueOfSettlement);
+            var variance = (todaysModel.ValueOfSettlement - comparisonModel.ValueOfSettlement).SafeDivision(todaysModel.ValueOfSettlement);
 
             var model = new
                         {
-                            ValueOfSettlement = comparisonModel.ValueOfSettlement,
-                            Label = $"{comparisonDateLabel} Settlement",
+                TodaysValueOfSettlement = todaysModel.ValueOfSettlement,
+                ComparisonValueOfSettlement = comparisonModel.ValueOfSettlement,
+                Label = $"{comparisonDateLabel} Settlement",
                             Variance = variance
                         };
 
@@ -171,7 +157,6 @@
         }
 
         [HttpPost]
-        [Route("GetComparisonDatesAsJson")]
         public async Task<IActionResult> GetComparisonDatesAsJson(CancellationToken cancellationToken){
             List<(String value, String text)> datesList = new List<(String, String)>();
 
@@ -186,7 +171,6 @@
         }
 
         [HttpPost]
-        [Route("GetSalesValueByHourAsJson")]
         public async Task<IActionResult> GetSalesValueByHourAsJson(CancellationToken cancellationToken){
 
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
@@ -216,7 +200,6 @@
         }
 
         [HttpPost]
-        [Route("GetSalesCountByHourAsJson")]
         public async Task<IActionResult> GetSalesCountByHourAsJson(CancellationToken cancellationToken)
         {
             var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
