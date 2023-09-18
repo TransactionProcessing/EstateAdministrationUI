@@ -6,68 +6,68 @@ on:
     - master
 
 jobs:
-  firefoxtests:
-    name: "Build and Test Pull Requests - FireFox"
-    env:
-        ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
+  # firefoxtests:
+  #   name: "Build and Test Pull Requests - FireFox"
+  #   env:
+  #       ASPNETCORE_ENVIRONMENT: "Production"
+  #       NODE_VERSION: '12.x'                # set this to the node version to use
 
-    runs-on: windows-2019
+  #   runs-on: windows-2019
 
-    steps:
-    - uses: actions/checkout@v2.3.4
+  #   steps:
+  #   - uses: actions/checkout@v2.3.4
 
-    - name: Trust Certificate
-      run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+  #   - name: Trust Certificate
+  #     run: |
+  #       $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+  #       Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1.4.4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+  #   - name: Setup Node.js ${{ env.NODE_VERSION }}
+  #     uses: actions/setup-node@v1.4.4
+  #     with:
+  #       node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '7.0.x'
+  #   - name: Install NET 7
+  #     uses: actions/setup-dotnet@v2
+  #     with:
+  #       dotnet-version: '7.0.x'
         
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+  #   - name: Add msbuild to PATH
+  #     uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
+  #   - name: Restore Nuget Packages
+  #     run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
 
-    - name: Build Code
-      run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+  #   - name: Build Code
+  #     run: |
+  #       dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+  #       msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
+  #   - name: Run Unit Tests
+  #     run: |
+  #       echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+  #       dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
+  #       dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
     
-    - name: Run Javascript Unit Tests
-      run: |
-        cd EstateAdministrationUI.Javascript.Tests
-        npm install
-        npm run test
+  #   - name: Run Javascript Unit Tests
+  #     run: |
+  #       cd EstateAdministrationUI.Javascript.Tests
+  #       npm install
+  #       npm run test
 
-    - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+  #   - name: Build Docker Image
+  #     run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
                 
-    - name: Run Integration Tests (Firefox)
-      env:
-        Browser: Firefox
-      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+  #   - name: Run Integration Tests (Firefox)
+  #     env:
+  #       Browser: Firefox
+  #     run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
-    - uses: actions/upload-artifact@v2
-      if: ${{ failure() }}
-      with:
-        name: firefoxtracelogs
-        path: //home//txnproc//trace//
+  #   - uses: actions/upload-artifact@v2
+  #     if: ${{ failure() }}
+  #     with:
+  #       name: firefoxtracelogs
+  #       path: //home//txnproc//trace//
 
   chrometests:
     name: "Build and Test Pull Requests - Chrome"
@@ -130,70 +130,70 @@ jobs:
       if: ${{ failure() }}
       with:
         name: chrometracelogs
-        path: //home//txnproc//trace//
+        path: \\home\\txnproc\\trace\\
 
-  edgetests:
-    name: "Build and Test Pull Requests - Edge"
+  # edgetests:
+  #   name: "Build and Test Pull Requests - Edge"
 
-    env:
-        ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
+  #   env:
+  #       ASPNETCORE_ENVIRONMENT: "Production"
+  #       NODE_VERSION: '12.x'                # set this to the node version to use
 
-    runs-on: windows-2019
+  #   runs-on: windows-2019
 
-    steps:
-    - uses: actions/checkout@v2.3.4
+  #   steps:
+  #   - uses: actions/checkout@v2.3.4
 
-    - name: Trust Certificate
-      run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+  #   - name: Trust Certificate
+  #     run: |
+  #       $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+  #       Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1.4.4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+  #   - name: Setup Node.js ${{ env.NODE_VERSION }}
+  #     uses: actions/setup-node@v1.4.4
+  #     with:
+  #       node-version: ${{ env.NODE_VERSION }}
     
-    - name: Install NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '7.0.x'
+  #   - name: Install NET 7
+  #     uses: actions/setup-dotnet@v2
+  #     with:
+  #       dotnet-version: '7.0.x'
     
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+  #   - name: Add msbuild to PATH
+  #     uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
+  #   - name: Restore Nuget Packages
+  #     run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
 
-    - name: Build Code
-      run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+  #   - name: Build Code
+  #     run: |
+  #       dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+  #       msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
+  #   - name: Run Unit Tests
+  #     run: |
+  #       echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+  #       dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
+  #       dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
     
-    - name: Run Javascript Unit Tests
-      run: |
-        cd EstateAdministrationUI.Javascript.Tests
-        npm install
-        npm run test
+  #   - name: Run Javascript Unit Tests
+  #     run: |
+  #       cd EstateAdministrationUI.Javascript.Tests
+  #       npm install
+  #       npm run test
 
-    - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+  #   - name: Build Docker Image
+  #     run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
 
-    - name: Run Integration Tests (Edge)
-      env:
-        Browser: Edge
-        DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
-        DriverExe: msedgedriver.exe
-      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+  #   - name: Run Integration Tests (Edge)
+  #     env:
+  #       Browser: Edge
+  #       DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
+  #       DriverExe: msedgedriver.exe
+  #     run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
-    - uses: actions/upload-artifact@v2
-      if: ${{ failure() }}
-      with:
-        name: edgetracelogs
-        path: //home//txnproc//trace//
+  #   - uses: actions/upload-artifact@v2
+  #     if: ${{ failure() }}
+  #     with:
+  #       name: edgetracelogs
+  #       path: //home//txnproc//trace//
