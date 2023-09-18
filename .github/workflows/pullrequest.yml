@@ -19,8 +19,10 @@ jobs:
 
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" -password pass:password
+        sudo cp "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" /usr/local/share/ca-certificates/
+        sudo update-ca-certificates
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -82,8 +84,10 @@ jobs:
 
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" -password pass:password
+        sudo cp "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" /usr/local/share/ca-certificates/
+        sudo update-ca-certificates
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -146,8 +150,10 @@ jobs:
 
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" -password pass:password
+        sudo cp "$GITHUB_WORKSPACE/aspnetapp-root-cert.crt" /usr/local/share/ca-certificates/
+        sudo update-ca-certificates
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
