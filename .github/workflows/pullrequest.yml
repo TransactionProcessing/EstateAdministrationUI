@@ -127,6 +127,7 @@ jobs:
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
     - name: Directory List
+      if: ${{ failure() }}
       run: |
         dir /S
 
