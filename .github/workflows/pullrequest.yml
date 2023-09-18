@@ -126,11 +126,15 @@ jobs:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
+    - name: Directory List
+      run: |
+        dir /S
+
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
         name: chrometracelogs
-        path: \\home\\txnproc\\trace\\
+        path: \home\txnproc\trace\
 
   # edgetests:
   #   name: "Build and Test Pull Requests - Edge"
