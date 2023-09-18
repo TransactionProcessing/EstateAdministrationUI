@@ -20,7 +20,7 @@ jobs:
     - name: Trust Certificate
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -83,7 +83,7 @@ jobs:
     - name: Trust Certificate
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
@@ -147,7 +147,7 @@ jobs:
     - name: Trust Certificate
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        pwsh Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
     - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1.4.4
