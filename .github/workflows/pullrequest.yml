@@ -130,7 +130,7 @@ jobs:
       if: ${{ failure() }}
       with:
         name: chrometracelogs
-        path: c:\\home\\txnproc\\trace\\
+        path: C:\\Users\\runneradmin\\txnproc\\trace\\
 
   # edgetests:
   #   name: "Build and Test Pull Requests - Edge"
