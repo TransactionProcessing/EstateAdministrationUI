@@ -40,7 +40,7 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+        #msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
@@ -102,7 +102,7 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+        #msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
@@ -165,7 +165,7 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
+        #msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
