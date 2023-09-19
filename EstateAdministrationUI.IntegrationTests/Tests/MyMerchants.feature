@@ -103,7 +103,7 @@ Scenario: View Single Merchant
 	When I select 'Test Merchant 1' from the merchant list
 	Then I am presented the merchant details screen for 'Test Merchant 1' 
 
-#@PRTest
+@PRTest
 Scenario: Make Merchant Deposit
 	Given I click on the My Merchants sidebar option
 	Then I am presented with the Merchants List Screen
