@@ -124,7 +124,12 @@ jobs:
     - name: Run Integration Tests (Chrome)
       env:
         Browser: Chrome
-      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest1
+
+      - name: Run Integration Tests (Chrome)
+      env:
+        Browser: Chrome
+      run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest2
       
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}

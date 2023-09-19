@@ -88,7 +88,7 @@ Scenario: Create New Operator
 	| Test Operator |
 	| Test New Operator |
 
-@PRTest
+@PRTest1
 Scenario: Create New Contract
 	Given I click on the My Contracts sidebar option
 	Then I am presented with the Contracts List Screen
