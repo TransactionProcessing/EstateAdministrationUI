@@ -126,7 +126,7 @@ jobs:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest1
 
-      - name: Run Integration Tests (Chrome)
+    - name: Run Integration Tests (Chrome)
       env:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest2
