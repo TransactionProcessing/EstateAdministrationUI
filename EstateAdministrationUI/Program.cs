@@ -14,6 +14,7 @@ namespace EstateAdministrationUI
     using Microsoft.Extensions.Hosting;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
+    using Shared.Logger;
 
     [ExcludeFromCodeCoverage]
     public class Program
@@ -52,7 +53,7 @@ namespace EstateAdministrationUI
                                                      webBuilder.UseKestrel(options =>
                                                                            {
                                                                                var port = 5004;
-
+                                                                               
                                                                                options.Listen(IPAddress.Any,
                                                                                               port,
                                                                                               listenOptions =>
@@ -77,8 +78,7 @@ namespace EstateAdministrationUI
             //just to ensure that we are picking the right file! little bit of ugly code:
             var files = Directory.GetFiles(path);
             var certificateFile = files.First(name => name.Contains("pfx"));
-            Console.WriteLine(certificateFile);
-
+            
             return new X509Certificate2(certificateFile, "password");
         }
 

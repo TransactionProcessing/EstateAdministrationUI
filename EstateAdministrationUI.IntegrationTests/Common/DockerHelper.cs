@@ -6,6 +6,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Common;
@@ -156,10 +157,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                              .UseImageDetails(("estateadministrationui", false)).WithEnvironment(environmentVariables.ToArray())
                                                              .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
                                                              .SetDockerCredentials(this.DockerCredentials);
-
-
-            IContainerService builtContainer = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
-
+            IContainerService builtContainer = containerBuilder.Build().Start();//.WaitForPort("5004/tcp", 30000);
+            var l = builtContainer.Logs(true, CancellationToken.None);
+            while (l.IsFinished == false){
+                var x = l.Read();
+                Trace(x);
+            }
             foreach (INetworkService networkService in networkServices)
             {
                 networkService.Attach(builtContainer, false);
