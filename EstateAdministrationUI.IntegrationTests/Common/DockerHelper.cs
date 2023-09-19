@@ -13,8 +13,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
+    using Newtonsoft.Json;
     using SecurityService.Client;
+    using Shared.HealthChecks;
     using Shared.IntegrationTesting;
+    using Shouldly;
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -158,11 +161,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                              .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
                                                              .SetDockerCredentials(this.DockerCredentials);
             IContainerService builtContainer = containerBuilder.Build().Start();//.WaitForPort("5004/tcp", 30000);
-            var l = builtContainer.Logs(true, CancellationToken.None);
-            while (l.IsFinished == false){
-                var x = l.Read();
-                Trace(x);
-            }
+
             foreach (INetworkService networkService in networkServices)
             {
                 networkService.Attach(builtContainer, false);
@@ -173,13 +172,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             Trace("Estate Management UI Started");
             this.Containers.Add(builtContainer);
-            //await Retry.For(async () => {
-            //String healthCheck =
-            //await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
+            await Retry.For(async () =>
+            {
+                String healthCheck =
+                await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
 
-            //var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
-            //result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Service Type: {containerType} Details {healthCheck}");
-            //});
+                var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
+                result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Details {healthCheck}");
+            });
 
             return builtContainer;
         }
