@@ -156,17 +156,21 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             environmentVariables.Add($"AppSettings:ClientId=estateUIClient");
             environmentVariables.Add($"AppSettings:ClientSecret=Secret1");
 
+            Trace("About to Built Estate Management UI Container");
             ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(this.EstateManagementUiContainerName)
                                                              .UseImageDetails(("estateadministrationui", false)).WithEnvironment(environmentVariables.ToArray())
                                                              .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
                                                              .SetDockerCredentials(this.DockerCredentials);
+            Trace("About to Call .Start()");
             IContainerService builtContainer = containerBuilder.Build().Start();//.WaitForPort("5004/tcp", 30000);
 
+            Trace("About to attach networkServices");
             foreach (INetworkService networkService in networkServices)
             {
                 networkService.Attach(builtContainer, false);
             }
 
+            Trace("About to get port");
             //  Do a health check here
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
