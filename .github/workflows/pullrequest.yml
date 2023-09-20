@@ -66,8 +66,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
-        name: tracelogs
-        path: c:\\home\\txnproc\\trace\\
+        name: firefoxtracelogs
+        path: C:\\Users\\runneradmin\\txnproc\\trace\\
 
   chrometests:
     name: "Build and Test Pull Requests - Chrome"
@@ -125,12 +125,12 @@ jobs:
       env:
         Browser: Chrome
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
-
+      
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
-        name: tracelogs
-        path: c:\\home\\txnproc\\trace\\
+        name: chrometracelogs
+        path: C:\\Users\\runneradmin\\txnproc\\trace\\
 
   edgetests:
     name: "Build and Test Pull Requests - Edge"
@@ -195,5 +195,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
-        name: tracelogs
-        path: c:\\home\\txnproc\\trace\\
+        name: edgetracelogs
+        path: C:\\Users\\runneradmin\\txnproc\\trace\\

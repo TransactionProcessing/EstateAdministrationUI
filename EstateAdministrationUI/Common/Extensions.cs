@@ -14,12 +14,6 @@
     {
         #region Methods
 
-        /// <summary>
-        /// Gets the claim value.
-        /// </summary>
-        /// <param name="identity">The identity.</param>
-        /// <param name="claimType">Type of the claim.</param>
-        /// <returns></returns>
         public static String GetClaimValue(this ClaimsIdentity identity,
                                            String claimType)
         {
@@ -34,6 +28,11 @@
             Claim? claim = identity.Claims.SingleOrDefault(c => c.Type.ToLower() == claimType.ToLower());
 
             return (claim != null) ? claim.Value : string.Empty;
+        }
+
+        public static Decimal SafeDivision(this Decimal numerator, Decimal denominator)
+        {
+            return (denominator == 0) ? 0 : numerator / denominator;
         }
 
         #endregion

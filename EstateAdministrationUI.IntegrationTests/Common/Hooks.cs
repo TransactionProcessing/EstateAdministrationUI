@@ -32,6 +32,7 @@
             {
                 ChromeOptions options = new ChromeOptions();
                 options.AddArguments("--disable-gpu");
+                //options.AddArguments("--headless");
                 options.AddArguments("--no-sandbox");
                 options.AddArguments("--disable-dev-shm-usage");
                 options.AcceptInsecureCertificates = true;

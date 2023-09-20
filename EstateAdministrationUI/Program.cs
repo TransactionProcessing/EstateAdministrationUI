@@ -12,8 +12,10 @@ namespace EstateAdministrationUI
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
+    using Shared.Logger;
 
     [ExcludeFromCodeCoverage]
     public class Program
@@ -23,7 +25,7 @@ namespace EstateAdministrationUI
         public static IHostBuilder CreateHostBuilder(String[] args)
         {
             //At this stage, we only need our hosting file for ip and ports
-            FileInfo fi = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                FileInfo fi = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             IConfigurationRoot config = new ConfigurationBuilder().SetBasePath(fi.Directory.FullName).AddJsonFile("hosting.json", optional:true)
                                                                   .AddJsonFile("hosting.development.json", optional:true).AddEnvironmentVariables().Build();
@@ -48,19 +50,33 @@ namespace EstateAdministrationUI
                                                                                       });
                                                                                       services.AddRazorPages().AddRazorRuntimeCompilation();
                                                                                   });
+                                                     webBuilder.ConfigureLogging(logging => {
+                                                                                     // Remove the EventLog logging provider
+                                                                                     logging.ClearProviders();
+
+                                                                                     // Add a console logger
+                                                                                     logging.AddConsole();
+                                                                                 });
                                                      webBuilder.UseConfiguration(config);
                                                      webBuilder.UseKestrel(options =>
                                                                            {
                                                                                var port = 5004;
-
+                                                                               
                                                                                options.Listen(IPAddress.Any,
                                                                                               port,
                                                                                               listenOptions =>
                                                                                               {
-                                                                                                  // Enable support for HTTP1 and HTTP2 (required if you want to host gRPC endpoints)
-                                                                                                  listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                                                                                                  // Configure Kestrel to use a certificate from a local .PFX file for hosting HTTPS
-                                                                                                  listenOptions.UseHttps(Program.LoadCertificate(fi.Directory.FullName));
+                                                                                                  try{
+                                                                                                      // Enable support for HTTP1 and HTTP2 (required if you want to host gRPC endpoints)
+                                                                                                      listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                                                                                      // Configure Kestrel to use a certificate from a local .PFX file for hosting HTTPS
+                                                                                                      listenOptions.UseHttps(Program.LoadCertificate(fi.Directory.FullName));
+                                                                                                  }
+                                                                                                  catch (Exception e)
+                                                                                                  {
+                                                                                                      Console.WriteLine(e);
+                                                                                                      throw;
+                                                                                                  }
                                                                                               });
                                                                            });
                                                  });
@@ -77,8 +93,7 @@ namespace EstateAdministrationUI
             //just to ensure that we are picking the right file! little bit of ugly code:
             var files = Directory.GetFiles(path);
             var certificateFile = files.First(name => name.Contains("pfx"));
-            Console.WriteLine(certificateFile);
-
+            Console.WriteLine($"Certficate File: {certificateFile}");
             return new X509Certificate2(certificateFile, "password");
         }
 

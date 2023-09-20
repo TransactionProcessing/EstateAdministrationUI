@@ -14,9 +14,10 @@ function setInnnerHtml(elementId, newvalue) {
     element.innerHTML = newvalue;
 }
 
-function setDivClassBasedOnVariance(elementId, variance) {
+function setDivClassBasedOnVariance(elementId, variance, lessisgood) {
     const myDiv = document.getElementById(elementId);
-    //console.log(variance);
+    console.log(variance);
+    console.log(lessisgood);
     if (myDiv.classList.contains('bg-gradient-success')) {
         myDiv.classList.remove('bg-gradient-success');
     }
@@ -32,20 +33,40 @@ function setDivClassBasedOnVariance(elementId, variance) {
     if (myDiv.classList.contains('bg-gradient-danger')) {
         myDiv.classList.remove('bg-gradient-danger');
     }
-    if (variance > 0) {
-        // Success
-        myDiv.classList.add('bg-gradient-success');
-    }
-    else if (variance >= -0.20) {
-        myDiv.classList.add('bg-gradient-info');
-    }
-    else if (variance >= -0.50 && variance < -0.20) {
-        // Warning
-        myDiv.classList.add('bg-gradient-warning');
+
+    if (lessisgood) {
+        if (variance > 0) {
+            // Success
+            myDiv.classList.add('bg-gradient-danger');
+        }
+        else if (variance >= -0.20 && lessisgood) {
+            myDiv.classList.add('bg-gradient-warning');
+        }
+        else if (variance >= -0.50 && variance < -0.20) {
+            // Warning
+            myDiv.classList.add('bg-gradient-info');
+        }
+        else {
+            // Error
+            myDiv.classList.add('bg-gradient-success');
+        }
     }
     else {
-        // Error
-        myDiv.classList.add('bg-gradient-danger');
+        if (variance > 0) {
+            // Success
+            myDiv.classList.add('bg-gradient-success');
+        }
+        else if (variance >= -0.20 && lessisgood) {
+            myDiv.classList.add('bg-gradient-info');
+        }
+        else if (variance >= -0.50 && variance < -0.20) {
+            // Warning
+            myDiv.classList.add('bg-gradient-warning');
+        }
+        else {
+            // Error
+            myDiv.classList.add('bg-gradient-danger');
+        }
     }
 }
 
