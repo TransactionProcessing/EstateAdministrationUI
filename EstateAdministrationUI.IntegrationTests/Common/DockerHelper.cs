@@ -10,6 +10,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using System.Threading.Tasks;
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Common;
+    using Ductus.FluentDocker.Executors;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
@@ -176,6 +177,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             if (x == null){
                 Trace("x is null");
             }
+
+            ConsoleStream<String> logs = builtContainer.Logs(true, CancellationToken.None);
+            String xx = logs.Read();
+            while (xx != null){
+                Trace(xx);
+                xx = logs.Read();
+            }
+
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
             Trace("Estate Management UI Started");
