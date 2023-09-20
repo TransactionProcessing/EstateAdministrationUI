@@ -181,7 +181,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             ConsoleStream<String> logs = builtContainer.Logs(true, CancellationToken.None);
             String xx = logs.Read();
             while (xx != null){
-                Trace(xx);
+                Trace($"Logs|{xx}");
                 xx = logs.Read();
             }
 
