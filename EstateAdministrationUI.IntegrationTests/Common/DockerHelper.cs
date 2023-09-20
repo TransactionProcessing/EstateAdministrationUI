@@ -165,7 +165,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                              .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
                                                              .SetDockerCredentials(this.DockerCredentials);
             Trace("About to Call .Start()");
-            IContainerService builtContainer = containerBuilder.Build().Start();//.WaitForPort("5004/tcp", 30000);
+            IContainerService builtContainer = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
 
             Trace("About to attach networkServices");
             foreach (INetworkService networkService in networkServices)
@@ -173,21 +173,21 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 networkService.Attach(builtContainer, false);
             }
 
-            Trace("About to get port");
-            //  Do a health check here
-            var x = builtContainer.ToHostExposedEndpoint($"5004/tcp");
-            if (x == null){
-                Trace("x is null");
-            }
+            //Trace("About to get port");
+            ////  Do a health check here
+            //var x = builtContainer.ToHostExposedEndpoint($"5004/tcp");
+            //if (x == null){
+            //    Trace("x is null");
+            //}
 
-            ConsoleStream<String> logs = builtContainer.Logs(true, CancellationToken.None);
-            IList<String> xx = logs.ReadToEnd();
-            while (xx.Any()){
-                foreach (String s in xx){
-                    Trace($"Logs|{s}");    
-                }
-                xx = logs.ReadToEnd();
-            }
+            //ConsoleStream<String> logs = builtContainer.Logs(true, CancellationToken.None);
+            //IList<String> xx = logs.ReadToEnd();
+            //while (xx.Any()){
+            //    foreach (String s in xx){
+            //        Trace($"Logs|{s}");    
+            //    }
+            //    xx = logs.ReadToEnd();
+            //}
 
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
@@ -196,7 +196,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             await Retry.For(async () =>
             {
                 String healthCheck =
-                await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", 5004, CancellationToken.None);
+                await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", this.EstateManagementUiPort, CancellationToken.None);
 
                 var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
                 result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Details {healthCheck}");
