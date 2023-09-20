@@ -172,6 +172,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             Trace("About to get port");
             //  Do a health check here
+            var x = builtContainer.ToHostExposedEndpoint($"5004/tcp");
+            if (x == null){
+                Trace("x is null");
+            }
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
             Trace("Estate Management UI Started");
