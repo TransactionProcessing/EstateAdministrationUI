@@ -5,12 +5,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 {
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Ductus.FluentDocker.Builders;
     using Ductus.FluentDocker.Common;
     using Ductus.FluentDocker.Executors;
+    using Ductus.FluentDocker.Extensions;
     using Ductus.FluentDocker.Services;
     using Ductus.FluentDocker.Services.Extensions;
     using EstateManagement.Client;
@@ -179,10 +181,12 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
 
             ConsoleStream<String> logs = builtContainer.Logs(true, CancellationToken.None);
-            String xx = logs.Read();
-            while (xx != null){
-                Trace($"Logs|{xx}");
-                xx = logs.Read();
+            IList<String> xx = logs.ReadToEnd();
+            while (xx.Any()){
+                foreach (String s in xx){
+                    Trace($"Logs|{s}");    
+                }
+                xx = logs.ReadToEnd();
             }
 
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
