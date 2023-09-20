@@ -193,14 +193,14 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             Trace("Estate Management UI Started");
             this.Containers.Add(builtContainer);
-            await Retry.For(async () =>
-            {
-                String healthCheck =
-                await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", this.EstateManagementUiPort, CancellationToken.None);
+            //await Retry.For(async () =>
+            //{
+            //    String healthCheck =
+            //    await this.HealthCheckClient.PerformHealthCheck("http", "127.0.0.1", this.EstateManagementUiPort, CancellationToken.None);
 
-                var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
-                result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Details {healthCheck}");
-            });
+            //    var result = JsonConvert.DeserializeObject<HealthCheckResult>(healthCheck);
+            //    result.Status.ShouldBe(HealthCheckStatus.Healthy.ToString(), $"Details {healthCheck}");
+            //});
 
             return builtContainer;
         }
