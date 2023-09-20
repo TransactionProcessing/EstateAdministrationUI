@@ -12,6 +12,7 @@ namespace EstateAdministrationUI
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using Shared.Logger;
@@ -49,6 +50,13 @@ namespace EstateAdministrationUI
                                                                                       });
                                                                                       services.AddRazorPages().AddRazorRuntimeCompilation();
                                                                                   });
+                                                     webBuilder.ConfigureLogging(logging => {
+                                                                                     // Remove the EventLog logging provider
+                                                                                     logging.ClearProviders();
+
+                                                                                     // Add a console logger
+                                                                                     logging.AddConsole();
+                                                                                 });
                                                      webBuilder.UseConfiguration(config);
                                                      webBuilder.UseKestrel(options =>
                                                                            {
