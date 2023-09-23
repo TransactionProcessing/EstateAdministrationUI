@@ -8,6 +8,8 @@ namespace EstateAdministrationUI.Tests.FactoryTests
     using Areas.Estate.Models;
     using BusinessLogic.Models;
     using Castle.Components.DictionaryAdapter;
+    using EstateAdministrationUI.BusinessLogic.Factories;
+    using EstateReportingAPI.DataTransferObjects;
     using Factories;
     using Shouldly;
     using Testing;
@@ -16,6 +18,82 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
     public class ViewModelFactoryTests
     {
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSettlement_IsConverted()
+        {
+
+            TodaysSettlementModel model = new TodaysSettlementModel()
+                                     {
+                                         ComparisonSettlementCount = 100,
+                                         ComparisonSettlementValue = 101.00m,
+                                         TodaysSettlementCount = 200,
+                                         TodaysSettlementValue = 202.00m
+                                     };
+            var result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.ComparisonSettlementValue.ShouldBe(model.ComparisonSettlementValue);
+            result.TodaysSettlementValue.ShouldBe(model.TodaysSettlementValue);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSettlementModel_ModelIsNull_ErrorThrown()
+        {
+            TodaysSettlementModel model = null;
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantKpiModel_IsConverted()
+        {
+
+            MerchantKpiModel model = new MerchantKpiModel()
+                                {
+                                    MerchantsWithNoSaleInLast7Days = 1,
+                                    MerchantsWithNoSaleToday = 2,
+                                    MerchantsWithSaleInLastHour = 3
+                                };
+            var result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.MerchantsWithNoSaleInLast7Days.ShouldBe(model.MerchantsWithNoSaleInLast7Days);
+            result.MerchantsWithNoSaleToday.ShouldBe(model.MerchantsWithNoSaleToday);
+            result.MerchantsWithSaleInLastHour.ShouldBe(model.MerchantsWithSaleInLastHour);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantKpiModel_ModelIsNull_ErrorThrown()
+        {
+
+            MerchantKpiModel model = null;
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesModel_IsConverted()
+        {
+            TodaysSalesModel model = new TodaysSalesModel
+            {
+                                    ComparisonSalesCount = 10,
+                                    ComparisonSalesValue = 100.00m,
+                                    TodaysSalesCount = 20,
+                                    TodaysSalesValue = 200.00m
+                                };
+
+            var result = ViewModelFactory.ConvertFrom(model, String.Empty);
+
+            result.ShouldNotBeNull();
+            result.ComparisonValueOfTransactions.ShouldBe(model.ComparisonSalesValue);
+            result.TodaysValueOfTransactions.ShouldBe(model.TodaysSalesValue);
+            result.Label.ShouldBe($" Sales");
+            result.Variance.ShouldBe(0.5m);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesModel_ModelIsNull_ErrorThrown()
+        {
+            TodaysSalesModel model = null;
+            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model, String.Empty); });
+        }
+
         [Fact]
         public void ViewModelFactory_ConvertFrom_EstateModel_ModelIsConverted()
         {
@@ -1472,6 +1550,292 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             String result = ViewModelFactory.GetProductTypeName(productType);
 
             result.ShouldBe(expectedValue);
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_IsConverted()
+        {
+            List<TopBottomOperatorDataModel> model = new List<TopBottomOperatorDataModel>{
+                                                                                             new TopBottomOperatorDataModel(){
+                                                                                                                            OperatorName = "Operator 1",
+                                                                                                                            SalesValue = 100
+                                                                                                                        },
+                                                                                             new TopBottomOperatorDataModel(){
+                                                                                                                            OperatorName = "Operator 2",
+                                                                                                                            SalesValue = 200
+                                                                                                                        }
+                                                                                         };
+            var result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Operators.Count.ShouldBe(model.Count);
+            foreach (TopBottomOperatorDataModel topBottomOperatorData in model)
+            {
+                var d = result.Operators.SingleOrDefault(r => r.OperatorName == topBottomOperatorData.OperatorName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_NullModel_ErrorThrown()
+        {
+            List<TopBottomOperatorDataModel> model = null;
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_EmptyModel_ErrorThrown()
+        {
+            List<TopBottomOperatorDataModel> model = new List<TopBottomOperatorDataModel>();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_IsConverted()
+        {
+            List<TopBottomMerchantDataModel> model = new List<TopBottomMerchantDataModel>{
+                                                                                             new TopBottomMerchantDataModel(){
+                                                                                                                                 MerchantName = "Merchant 1",
+                                                                                                                                 SalesValue = 100
+                                                                                                                             },
+                                                                                             new TopBottomMerchantDataModel(){
+                                                                                                                                 MerchantName = "Merchant 2",
+                                                                                                                                 SalesValue = 200
+                                                                                                                             }
+                                                                                         };
+            var result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Merchants.Count.ShouldBe(model.Count);
+            foreach (TopBottomMerchantDataModel topBottomOperatorData in model)
+            {
+                var d = result.Merchants.SingleOrDefault(r => r.MerchantName == topBottomOperatorData.MerchantName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_NullModel_ErrorThrown()
+        {
+            List<TopBottomMerchantDataModel> model = null;
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_EmptyModel_ErrorThrown()
+        {
+            List<TopBottomMerchantDataModel> model = new List<TopBottomMerchantDataModel>();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomProductData_IsConverted()
+        {
+            List<TopBottomProductDataModel> model = new List<TopBottomProductDataModel>{
+                                                                                           new TopBottomProductDataModel(){
+                                                                                                                              ProductName = "Product 1",
+                                                                                                                              SalesValue = 100
+                                                                                                                          },
+                                                                                           new TopBottomProductDataModel(){
+                                                                                                                              ProductName = "Product 2",
+                                                                                                                              SalesValue = 200
+                                                                                                                          }
+                                                                                       };
+            var result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Products.Count.ShouldBe(model.Count);
+            foreach (TopBottomProductDataModel topBottomOperatorData in model)
+            {
+                var d = result.Products.SingleOrDefault(r => r.ProductName == topBottomOperatorData.ProductName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_NullModel_ErrorThrown()
+        {
+            List<TopBottomProductDataModel> model = null;
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_EmptyModel_ErrorThrown()
+        {
+            List<TopBottomProductDataModel> model = new List<TopBottomProductDataModel>();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ComparisonDate_IsConverted()
+        {
+            List<ComparisonDateModel> model = new List<ComparisonDateModel>{
+                                                                               new ComparisonDateModel{
+                                                                                                          Date = new DateTime(2023,09,22),
+                                                                                                          Description = "Yesterday",
+                                                                                                          OrderValue = 1
+                                                                                                      },
+                                                                               new ComparisonDateModel(){
+                                                                                                            Date = new DateTime(2023,08,22),
+                                                                                                            Description = "Last Month",
+                                                                                                            OrderValue = 2
+                                                                                                        }
+                                                                           };
+            var result = ViewModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (var comparisonDate in model)
+            {
+                var d = result.SingleOrDefault(r => r.text == comparisonDate.Description);
+                d.value.ShouldBe(comparisonDate.Date.ToString("yyyy-MM-dd"));
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ComparisonDate_NullModel_ErrorThrown(){
+            List<ComparisonDateModel> model = null;
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ComparisonDate_EmptyModel_ErrorThrown()
+        {
+            List<ComparisonDateModel> model = new List<ComparisonDateModel>();
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(model);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesValueByHourModel_IsConverted()
+        {
+            List<TodaysSalesValueByHourModel> models = new List<TodaysSalesValueByHourModel>();
+            models.Add(new TodaysSalesValueByHourModel
+            {
+                           ComparisonSalesValue = 100,
+                           Hour = 1,
+                           TodaysSalesValue = 101
+                       });
+            models.Add(new TodaysSalesValueByHourModel
+            {
+                           ComparisonSalesValue = 200,
+                           Hour = 2,
+                           TodaysSalesValue = 202
+                       });
+
+            var result = ViewModelFactory.ConvertFrom(models);
+
+            result.Count.ShouldBe(models.Count);
+            foreach (var todaysSalesValueByHour in models)
+            {
+                var d = result.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
+                d.ShouldNotBeNull();
+                d.ComparisonValue.ShouldBe(todaysSalesValueByHour.ComparisonSalesValue);
+                d.TodaysValue.ShouldBe(todaysSalesValueByHour.TodaysSalesValue);
+
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesValueByHourModel_ModelIsNull_ErrorThrown()
+        {
+            List<TodaysSalesValueByHourModel> models = null;
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(models);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesValueByHourModel_ModelIsEmpty_ErrorThrown()
+        {
+            List<TodaysSalesValueByHourModel> models = new List<TodaysSalesValueByHourModel>();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(models);
+                                                });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesCountByHourModel_IsConverted()
+        {
+            List<TodaysSalesCountByHourModel> models = new List<TodaysSalesCountByHourModel>();
+            models.Add(new TodaysSalesCountByHourModel
+            {
+                ComparisonSalesCount = 100,
+                           Hour = 1,
+                           TodaysSalesCount = 101
+                       });
+            models.Add(new TodaysSalesCountByHourModel
+            {
+                ComparisonSalesCount = 200,
+                           Hour = 2,
+                           TodaysSalesCount = 202
+                       });
+
+            var result = ViewModelFactory.ConvertFrom(models);
+
+            result.Count.ShouldBe(models.Count);
+            foreach (var todaysSalesValueByHour in models)
+            {
+                var d = result.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
+                d.ShouldNotBeNull();
+                d.ComparisonCount.ShouldBe(todaysSalesValueByHour.ComparisonSalesCount);
+                d.TodaysCount.ShouldBe(todaysSalesValueByHour.TodaysSalesCount);
+            }
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ModelIsNull_ErrorThrown()
+        {
+            List<TodaysSalesCountByHourModel> models = null;
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(models);
+                                                });
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ModelIsEmpty_ErrorThrown()
+        {
+            List<TodaysSalesCountByHourModel> models = new List<TodaysSalesCountByHourModel>();
+
+            Should.Throw<ArgumentNullException>(() =>
+                                                {
+                                                    ViewModelFactory.ConvertFrom(models);
+                                                });
         }
     }
 }

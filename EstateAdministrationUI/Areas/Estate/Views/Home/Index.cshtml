@@ -115,7 +115,7 @@
             dataType: 'json'
         }).done(function (results) {
             //console.log(JSON.stringify(results));
-            const formattedCurrency = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.valueOfSettlement);
+            const formattedCurrency = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysSettlementValue);
             setInnnerHtml("todaysSettlementLabel", formattedCurrency);
         });
     }

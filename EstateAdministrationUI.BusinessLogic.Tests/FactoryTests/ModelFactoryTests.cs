@@ -5,6 +5,8 @@
     using EstateAdministrationUI.Factories;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
+    using EstateReportingAPI.DataTransferObjects;
+    using EstateReportingAPI.DataTrasferObjects;
     using Factories;
     using FileProcessor.DataTransferObjects.Responses;
     using Models;
@@ -18,6 +20,436 @@
 
     public class ModelFactoryTests{
         #region Methods
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomOperatorData_IsConverted()
+        {
+            List<TopBottomOperatorData> model = new List<TopBottomOperatorData>{
+                                                                                  new TopBottomOperatorData(){
+                                                                                                                 OperatorName = "Operator 1",
+                                                                                                                 SalesValue = 100
+                                                                                                             },
+                                                                                  new TopBottomOperatorData(){
+                                                                                                                 OperatorName = "Operator 2",
+                                                                                                                 SalesValue = 200
+                                                                                                             }
+                                                                               };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (TopBottomOperatorData topBottomOperatorData in model){
+                var d = result.SingleOrDefault(r => r.OperatorName == topBottomOperatorData.OperatorName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomOperatorData_ModelIsNull_NullReturned()
+        {
+
+            List<TopBottomOperatorData> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomOperatorData_ModelIsEmpty_NullReturned(){
+
+            List<TopBottomOperatorData> model = new List<TopBottomOperatorData>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomMerchantData_IsConverted()
+        {
+            List<TopBottomMerchantData> model = new List<TopBottomMerchantData>{
+                                                                                   new TopBottomMerchantData(){
+                                                                                                                  MerchantName = "Merchant 1",
+                                                                                                                  SalesValue = 100
+                                                                                                              },
+                                                                                   new TopBottomMerchantData(){
+                                                                                                                  MerchantName = "Merchant 2",
+                                                                                                                  SalesValue = 200
+                                                                                                              }
+                                                                               };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (TopBottomMerchantData topBottomMerchantData in model){
+                var d = result.SingleOrDefault(r => r.MerchantName == topBottomMerchantData.MerchantName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomMerchantData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomMerchantData_ModelIsNull_NullReturned()
+        {
+
+            List<TopBottomMerchantData> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomMerchantData_ModelIsEmpty_NullReturned()
+        {
+
+            List<TopBottomMerchantData> model = new List<TopBottomMerchantData>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomProductData_IsConverted()
+        {
+            List<TopBottomProductData> model = new List<TopBottomProductData>{
+                                                                                 new TopBottomProductData(){
+                                                                                                               ProductName = "Product 1",
+                                                                                                               SalesValue = 100
+                                                                                                           },
+                                                                                 new TopBottomProductData(){
+                                                                                                               ProductName = "Product 2",
+                                                                                                               SalesValue = 200
+                                                                                                           }
+                                                                             };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (TopBottomProductData topBottomProductData in model)
+            {
+                var d = result.SingleOrDefault(r => r.ProductName == topBottomProductData.ProductName);
+                d.ShouldNotBeNull();
+                d.SalesValue.ShouldBe(topBottomProductData.SalesValue);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomProductData_ModelIsNull_NullReturned()
+        {
+
+            List<TopBottomProductData> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TopBottomProductData_ModelIsEmpty_NullReturned()
+        {
+
+            List<TopBottomProductData> model = new List<TopBottomProductData>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarDate_IsConverted(){
+
+            var date1 = new DateTime(2023,09,22);
+            var date2 = new DateTime(2023, 09, 21);
+            var date3= new DateTime(2023, 09, 20);
+
+            List<CalendarDate> model = new List<CalendarDate>{
+                                                                 new CalendarDate{
+                                                                                     Date = date1.Date,
+                                                                                     DayOfWeek = date1.DayOfWeek.ToString(),
+                                                                                     DayOfWeekNumber = (int)date1.DayOfWeek
+                                                                                 },
+                                                                 new CalendarDate{
+                                                                                     Date = date2.Date,
+                                                                                     DayOfWeek = date2.DayOfWeek.ToString(),
+                                                                                     DayOfWeekNumber = (int)date2.DayOfWeek
+                                                                                 },
+                                                                 new CalendarDate{
+                                                                                     Date = date3.Date,
+                                                                                     DayOfWeek = date3.DayOfWeek.ToString(),
+                                                                                     DayOfWeekNumber = (int)date3.DayOfWeek
+                                                                                 },
+                                                             };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (CalendarDate calendarDate in model){
+                var d = result.SingleOrDefault(r => r.Date == calendarDate.Date);
+                d.ShouldNotBeNull();
+                d.DayOfWeek.ShouldBe(calendarDate.DayOfWeek);
+                d.DayOfWeekNumber.ShouldBe(calendarDate.DayOfWeekNumber);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarDate_ModelIsNull_NullReturned()
+        {
+
+            List<CalendarDate> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarDate_ModelIsEmpty_NullReturned()
+        {
+
+            List<CalendarDate> model = new List<CalendarDate>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarYear_IsConverted()
+        {
+            List<CalendarYear> model = new List<CalendarYear>{
+                                                                 new CalendarYear{
+                                                                                 Year = 2023
+                                                                                 },
+                                                                 new CalendarYear{
+                                                                                 Year = 2022
+                                                                                 }
+                                                             };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (CalendarYear calendarYear in model)
+            {
+                var d = result.SingleOrDefault(r => r.Year == calendarYear.Year);
+                d.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarYear_ModelIsNull_NullReturned()
+        {
+
+            List<CalendarYear> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_CalendarYear_ModelIsEmpty_NullReturned()
+        {
+
+            List<CalendarYear> model = new List<CalendarYear>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ComparisonDate_IsConverted()
+        {
+            List<ComparisonDate> model = new List<ComparisonDate>{
+                                                                     new ComparisonDate{
+                                                                                           Date = new DateTime(2023,09,22),
+                                                                                           Description = "Yesterday",
+                                                                                           OrderValue = 1
+                                                                                       },
+                                                                     new ComparisonDate(){
+                                                                                             Date = new DateTime(2023,08,22),
+                                                                                             Description = "Last Month",
+                                                                                             OrderValue = 2
+                                                                                     }
+                                                                 };
+            var result = ModelFactory.ConvertFrom(model);
+
+            result.Count.ShouldBe(model.Count);
+            foreach (var comparisonDate in model)
+            {
+                var d = result.SingleOrDefault(r => r.Date == comparisonDate.Date);
+                d.ShouldNotBeNull();
+                d.Description.ShouldBe(comparisonDate.Description);
+                d.OrderValue.ShouldBe(comparisonDate.OrderValue);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_ComparisonDate_ModelIsNull_NullReturned()
+        {
+
+            List<ComparisonDate> model = null;
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSales_IsConverted()
+        {
+            TodaysSales model = new TodaysSales{
+                                                   ComparisonSalesCount = 10,
+                                                   ComparisonSalesValue = 100.00m,
+                                                   TodaysSalesCount = 20,
+                                                   TodaysSalesValue = 200.00m
+                                               };
+
+            TodaysSalesModel result = ModelFactory.ConvertFrom(model);
+
+            result.ShouldNotBeNull();
+            result.TodaysSalesCount.ShouldBe(model.TodaysSalesCount);
+            result.TodaysSalesValue.ShouldBe(model.TodaysSalesValue);
+            result.ComparisonSalesCount.ShouldBe(model.ComparisonSalesCount);
+            result.ComparisonSalesValue.ShouldBe(model.ComparisonSalesValue);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSales_ModelIsNull_ErrorThrown()
+        {
+            TodaysSales model = null;
+            Should.Throw<ArgumentNullException>(() => { ModelFactory.ConvertFrom(model); });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesCountByHour_IsConverted(){
+            List<TodaysSalesCountByHour> models = new List<TodaysSalesCountByHour>();
+            models.Add(new TodaysSalesCountByHour{
+                                                     ComparisonSalesCount = 100,
+                                                     Hour = 1,
+                                                     TodaysSalesCount = 101
+                                                 });
+            models.Add(new TodaysSalesCountByHour
+                       {
+                           ComparisonSalesCount = 200,
+                           Hour = 2,
+                           TodaysSalesCount = 202
+                       });
+
+            var result = ModelFactory.ConvertFrom(models);
+
+            result.Count.ShouldBe(models.Count);
+            foreach (TodaysSalesCountByHour todaysSalesCountByHour in models){
+                var d = result.SingleOrDefault(r => r.Hour == todaysSalesCountByHour.Hour);
+                d.ShouldNotBeNull();
+                d.ComparisonSalesCount.ShouldBe(todaysSalesCountByHour.ComparisonSalesCount);
+                d.TodaysSalesCount.ShouldBe(todaysSalesCountByHour.TodaysSalesCount);
+
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesCountByHour_ModelIsNull_NullReturned(){
+            List<TodaysSalesCountByHour> models = null;
+            
+            var result = ModelFactory.ConvertFrom(models);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesCountByHour_ModelIsEmpty_NullReturned()
+        {
+            List<TodaysSalesCountByHour> models = new List<TodaysSalesCountByHour>();
+
+            var result = ModelFactory.ConvertFrom(models);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesValueByHour_IsConverted()
+        {
+            List<TodaysSalesValueByHour> models = new List<TodaysSalesValueByHour>();
+            models.Add(new TodaysSalesValueByHour
+            {
+                           ComparisonSalesValue = 100,
+                           Hour = 1,
+                           TodaysSalesValue= 101
+                       });
+            models.Add(new TodaysSalesValueByHour
+            {
+                           ComparisonSalesValue = 200,
+                           Hour = 2,
+                           TodaysSalesValue = 202
+                       });
+
+            var result = ModelFactory.ConvertFrom(models);
+
+            result.Count.ShouldBe(models.Count);
+            foreach (var todaysSalesValueByHour in models)
+            {
+                var d = result.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
+                d.ShouldNotBeNull();
+                d.ComparisonSalesValue.ShouldBe(todaysSalesValueByHour.ComparisonSalesValue);
+                d.TodaysSalesValue.ShouldBe(todaysSalesValueByHour.TodaysSalesValue);
+
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesValueByHour_ModelIsNull_NullReturned()
+        {
+            List<TodaysSalesValueByHour> models = null;
+
+            var result = ModelFactory.ConvertFrom(models);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesValueByHour_ModelIsEmpty_NullReturned()
+        {
+            List<TodaysSalesValueByHour> models = new List<TodaysSalesValueByHour>();
+
+            var result = ModelFactory.ConvertFrom(models);
+            result.ShouldBeNull();
+        }
+        
+        [Fact]
+        public void ModelFactory_ConvertFrom_ComparisonDate_ModelIsEmpty_NullReturned()
+        {
+
+            List<ComparisonDate> model = new List<ComparisonDate>();
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSettlement_IsConverted()
+        {
+
+            TodaysSettlement model = new TodaysSettlement(){
+                                                               ComparisonSettlementCount = 100,
+                                                               ComparisonSettlementValue = 101.00m,
+                                                               TodaysSettlementCount = 200,
+                                                               TodaysSettlementValue = 202.00m
+                                                           };
+            var result =  ModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.ComparisonSettlementCount.ShouldBe(model.ComparisonSettlementCount);
+            result.ComparisonSettlementValue.ShouldBe(model.ComparisonSettlementValue);
+            result.TodaysSettlementCount.ShouldBe(model.TodaysSettlementCount);
+            result.TodaysSettlementValue.ShouldBe(model.TodaysSettlementValue);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSettlement_ModelIsNull_ErrorThrown(){
+
+            TodaysSettlement model = null;
+            Should.Throw<ArgumentNullException>(() => { ModelFactory.ConvertFrom(model); });
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantKpi_IsConverted()
+        {
+
+            MerchantKpi model = new MerchantKpi()
+                                {
+                                    MerchantsWithNoSaleInLast7Days = 1,
+                                    MerchantsWithNoSaleToday = 2,
+                                    MerchantsWithSaleInLastHour = 3
+                                };
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.MerchantsWithNoSaleInLast7Days.ShouldBe(model.MerchantsWithNoSaleInLast7Days);
+            result.MerchantsWithNoSaleToday.ShouldBe(model.MerchantsWithNoSaleToday);
+            result.MerchantsWithSaleInLastHour.ShouldBe(model.MerchantsWithSaleInLastHour);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantKpi_ModelIsNull_ErrorThrown()
+        {
+
+            MerchantKpi model = null;
+            Should.Throw<ArgumentNullException>(() => { ModelFactory.ConvertFrom(model); });
+        }
 
         [Fact]
         public void ModelFactory_ConvertFrom_AddMerchantDeviceModel_IsConverted(){

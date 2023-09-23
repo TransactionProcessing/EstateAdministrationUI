@@ -11,6 +11,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Shared" Version="2023.7.1" />
     <PackageReference Include="TransactionProcessor.Client" Version="2023.7.2" />
+    <PackageReference Include="EstateReportingAPI.Client" Version="2023.9.4-build15" />
   </ItemGroup>
 
 </Project>
