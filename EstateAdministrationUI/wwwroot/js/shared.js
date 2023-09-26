@@ -16,8 +16,6 @@ function setInnnerHtml(elementId, newvalue) {
 
 function setDivClassBasedOnVariance(elementId, variance, lessisgood) {
     const myDiv = document.getElementById(elementId);
-    console.log(variance);
-    console.log(lessisgood);
     if (myDiv.classList.contains('bg-gradient-success')) {
         myDiv.classList.remove('bg-gradient-success');
     }
@@ -72,7 +70,6 @@ function setDivClassBasedOnVariance(elementId, variance, lessisgood) {
 
 function translateSalesValueByHour(data) {
     var dataArray = [];
-
     if (data === null) {
         return [];
     }
@@ -93,8 +90,6 @@ function translateSalesValueByHour(data) {
         };
         dataArray.push(item);
     });
-    //var d = JSON.stringify(dataArray);
-    //console.log(d);
     return dataArray;
 }
 
@@ -122,4 +117,65 @@ function translateSalesCountByHour(data) {
         dataArray.push(item);
     });
     return dataArray;
+}
+
+function drawLineChart(options, data, chartElement, emptyMessage) {
+    if (data.getNumberOfRows() > 0) {
+        var chart = new google.charts.Line(chartElement);
+        chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+    else {
+        chartElement.empty();
+        chartElement.append(emptyMessage);
+    }
+}
+
+function drawBarChart(options, data, chartElement, emptyMessage) {
+    if (data.getNumberOfRows() > 0) {
+        var chart = new google.charts.Bar(chartElement);
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+    else {
+        chartElement.empty();
+        chartElement.append(emptyMessage);
+    }
+}
+
+function setupChartOptions(chartTitle, hAxisTitle) {
+    var options = {
+        title: chartTitle,
+        //curveType: 'function',
+        legend: { position: 'bottom' },
+        hAxis: {
+            title: hAxisTitle,
+            maxValue: 24
+        },
+        colors: getChartColors(),
+        animation: {
+            startup: true,
+            duration: 1000,
+            easing: 'out'
+        },
+    };
+
+    return options;
+}
+
+function makeHttpPOSTWithHandler(url, resultHandler) {
+    $.ajax({
+        url: url,
+        type: "POST",
+        dataType: 'json',
+        async: false
+    }).done(resultHandler)
+}
+
+function makeHttpPOST(url) {
+    var responseJson = $.ajax({
+        url: url,
+        type: "POST",
+        dataType: 'json',
+        async: false
+    }).responseText;
+    return responseJson;
 }

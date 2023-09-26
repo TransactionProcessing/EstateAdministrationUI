@@ -53,6 +53,7 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="~/js/shared.js"></script>
+<script src="~/js/resulthandlers.js"></script>
 
 <script language="javascript">
 
@@ -78,81 +79,30 @@
     function dateComparisonChanged(selectedValue, text){               
         getComparisonDateTransactionsAsJson(selectedValue,text)
         
-        getTodaysSettlementAsJson();
+        //getTodaysSettlementAsJson();
         getComparisonDateSettlementAsJson(selectedValue, text);
 
         drawCharts();
     }
     
     function getComparisonDateTransactionsAsJson(comparisonDate, comparisonDateLabel) {
-        $.ajax({
-            url: '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel,
-            type: "POST",
-            dataType: 'json'
-        }).done(function (results) {
-            // Today
-            const formattedTodaysSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysValueOfTransactions);
-            setInnnerHtml("todaysSalesLabel", formattedTodaysSalesLabel);
-
-            // Comparison Date
-            setInnnerHtml("comparisonDateSalesLabelText", results.label);            
-            const formattedComparisonDateSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonValueOfTransactions);
-            setInnnerHtml("comparisonDateSalesLabel", formattedComparisonDateSalesLabel);
-            const formattedPercentage = (results.variance).toLocaleString(undefined, {
-                style: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
-            setInnnerHtml("salesVarianceLabelText", formattedPercentage);
-            setDivClassBasedOnVariance("salesKpi", results.variance)
-        });
-    }
-               
-    function getTodaysSettlementAsJson() {
-        $.ajax({
-            url: '@Url.Action("GetYesterdaysSettlementAsJson", "Home", new { Area = "Estate" })',
-            type: "POST",
-            dataType: 'json'
-        }).done(function (results) {
-            //console.log(JSON.stringify(results));
-            const formattedCurrency = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysSettlementValue);
-            setInnnerHtml("todaysSettlementLabel", formattedCurrency);
-        });
-    }
+        var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel;
+        // make the http call
+        makeHttpPOSTWithHandler(url, comparisonDateTransactionsResultHandler);
+    }              
     
     function getComparisonDateSettlementAsJson(comparisonDate, comparisonDateLabel) {
-        $.ajax({
-            url: '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel,
-            type: "POST",
-            dataType: 'json'
-        }).done(function (results) {
-            // Today
-            const formattedTodaysSettlementLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysValueOfSettlement);
-            setInnnerHtml("todaysSettlementLabel", formattedTodaysSettlementLabel);
-
-            // Comparison Date
-            setInnnerHtml("comparisonDateSettlementLabelText", results.label);
-            const formattedComparisonDateSettlementLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonValueOfSettlement);
-            setInnnerHtml("comparisonDateSettlementLabel", formattedComparisonDateSettlementLabel);
-            const formattedPercentage = (results.variance).toLocaleString(undefined, {
-                style: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
-            setInnnerHtml("settlementVarianceLabelText", formattedPercentage);
-            setDivClassBasedOnVariance("settlementKpi", results.variance, false)
-        });
-    }      
+        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel;
+        makeHttpPOSTWithHandler(url, comparisonDateSettlementResultHandler);
+    }
 
     function initDatePicker() {
-        console.log('here');
         const select = document.getElementById('ComparisonDateSelect');
         $.ajax({
             url: '@Url.Action("GetComparisonDatesAsJson", "Home", new { Area = "Estate" })',
             type: "POST",
             dataType: 'json'
         }).done(function (results) {  
-            console.log('here1');
             results.forEach(function (dateOption) {
                 const newOption = document.createElement('option');
                 newOption.value = dateOption.item1; // This will be a date
@@ -168,9 +118,9 @@
 
     function convertJsonToArray(jsonData, type) {
         var data = JSON.parse(jsonData);
+        
         var dataArray = [];
 
-        //console.log(type);
         // TODO: Factory method
         if (type === 1) 
         {
@@ -198,71 +148,24 @@
     }
 
     function drawSalesValueByHourChart(comparisonDate, comparisonDateLabel) {
-        var salesValueByHourJsonData = $.ajax({
-            url: '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate,
-            dataType: "json",
-            type: "POST",
-            async: false
-        }).responseText;
+        var url = '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate;
+        var salesValueByHourJsonData = makeHttpPOST(url);
 
-        // Convert JSON value to google format array
         var valueByHourData = convertJsonToArray(salesValueByHourJsonData, 1);
-
         var options = setupChartOptions('Sales Value Comparison - Today vs ' + comparisonDateLabel, 'Hour');
 
-        if (valueByHourData.getNumberOfRows() > 0) {
-            var chart = new google.charts.Line(document.getElementById('salesvaluebyhourchart'));
-            chart.draw(valueByHourData, google.charts.Line.convertOptions(options));
-        }
-        else {
-            $("#salesvaluebyhourchart").empty();
-            $("#salesvaluebyhourchart").append("Sorry, not found any data for the selected date range.");
-        }
+        drawLineChart(options, valueByHourData, document.getElementById('salesvaluebyhourchart'), "Sorry, not found any data for the selected date range.");
     }
 
     function drawSalesCountByHourChart(comparisonDate, comparisonDateLabel) {
-        var salesValueByCountJsonData = $.ajax({
-            url: '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate,
-            dataType: "json",
-            type: "POST",
-            async: false
-        }).responseText;
+        var url = '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate;       
+        var salesCountByHourJsonData = makeHttpPOST(url);
 
-        //console.log(salesValueByHourJsonData);
-
-        // Convert JSON value to google format array
-        var countByHourData = convertJsonToArray(salesValueByCountJsonData, 2);
+        var countByHourData = convertJsonToArray(salesCountByHourJsonData, 2);
         var options = setupChartOptions('Sales Count Comparison - Today vs ' + comparisonDateLabel, 'Hour');
 
-        if (countByHourData.getNumberOfRows() > 0) {
-            var chart = new google.charts.Line(document.getElementById('salescountbyhourchart'));
-            chart.draw(countByHourData, google.charts.Line.convertOptions(options));
-        }
-        else {
-            $("#salescountbyhourchart").empty();
-            $("#salescountbyhourchart").append("Sorry, not found any data for the selected date range.");
-        }
-    }
-
-    function setupChartOptions(chartTitle, hAxisTitle) {
-         var options = {
-           title: chartTitle,
-           //curveType: 'function',
-           legend: { position: 'bottom' },
-           hAxis: { 
-                title: hAxisTitle,
-                maxValue: 24
-           },                                  
-            colors: getChartColors(),
-            animation: {
-                startup: true,
-                duration: 1000,
-                easing: 'out'
-            },
-         };
-
-        return options;
-    }
+        drawLineChart(options, countByHourData, document.getElementById('salescountbyhourchart'), "Sorry, not found any data for the selected date range.");
+    }       
 
     Date.prototype.yyyymmdd = function () {
         var yyyy = this.getFullYear();

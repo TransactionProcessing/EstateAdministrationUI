@@ -99,10 +99,10 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
             var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
 
-            var response =
+            TodaysSalesModel response =
                 await this.ApiClient.GetTodaysFailedSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"),"1009", comparisonDate, cancellationToken);
 
-            var viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
+            TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
             return this.Json(viewModel);
         }
@@ -127,7 +127,9 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            return this.Json(viewModel);
+            var model = new { BottomMerchants = viewModel.Merchants };
+
+            return this.Json(model);
         }
 
         [HttpPost]
@@ -141,7 +143,9 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            return this.Json(viewModel);
+            var model = new { BottomOperators = viewModel.Operators };
+
+            return this.Json(model);
         }
 
         [HttpPost]
@@ -155,7 +159,9 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            return this.Json(viewModel);
+            var model = new { BottomProducts = viewModel.Products };
+
+            return this.Json(model);
         }
 
 

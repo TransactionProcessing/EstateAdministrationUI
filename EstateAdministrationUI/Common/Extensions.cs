@@ -35,6 +35,11 @@
             return (denominator == 0) ? 0 : numerator / denominator;
         }
 
+        public static Decimal SafeDivision(this Int32 numerator, Int32 denominator)
+        {
+            return (denominator == 0) ? 0 : numerator / denominator;
+        }
+
         #endregion
     }
 }

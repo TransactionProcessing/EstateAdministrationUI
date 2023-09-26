@@ -21,7 +21,7 @@
         public static TopBottomMerchantViewModelList ConvertFrom(List<TopBottomMerchantDataModel> models){
             if (models == null || models.Any() == false)
             {
-                throw new ArgumentNullException(nameof(models));
+                return new TopBottomMerchantViewModelList();
             }
 
             TopBottomMerchantViewModelList viewModels = new TopBottomMerchantViewModelList();
@@ -36,9 +36,8 @@
 
         public static TopBottomProductViewModelList ConvertFrom(List<TopBottomProductDataModel> models)
         {
-            if (models == null || models.Any() == false)
-            {
-                throw new ArgumentNullException(nameof(models));
+            if (models == null || models.Any() == false){
+                return new TopBottomProductViewModelList();
             }
 
             TopBottomProductViewModelList viewModels = new TopBottomProductViewModelList();
@@ -56,7 +55,7 @@
         {
             if (models == null || models.Any() == false)
             {
-                throw new ArgumentNullException(nameof(models));
+                return new TopBottomOperatorViewModelList();
             }
 
             TopBottomOperatorViewModelList viewModels = new TopBottomOperatorViewModelList();
@@ -129,9 +128,12 @@
 
             TodaysSalesViewModel viewModel = new TodaysSalesViewModel{
                                                                          ComparisonValueOfTransactions = todaysSales.ComparisonSalesValue,
+                                                                         ComparisonCountOfTransactions = todaysSales.ComparisonSalesCount,
                                                                          TodaysValueOfTransactions = todaysSales.TodaysSalesValue,
+                                                                         TodaysCountOfTransactions = todaysSales.TodaysSalesCount,
                                                                          Variance = (todaysSales.TodaysSalesValue - todaysSales.ComparisonSalesValue).SafeDivision(todaysSales.TodaysSalesValue),
-                                                                         Label = $"{comparisonLabel} Sales"
+                                                                         CountVariance = (todaysSales.TodaysSalesCount - todaysSales.ComparisonSalesCount).SafeDivision(todaysSales.TodaysSalesCount),
+                Label = $"{comparisonLabel} Sales"
                                                                      };
             return viewModel;
 

@@ -92,7 +92,12 @@
             List<HourCountViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
 
-            return this.Json(viewModels);
+            var model = new
+                        {
+                            transactionHourViewModels = viewModels
+                        };
+
+            return this.Json(model);
         }
 
         [HttpPost]
@@ -105,7 +110,12 @@
             List<HourValueViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
 
-            return this.Json(viewModels);
+            var model = new
+                        {
+                            transactionHourViewModels = viewModels
+            };
+
+            return this.Json(model);
         }
 
         [HttpPost]
