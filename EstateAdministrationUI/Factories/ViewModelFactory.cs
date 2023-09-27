@@ -3,8 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Areas.Estate.Controllers;
     using Areas.Estate.Models;
+    using Azure;
     using BusinessLogic.Models;
+    using Common;
+    using EstateReportingAPI.DataTransferObjects;
+    using EstateReportingAPI.DataTrasferObjects;
     using LamarCodeGeneration.Frames;
     using NuGet.Protocol.Core.Types;
     using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
@@ -12,6 +17,157 @@
     public static class ViewModelFactory
     {
         #region Methods
+
+        public static TopBottomMerchantViewModelList ConvertFrom(List<TopBottomMerchantDataModel> models){
+            if (models == null || models.Any() == false)
+            {
+                return new TopBottomMerchantViewModelList();
+            }
+
+            TopBottomMerchantViewModelList viewModels = new TopBottomMerchantViewModelList();
+            viewModels.Merchants = new List<TopBottomMerchantViewModel>();
+
+            models.ForEach(m => viewModels.Merchants.Add(new TopBottomMerchantViewModel{
+                                                                                           MerchantName = m.MerchantName,
+                                                                                           SalesValue = m.SalesValue
+                                                                                       }));
+            return viewModels;
+        }
+
+        public static TopBottomProductViewModelList ConvertFrom(List<TopBottomProductDataModel> models)
+        {
+            if (models == null || models.Any() == false){
+                return new TopBottomProductViewModelList();
+            }
+
+            TopBottomProductViewModelList viewModels = new TopBottomProductViewModelList();
+            viewModels.Products = new List<TopBottomProductViewModel>();
+
+            models.ForEach(m => viewModels.Products.Add(new TopBottomProductViewModel()
+            {
+                                                             ProductName = m.ProductName,
+                                                             SalesValue = m.SalesValue
+                                                         }));
+            return viewModels;
+        }
+
+        public static TopBottomOperatorViewModelList ConvertFrom(List<TopBottomOperatorDataModel> models)
+        {
+            if (models == null || models.Any() == false)
+            {
+                return new TopBottomOperatorViewModelList();
+            }
+
+            TopBottomOperatorViewModelList viewModels = new TopBottomOperatorViewModelList();
+            viewModels.Operators = new List<TopBottomOperatorViewModel>();
+
+            models.ForEach(m => viewModels.Operators.Add(new TopBottomOperatorViewModel()
+                                                         {
+                                                             OperatorName = m.OperatorName,
+                                                             SalesValue = m.SalesValue
+                                                         }));
+            return viewModels;
+        }
+
+        public static List<(String value, String text)> ConvertFrom(List<ComparisonDateModel> comparisonDates, String dateFormat = "yyyy-MM-dd"){
+
+            if (comparisonDates == null || comparisonDates.Any() == false)
+            {
+                throw new ArgumentNullException(nameof(comparisonDates));
+            }
+
+            List<(String value, String text)> viewModels = new List<(String value, String text)>();
+            foreach (ComparisonDateModel comparisonDate in comparisonDates)
+            {
+                viewModels.Add((comparisonDate.Date.ToString(dateFormat), comparisonDate.Description));
+            }
+            return viewModels;
+        }
+
+        public static List<HourValueViewModel> ConvertFrom(List<TodaysSalesValueByHourModel> salesValueByHourModels)
+        {
+            if (salesValueByHourModels == null || salesValueByHourModels.Any() == false)
+            {
+                throw new ArgumentNullException(nameof(salesValueByHourModels));
+            }
+
+            List<HourValueViewModel> viewModels = new List<HourValueViewModel>();
+
+            salesValueByHourModels.ForEach(s => viewModels.Add(new HourValueViewModel{
+                                                                                         ComparisonValue = s.ComparisonSalesValue,
+                                                                                         Hour = s.Hour,
+                                                                                         TodaysValue = s.TodaysSalesValue
+                                                                                     }));
+            return viewModels;
+        }
+
+        public static List<HourCountViewModel> ConvertFrom(List<TodaysSalesCountByHourModel> salesCountByHourModels)
+        {
+            if (salesCountByHourModels == null || salesCountByHourModels.Any() == false)
+            {
+                throw new ArgumentNullException(nameof(salesCountByHourModels));
+            }
+
+            List<HourCountViewModel> viewModels = new List<HourCountViewModel>();
+
+            salesCountByHourModels.ForEach(s => viewModels.Add(new HourCountViewModel
+            {
+                                                    ComparisonCount = s.ComparisonSalesCount,
+                                                    Hour = s.Hour,
+                                                    TodaysCount = s.TodaysSalesCount
+                                                }));
+            return viewModels;
+        }
+
+        public static TodaysSalesViewModel ConvertFrom(TodaysSalesModel todaysSales, String comparisonLabel)
+        {
+            if (todaysSales == null)
+            {
+                throw new ArgumentNullException(nameof(todaysSales));
+            }
+
+            TodaysSalesViewModel viewModel = new TodaysSalesViewModel{
+                                                                         ComparisonValueOfTransactions = todaysSales.ComparisonSalesValue,
+                                                                         ComparisonCountOfTransactions = todaysSales.ComparisonSalesCount,
+                                                                         TodaysValueOfTransactions = todaysSales.TodaysSalesValue,
+                                                                         TodaysCountOfTransactions = todaysSales.TodaysSalesCount,
+                                                                         Variance = (todaysSales.TodaysSalesValue - todaysSales.ComparisonSalesValue).SafeDivision(todaysSales.TodaysSalesValue),
+                                                                         CountVariance = (todaysSales.TodaysSalesCount - todaysSales.ComparisonSalesCount).SafeDivision(todaysSales.TodaysSalesCount),
+                Label = $"{comparisonLabel} Sales"
+                                                                     };
+            return viewModel;
+
+        }
+
+        public static MerchantKpiViewModel ConvertFrom(MerchantKpiModel merchantKpiModel)
+        {
+            if (merchantKpiModel == null)
+            {
+                throw new ArgumentNullException(nameof(merchantKpiModel));
+            }
+
+            MerchantKpiViewModel viewModel = new MerchantKpiViewModel{
+                                                                         MerchantsWithNoSaleInLast7Days = merchantKpiModel.MerchantsWithNoSaleInLast7Days,
+                                                                         MerchantsWithNoSaleToday = merchantKpiModel.MerchantsWithNoSaleToday,
+                                                                         MerchantsWithSaleInLastHour = merchantKpiModel.MerchantsWithSaleInLastHour,
+                                                                     };
+            return viewModel;
+
+        }
+
+        public static TodaysSettlementViewModel ConvertFrom(TodaysSettlementModel todaysSettlement, String comparisonLabel= null){
+            if (todaysSettlement == null){
+                throw new ArgumentNullException(nameof(todaysSettlement));
+            }
+
+            TodaysSettlementViewModel viewModel = new TodaysSettlementViewModel{
+                                                                                   ComparisonSettlementValue = todaysSettlement.ComparisonSettlementValue,
+                                                                                   TodaysSettlementValue = todaysSettlement.TodaysSettlementValue,
+                                                                                   Variance = (todaysSettlement.TodaysSettlementValue - todaysSettlement.ComparisonSettlementValue).SafeDivision(todaysSettlement.TodaysSettlementValue),
+                                                                                   Label = $"{comparisonLabel} Settlement",
+                                                                               };
+            return viewModel;
+        }
 
         public static AssignOperatorToMerchantModel ConvertFrom(AssignOperatorToMerchantViewModel assignOperatorToMerchantViewModel)
         {

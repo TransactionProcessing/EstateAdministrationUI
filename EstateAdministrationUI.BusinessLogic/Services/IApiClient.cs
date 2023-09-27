@@ -146,6 +146,82 @@
                               String fileName,
                               CancellationToken cancellationToken);
 
+
+        Task<List<CalendarDateModel>> GetCalendarDates(
+            string accessToken,
+            Guid estateId,
+            int year,
+            CancellationToken cancellationToken);
+
+        Task<List<CalendarYearModel>> GetCalendarYears(
+            string accessToken,
+            Guid estateId,
+            CancellationToken cancellationToken);
+
+        Task<List<ComparisonDateModel>> GetComparisonDates(
+            string accessToken,
+            Guid estateId,
+            CancellationToken cancellationToken);
+
+        Task<TodaysSalesModel> GetTodaysSales(
+            string accessToken,
+            Guid estateId,
+            DateTime comparisonDate,
+            CancellationToken cancellationToken);
+
+        Task<List<TodaysSalesCountByHourModel>> GetTodaysSalesCountByHour(
+            string accessToken,
+            Guid estateId,
+            DateTime comparisonDate,
+            CancellationToken cancellationToken);
+
+        Task<List<TodaysSalesValueByHourModel>> GetTodaysSalesValueByHour(
+            string accessToken,
+            Guid estateId,
+            DateTime comparisonDate,
+            CancellationToken cancellationToken);
+
+        Task<TodaysSettlementModel> GetTodaysSettlement(
+            string accessToken,
+            Guid estateId,
+            DateTime comparisonDate,
+            CancellationToken cancellationToken);
+
+        Task<MerchantKpiModel> GetMerchantKpi(
+            string accessToken,
+            Guid estateId,
+            CancellationToken cancellationToken);
+
+        Task<TodaysSalesModel> GetTodaysFailedSales(
+            string accessToken,
+            Guid estateId,
+            string responseCode,
+            DateTime comparisonDate,
+            CancellationToken cancellationToken);
+
+        Task<List<TopBottomOperatorDataModel>> GetTopBottomOperatorData(
+            string accessToken,
+            Guid estateId,
+            TopBottom topBottom,
+            int resultCount,
+            CancellationToken cancellationToken);
+
+        Task<List<TopBottomMerchantDataModel>> GetTopBottomMerchantData(
+            string accessToken,
+            Guid estateId,
+            TopBottom topBottom,
+            int resultCount,
+            CancellationToken cancellationToken);
+
+        Task<List<TopBottomProductDataModel>> GetTopBottomProductData(
+            string accessToken,
+            Guid estateId,
+            TopBottom topBottom,
+            int resultCount,
+            CancellationToken cancellationToken);
+
+        
+
         #endregion
     }
 }

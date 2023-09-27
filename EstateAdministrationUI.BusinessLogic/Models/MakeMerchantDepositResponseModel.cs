@@ -1,6 +1,7 @@
 ﻿namespace EstateAdministrationUI.BusinessLogic.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>

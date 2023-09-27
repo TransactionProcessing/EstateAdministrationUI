@@ -1,4 +1,6 @@
-﻿namespace EstateAdministrationUI.Areas.Estate.Controllers
+﻿using EstateAdministrationUI.BusinessLogic.Models;
+
+namespace EstateAdministrationUI.Areas.Estate.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -30,21 +32,15 @@
     {
         #region Fields
 
-        /// <summary>
-        /// The API client
-        /// </summary>
         private readonly IApiClient ApiClient;
 
-        private readonly IEstateReportingApiClient EstateReportingApiClient;
 
         #endregion
 
         #region Constructors
         
-        public ReportingController(IApiClient apiClient,
-            IEstateReportingApiClient estateReportingApiClient){
+        public ReportingController(IApiClient apiClient){
             this.ApiClient = apiClient;
-            this.EstateReportingApiClient = estateReportingApiClient;
         }
 
         #endregion
@@ -87,95 +83,51 @@
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateTransactionsAsJson(CancellationToken cancellationToken)
         {
-            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
-            var comparisonDate = qs["comparisonDate"];
-            var comparisonDateLabel = qs["comparisonDateLabel"];
-            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+            var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
+            var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
+            
+            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
 
-            var response =
-                await this.EstateReportingApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), d, cancellationToken);
-
-            var todaysModel = new
-                              {
-                                  ValueOfTransactions = response.TodaysSalesValue
-                              };
-
-            var comparisonModel = new
-                                  {
-                                      ValueOfTransactions = response.ComparisonSalesValue
-                                  };
-
-            var variance = (todaysModel.ValueOfTransactions - comparisonModel.ValueOfTransactions).SafeDivision(todaysModel.ValueOfTransactions);
-
-            var model = new
-                        {
-                TodaysValueOfTransactions = todaysModel.ValueOfTransactions,
-                ComparisonValueOfTransactions = comparisonModel.ValueOfTransactions,
-                Label = $"{comparisonDateLabel} Sales",
-                Variance = variance
-            };
-
-            return this.Json(model);
+            var viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
+            
+            return this.Json(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateFailedTransactionsDueToLowCreditAsJson(CancellationToken cancellationToken)
         {
-            var qs = HttpUtility.ParseQueryString(Request.QueryString.Value);
-            var comparisonDate = qs["comparisonDate"];
-            var comparisonDateLabel = qs["comparisonDateLabel"];
-            DateTime d = DateTime.ParseExact(comparisonDate, "yyyy-MM-dd", null);
+            var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
+            var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
 
-            var response =
-                await this.EstateReportingApiClient.GetTodaysFailedSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"),"1009", d, cancellationToken);
-            
-            Decimal variance = (response.TodaysSalesValue - response.ComparisonSalesValue).SafeDivision(response.TodaysSalesValue);
+            TodaysSalesModel response =
+                await this.ApiClient.GetTodaysFailedSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"),"1009", comparisonDate, cancellationToken);
 
-            var model = new
-            {
-                TodaysCountOfTransactions = response.TodaysSalesValue,
-                ComparisonCountOfTransactions = response.ComparisonSalesValue,
-                Label = $"{comparisonDateLabel} Sales",
-                Variance = variance
-            };
+            TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
-            return this.Json(model);
+            return this.Json(viewModel);
         }
         
         [HttpPost]
         public async Task<IActionResult> GetMerchantKpisAsJson(CancellationToken cancellationToken){
 
-            var response =
-                await this.EstateReportingApiClient.GetMerchantKpi(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
-            var model = new
-            {
-                ActiveMerchantCount = response.MerchantsWithSaleInLastHour,
-                NoSalesInLastHourCount = response.MerchantsWithNoSaleToday,
-                NoSalesInLast7DaysCount = response.MerchantsWithNoSaleInLast7Days
-            };
+            MerchantKpiModel response =
+                await this.ApiClient.GetMerchantKpi(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
 
-            //var model = new{
-            //                   ActiveMerchantCount = 1,
-            //                   NoSalesInLastHourCount = 2,
-            //                   NoSalesInLast7DaysCount = 3
-            //};
-            return this.Json(model);
+            MerchantKpiViewModel viewModel = ViewModelFactory.ConvertFrom(response);
+            return this.Json(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> GetBottom3MerchantsBySalesValueAsJson(CancellationToken cancellationToken){
-            List<BottomMerchant> merchants = new List<BottomMerchant>();
+            List<BottomMerchantModel> merchants = new List<BottomMerchantModel>();
             
-            var response =
-                await this.EstateReportingApiClient.GetTopBottomMerchantData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , TopBottom.Bottom, 3, cancellationToken);
+            List<TopBottomMerchantDataModel> response =
+                await this.ApiClient.GetTopBottomMerchantData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
+                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
-            response.ForEach(m => merchants.Add(new BottomMerchant{
-                                                        SalesValue = m.SalesValue,
-                                                        MerchantName = m.MerchantName,
-                                                    }));
+            var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            var model = new{ BottomMerchants = merchants };
+            var model = new { BottomMerchants = viewModel.Merchants };
 
             return this.Json(model);
         }
@@ -183,19 +135,15 @@
         [HttpPost]
         public async Task<IActionResult> GetBottom3OperatorsBySalesValueAsJson(CancellationToken cancellationToken)
         {
-            List<BottomOperator> operators = new List<BottomOperator>();
+            List<BottomOperatorModel> operators = new List<BottomOperatorModel>();
 
             var response =
-                await this.EstateReportingApiClient.GetTopBottomOperatorData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , TopBottom.Bottom, 3, cancellationToken);
+                await this.ApiClient.GetTopBottomOperatorData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
+                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
-            response.ForEach(o => operators.Add(new BottomOperator
-                                            {
-                                                SalesValue = o.SalesValue,
-                                                OperatorName = o.OperatorName,
-                                            }));
+            var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            var model = new { BottomOperators = operators };
+            var model = new { BottomOperators = viewModel.Operators };
 
             return this.Json(model);
         }
@@ -203,19 +151,15 @@
         [HttpPost]
         public async Task<IActionResult> GetBottom3ProductsBySalesValueAsJson(CancellationToken cancellationToken)
         {
-            List<BottomProduct> products = new List<BottomProduct>();
+            List<BottomProductModel> products = new List<BottomProductModel>();
 
             var response =
-                await this.EstateReportingApiClient.GetTopBottomProductData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , TopBottom.Bottom, 3, cancellationToken);
+                await this.ApiClient.GetTopBottomProductData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
+                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
-            response.ForEach(p => products.Add(new BottomProduct
-            {
-                                      SalesValue = p.SalesValue,
-                                      ProductName = p.ProductName,
-                                  }));
+            var viewModel = ViewModelFactory.ConvertFrom(response);
 
-            var model = new { BottomProducts = products };
+            var model = new { BottomProducts = viewModel.Products };
 
             return this.Json(model);
         }
@@ -226,36 +170,12 @@
         {
             List<(String value, String text)> datesList = new List<(String, String)>();
 
-            List<ComparisonDate> response =
-                await this.EstateReportingApiClient.GetComparisonDates(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
+            List<ComparisonDateModel> response =
+                await this.ApiClient.GetComparisonDates(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
 
-            foreach (ComparisonDate comparisonDate in response)
-            {
-                datesList.Add((comparisonDate.Date.ToString("yyyy-MM-dd"), comparisonDate.Description));
-            }
-
-            return this.Json(datesList);
+            List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
+            return this.Json(viewModels);
         }
         #endregion
-    }
-
-    public class BottomMerchant{
-        public String MerchantName { get; set; }
-
-        public Decimal SalesValue { get; set; }
-    }
-
-    public class BottomProduct
-    {
-        public String ProductName { get; set; }
-
-        public Decimal SalesValue { get; set; }
-    }
-
-    public class BottomOperator
-    {
-        public String OperatorName { get; set; }
-
-        public Decimal SalesValue { get; set; }
     }
 }

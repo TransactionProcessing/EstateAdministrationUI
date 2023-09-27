@@ -22,14 +22,4 @@ namespace EstateAdministrationUI.BusinessLogic.Models
         /// </value>
         public String DeviceIdentifier { get; set; }
     }
-
-    [ExcludeFromCodeCoverage]
-    public class AddMerchantDeviceResponseModel
-    {
-        public Guid EstateId { get; set; }
-
-        public Guid MerchantId { get; set; }
-
-        public Guid DeviceId { get; set; }
-    }
 }
