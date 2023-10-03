@@ -92,6 +92,11 @@ jobs:
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+
+    - name: Install NET 7
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '7.0.x'
                 
     - name: Run Integration Tests (Firefox)
       env:
@@ -130,6 +135,11 @@ jobs:
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+
+    - name: Install NET 7
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '7.0.x'
                 
     - name: Run Integration Tests (Chrome)
       env:
@@ -169,6 +179,11 @@ jobs:
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+
+    - name: Install NET 7
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '7.0.x'
 
     - name: Run Integration Tests (Edge)
       env:
