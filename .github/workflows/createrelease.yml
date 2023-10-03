@@ -9,6 +9,7 @@ jobs:
     name: "Release"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '14.x'
 
     runs-on: ubuntu-latest
 

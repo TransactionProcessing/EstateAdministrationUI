@@ -1577,25 +1577,23 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_NullModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_NullModel_EmptyResult()
         {
             List<TopBottomOperatorDataModel> model = null;
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomOperatorViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Operators.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_EmptyModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_EmptyModel_EmptyResult()
         {
             List<TopBottomOperatorDataModel> model = new List<TopBottomOperatorDataModel>();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomOperatorViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Operators.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1623,25 +1621,23 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_NullModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_NullModel_EmptyResult()
         {
             List<TopBottomMerchantDataModel> model = null;
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomMerchantViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Merchants.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_EmptyModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_EmptyModel_EmptyResult()
         {
             List<TopBottomMerchantDataModel> model = new List<TopBottomMerchantDataModel>();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomMerchantViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Merchants.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1669,25 +1665,23 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_NullModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_NullModel_EmptyResult()
         {
             List<TopBottomProductDataModel> model = null;
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomProductViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Products.ShouldBeEmpty();
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_EmptyModel_ErrorThrown()
+        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_EmptyModel_EmptyResult()
         {
             List<TopBottomProductDataModel> model = new List<TopBottomProductDataModel>();
 
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            TopBottomProductViewModelList result = ViewModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.Products.ShouldBeEmpty();
         }
 
 
