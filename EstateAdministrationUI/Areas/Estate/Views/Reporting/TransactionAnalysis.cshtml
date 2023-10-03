@@ -151,24 +151,6 @@
     function getComparisonDateTransactionsAsJson(comparisonDate, comparisonDateLabel) {
         var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel;
         makeHttpPOSTWithHandler(url, comparisonDateTransactionsResultHandler);
-        // $.ajax({
-        //     url: '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel,
-        //     type: "POST",
-        //     dataType: 'json'
-        // }).done(function (results) {
-        //     setInnnerHtml("comparisonDateSalesLabelText", results.label);
-        //     const formattedTodaysSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysValueOfTransactions);
-        //     setInnnerHtml("todaysSalesLabel", formattedTodaysSalesLabel);
-        //     const formattedComparisonDateSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonValueOfTransactions);
-        //     setInnnerHtml("comparisonDateSalesLabel", formattedComparisonDateSalesLabel);
-        //     const formattedPercentage = (results.variance).toLocaleString(undefined, {
-        //         style: 'percent',
-        //         minimumFractionDigits: 2,
-        //         maximumFractionDigits: 2,
-        //     });
-        //     setInnnerHtml("salesVarianceLabelText", formattedPercentage);
-        //     setDivClassBasedOnVariance("salesKpi", results.variance)
-        // });
     }
 
     function getComparisonDateFailedTransactionsDueToLowCreditAsJson(comparisonDate, comparisonDateLabel) {

@@ -1,3 +1,0 @@
-# EstateAdministrationUI.Javascript.Tests
-
-

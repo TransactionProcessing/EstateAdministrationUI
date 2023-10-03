@@ -1,5 +1,9 @@
 if (typeof module !== "undefined" && module.exports) {
-    
+    module.exports.setInnerHtml = setInnerHtml;
+    module.exports.getChartColors = getChartColors;
+    module.exports.setDivClassBasedOnVariance = setDivClassBasedOnVariance;
+    module.exports.translateSalesValueByHour = translateSalesValueByHour;
+    module.exports.translateSalesCountByHour = translateSalesCountByHour;
 }
 
 function getChartColors() {
@@ -9,13 +13,12 @@ function getChartColors() {
     ];
 }
 
-function setInnnerHtml(elementId, newvalue) {
-    var element = document.getElementById(elementId);
+function setInnerHtml(element, newvalue) {
     element.innerHTML = newvalue;
+    return element;
 }
 
-function setDivClassBasedOnVariance(elementId, variance, lessisgood) {
-    const myDiv = document.getElementById(elementId);
+function setDivClassBasedOnVariance(myDiv, variance, lessisgood) {   
     if (myDiv.classList.contains('bg-gradient-success')) {
         myDiv.classList.remove('bg-gradient-success');
     }
@@ -31,46 +34,57 @@ function setDivClassBasedOnVariance(elementId, variance, lessisgood) {
     if (myDiv.classList.contains('bg-gradient-danger')) {
         myDiv.classList.remove('bg-gradient-danger');
     }
-
-    if (lessisgood) {
-        if (variance > 0) {
-            // Success
-            myDiv.classList.add('bg-gradient-danger');
-        }
-        else if (variance >= -0.20 && lessisgood) {
-            myDiv.classList.add('bg-gradient-warning');
-        }
-        else if (variance >= -0.50 && variance < -0.20) {
-            // Warning
-            myDiv.classList.add('bg-gradient-info');
-        }
-        else {
-            // Error
-            myDiv.classList.add('bg-gradient-success');
-        }
+        
+    if (lessisgood) {        
+        // 0 is info
+        // < 0 = success
+        // > 0 and less than 20 = warning
+        // > 20 = danger
+        switch (true) {
+            case variance < 0:
+                myDiv.classList.add('bg-gradient-success');
+                break;
+            case variance == 0:
+                myDiv.classList.add('bg-gradient-info');
+                break;            
+            case variance > 0 && variance <= 0.20:
+                myDiv.classList.add('bg-gradient-warning');
+                break;
+            case variance > 0.20:
+                myDiv.classList.add('bg-gradient-danger');
+                break;
+        }        
     }
     else {
-        if (variance > 0) {
-            // Success
-            myDiv.classList.add('bg-gradient-success');
-        }
-        else if (variance >= -0.20 && lessisgood) {
-            myDiv.classList.add('bg-gradient-info');
-        }
-        else if (variance >= -0.50 && variance < -0.20) {
-            // Warning
-            myDiv.classList.add('bg-gradient-warning');
-        }
-        else {
-            // Error
-            myDiv.classList.add('bg-gradient-danger');
-        }
+        // > 0 is success
+        // 0 is info
+        // > 0 and >= 20 - warning
+        // < 20 - danger
+        console.log(variance);
+        switch (true) {
+            case variance > 0:
+                myDiv.classList.add('bg-gradient-success');
+                break;
+            case variance == 0:
+                myDiv.classList.add('bg-gradient-info');
+                break;
+            case variance < 0 && variance >= -0.20:
+                myDiv.classList.add('bg-gradient-warning');
+                break;
+            case variance < -0.20:
+                console.log('here');
+                myDiv.classList.add('bg-gradient-danger');
+                break;
+        }        
     }
+
+    return myDiv;
 }
 
 function translateSalesValueByHour(data) {
     var dataArray = [];
     if (data === null) {
+        console.log('here');
         return [];
     }
 
@@ -80,7 +94,8 @@ function translateSalesValueByHour(data) {
 
     // Add the labels first
     dataArray.push([
-        { label: "Hour", type: "number" }, { label: "Todays Sales Value", type: "number" },
+        { label: "Hour", type: "number" },
+        { label: "Todays Sales Value", type: "number" },
         { label: "Comparison Date Sales Value", type: "number" } // TODO: make label configurable
     ]);
 

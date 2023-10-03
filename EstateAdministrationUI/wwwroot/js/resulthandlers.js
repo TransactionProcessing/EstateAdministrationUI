@@ -1,61 +1,61 @@
 function todaysSettlementResultHandler(results) {
     const formattedCurrency = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysSettlementValue);
-    setInnnerHtml("todaysSettlementLabel", formattedCurrency);
+    setInnerHtml(document.getElementById("todaysSettlementLabel"), formattedCurrency);
 }
 
 function comparisonDateTransactionsResultHandler(results) {
     // Today
     const formattedTodaysSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysValueOfTransactions);
-    setInnnerHtml("todaysSalesLabel", formattedTodaysSalesLabel);
+    setInnerHtml(document.getElementById("todaysSalesLabel"), formattedTodaysSalesLabel);
 
     // Comparison Date
-    setInnnerHtml("comparisonDateSalesLabelText", results.label);
+    setInnerHtml(document.getElementById("comparisonDateSalesLabelText"), results.label);
     const formattedComparisonDateSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonValueOfTransactions);
-    setInnnerHtml("comparisonDateSalesLabel", formattedComparisonDateSalesLabel);
+    setInnerHtml(document.getElementById("comparisonDateSalesLabel"), formattedComparisonDateSalesLabel);
     const formattedPercentage = (results.variance).toLocaleString(undefined, {
         style: 'percent',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
-    setInnnerHtml("salesVarianceLabelText", formattedPercentage);
-    setDivClassBasedOnVariance("salesKpi", results.variance)
+    setInnerHtml(document.getElementById("salesVarianceLabelText"), formattedPercentage);
+    setDivClassBasedOnVariance(document.getElementById("salesKpi"), results.variance)
 }
 
 function comparisonDateFailedTransactionsDueToLowCredit(results) {
-    setInnnerHtml("comparisonDateFailedLowCreditSalesLabelText", results.label);
+    setInnerHtml(document.getElementById("comparisonDateFailedLowCreditSalesLabelText"), results.label);
     const formattedTodaysSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysCountOfTransactions);
-    setInnnerHtml("todaysFailedLowCreditSalesLabel", formattedTodaysSalesLabel);
+    setInnerHtml(document.getElementById("todaysFailedLowCreditSalesLabel"), formattedTodaysSalesLabel);
     const formattedComparisonDateSalesLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonCountOfTransactions);
-    setInnnerHtml("comparisonDateFailedLowCreditSalesLabel", formattedComparisonDateSalesLabel);
+    setInnerHtml(document.getElementById("comparisonDateFailedLowCreditSalesLabel"), formattedComparisonDateSalesLabel);
     const formattedPercentage = (results.variance).toLocaleString(undefined, {
         style: 'percent',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
-    setInnnerHtml("failedLowCreditSalesVarianceLabelText", formattedPercentage);
-    setDivClassBasedOnVariance("failedSalesLowCreditKpi", results.variance, true)
+    setInnerHtml(document.getElementById("failedLowCreditSalesVarianceLabelText"), formattedPercentage);
+    setDivClassBasedOnVariance(document.getElementById("failedSalesLowCreditKpi"), results.variance, true)
 }
 
 function merchantKpisResulthandler(results) {    
-    setInnnerHtml("activeMerchantsLabel", results.merchantsWithSaleInLastHour);
-    setInnnerHtml("merchantsNoSalesInLastHourLabel", results.merchantsWithNoSaleToday);
-    setInnnerHtml("merchantsNoSalesInLast7DaysLabel", results.merchantsWithNoSaleInLast7Days);
+    setInnerHtml(document.getElementById("activeMerchantsLabel"), results.merchantsWithSaleInLastHour);
+    setInnerHtml(document.getElementById("merchantsNoSalesInLastHourLabel"), results.merchantsWithNoSaleToday);
+    setInnerHtml(document.getElementById("merchantsNoSalesInLast7DaysLabel"), results.merchantsWithNoSaleInLast7Days);
 }
 
 function comparisonDateSettlementResultHandler(results) {
     // Today
     const formattedTodaysSettlementLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.todaysSettlementValue);
-    setInnnerHtml("todaysSettlementLabel", formattedTodaysSettlementLabel);
+    setInnerHtml(document.getElementById("todaysSettlementLabel"), formattedTodaysSettlementLabel);
 
     // Comparison Date
-    setInnnerHtml("comparisonDateSettlementLabelText", results.label);
+    setInnerHtml(document.getElementById("comparisonDateSettlementLabelText"), results.label);
     const formattedComparisonDateSettlementLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.comparisonSettlementValue);
-    setInnnerHtml("comparisonDateSettlementLabel", formattedComparisonDateSettlementLabel);
+    setInnerHtml(document.getElementById("comparisonDateSettlementLabel"), formattedComparisonDateSettlementLabel);
     const formattedPercentage = (results.variance).toLocaleString(undefined, {
         style: 'percent',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
-    setInnnerHtml("settlementVarianceLabelText", formattedPercentage);
-    setDivClassBasedOnVariance("settlementKpi", results.variance, false)
+    setInnerHtml(document.getElementById("settlementVarianceLabelText"), formattedPercentage);
+    setDivClassBasedOnVariance(document.getElementById("settlementKpi"), results.variance, false)
 }

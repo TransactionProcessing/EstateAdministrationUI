@@ -10,7 +10,7 @@ jobs:
     name: "Build and Test Pull Requests - FireFox"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
+        NODE_VERSION: '14.x'                # set this to the node version to use
 
     runs-on: windows-2019
 
@@ -41,7 +41,6 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
@@ -73,7 +72,7 @@ jobs:
     name: "Build and Test Pull Requests - Chrome"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
+        NODE_VERSION: '14.x'                # set this to the node version to use
 
     runs-on: windows-2019
 
@@ -104,7 +103,6 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
@@ -137,7 +135,7 @@ jobs:
 
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
+        NODE_VERSION: '14.x'                # set this to the node version to use
 
     runs-on: windows-2019
 
@@ -168,7 +166,6 @@ jobs:
     - name: Build Code
       run: |
         dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
 
     - name: Run Unit Tests
       run: |
