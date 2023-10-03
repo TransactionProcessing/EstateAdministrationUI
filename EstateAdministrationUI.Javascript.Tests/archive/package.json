@@ -1,0 +1,16 @@
+{
+  "name": "estate-administration-ui.javascript.tests",
+  "version": "0.0.0",
+  "description": "EstateAdministrationUI.Javascript.Tests",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^10.1.0"
+  },
+  "scripts": {
+    "test": "mocha --full-trace 'tests/**/*.js' --recursive"
+  }
+}

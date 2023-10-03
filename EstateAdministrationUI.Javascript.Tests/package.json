@@ -1,16 +1,18 @@
 {
-  "name": "estate-administration-ui.javascript.tests",
-  "version": "0.0.0",
-  "description": "EstateAdministrationUI.Javascript.Tests",
-  "main": "app.js",
-  "author": {
-    "name": ""
-  },
-  "dependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^10.1.0"
-  },
+  "name": "estateadministrationui.javascript.tests",
+  "version": "1.0.0",
+  "description": "Test for UI Specific Javascript Code",
+  "main": "index.js",
   "scripts": {
-    "test": "mocha --full-trace 'tests/**/*.js' --recursive"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  },
+  "devDependencies": {
+    "jsdom": "^21.1.2"
   }
 }

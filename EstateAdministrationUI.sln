@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateAdministrationUI.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateAdministrationUI.BusinessLogic.Tests", "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj", "{D5A37FA0-D711-4F7B-92A6-036B3E3514D3}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "EstateAdministrationUI.Javascript.Tests", "EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj", "{3638DEE0-275A-4762-91CE-61B1E35A3FF9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateAdministrationUI", "EstateAdministrationUI\EstateAdministrationUI.csproj", "{EF9ED970-1D4B-4934-9FCB-DEA80DF30254}"
 EndProject
 Global
@@ -58,11 +56,6 @@ Global
 		{D5A37FA0-D711-4F7B-92A6-036B3E3514D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5A37FA0-D711-4F7B-92A6-036B3E3514D3}.ReleaseNoNode|Any CPU.ActiveCfg = Release|Any CPU
 		{D5A37FA0-D711-4F7B-92A6-036B3E3514D3}.ReleaseNoNode|Any CPU.Build.0 = Release|Any CPU
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9}.ReleaseNoNode|Any CPU.ActiveCfg = Release|Any CPU
 		{EF9ED970-1D4B-4934-9FCB-DEA80DF30254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF9ED970-1D4B-4934-9FCB-DEA80DF30254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF9ED970-1D4B-4934-9FCB-DEA80DF30254}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,7 +72,6 @@ Global
 		{DFA033EA-AF9D-4FFD-8FBF-75FD974D5F7E} = {2AE511D1-62AF-43C5-8311-773E2606F029}
 		{01B70F98-B404-4401-AA85-8FDE6D1C2D75} = {2AE511D1-62AF-43C5-8311-773E2606F029}
 		{D5A37FA0-D711-4F7B-92A6-036B3E3514D3} = {2AE511D1-62AF-43C5-8311-773E2606F029}
-		{3638DEE0-275A-4762-91CE-61B1E35A3FF9} = {2AE511D1-62AF-43C5-8311-773E2606F029}
 		{EF9ED970-1D4B-4934-9FCB-DEA80DF30254} = {A99FAD4F-4859-4F5C-87D3-EC298A701B73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
