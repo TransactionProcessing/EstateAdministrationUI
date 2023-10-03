@@ -29,11 +29,50 @@ jobs:
           echo "The 'number-of-commits-within-time' value is ${{ steps.commitswithintime.outputs.number-of-commits-within-time }}"
           echo "The 'total-commits' value is ${{ steps.commitswithintime.outputs.total-commits }}"   
 
+  
+  unittests:
+    name: "Nightly Build Unit Tests"
+
+    env:
+        ASPNETCORE_ENVIRONMENT: "Production"
+        NODE_VERSION: '14.x'                # set this to the node version to use
+
+    runs-on: ubuntu-latest
+
+    needs: check
+    if: ${{ needs.check.outputs.commitcount > 0 }}
+
+    steps:
+    - uses: actions/checkout@v2.3.4
+  
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1.4.4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Restore Nuget Packages
+      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
+
+    - name: Build Code
+      run: |
+        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
+
+    - name: Run Unit Tests
+      run: |
+        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
+        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj"
+        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj"
+    
+    - name: Run Javascript Unit Tests
+      run: |
+        cd EstateAdministrationUI.Javascript.Tests
+        npm install
+        npm run test
+
   firefoxbuild:
     name: "Nightly Build - Firefox"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '14.x'                # set this to the node version to use
 
     runs-on: windows-2019
 
@@ -49,39 +88,7 @@ jobs:
     - name: Trust Certificate
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
-
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1.4.4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-
-    - name: Install NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '7.0.101'
-        
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
-
-    - name: Build Code
-      run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
-    
-    - name: Run Javascript Unit Tests
-      run: |
-        cd EstateAdministrationUI.Javascript.Tests
-        npm install
-        npm run test
+        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root           
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
@@ -104,7 +111,6 @@ jobs:
     name: "Nightly Build - Chrome"
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
-        NODE_VERSION: '12.x'                # set this to the node version to use
 
     runs-on: windows-2019
     
@@ -121,39 +127,6 @@ jobs:
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
         Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
-
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1.4.4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-
-    - name: Install NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '7.0.101'
-        
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
-
-    - name: Build Code
-      run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
-
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
-    
-    - name: Run Javascript Unit Tests
-      run: |
-        cd EstateAdministrationUI.Javascript.Tests
-        npm install
-        npm run test
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
@@ -193,39 +166,6 @@ jobs:
       run: |
         $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
         Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
-
-    - name: Install NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '7.0.101'
-
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1.4.4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-    
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore Nuget Packages
-      run: dotnet restore EstateAdministrationUI.sln --source ${{ secrets.PUBLICFEEDURL }} --source ${{ secrets.PRIVATEFEED_URL }}
-
-    - name: Build Code
-      run: |
-        dotnet build EstateAdministrationUI.sln --configuration ReleaseNoNode
-        msbuild.exe EstateAdministrationUI.Javascript.Tests\EstateAdministrationUI.Javascript.Tests.njsproj
-
-    - name: Run Unit Tests
-      run: |
-        echo "ASPNETCORE_ENVIRONMENT are > ${ASPNETCORE_ENVIRONMENT}"
-        dotnet test "EstateAdministrationUI.Tests\EstateAdministrationUI.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov1.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"
-        dotnet test "EstateAdministrationUI.BusinessLogic.Tests\EstateAdministrationUI.BusinessLogic.Tests.csproj" /p:CollectCoverage=true /p:Exclude="[xunit*]*" /p:ExcludeByAttribute="Obsolete" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="CompilerGeneratedAttribute" /p:ExcludeByAttribute="ExcludeFromCodeCoverageAttribute" /p:CoverletOutput="../lcov2.info" /maxcpucount:1 /p:CoverletOutputFormat="lcov"     
-    
-    - name: Run Javascript Unit Tests
-      run: |
-        cd EstateAdministrationUI.Javascript.Tests
-        npm install
-        npm run test
 
     - name: Build Docker Image
       run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
