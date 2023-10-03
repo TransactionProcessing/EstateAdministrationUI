@@ -4,7 +4,7 @@
   "description": "Test for UI Specific Javascript Code",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --full-trace 'test/*.js' --recursive"
   },
   "author": "",
   "license": "ISC",
