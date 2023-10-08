@@ -9,6 +9,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
+    using Azure.Core;
     using BusinessLogic.Models;
     using Common;
     using EstateReportingAPI.Client;
@@ -83,10 +84,14 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateTransactionsAsJson(CancellationToken cancellationToken)
         {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
             var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
             
-            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
+            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(accessToken, estateId, comparisonDate, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
             
@@ -96,11 +101,15 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateFailedTransactionsDueToLowCreditAsJson(CancellationToken cancellationToken)
         {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
             var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
 
             TodaysSalesModel response =
-                await this.ApiClient.GetTodaysFailedSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"),"1009", comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysFailedSales(accessToken, estateId, "1009", comparisonDate, cancellationToken);
 
             TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -110,8 +119,12 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetMerchantKpisAsJson(CancellationToken cancellationToken){
 
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             MerchantKpiModel response =
-                await this.ApiClient.GetMerchantKpi(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
+                await this.ApiClient.GetMerchantKpi(accessToken, estateId, cancellationToken);
 
             MerchantKpiViewModel viewModel = ViewModelFactory.ConvertFrom(response);
             return this.Json(viewModel);
@@ -119,11 +132,15 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
         [HttpPost]
         public async Task<IActionResult> GetBottom3MerchantsBySalesValueAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             List<BottomMerchantModel> merchants = new List<BottomMerchantModel>();
             
             List<TopBottomMerchantDataModel> response =
-                await this.ApiClient.GetTopBottomMerchantData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
+                await this.ApiClient.GetTopBottomMerchantData(accessToken, estateId
+                                                              , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
@@ -135,11 +152,15 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetBottom3OperatorsBySalesValueAsJson(CancellationToken cancellationToken)
         {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             List<BottomOperatorModel> operators = new List<BottomOperatorModel>();
 
             var response =
-                await this.ApiClient.GetTopBottomOperatorData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
+                await this.ApiClient.GetTopBottomOperatorData(accessToken, estateId
+                                                              , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
@@ -151,11 +172,14 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetBottom3ProductsBySalesValueAsJson(CancellationToken cancellationToken)
         {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             List<BottomProductModel> products = new List<BottomProductModel>();
 
             var response =
-                await this.ApiClient.GetTopBottomProductData(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22")
-                                                                             , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
+                await this.ApiClient.GetTopBottomProductData(accessToken, estateId, BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
 
@@ -168,10 +192,14 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         [HttpPost]
         public async Task<IActionResult> GetComparisonDatesAsJson(CancellationToken cancellationToken)
         {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             List<(String value, String text)> datesList = new List<(String, String)>();
 
             List<ComparisonDateModel> response =
-                await this.ApiClient.GetComparisonDates(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
+                await this.ApiClient.GetComparisonDates(accessToken, estateId, cancellationToken);
 
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
             return this.Json(viewModels);
