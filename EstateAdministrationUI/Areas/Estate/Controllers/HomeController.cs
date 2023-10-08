@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
@@ -11,6 +12,7 @@
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
     using Factories;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Services;
@@ -48,8 +50,12 @@
 
         [HttpPost]
         public async Task<IActionResult> GetComparisonDatesAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             List<ComparisonDateModel> response =
-                await this.ApiClient.GetComparisonDates(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), cancellationToken);
+                await this.ApiClient.GetComparisonDates(accessToken, estateId, cancellationToken);
 
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
 
@@ -58,11 +64,15 @@
 
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateSettlementAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
 
             TodaysSettlementModel response =
-                await this.ApiClient.GetTodaysSettlement(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, comparisonDate, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -71,11 +81,15 @@
 
         [HttpPost]
         public async Task<IActionResult> GetComparisonDateTransactionsAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
 
             TodaysSalesModel response =
-                await this.ApiClient.GetTodaysSales(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSales(accessToken, estateId, comparisonDate, cancellationToken);
 
             TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -84,10 +98,14 @@
 
         [HttpPost]
         public async Task<IActionResult> GetSalesCountByHourAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
 
             List<TodaysSalesCountByHourModel> response =
-                await this.ApiClient.GetTodaysSalesCountByHour(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSalesCountByHour(accessToken, estateId, comparisonDate, cancellationToken);
 
             List<HourCountViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
@@ -102,10 +120,14 @@
 
         [HttpPost]
         public async Task<IActionResult> GetSalesValueByHourAsJson(CancellationToken cancellationToken){
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
 
             List<TodaysSalesValueByHourModel> response =
-                await this.ApiClient.GetTodaysSalesValueByHour(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSalesValueByHour(accessToken, estateId, comparisonDate, cancellationToken);
 
             List<HourValueViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
@@ -120,7 +142,11 @@
 
         [HttpPost]
         public async Task<IActionResult> GetYesterdaysSettlementAsJson(CancellationToken cancellationToken){
-            TodaysSettlementModel response = await this.ApiClient.GetTodaysSettlement(null, Guid.Parse("435613AC-A468-47A3-AC4F-649D89764C22"), DateTime.Now, cancellationToken);
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            TodaysSettlementModel response = await this.ApiClient.GetTodaysSettlement(accessToken, estateId, DateTime.Now, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response);
 
