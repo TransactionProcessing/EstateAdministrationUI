@@ -259,82 +259,6 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             this.TestTearDown();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="View Estate")]
-        [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
-        [Xunit.TraitAttribute("Description", "View Estate")]
-        public void ViewEstate()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Estate", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 59
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 60
- testRunner.Given("I click on the My Estate sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 61
- testRunner.Then("I am presented with the Estate Details Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
-                            "EstateName"});
-                table10.AddRow(new string[] {
-                            "Test Estate"});
-#line 62
- testRunner.And("My Estate Details will be shown", ((string)(null)), table10, "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="View My Operators")]
-        [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
-        [Xunit.TraitAttribute("Description", "View My Operators")]
-        public void ViewMyOperators()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View My Operators", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 66
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-#line 67
- testRunner.Given("I click on the My Operators sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 68
- testRunner.Then("I am presented with the Operators List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName"});
-                table11.AddRow(new string[] {
-                            "Test Operator"});
-#line 69
- testRunner.And("the following operator details are in the list", ((string)(null)), table11, "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
         [Xunit.SkippableFactAttribute(DisplayName="Create New Operator")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "Create New Operator")]
@@ -357,62 +281,80 @@ this.ScenarioInitialize(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 74
- testRunner.Given("I click on the My Operators sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I click on the My Estate sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 75
+ testRunner.Then("I am presented with the Estate Details Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                            "EstateName"});
+                table10.AddRow(new string[] {
+                            "Test Estate"});
+#line 76
+ testRunner.And("My Estate Details will be shown", ((string)(null)), table10, "And ");
+#line hidden
+#line 79
+ testRunner.Given("I click on the My Operators sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 80
  testRunner.Then("I am presented with the Operators List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName"});
+                table11.AddRow(new string[] {
+                            "Test Operator"});
+#line 81
+ testRunner.And("the following operator details are in the list", ((string)(null)), table11, "And ");
+#line hidden
+#line 84
+ testRunner.When("I click the Add New Operator button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 85
+ testRunner.Then("I am presented the new operator screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table12.AddRow(new string[] {
-                            "Test Operator"});
-#line 76
- testRunner.And("the following operator details are in the list", ((string)(null)), table12, "And ");
+                            "Test New Operator"});
+#line 86
+ testRunner.When("I enter the following new operator details", ((string)(null)), table12, "When ");
 #line hidden
-#line 79
- testRunner.When("I click the Add New Operator button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 89
+ testRunner.When("I click the Create Operator button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 80
- testRunner.Then("I am presented the new operator screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 90
+ testRunner.Then("I am presented with the Operators List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 91
+ testRunner.Given("I click on the My Operators sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 92
+ testRunner.Then("I am presented with the Operators List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "OperatorName"});
                 table13.AddRow(new string[] {
-                            "Test New Operator"});
-#line 81
- testRunner.When("I enter the following new operator details", ((string)(null)), table13, "When ");
-#line hidden
-#line 84
- testRunner.When("I click the Create Operator button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 85
- testRunner.Then("I am presented with the Operators List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName"});
-                table14.AddRow(new string[] {
                             "Test Operator"});
-                table14.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Test New Operator"});
-#line 86
- testRunner.And("the following operator details are in the list", ((string)(null)), table14, "And ");
+#line 93
+ testRunner.And("the following operator details are in the list", ((string)(null)), table13, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Create New Contract", Skip="Ignored")]
+        [Xunit.SkippableFactAttribute(DisplayName="Create New Contract")]
         [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
         [Xunit.TraitAttribute("Description", "Create New Contract")]
         [Xunit.TraitAttribute("Category", "PRTest")]
         public void CreateNewContract()
         {
             string[] tagsOfScenario = new string[] {
-                    "PRTest",
-                    "ignore"};
+                    "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create New Contract", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 93
+#line 99
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -425,115 +367,203 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-#line 94
+#line 100
  testRunner.Given("I click on the My Contracts sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 95
+#line 101
  testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 97
- testRunner.When("I click the Add New Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 98
- testRunner.Then("I am presented the new contract screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
-                            "OperatorName",
-                            "ContractDescription"});
-                table15.AddRow(new string[] {
-                            "Test Operator",
-                            "Test Contract"});
-#line 99
- testRunner.When("I enter the following new contract details", ((string)(null)), table15, "When ");
-#line hidden
-#line 102
- testRunner.When("I click the Create Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 103
- testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.When("I click the Add New Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
-                            "ContractDescription"});
-                table16.AddRow(new string[] {
-                            "Test Contract"});
 #line 104
- testRunner.And("the following contract details are in the list", ((string)(null)), table16, "And ");
+ testRunner.Then("I am presented the new contract screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "OperatorName",
+                            "ContractDescription"});
+                table14.AddRow(new string[] {
+                            "Test Operator",
+                            "Test Contract"});
+#line 105
+ testRunner.When("I enter the following new contract details", ((string)(null)), table14, "When ");
 #line hidden
 #line 108
- testRunner.When("I click the Products Link for \'Test Contract\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I click the Create Contract button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 109
+ testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ContractDescription"});
+                table15.AddRow(new string[] {
+                            "Test Contract"});
+#line 110
+ testRunner.And("the following contract details are in the list", ((string)(null)), table15, "And ");
+#line hidden
+#line 114
+ testRunner.When("I click the Products Link for \'Test Contract\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 115
  testRunner.Then("I am presented with the Products List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 110
+#line 116
  testRunner.When("I click the Add New Product button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 111
+#line 117
  testRunner.Then("I am presented the new product screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "ProductName",
                             "DisplayText",
                             "Value",
                             "ProductType"});
-                table17.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "100 KES Topup",
                             "100 KES",
                             "100.00",
                             "Mobile Topup"});
-#line 112
- testRunner.When("I enter the following new product details", ((string)(null)), table17, "When ");
-#line hidden
-#line 115
- testRunner.When("I click the Create Product button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 116
- testRunner.Then("I am presented with the Products List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
-                            "ProductName"});
-                table18.AddRow(new string[] {
-                            "100 KES Topup"});
-#line 117
- testRunner.And("the following product details are in the list", ((string)(null)), table18, "And ");
+#line 118
+ testRunner.When("I enter the following new product details", ((string)(null)), table16, "When ");
 #line hidden
 #line 121
- testRunner.When("I click the Transaction Fees Link for \'100 KES Topup\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I click the Create Product button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 122
+ testRunner.Then("I am presented with the Products List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductName"});
+                table17.AddRow(new string[] {
+                            "100 KES Topup"});
+#line 123
+ testRunner.And("the following product details are in the list", ((string)(null)), table17, "And ");
+#line hidden
+#line 127
+ testRunner.When("I click the Transaction Fees Link for \'100 KES Topup\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 128
  testRunner.Then("I am presented with the Transaction Fee List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 123
+#line 129
  testRunner.When("I click the Add New Transaction Fee button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 124
+#line 130
  testRunner.Then("I am presented the new transaction fee screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description",
                             "CalculationType",
                             "FeeType",
                             "Value"});
-                table19.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "Merchant Commission",
                             "Percentage",
                             "Merchant",
                             "0.05"});
-#line 125
- testRunner.When("I enter the following new transaction fee details", ((string)(null)), table19, "When ");
+#line 131
+ testRunner.When("I enter the following new transaction fee details", ((string)(null)), table18, "When ");
 #line hidden
-#line 128
+#line 134
  testRunner.When("I click the Create Transaction Fee button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 129
+#line 135
  testRunner.Then("I am presented with the Transaction Fee List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "Description"});
-                table20.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Merchant Commission"});
-#line 130
- testRunner.And("the following fee details are in the list", ((string)(null)), table20, "And ");
+#line 136
+ testRunner.And("the following fee details are in the list", ((string)(null)), table19, "And ");
+#line hidden
+#line 140
+ testRunner.Given("I click on the My Contracts sidebar option", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 141
+ testRunner.Then("I am presented with the Contracts List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ContractDescription"});
+                table20.AddRow(new string[] {
+                            "Test Contract"});
+#line 142
+ testRunner.And("the following contract details are in the list", ((string)(null)), table20, "And ");
+#line hidden
+#line 145
+ testRunner.When("I click the Products Link for \'Test Contract\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 147
+ testRunner.Then("I am presented with the Products List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 148
+ testRunner.When("I click the Add New Product button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductName",
+                            "DisplayText",
+                            "Value",
+                            "ProductType"});
+                table21.AddRow(new string[] {
+                            "Custom Value Topup",
+                            "Custom",
+                            "",
+                            "Mobile Topup"});
+#line 149
+ testRunner.When("I enter the following new product details", ((string)(null)), table21, "When ");
+#line hidden
+#line 152
+ testRunner.When("I click the Create Product button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 153
+ testRunner.Then("I am presented with the Products List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductName"});
+                table22.AddRow(new string[] {
+                            "100 KES Topup"});
+                table22.AddRow(new string[] {
+                            "Custom Value Topup"});
+#line 154
+ testRunner.And("the following product details are in the list", ((string)(null)), table22, "And ");
+#line hidden
+#line 159
+ testRunner.When("I click the Transaction Fees Link for \'Custom Value Topup\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 160
+ testRunner.Then("I am presented with the Transaction Fee List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 161
+ testRunner.When("I click the Add New Transaction Fee button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 162
+ testRunner.Then("I am presented the new transaction fee screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Description",
+                            "CalculationType",
+                            "FeeType",
+                            "Value"});
+                table23.AddRow(new string[] {
+                            "Merchant Commission",
+                            "Percentage",
+                            "Merchant",
+                            "0.05"});
+#line 163
+ testRunner.When("I enter the following new transaction fee details", ((string)(null)), table23, "When ");
+#line hidden
+#line 166
+ testRunner.When("I click the Create Transaction Fee button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 167
+ testRunner.Then("I am presented with the Transaction Fee List Screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Description"});
+                table24.AddRow(new string[] {
+                            "Merchant Commission"});
+#line 168
+ testRunner.And("the following fee details are in the list", ((string)(null)), table24, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

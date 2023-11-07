@@ -21,6 +21,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Shared.HealthChecks;
     using Shared.IntegrationTesting;
     using Shouldly;
+    using TechTalk.SpecFlow.CommonModels;
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -118,9 +119,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// Starts the containers for scenario run.
         /// </summary>
         /// <param name="scenarioName">Name of the scenario.</param>
-        public override async Task StartContainersForScenarioRun(String scenarioName)
+        public override async Task StartContainersForScenarioRun(String scenarioName, DockerServices dockerServices)
         {
-            await base.StartContainersForScenarioRun(scenarioName);
+            await base.StartContainersForScenarioRun(scenarioName, dockerServices);
 
             await this.StartEstateManagementUiContainer(this.TestNetworks, this.SecurityServicePort);
             
@@ -205,7 +206,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             return builtContainer;
         }
 
-        public override async Task<IContainerService> SetupSecurityServiceContainer(List<INetworkService> networkServices)
+        public override ContainerBuilder SetupSecurityServiceContainer()
         {
             this.Trace("About to Start Security Container");
 
@@ -224,6 +225,10 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             environmentVariables.Add($"ServiceOptions:UserOptions:RequireUniqueEmail=false");
             environmentVariables.Add($"ServiceOptions:SignInOptions:RequireConfirmedEmail=false");
             
+            environmentVariables.Add("Logging:LogLevel:Microsoft=Information");
+            environmentVariables.Add("Logging:LogLevel:Default=Information");
+            environmentVariables.Add("Logging:EventLog:LogLevel:Default=None");
+            
             ContainerBuilder securityServiceContainer = new Builder().UseContainer().WithName(this.SecurityServiceContainerName)
                                                                      .WithEnvironment(environmentVariables.ToArray())
                                                                      .UseImageDetails(this.GetImageDetails(ContainerType.SecurityService))
@@ -232,21 +237,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                      .SetDockerCredentials(this.DockerCredentials);
 
             // Now build and return the container                
-            IContainerService builtContainer = securityServiceContainer.Build().Start();//.WaitForPort($"{DockerPorts.SecurityServiceDockerPort}/tcp", 30000);
-
-            foreach (INetworkService networkService in networkServices)
-            {
-                networkService.Attach(builtContainer, false);
-            }
-
-            this.Trace("Security Service Container Started");
-            this.Containers.Add(builtContainer);
-
-            //  Do a health check here
-            this.SecurityServicePort = builtContainer.ToHostExposedEndpoint($"{DockerPorts.SecurityServiceDockerPort}/tcp").Port;
-            await this.DoHealthCheck(ContainerType.SecurityService);
-
-            return builtContainer;
+            return securityServiceContainer;
         }
 
         /// <summary>

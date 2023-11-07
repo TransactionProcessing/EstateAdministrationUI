@@ -56,21 +56,26 @@ Background:
 	
 	Then I am presented with the Estate Administrator Dashboard
 
-Scenario: View Estate
+#Scenario: View Estate
+#	Given I click on the My Estate sidebar option
+#	Then I am presented with the Estate Details Screen
+#	And My Estate Details will be shown
+#	| EstateName       |
+#	| Test Estate |
+#
+#Scenario: View My Operators
+#	Given I click on the My Operators sidebar option
+#	Then I am presented with the Operators List Screen
+#	And the following operator details are in the list
+#	| OperatorName       |
+#	| Test Operator |
+
+Scenario: Create New Operator
 	Given I click on the My Estate sidebar option
 	Then I am presented with the Estate Details Screen
 	And My Estate Details will be shown
 	| EstateName       |
 	| Test Estate |
-
-Scenario: View My Operators
-	Given I click on the My Operators sidebar option
-	Then I am presented with the Operators List Screen
-	And the following operator details are in the list
-	| OperatorName       |
-	| Test Operator |
-
-Scenario: Create New Operator
 	Given I click on the My Operators sidebar option
 	Then I am presented with the Operators List Screen
 	And the following operator details are in the list
@@ -83,13 +88,14 @@ Scenario: Create New Operator
 	| Test New Operator |
 	When I click the Create Operator button
 	Then I am presented with the Operators List Screen
+	Given I click on the My Operators sidebar option
+	Then I am presented with the Operators List Screen
 	And the following operator details are in the list
-	| OperatorName       |
-	| Test Operator |
+	| OperatorName      |
+	| Test Operator     |
 	| Test New Operator |
 
 @PRTest
-@ignore
 Scenario: Create New Contract
 	Given I click on the My Contracts sidebar option
 	Then I am presented with the Contracts List Screen
@@ -131,23 +137,34 @@ Scenario: Create New Contract
 	| Description        |
 	| Merchant Commission  |
 
+	Given I click on the My Contracts sidebar option
+	Then I am presented with the Contracts List Screen	
+	And the following contract details are in the list
+	| ContractDescription |
+	| Test Contract       |
+	When I click the Products Link for 'Test Contract'
 	# Create Products - Variable Value
-	#When I click the Create Product button
-	#Then I am presented the new product screen
-	#When I enter the following new product details
-	#| ProductName        | DisplayText | Value |
-	#| Custom Value Topup | Custom      |       |
-	#When I click the Create Product button
-	#Then I am presented with the Products List Screen
-	#And the following product details are in the list
-	#| ProductName        |
-	#| Custom Value Topup |
-	
-	## Create Transaction Fee - Variable Value Product
-	#When I click the Transaction Fees Link for 'Custom Value Topup'
-	#When I click the Create Transaction Fee button
-	#Then I am presented the new transaction fee screen
-	#When I enter the following new transaction fee details
-	#| Description         | CalculationType | FeeType  | Value |
-	#| Merchant Commission | Percentage      | Merchant | 0.05  |
-	#When I click the Create Transaction Fee button
+	Then I am presented with the Products List Screen
+	When I click the Add New Product button
+	When I enter the following new product details
+	| ProductName        | DisplayText | Value |ProductType  |
+	| Custom Value Topup | Custom      |       |Mobile Topup |
+	When I click the Create Product button
+	Then I am presented with the Products List Screen
+	And the following product details are in the list
+	| ProductName        |
+	| 100 KES Topup      |
+	| Custom Value Topup |
+	# Create Transaction Fee - Variable Value Product
+	When I click the Transaction Fees Link for 'Custom Value Topup'
+	Then I am presented with the Transaction Fee List Screen
+	When I click the Add New Transaction Fee button
+	Then I am presented the new transaction fee screen
+	When I enter the following new transaction fee details
+	| Description         | CalculationType | FeeType  | Value |
+	| Merchant Commission | Percentage      | Merchant | 0.05  |
+	When I click the Create Transaction Fee button
+	Then I am presented with the Transaction Fee List Screen
+	And the following fee details are in the list
+	| Description        |
+	| Merchant Commission  |
