@@ -63,19 +63,11 @@ jobs:
       if: ${{ github.event.release.prerelease == false }}
       run: dotnet publish "EstateAdministrationUI\EstateAdministrationUI.csproj" --configuration Release --output publishOutput -r win-x64 --self-contained
 
-    - name: Install Octopus CLI
-      if: ${{ github.event.release.prerelease == false }}
-      run: |
-        sudo apt update && sudo apt install --no-install-recommends gnupg curl ca-certificates apt-transport-https && \
-        curl -sSfL https://apt.octopus.com/public.key | sudo apt-key add - && \
-        sudo sh -c "echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list" && \
-        sudo apt update && sudo apt install octopuscli
-
     - name: Create Zip package 🐙
       id: package
       uses: OctopusDeploy/create-zip-package-action@v3
       with:
-        package_id: CallbackHandler
+        package_id: EstateAdministrationUI
         version: ${{ steps.get_version.outputs.VERSION }}
         base_path: /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/publishOutput
         files: "**/*"
