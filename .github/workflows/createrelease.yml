@@ -1,4 +1,4 @@
-name: Release
+﻿name: Release
 
 on:
   release:
@@ -70,27 +70,24 @@ jobs:
         curl -sSfL https://apt.octopus.com/public.key | sudo apt-key add - && \
         sudo sh -c "echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list" && \
         sudo apt update && sudo apt install octopuscli
-        
-    - name: Pack Files for Octopus
-      if: ${{ github.event.release.prerelease == false }}
-      run: >-
-        octo pack
-        --outFolder /home/runner/work/EstateAdministrationUI/EstateAdministrationUI
-        --basePath /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/publishOutput
-        --id EstateAdministrationUI
-        --version ${{ steps.get_version.outputs.VERSION }}
-        --format zip
-        --verbose
-        --logLevel=verbose
-    
-    - name: Push Package to Octopus
-      if: ${{ github.event.release.prerelease == false }}
-      run: >-
-        octo push
-        --server https://stuartferguson.octopus.app
-        --apiKey ${{ secrets.OCTOPUS_APIKEY }}
-        --package /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/EstateAdministrationUI.${{ steps.get_version.outputs.VERSION }}.zip
-        --overwrite-mode IgnoreIfExists
+
+    - name: Create Zip package 🐙
+      id: package
+      uses: OctopusDeploy/create-zip-package-action@v3
+      with:
+        package_id: CallbackHandler
+        version: ${{ steps.get_version.outputs.VERSION }}
+        base_path: /home/runner/work/EstateAdministrationUI/EstateAdministrationUI/publishOutput
+        files: "**/*"
+        output_folder: /home/runner/work/EstateAdministrationUI/EstateAdministrationUI
+
+    - name: Push a package to Octopus Deploy 🐙
+      uses: OctopusDeploy/push-package-action@v3
+      with:
+        api_key: ${{ secrets.OCTOPUS_APIKEY }}
+        server: ${{ secrets.OCTOPUS_URL }}
+        space: ${{ secrets.OCTOPUS_SPACE }}
+        packages: ${{ steps.package.outputs.package_file_path }}
     
     - name: Get Release
       if: ${{ github.event.release.prerelease == false }}
@@ -107,18 +104,40 @@ jobs:
       uses: gr2m/get-json-paths-action@v1.0.4
       with:
           json: ${{ steps.getrelease.outputs.data }}
-          releasenote: "body"
-    
-    - name: Create & Deploy Release in Octopus
-      if: ${{ github.event.release.prerelease == false }}
-      run: >-
-        octo create-release
-        --server https://stuartferguson.octopus.app
-        --apiKey ${{ secrets.OCTOPUS_APIKEY }}
-        --project "Estate Administration UI"
-        --version ${{ steps.get_version.outputs.VERSION }}
-        --channel Default
-        --deployTo Staging
-        --waitfordeployment
-        --deploymenttimeout 00:05:00
-        --releasenotes "${{ steps.buildreleasenotes.outputs.releasenote }}"   
+          releasenote: "body"    
+
+    - name: Create a release in Octopus Deploy 🐙
+      uses: OctopusDeploy/create-release-action@v3
+      id: "create_release"
+      with:
+        api_key: ${{ secrets.OCTOPUS_APIKEY }}
+        server: ${{ secrets.OCTOPUS_URL }}
+        space: ${{ secrets.OCTOPUS_SPACE }}
+        project: "Estate Administration UI"
+        package_version: ${{ steps.get_version.outputs.VERSION }}
+        release_notes: ${{ steps.buildreleasenotes.outputs.releasenote }}
+        release_number: ${{ steps.get_version.outputs.VERSION }}
+        ignore_existing: true
+        channel: "Default"
+
+    - name: Deploy a release in Octopus Deploy 🐙
+      uses: OctopusDeploy/deploy-release-action@v3
+      id: "deploy_release"
+      with:
+        api_key: ${{ secrets.OCTOPUS_APIKEY }}
+        server: ${{ secrets.OCTOPUS_URL }}
+        space: ${{ secrets.OCTOPUS_SPACE }}
+        project: "Estate Administration UI"
+        release_number: ${{steps.create_release.outputs.release_number}}
+        environments: |
+            Staging      
+            
+    - name: Await task in Octopus Deploy 🐙
+      uses: OctopusDeploy/await-task-action@v3
+      with:
+        api_key: ${{ secrets.OCTOPUS_APIKEY }}
+        server: ${{ secrets.OCTOPUS_URL }}
+        space: ${{ secrets.OCTOPUS_SPACE }}
+        timeout_after: 300
+        polling_interval: 30
+        server_task_id: ${{ fromJson(steps.deploy_release.outputs.server_tasks)[0].serverTaskId }}
