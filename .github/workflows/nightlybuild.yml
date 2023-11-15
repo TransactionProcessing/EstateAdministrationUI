@@ -55,11 +55,6 @@ jobs:
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
 
-    #- name: Trust Certificate
-    #  run: |
-    #    $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-    #    Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root           
-
     - name: Trust Certificate
       run: |
         sudo apt-get install expect
@@ -119,11 +114,6 @@ jobs:
 
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
-
-    # - name: Trust Certificate
-    #   run: |
-    #     $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-    #     Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
 
     - name: Trust Certificate
       run: |
@@ -185,12 +175,7 @@ jobs:
 
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
-
-    # - name: Trust Certificate
-    #   run: |
-    #     $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-    #     Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
-
+          
     - name: Trust Certificate
       run: |
         sudo apt-get install expect
