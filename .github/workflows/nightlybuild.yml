@@ -47,7 +47,7 @@ jobs:
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
 
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2.3.4
@@ -55,13 +55,27 @@ jobs:
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
 
+    #- name: Trust Certificate
+    #  run: |
+    #    $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+    #    Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root           
+
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root           
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        password="password"
+
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out certificate.crt -password pass:"$password"
+        openssl pkcs12 -in "$certPath" -nocerts -out private.key -password pass:"$password"
+
+        sudo cp certificate.crt /usr/local/share/ca-certificates/aspnetapp-root-cert.crt
+        sudo update-ca-certificates
+
+        sudo cp private.key /etc/ssl/private/aspnetapp-root-cert.key
+        sudo chmod 400 /etc/ssl/private/aspnetapp-root-cert.key
 
     - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
 
     - name: Install NET 7
       uses: actions/setup-dotnet@v2
@@ -87,7 +101,7 @@ jobs:
     env:
         ASPNETCORE_ENVIRONMENT: "Production"
 
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2.3.4
@@ -95,13 +109,27 @@ jobs:
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
 
+    # - name: Trust Certificate
+    #   run: |
+    #     $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+    #     Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        password="password"
+
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out certificate.crt -password pass:"$password"
+        openssl pkcs12 -in "$certPath" -nocerts -out private.key -password pass:"$password"
+
+        sudo cp certificate.crt /usr/local/share/ca-certificates/aspnetapp-root-cert.crt
+        sudo update-ca-certificates
+
+        sudo cp private.key /etc/ssl/private/aspnetapp-root-cert.key
+        sudo chmod 400 /etc/ssl/private/aspnetapp-root-cert.key
 
     - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
 
     - name: Install NET 7
       uses: actions/setup-dotnet@v2
@@ -128,7 +156,7 @@ jobs:
         ASPNETCORE_ENVIRONMENT: "Production"
         NODE_VERSION: '12.x'                # set this to the node version to use
 
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2.3.4
@@ -136,13 +164,32 @@ jobs:
     - name: Set Up Variables
       run: echo "action_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_ENV
 
+    # - name: Trust Certificate
+    #   run: |
+    #     $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
+    #     Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+
     - name: Trust Certificate
       run: |
-        $certPath = "$env:GITHUB_WORKSPACE\Certificates\aspnetapp-root-cert.pfx"        
-        Import-PfxCertificate -FilePath $certpath -Password (ConvertTo-SecureString -String 'password' -AsPlainText -Force) -CertStoreLocation Cert:\LocalMachine\Root
+        certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
+        password="password"
+
+        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out certificate.crt -password pass:"$password"
+        openssl pkcs12 -in "$certPath" -nocerts -out private.key -password pass:"$password"
+
+        sudo cp certificate.crt /usr/local/share/ca-certificates/aspnetapp-root-cert.crt
+        sudo update-ca-certificates
+
+        sudo cp private.key /etc/ssl/private/aspnetapp-root-cert.key
+        sudo chmod 400 /etc/ssl/private/aspnetapp-root-cert.key
+
+    - name: Trust root certificate
+      run: |
+        sudo cp ./Shared.EventStoreContext.Tests/certs/ca/ca.crt /usr/local/share/ca-certificates/ca.crt
+        sudo update-ca-certificates
 
     - name: Build Docker Image
-      run: docker build . --file EstateAdministrationUI/DockerfileWindows --tag estateadministrationui:latest
+      run: docker build . --file EstateAdministrationUI/Dockerfile --tag estateadministrationui:latest
 
     - name: Install NET 7
       uses: actions/setup-dotnet@v2
