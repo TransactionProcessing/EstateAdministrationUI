@@ -62,11 +62,22 @@ jobs:
 
     - name: Trust Certificate
       run: |
+        sudo apt-get install expect
         certPath="$GITHUB_WORKSPACE/Certificates/aspnetapp-root-cert.pfx"
         password="password"
 
-        openssl pkcs12 -in "$certPath" -clcerts -nokeys -out certificate.crt -password pass:"$password"
-        openssl pkcs12 -in "$certPath" -nocerts -out private.key -password pass:"$password"
+        # Use expect to automate the passphrase input
+        expect -c "
+        spawn openssl pkcs12 -in \"$certPath\" -clcerts -nokeys -out certificate.crt -password pass:\"$password\"
+        expect \"Enter Import Password:\" { send \"$password\n\" }
+        expect eof
+        "
+
+        expect -c "
+        spawn openssl pkcs12 -in \"$certPath\" -nocerts -out private.key -password pass:\"$password\"
+        expect \"Enter Import Password:\" { send \"$password\n\" }
+        expect eof
+        "
 
         sudo cp certificate.crt /usr/local/share/ca-certificates/aspnetapp-root-cert.crt
         sudo update-ca-certificates
