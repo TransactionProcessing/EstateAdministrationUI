@@ -63,6 +63,7 @@
                 EdgeOptions options = new EdgeOptions();
                 options.AcceptInsecureCertificates = true;
                 options.AddArguments("--headless");
+                options.AddArguments("--window-size=1280x1024");
                 await Retry.For(async () =>
                                 {
                                     this.WebDriver = new EdgeDriver(options);
