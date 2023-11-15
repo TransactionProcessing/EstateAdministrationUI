@@ -32,9 +32,11 @@
             {
                 ChromeOptions options = new ChromeOptions();
                 options.AddArguments("--disable-gpu");
-                //options.AddArguments("--headless");
+                options.AddArguments("--headless");
                 options.AddArguments("--no-sandbox");
                 options.AddArguments("--disable-dev-shm-usage");
+                options.AddArguments("disable-infobars");
+                options.AddArguments("--disable-extensions");
                 options.AcceptInsecureCertificates = true;
                 this.WebDriver = new ChromeDriver(options);
                 this.WebDriver.Manage().Window.Maximize();
@@ -43,6 +45,7 @@
             if (browser == "Firefox")
             {
                 FirefoxOptions options = new FirefoxOptions();
+                options.AddArguments("--headless");
                 options.SetPreference("network.cookie.cookieBehavior", 0);
                 options.AcceptInsecureCertificates = true;
 
@@ -58,7 +61,7 @@
             {
                 EdgeOptions options = new EdgeOptions();
                 options.AcceptInsecureCertificates = true;
-                
+                options.AddArguments("--headless");
                 await Retry.For(async () =>
                                 {
                                     this.WebDriver = new EdgeDriver(options);
