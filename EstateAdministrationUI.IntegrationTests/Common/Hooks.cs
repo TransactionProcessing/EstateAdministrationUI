@@ -37,6 +37,7 @@
                 options.AddArguments("--disable-dev-shm-usage");
                 options.AddArguments("disable-infobars");
                 options.AddArguments("--disable-extensions");
+                options.AddArguments("--window-size=1280x1024");
                 options.AcceptInsecureCertificates = true;
                 this.WebDriver = new ChromeDriver(options);
                 this.WebDriver.Manage().Window.Maximize();
