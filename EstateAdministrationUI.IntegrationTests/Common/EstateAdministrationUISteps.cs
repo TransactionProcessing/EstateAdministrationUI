@@ -116,8 +116,7 @@ public class EstateAdministrationUISteps{
         await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Merchants"); });
     }
 
-    public async Task VerifyOnTheOperatorsListScreen()
-    {
+    public async Task VerifyOnTheOperatorsListScreen(){
         await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Operators"); });
     }
 
