@@ -43,9 +43,10 @@
 
             String? browser = Environment.GetEnvironmentVariable("Browser");
             String? isCi = Environment.GetEnvironmentVariable("IsCI");
+            
+            browser = "Firefox";
             switch (browser)
             {
-                //browser = "Firefox";
                 case null:
                 case "Chrome":
                 {

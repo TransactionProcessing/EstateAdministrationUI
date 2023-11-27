@@ -509,11 +509,13 @@ public class EstateAdministrationUISteps{
                     break;
                 }
             }
+
+
+            foundRow.ShouldBeTrue();
+            itemrow.ShouldNotBeNull();
         },
                         TimeSpan.FromSeconds(120)).ConfigureAwait(false);
 
-        foundRow.ShouldBeTrue();
-        itemrow.ShouldNotBeNull();
 
         await Retry.For(async () => {
             IWebElement element = itemrow.FindElement(By.Id(elementToClickId));
