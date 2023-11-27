@@ -1,859 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateAdministrationUI.IntegrationTests.Common
-{
+﻿namespace EstateAdministrationUI.IntegrationTests.Common{
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    //using Coypu;
-    //using Coypu.Drivers.Selenium;
-    using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
-    using NLog.LayoutRenderers;
-    using NLog.Targets.Wrappers;
+    using EstateManagement.IntegrationTesting.Helpers;
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
-    using OpenQA.Selenium.Support.UI;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
+    using SecurityService.IntegrationTesting.Helpers;
     using Shared.IntegrationTesting;
     using Shouldly;
     using TechTalk.SpecFlow;
 
     [Binding]
     [Scope(Tag = "shared")]
-    public class SharedSteps
-    {
+    public class SharedSteps{
+        #region Fields
+
+        private readonly EstateManagementSteps EstateManagementSteps;
+
+        private readonly SecurityServiceSteps SecurityServiceSteps;
+
         private readonly TestingContext TestingContext;
 
         private readonly IWebDriver WebDriver;
 
-        public SharedSteps(TestingContext testingContext, IWebDriver webDriver)
-        {
+        private readonly EstateAdministrationUISteps EstateAdministrationUiSteps;
+
+        #endregion
+
+        #region Constructors
+
+        public SharedSteps(TestingContext testingContext, IWebDriver webDriver){
             this.TestingContext = testingContext;
             this.WebDriver = webDriver;
+            this.SecurityServiceSteps = new SecurityServiceSteps(this.TestingContext.DockerHelper.SecurityServiceClient);
+            this.EstateManagementSteps = new EstateManagementSteps(this.TestingContext.DockerHelper.EstateClient, this.TestingContext.DockerHelper.HttpClient);
+            this.EstateAdministrationUiSteps = new EstateAdministrationUISteps(webDriver, this.TestingContext.DockerHelper.EstateManagementUiPort);
         }
 
-        [Given(@"I create the following roles")]
-        public async Task GivenICreateTheFollowingRoles(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                CreateRoleRequest createRoleRequest = new CreateRoleRequest
-                                                      {
-                                                          RoleName = SpecflowTableHelper.GetStringRowValue(tableRow, "Role Name").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"))
-                                                      };
-                CreateRoleResponse createRoleResponse = await this.CreateRole(createRoleRequest, CancellationToken.None).ConfigureAwait(false);
+        #endregion
 
-                createRoleResponse.ShouldNotBeNull();
-                createRoleResponse.RoleId.ShouldNotBe(Guid.Empty);
+        #region Methods
 
-                this.TestingContext.Roles.Add(createRoleRequest.RoleName, createRoleResponse.RoleId);
-            }
-        }
-
-        [Given(@"I have a token to access the estate management resource")]
-        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String clientId = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-                ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
-
-                if (clientDetails.GrantTypes.Contains("client_credentials"))
-                {
-                    TokenResponse tokenResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.GetToken(clientId, clientDetails.ClientSecret, CancellationToken.None).ConfigureAwait(false);
-
-                    this.TestingContext.AccessToken = tokenResponse.AccessToken;
-                }
-            }
-        }
-
-        [Given(@"I have created the following estates")]
-        public async Task GivenIHaveCreatedTheFollowingEstates(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                await Retry.For(async () => { await this.TestingContext.DockerHelper.CreateEstateSubscriptions(estateName).ConfigureAwait(false); },
-                                retryFor:TimeSpan.FromMinutes(2),
-                                retryInterval:TimeSpan.FromSeconds(30));
-            }
-
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-                CreateEstateRequest createEstateRequest = new CreateEstateRequest
-                                                          {
-                                                              EstateId = Guid.NewGuid(),
-                                                              EstateName = estateName
-                                                          };
-
-                CreateEstateResponse response = await this.TestingContext.DockerHelper.EstateClient.CreateEstate(this.TestingContext.AccessToken, createEstateRequest, CancellationToken.None).ConfigureAwait(false);
-
-                response.ShouldNotBeNull();
-                response.EstateId.ShouldNotBe(Guid.Empty);
-
-                // Cache the estate id
-                this.TestingContext.AddEstateDetails(response.EstateId, estateName);
-
-                this.TestingContext.Logger.LogInformation($"Estate {estateName} created with Id {response.EstateId}");
-            }
-
-            foreach (TableRow tableRow in table.Rows)
-            {
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                EstateResponse estate = null;
-                await Retry.For(async () =>
-                                {
-                                    estate = await this.TestingContext.DockerHelper.EstateClient
-                                                       .GetEstate(this.TestingContext.AccessToken, estateDetails.EstateId, CancellationToken.None).ConfigureAwait(false);
-                                    estate.ShouldNotBeNull();
-                                }, retryFor:TimeSpan.FromSeconds(90), retryInterval:TimeSpan.FromSeconds(15)).ConfigureAwait(false);
-
-
-                estate.EstateName.ShouldBe(estateDetails.EstateName);
-            }
-        }
-
-        [Given(@"I have created the following operators")]
-        public async Task GivenIHaveCreatedTheFollowingOperators(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                Boolean requireCustomMerchantNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomMerchantNumber");
-                Boolean requireCustomTerminalNumber = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireCustomTerminalNumber");
-
-                CreateOperatorRequest createOperatorRequest = new CreateOperatorRequest
-                                                              {
-                                                                  Name = operatorName,
-                                                                  RequireCustomMerchantNumber = requireCustomMerchantNumber,
-                                                                  RequireCustomTerminalNumber = requireCustomTerminalNumber
-                                                              };
-
-                // lookup the estate id based on the name in the table
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                CreateOperatorResponse response = await this.TestingContext.DockerHelper.EstateClient.CreateOperator(this.TestingContext.AccessToken, estateDetails.EstateId, createOperatorRequest, CancellationToken.None).ConfigureAwait(false);
-
-                response.ShouldNotBeNull();
-                response.EstateId.ShouldNotBe(Guid.Empty);
-                response.OperatorId.ShouldNotBe(Guid.Empty);
-
-                // Cache the estate id
-                estateDetails.AddOperator(response.OperatorId, operatorName);
-
-                this.TestingContext.Logger.LogInformation($"Operator {operatorName} created with Id {response.OperatorId} for Estate {estateDetails.EstateName}");
-            }
-        }
-
-        [Given("I create the following merchants")]
-        [When(@"I create the following merchants")]
-        public async Task WhenICreateTheFollowingMerchants(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                // lookup the estate id based on the name in the table
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-                String token = this.TestingContext.AccessToken;
-                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
-                {
-                    token = estateDetails.AccessToken;
-                }
-
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                CreateMerchantRequest createMerchantRequest = new CreateMerchantRequest
-                {
-                    Name = merchantName,
-                    SettlementSchedule = Enum.Parse<SettlementSchedule>(SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule")),
-                    Contact = new Contact
-                    {
-                        ContactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName"),
-                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress")
-                    },
-                    Address = new Address
-                    {
-                        AddressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1"),
-                        Town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town"),
-                        Region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region"),
-                        Country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country")
-                    }
-                };
-
-                CreateMerchantResponse response = await this.TestingContext.DockerHelper.EstateClient
-                                                            .CreateMerchant(token, estateDetails.EstateId, createMerchantRequest, CancellationToken.None).ConfigureAwait(false);
-
-                response.ShouldNotBeNull();
-                response.EstateId.ShouldBe(estateDetails.EstateId);
-                response.MerchantId.ShouldNotBe(Guid.Empty);
-
-                // Cache the merchant id
-                estateDetails.AddMerchant(response.MerchantId, merchantName);
-
-                this.TestingContext.Logger.LogInformation($"Merchant {merchantName} created with Id {response.MerchantId} for Estate {estateDetails.EstateName}");
-            }
-
-            foreach (TableRow tableRow in table.Rows)
-            {
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
-
-                String token = this.TestingContext.AccessToken;
-                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
-                {
-                    token = estateDetails.AccessToken;
-                }
-
-                await Retry.For(async () =>
-                                {
-                                    MerchantResponse merchant = await this.TestingContext.DockerHelper.EstateClient.GetMerchant(token, estateDetails.EstateId, merchantId, CancellationToken.None).ConfigureAwait(false);
-
-                                    merchant.MerchantName.ShouldBe(merchantName);
-                                });
-            }
-        }
-
-        [When(@"I assign the following  operator to the merchants")]
-        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                String token = this.TestingContext.AccessToken;
-                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
-                {
-                    token = estateDetails.AccessToken;
-                }
-
-                // Lookup the merchant id
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
-
-                // Lookup the operator id
-                String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-                Guid operatorId = estateDetails.GetOperatorId(operatorName);
-
-                AssignOperatorRequest assignOperatorRequest = new AssignOperatorRequest
-                {
-                    OperatorId = operatorId,
-                    MerchantNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantNumber"),
-                    TerminalNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "TerminalNumber"),
-                };
-
-                AssignOperatorResponse assignOperatorResponse = await this.TestingContext.DockerHelper.EstateClient.AssignOperatorToMerchant(token, estateDetails.EstateId, merchantId, assignOperatorRequest, CancellationToken.None).ConfigureAwait(false);
-
-                assignOperatorResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                assignOperatorResponse.MerchantId.ShouldBe(merchantId);
-                assignOperatorResponse.OperatorId.ShouldBe(operatorId);
-
-                this.TestingContext.Logger.LogInformation($"Operator {operatorName} assigned to Estate {estateDetails.EstateName}");
-            }
-        }
-
-        [When(@"I create the following security users")]
-        [Given("I have created the following security users")]
-        public async Task WhenICreateTheFollowingSecurityUsers(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                // lookup the estate id based on the name in the table
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                if (tableRow.ContainsKey("EstateName") && tableRow.ContainsKey("MerchantName") == false)
-                {
-                    // Creating an Estate User
-                    CreateEstateUserRequest createEstateUserRequest = new CreateEstateUserRequest
-                    {
-                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                        FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
-                        GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
-                        MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
-                        Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
-                    };
-
-                    CreateEstateUserResponse createEstateUserResponse =
-                        await this.TestingContext.DockerHelper.EstateClient.CreateEstateUser(this.TestingContext.AccessToken, estateDetails.EstateId, createEstateUserRequest, CancellationToken.None);
-
-                    createEstateUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                    createEstateUserResponse.UserId.ShouldNotBe(Guid.Empty);
-
-                    estateDetails.SetEstateUser(createEstateUserRequest.EmailAddress, createEstateUserRequest.Password);
-
-                    this.TestingContext.Logger.LogInformation($"Security user {createEstateUserRequest.EmailAddress} assigned to Estate {estateDetails.EstateName}");
-                }
-                else if (tableRow.ContainsKey("MerchantName"))
-                {
-                    // Creating a merchant user
-                    String token = this.TestingContext.AccessToken;
-                    if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
-                    {
-                        token = estateDetails.AccessToken;
-                    }
-                    // lookup the merchant id based on the name in the table
-                    String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                    Guid merchantId = estateDetails.GetMerchantId(merchantName);
-
-                    CreateMerchantUserRequest createMerchantUserRequest = new CreateMerchantUserRequest
-                    {
-                        EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "EmailAddress").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                        FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "FamilyName"),
-                        GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "GivenName"),
-                        MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "MiddleName"),
-                        Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
-                    };
-
-                    CreateMerchantUserResponse createMerchantUserResponse =
-                        await this.TestingContext.DockerHelper.EstateClient.CreateMerchantUser(token, estateDetails.EstateId, merchantId, createMerchantUserRequest, CancellationToken.None);
-
-                    createMerchantUserResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                    createMerchantUserResponse.MerchantId.ShouldBe(merchantId);
-                    createMerchantUserResponse.UserId.ShouldNotBe(Guid.Empty);
-
-                    estateDetails.AddMerchantUser(merchantName, createMerchantUserRequest.EmailAddress, createMerchantUserRequest.Password);
-
-                    this.TestingContext.Logger.LogInformation($"Security user {createMerchantUserRequest.EmailAddress} assigned to Merchant {merchantName}");
-                }
-            }
-        }
-
-        [When(@"I add the following devices to the merchant")]
-        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(tableRow, this.TestingContext.DockerHelper.TestId);
-
-                String token = this.TestingContext.AccessToken;
-                if (String.IsNullOrEmpty(estateDetails.AccessToken) == false)
-                {
-                    token = estateDetails.AccessToken;
-                }
-
-                // Lookup the merchant id
-                String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-                Guid merchantId = estateDetails.GetMerchantId(merchantName);
-
-                String deviceIdentifier = SpecflowTableHelper.GetStringRowValue(tableRow, "DeviceIdentifier");
-
-                AddMerchantDeviceRequest addMerchantDeviceRequest = new AddMerchantDeviceRequest
-                {
-                    DeviceIdentifier = deviceIdentifier
-                };
-
-                AddMerchantDeviceResponse addMerchantDeviceResponse = await this
-                                                                            .TestingContext.DockerHelper.EstateClient
-                                                                            .AddDeviceToMerchant(token,
-                                                                                                 estateDetails.EstateId,
-                                                                                                 merchantId,
-                                                                                                 addMerchantDeviceRequest,
-                                                                                                 CancellationToken.None).ConfigureAwait(false);
-
-                addMerchantDeviceResponse.EstateId.ShouldBe(estateDetails.EstateId);
-                addMerchantDeviceResponse.MerchantId.ShouldBe(merchantId);
-                addMerchantDeviceResponse.DeviceId.ShouldNotBe(Guid.Empty);
-
-                this.TestingContext.Logger.LogInformation($"Device {deviceIdentifier} assigned to Merchant {merchantName}");
-            }
-        }
-
-        [Given(@"I click on the My Operators sidebar option")]
-        public async Task GivenIClickOnTheMyOperatorsSidebarOption()
-        {
-            await this.WebDriver.ClickButtonById("operatorsLink");
+        [Given(@"I am on the application home page")]
+        public void GivenIAmOnTheApplicationHomePage(){
+            this.EstateAdministrationUiSteps.NavigateToHomePage();
         }
 
         [Given(@"I click on the My Contracts sidebar option")]
-        public async Task GivenIClickOnTheMyContractsSidebarOption()
-        {
-            await this.WebDriver.ClickButtonById("contractsLink");
+        public async Task GivenIClickOnTheMyContractsSidebarOption(){
+            await this.EstateAdministrationUiSteps.ClickContractsSidebarOption();
         }
 
-
         [Given(@"I click on the My Estate sidebar option")]
-        public async Task GivenIClickOnTheMyEstateSidebarOption()
-        {
-            await this.WebDriver.ClickButtonById("estateDetailsLink");
+        public async Task GivenIClickOnTheMyEstateSidebarOption(){
+            await this.EstateAdministrationUiSteps.ClickMyEstateSidebarOption();
         }
 
         [Given(@"I click on the My Merchants sidebar option")]
-        public async Task GivenIClickOnTheMyMerchantsSidebarOption()
-        {
-            await this.WebDriver.ClickButtonById("merchantsLink");
+        public async Task GivenIClickOnTheMyMerchantsSidebarOption(){
+            await this.EstateAdministrationUiSteps.ClickMyMerchantsSidebarOption();
         }
 
-        [Then(@"I am presented with the Operators List Screen")]
-        public void ThenIAmPresentedWithTheOperatorsListScreen()
-        {
-            this.WebDriver.Title.ShouldContain("Operators");
+        [Given(@"I click on the My Operators sidebar option")]
+        public async Task GivenIClickOnTheMyOperatorsSidebarOption(){
+            await this.EstateAdministrationUiSteps.ClickMyOperatorsSidebarOption();
         }
 
-        [Then(@"I am presented with the Contracts List Screen")]
-        public void ThenIAmPresentedWithTheContractsListScreen()
-        {
-            this.WebDriver.Title.ShouldContain("Contracts");
+        [Given(@"I click on the Sign In Button")]
+        public async Task GivenIClickOnTheSignInButton(){
+            await this.EstateAdministrationUiSteps.ClickOnTheSignInButton();
         }
 
+        [Given(@"I create the following api resources")]
+        public async Task GivenICreateTheFollowingApiResources(Table table){
+            List<CreateApiResourceRequest> requests = table.Rows.ToCreateApiResourceRequests();
+            await this.SecurityServiceSteps.GivenTheFollowingApiResourcesExist(requests);
 
-        [When(@"I click the Add New Operator button")]
-        public async Task WhenIClickTheAddNewOperatorButton()
-        {
-            await this.WebDriver.ClickButtonById("newOperatorButton");
+            foreach (CreateApiResourceRequest createApiResourceRequest in requests){
+                this.TestingContext.ApiResources.Add(createApiResourceRequest.Name);
+            }
         }
 
-        [When(@"I click the Add New Contract button")]
-        public async Task WhenIClickTheAddNewContractButton()
-        {
-            await Retry.For(async () =>
-                            {
-                                await this.WebDriver.ClickButtonById("newContractButton");
-                            });
+        [Given(@"I create the following api scopes")]
+        public async Task GivenICreateTheFollowingApiScopes(Table table){
+            List<CreateApiScopeRequest> requests = table.Rows.ToCreateApiScopeRequests();
+            await this.SecurityServiceSteps.GivenICreateTheFollowingApiScopes(requests);
         }
 
-
-        [Then(@"I am presented the new operator screen")]
-        public void ThenIAmPresentedTheNewOperatorScreen()
-        {
-            this.WebDriver.Title.ShouldBe("New Operator Details");
-        }
-
-        [Then(@"I am presented the new contract screen")]
-        public void ThenIAmPresentedTheNewContractScreen()
-        {
-            this.WebDriver.Title.ShouldBe("New Contract Details");
-        }
-
-
-        [When(@"I enter the following new operator details")]
-        public async Task WhenIEnterTheFollowingNewOperatorDetails(Table table)
-        {
-            TableRow tableRow = table.Rows.Single();
-
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
-            await this.WebDriver.FillIn("operatorName", operatorName);
-        }
-
-        [When(@"I enter the following new contract details")]
-        public async Task WhenIEnterTheFollowingNewContractDetails(Table table)
-        {
-            TableRow tableRow = table.Rows.Single();
-
-            String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
-            await this.WebDriver.FillIn("contractDescription", contractDescription);
-
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-            await this.WebDriver.SelectDropDownItemByText("operatorList", operatorName);
-        }
-
-
-        [When(@"I click the Create Operator button")]
-        public async Task WhenIClickTheCreateOperatorButton()
-        {
-            await this.WebDriver.ClickButtonById("createOperatorButton");
-        }
-
-        [When(@"I click the Create Contract button")]
-        public async Task WhenIClickTheCreateContractButton()
-        {
-            await this.WebDriver.ClickButtonById("createContractButton");
-        }
-        
-        [Then(@"the following operator details are in the list")]
-        public async Task ThenTheFollowingOperatorDetailsAreInTheList(Table table)
-        {
-            await Retry.For(async () =>
-            {
-                Int32 foundRowCount = 0;
-                IWebElement tableElement = this.WebDriver.FindElement(By.Id("operatorList"));
-                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                rows.Count.ShouldBe(table.RowCount + 1);
-                foreach (TableRow tableRow in table.Rows)
-                {
-                    IList<IWebElement> rowTD;
-                    foreach (IWebElement row in rows)
-                    {
-                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                        if (rowTH.Any())
-                        {
-                            // header row so skip
-                            continue;
-                        }
-
-                        rowTD = row.FindElements(By.TagName("td"));
-
-                        String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-                        if (rowTD[0].Text == operatorName)
-                        {
-                            // Compare other fields
-                            rowTD[0].Text.ShouldBe(operatorName);
-
-                            // We have found the row
-                            foundRowCount++;
-                            break;
-                        }
-                    }
-                }
-
-                foundRowCount.ShouldBe(table.RowCount);
-            }, TimeSpan.FromSeconds(120));
-        }
-
-        [Then(@"the following contract details are in the list")]
-        public async Task ThenTheFollowingContractDetailsAreInTheList(Table table)
-        {
-            await Retry.For(async () =>
-                            {
-                                Int32 foundRowCount = 0;
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractList"));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                                rows.Count.ShouldBe(table.RowCount + 1);
-                                foreach (TableRow tableRow in table.Rows)
-                                {
-                                    IList<IWebElement> rowTD;
-                                    foreach (IWebElement row in rows)
-                                    {
-                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                        if (rowTH.Any())
-                                        {
-                                            // header row so skip
-                                            continue;
-                                        }
-
-                                        rowTD = row.FindElements(By.TagName("td"));
-
-                                        String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
-
-                                        if (rowTD[0].Text == contractDescription)
-                                        {
-                                            // Compare other fields
-                                            rowTD[0].Text.ShouldBe(contractDescription);
-
-                                            // We have found the row
-                                            foundRowCount++;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                foundRowCount.ShouldBe(table.RowCount);
-                            }, TimeSpan.FromSeconds(120));
-        }
-
-
-
-        [Then(@"I am presented with the Estate Details Screen")]
-        public void ThenIAmPresentedWithTheEstateDetailsScreen()
-        {
-            this.WebDriver.Title.ShouldContain("Estate Details");
-        }
-
-        [Then(@"I am presented with the Merchants List Screen")]
-        public void ThenIAmPresentedWithTheMerchantsListScreen()
-        {
-            this.WebDriver.Title.ShouldBe("Merchants");
-        }
-
-        [Then(@"the following merchants details are in the list")]
-        public async Task ThenTheFollowingMerchantsDetailsAreInTheList(Table table)
-        {
-            await Retry.For(async () =>
-                            {
-                                Int32 foundRowCount = 0;
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                                rows.Count.ShouldBe(table.RowCount + 1);
-                                foreach (TableRow tableRow in table.Rows)
-                                {
-                                    IList<IWebElement> rowTD;
-                                    foreach (IWebElement row in rows)
-                                    {
-                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                        if (rowTH.Any())
-                                        {
-                                            // header row so skip
-                                            continue;
-                                        }
-
-                                        rowTD = row.FindElements(By.TagName("td"));
-
-                                        if (rowTD[0].Text == tableRow["MerchantName"])
-                                        {
-                                            // Compare other fields
-                                            rowTD[0].Text.ShouldBe(tableRow["MerchantName"]);
-                                            //rowTD[1].Text.ShouldBe(tableRow["ContactName"]);
-                                            rowTD[2].Text.ShouldBe(tableRow["AddressLine1"]);
-                                            rowTD[3].Text.ShouldBe(tableRow["Town"]);
-                                            
-                                            // We have found the row
-                                            foundRowCount++;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                foundRowCount.ShouldBe(table.RowCount);
-                            }, TimeSpan.FromSeconds(180));
-        }
-
-        [When(@"I click the Make Deposit button for '(.*)' from the merchant list")]
-        public async Task WhenIClickTheMakeDepositButtonForFromTheMerchantList(String merchantName)
-        {
-            Boolean foundRow = false;
-            IWebElement merchantRow = null;
-            await Retry.For(async () =>
-                            {
-
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                                IList<IWebElement> rowTD;
-                                foreach (IWebElement row in rows)
-                                {
-                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                    if (rowTH.Any())
-                                    {
-                                        // header row so skip
-                                        continue;
-                                    }
-
-                                    rowTD = row.FindElements(By.TagName("td"));
-
-                                    if (rowTD[0].Text == merchantName)
-                                    {
-                                        merchantRow = row;
-                                        foundRow = true;
-                                        break;
-                                    }
-                                }
-                            },
-                            TimeSpan.FromSeconds(120));
-
-            foundRow.ShouldBeTrue();
-            merchantRow.ShouldNotBeNull();
-
-            await Retry.For(async () =>
-                            {
-                                IWebElement makeDepositButton = merchantRow.FindElement(By.Id("makeDepositLink"));
-                                if (makeDepositButton.Displayed == false)
-                                {
-                                    throw new Exception("makeDepositButton.Displayed == false");
-                                }
-                                this.WebDriver.ExecuteJavaScript("document.getElementById('makeDepositLink').click();");
-                            },
-                            TimeSpan.FromSeconds(120));
-        }
-
-        [Then(@"I am presented the make merchant deposit screen")]
-        public async Task ThenIAmPresentedTheMakeMerchantDepositScreen() {
-            await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Make Merchant Deposit"); });
-        }
-
-        [When(@"I make the following deposit")]
-        public async Task WhenIMakeTheFollowingDeposit(Table table)
-        {
-            TableRow depositDetails = table.Rows.Single();
-            Decimal depositAmount = SpecflowTableHelper.GetDecimalValue(depositDetails, "DepositAmount");
-            String depositDateString = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositDate");
-            DateTime depositDate = SpecflowTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
-            String depositReference = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositReference");
-
-            await this.WebDriver.FillIn("amount", "1000");
-            await this.WebDriver.FillIn("depositdate", depositDate.Date.ToString("dd/MM/yyyy"));
-            await this.WebDriver.FillIn("reference", depositReference);
-
-            await this.WebDriver.ClickButtonById("makeMerchantDepositButton");
-        }
-        
-        [When(@"I click the Add New Merchant button")]
-        public async Task  WhenIClickTheAddNewMerchantButton()
-        {
-            await this.WebDriver.ClickButtonById("newMerchantButton");
-        }
-
-        [Then(@"I am presented the new merchant screen")]
-        public void ThenIAmPresentedTheNewMerchantScreen()
-        {
-            this.WebDriver.Title.ShouldBe("New Merchant Details");
-        }
-
-
-        [When(@"I enter the following new merchant details")]
-        public async Task WhenIEnterTheFollowingNewMerchantDetails(Table table)
-        {
-            TableRow tableRow = table.Rows.Single();
-
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-            await this.WebDriver.FillIn("merchantName", merchantName);
-
-            String addressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1");
-            await this.WebDriver.FillIn("addressLine1", addressLine1);
-
-            String town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town");
-            await this.WebDriver.FillIn("town", town);
-
-            String region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region");
-            await this.WebDriver.FillIn("region", region);
-
-            String postCode= SpecflowTableHelper.GetStringRowValue(tableRow, "PostCode");
-            await this.WebDriver.FillIn("postalCode", postCode);
-            
-            String country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country");
-            await this.WebDriver.FillIn("country", country);
-            
-            String contactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName");
-            await this.WebDriver.FillIn("contactName", contactName);
-            
-            String contactEmail = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactEmail");
-            await this.WebDriver.FillIn("contactEmailAddress", contactEmail);
-            
-            String contactPhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
-            await this.WebDriver.FillIn("contactPhoneNumber", contactPhoneNumber);
-
-            String settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
-            await this.WebDriver.SelectDropDownItemByText("settlementScheduleList", settlementSchedule);
-        }
-
-        [When(@"I click the Create Merchant button")]
-        public async Task WhenIClickTheCreateMerchantButton()
-        {
-            await this.WebDriver.ClickButtonById("createMerchantButton");
-        }
-        
-        [When(@"I select '(.*)' from the merchant list")]
-        public async Task WhenISelectFromTheMerchantList(String merchantName)
-        {
-            await Task.Delay(20000).ConfigureAwait(false);
-
-            Boolean foundRow = false;
-            IWebElement merchantRow = null;
-            await Retry.For(async () =>
-                            {
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("merchantList"));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-                                
-                                rows.ShouldNotBeNull();
-                                rows.Any().ShouldBeTrue();
-                                IList<IWebElement> rowTD;
-                                foreach (IWebElement row in rows)
-                                {
-                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                    if (rowTH.Any())
-                                    {
-                                        // header row so skip
-                                        continue;
-                                    }
-
-                                    rowTD = row.FindElements(By.TagName("td"));
-
-                                    if (rowTD[0].Text == merchantName)
-                                    {
-                                        merchantRow = row;
-                                        foundRow = true;
-                                        break;
-                                    }
-                                }
-                            },
-                            TimeSpan.FromSeconds(120)).ConfigureAwait(false);
-
-            foundRow.ShouldBeTrue();
-            merchantRow.ShouldNotBeNull();
-
-            await Retry.For(async () =>
-                            {
-                                IWebElement editButton = merchantRow.FindElement(By.Id("editMerchantLink"));
-                                editButton.Click();
-                            },
-                            TimeSpan.FromSeconds(120));
-        }
-
-        [Then(@"I am presented the merchant details screen for '(.*)'")]
-        public void ThenIAmPresentedTheMerchantDetailsScreenFor(String merchantName)
-        {
-            IWebElement element = this.WebDriver.FindElement(By.Id("MerchantName"));
-            element.ShouldNotBeNull();
-            String elementValue = element.GetDomProperty("value");
-            elementValue.ShouldBe(merchantName);
-        }
-
-        [Then(@"the merchants settlement schedule is '([^']*)'")]
-        public async Task ThenTheMerchantsSettlementScheduleIs(String settlementSchedule)
-        {
-            String selectedText = await this.WebDriver.GetDropDownItemText("settlementScheduleList");
-            selectedText.ShouldBe(settlementSchedule);
-        }
-
-
-        [Then(@"the available balance for the merchant should be (.*)")]
-        public async Task ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance) {
-            await Retry.For(async () => {
-                                IWebElement element = this.WebDriver.FindElement(By.Id("merchantAvailableBalanceLabel"));
-                                element.ShouldNotBeNull();
-                                String elementValue = element.GetDomProperty("value");
-                                Decimal actualBalance = Decimal.Parse(elementValue);
-                                actualBalance.ShouldBe(availableBalance);
-                            }, TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(30));
-        }
-
-
-        [Then(@"My Estate Details will be shown")]
-        public void ThenMyEstateDetailsWillBeShown(Table table)
-        {
-            TableRow tableRow = table.Rows.Single();
-
-            IWebElement element = this.WebDriver.FindElement(By.Id("EstateName"));
-            element.ShouldNotBeNull();
-            String elementValue = element.GetDomProperty("value");
-            elementValue.ShouldBe(SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
-        }
-
-
-        private async Task<CreateRoleResponse> CreateRole(CreateRoleRequest createRoleRequest,
-                                                          CancellationToken cancellationToken)
-        {
-            CreateRoleResponse createRoleResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateRole(createRoleRequest, cancellationToken).ConfigureAwait(false);
-            return createRoleResponse;
-        }
-
-
-        private async Task<CreateApiResourceResponse> CreateApiResource(CreateApiResourceRequest createApiResourceRequest,
-                                                                        CancellationToken cancellationToken)
-        {
-            CreateApiResourceResponse createApiResourceResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateApiResource(createApiResourceRequest, cancellationToken).ConfigureAwait(false);
-            return createApiResourceResponse;
-        }
-
-        private async Task<CreateClientResponse> CreateClient(CreateClientRequest createClientRequest,
-                                                              CancellationToken cancellationToken)
-        {
-            CreateClientResponse createClientResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateClient(createClientRequest, cancellationToken).ConfigureAwait(false);
-            return createClientResponse;
+        [Given(@"I create the following clients")]
+        public async Task GivenICreateTheFollowingClients(Table table){
+            List<CreateClientRequest> requests = table.Rows.ToCreateClientRequests(this.TestingContext.DockerHelper.TestId, this.TestingContext.DockerHelper.EstateManagementUiPort);
+            List<(String clientId, String secret, List<String> allowedGrantTypes)> clients = await this.SecurityServiceSteps.GivenTheFollowingClientsExist(requests);
+            foreach ((String clientId, String secret, List<String> allowedGrantTypes) client in clients){
+                this.TestingContext.AddClientDetails(client.clientId, client.secret, client.allowedGrantTypes);
+            }
         }
 
         [Given(@"I create the following identity resources")]
-        public async Task GivenICreateTheFollowingIdentityResources(Table table)
-        {
+        public async Task GivenICreateTheFollowingIdentityResources(Table table){
             foreach (TableRow tableRow in table.Rows)
             {
                 // Get the scopes
@@ -862,7 +114,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                 CreateIdentityResourceRequest createIdentityResourceRequest = new CreateIdentityResourceRequest
                 {
                     Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name"),
-                    Claims = string.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
+                    Claims = String.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
                     Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
                     DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
                 };
@@ -871,8 +123,465 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
+        [Given(@"I create the following roles")]
+        public async Task GivenICreateTheFollowingRoles(Table table){
+            List<CreateRoleRequest> requests = table.Rows.ToCreateRoleRequests();
+            List<(String, Guid)> responses = await this.SecurityServiceSteps.GivenICreateTheFollowingRoles(requests, CancellationToken.None);
+
+            foreach ((String, Guid) response in responses){
+                this.TestingContext.Roles.Add(response.Item1, response.Item2);
+            }
+        }
+
+        [Given(@"I create the following users")]
+        public async Task GivenICreateTheFollowingUsers(Table table){
+            List<CreateUserRequest> requests = table.Rows.ToCreateUserRequests();
+            foreach (CreateUserRequest createUserRequest in requests){
+                createUserRequest.EmailAddress = createUserRequest.EmailAddress.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+                //createUserRequest.Roles.ForEach(r => r.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+                List<String> newRoles = new List<String>();
+                foreach (String role in createUserRequest.Roles){
+                    newRoles.Add(role.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
+                }
+                createUserRequest.Roles = newRoles;
+            }
+
+            List<(String, Guid)> results = await this.SecurityServiceSteps.GivenICreateTheFollowingUsers(requests, CancellationToken.None);
+
+            foreach ((String, Guid) response in results)
+            {
+                this.TestingContext.Users.Add(response.Item1, response.Item2);
+            }
+            //foreach (TableRow tableRow in table.Rows){
+            //    // Get the claims
+            //    Dictionary<String, String> userClaims = null;
+            //    String claims = SpecflowTableHelper.GetStringRowValue(tableRow, "Claims");
+            //    if (String.IsNullOrEmpty(claims) == false){
+            //        userClaims = new Dictionary<String, String>();
+            //        String[] claimList = claims.Split(",");
+            //        foreach (String claim in claimList){
+            //            // Split into claim name and value
+            //            String[] c = claim.Split(":");
+            //            userClaims.Add(c[0], c[1]);
+            //        }
+            //    }
+
+            //    String roles = SpecflowTableHelper.GetStringRowValue(tableRow, "Roles");
+            //    roles = roles.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+
+            //    CreateUserRequest createUserRequest = new CreateUserRequest{
+            //                                                                   EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "Email Address").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
+            //                                                                   FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "Family Name"),
+            //                                                                   GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "Given Name"),
+            //                                                                   PhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "Phone Number"),
+            //                                                                   MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "Middle name"),
+            //                                                                   Claims = userClaims,
+            //                                                                   Roles = String.IsNullOrEmpty(roles) ? null : roles.Split(",").ToList(),
+            //                                                                   Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
+            //                                                               };
+            //    CreateUserResponse createUserResponse = await this.CreateUser(createUserRequest, CancellationToken.None).ConfigureAwait(false);
+
+            //    createUserResponse.ShouldNotBeNull();
+            //    createUserResponse.UserId.ShouldNotBe(Guid.Empty);
+
+            //    this.TestingContext.Users.Add(createUserRequest.EmailAddress, createUserResponse.UserId);
+            //}
+        }
+
+        [Given(@"I have a token to access the estate management resource")]
+        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table){
+            TableRow firstRow = table.Rows.First();
+            String clientId = SpecflowTableHelper.GetStringRowValue(firstRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+            ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
+
+            this.TestingContext.AccessToken = await this.SecurityServiceSteps.GetClientToken(clientDetails.ClientId, clientDetails.ClientSecret, CancellationToken.None);
+        }
+
+        [Given(@"I have created the following estates")]
+        public async Task GivenIHaveCreatedTheFollowingEstates(Table table){
+            List<CreateEstateRequest> requests = table.Rows.ToCreateEstateRequests();
+
+            foreach (CreateEstateRequest request in requests){
+                // Setup the subscriptions for the estate
+                await Retry.For(async () => {
+                                    await this.TestingContext.DockerHelper
+                                              .CreateEstateSubscriptions(request.EstateName)
+                                              .ConfigureAwait(false);
+                                },
+                                retryFor:TimeSpan.FromMinutes(2),
+                                retryInterval:TimeSpan.FromSeconds(30));
+            }
+
+            List<EstateResponse> verifiedEstates = await this.EstateManagementSteps.WhenICreateTheFollowingEstates(this.TestingContext.AccessToken, requests);
+
+            foreach (EstateResponse verifiedEstate in verifiedEstates){
+                this.TestingContext.AddEstateDetails(verifiedEstate.EstateId, verifiedEstate.EstateName, verifiedEstate.EstateReference);
+                this.TestingContext.Logger.LogInformation($"Estate {verifiedEstate.EstateName} created with Id {verifiedEstate.EstateId}");
+            }
+        }
+
+        [Given(@"I have created the following operators")]
+        public async Task GivenIHaveCreatedTheFollowingOperators(Table table){
+            List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
+
+            List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
+
+            foreach ((Guid, EstateOperatorResponse) result in results){
+                this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} created with Id {result.Item2.OperatorId} for Estate {result.Item1}");
+            }
+        }
+
+        [Then(@"I am presented the make merchant deposit screen")]
+        public async Task ThenIAmPresentedTheMakeMerchantDepositScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheMakeMerchantDepositScreen();
+        }
+
+        [Then(@"I am presented the merchant details screen for '(.*)'")]
+        public async Task ThenIAmPresentedTheMerchantDetailsScreenFor(String merchantName){
+            await this.EstateAdministrationUiSteps.VerifyOnTheTheMerchantDetailsScreen(merchantName);
+        }
+
+        [Then(@"I am presented the new contract screen")]
+        public async Task ThenIAmPresentedTheNewContractScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheNewContractScreen();
+        }
+
+        [Then(@"I am presented the new merchant screen")]
+        public async Task ThenIAmPresentedTheNewMerchantScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheNewMerchantScreen();
+        }
+
+        [Then(@"I am presented the new operator screen")]
+        public async Task ThenIAmPresentedTheNewOperatorScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheNewOperatorScreen();
+        }
+
+        [Then(@"I am presented the new product screen")]
+        public async Task ThenIAmPresentedTheNewProductScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheNewProductScreen();
+        }
+
+        [Then(@"I am presented the new transaction fee screen")]
+        public async Task ThenIAmPresentedTheNewTransactionFeeScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheNewTransactionFeeScreen();
+        }
+
+        [Then(@"I am presented with a login screen")]
+        public async Task ThenIAmPresentedWithALoginScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheLoginScreen();
+        }
+
+        [Then(@"I am presented with the Contracts List Screen")]
+        public async Task ThenIAmPresentedWithTheContractsListScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheContractsListScreen();
+        }
+
+        [Then(@"I am presented with the Estate Administrator Dashboard")]
+        public async Task ThenIAmPresentedWithTheEstateAdministratorDashboard(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheDashboard();
+        }
+
+        [Then(@"I am presented with the Estate Details Screen")]
+        public async Task ThenIAmPresentedWithTheEstateDetailsScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheEstateDetailsScreen();
+        }
+
+        [Then(@"I am presented with the Merchants List Screen")]
+        public async Task ThenIAmPresentedWithTheMerchantsListScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheMerchantsListScreen();
+        }
+
+        [Then(@"I am presented with the Operators List Screen")]
+        public async Task ThenIAmPresentedWithTheOperatorsListScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheOperatorsListScreen();
+        }
+
+        [Then(@"I am presented with the Products List Screen")]
+        public async Task ThenIAmPresentedWithTheProductsListScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheProductsListScreen();
+        }
+
+        [Then(@"I am presented with the Transaction Fee List Screen")]
+        public async Task ThenIAmPresentedWithTheTransactionFeeListScreen(){
+            await this.EstateAdministrationUiSteps.VerifyOnTheTransactionFeeListScreen();
+        }
+
+        [Then(@"My Estate Details will be shown")]
+        public async Task ThenMyEstateDetailsWillBeShown(Table table){
+            TableRow tableRow = table.Rows.Single();
+            String estateName  = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+            await this.EstateAdministrationUiSteps.VerifyTheCorrectEstateDetailsAreDisplayed(estateName);
+        }
+
+        [Then(@"the available balance for the merchant should be (.*)")]
+        public async Task ThenTheAvailableBalanceForTheMerchantShouldBe(Decimal availableBalance){
+            await this.EstateAdministrationUiSteps.VerifyTheAvailableBalanceIsDisplayed(availableBalance);
+        }
+
+        [Then(@"the following contract details are in the list")]
+        public async Task ThenTheFollowingContractDetailsAreInTheList(Table table){
+            List<String> contractDescriptions = new List<String>();
+            foreach (TableRow tableRow in table.Rows){
+                contractDescriptions.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription"));
+            }
+
+            await this.EstateAdministrationUiSteps.VerifyTheContractDetailsAreInTheList(contractDescriptions);
+        }
+
+        [Then(@"the following fee details are in the list")]
+        public async Task ThenTheFollowingFeeDetailsAreInTheList(Table table){
+            List<String> feeDescriptions = new List<String>();
+            foreach (TableRow tableRow in table.Rows){
+                feeDescriptions.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "Description"));
+            }
+
+            await this.EstateAdministrationUiSteps.VerifyTheFeeDetailsAreInTheList(feeDescriptions);
+        }
+
+        [Then(@"the following merchants details are in the list")]
+        public async Task ThenTheFollowingMerchantsDetailsAreInTheList(Table table){
+            List<EstateAdministrationUISteps.MerchantDetails> merchantDetailsList = new List<EstateAdministrationUISteps.MerchantDetails>();
+            foreach (TableRow tableRow in table.Rows){
+                EstateAdministrationUISteps.MerchantDetails m = new EstateAdministrationUISteps.MerchantDetails(tableRow["MerchantName"],
+                                                                                                                tableRow["ContactName"],
+                                                                                                                tableRow["AddressLine1"],
+                                                                                                                tableRow["Town"],
+                                                                                                                tableRow["NumberOfUsers"],
+                                                                                                                tableRow["NumberOfDevices"],
+                                                                                                                tableRow["NumberOfOperators"]);
+                merchantDetailsList.Add(m);
+            }
+
+            await this.EstateAdministrationUiSteps.VerifyMerchantDetailsAreInTheList(merchantDetailsList);
+        }
+
+        [Then(@"the following operator details are in the list")]
+        public async Task ThenTheFollowingOperatorDetailsAreInTheList(Table table){
+            List<String> operatorsList = new List<String>();
+            foreach (TableRow tableRow in table.Rows)
+            {
+                operatorsList.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName"));
+            }
+
+            await this.EstateAdministrationUiSteps.VerifyOperatorDetailsAreInTheList(operatorsList);
+        }
+
+        [Then(@"the following product details are in the list")]
+        public async Task ThenTheFollowingProductDetailsAreInTheList(Table table){
+            List<String> productsList = new List<String>();
+            foreach (TableRow tableRow in table.Rows)
+            {
+                productsList.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName"));
+            }
+
+            await this.EstateAdministrationUiSteps.VerifyProductDetailsAreInTheList(productsList);
+        }
+
+        [Then(@"the merchants settlement schedule is '([^']*)'")]
+        public async Task ThenTheMerchantsSettlementScheduleIs(String settlementSchedule){
+            await this.EstateAdministrationUiSteps.VerifyMerchantsSettlementSchedule(settlementSchedule);
+        }
+
+        [When(@"I add the following devices to the merchant")]
+        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table){
+            List<(EstateDetails, Guid, AddMerchantDeviceRequest)> requests = table.Rows.ToAddMerchantDeviceRequests(this.TestingContext.Estates);
+
+            List<(EstateDetails, MerchantResponse, String)> results = await this.EstateManagementSteps.GivenIHaveAssignedTheFollowingDevicesToTheMerchants(this.TestingContext.AccessToken, requests);
+            foreach ((EstateDetails, MerchantResponse, String) result in results){
+                this.TestingContext.Logger.LogInformation($"Device {result.Item3} assigned to Merchant {result.Item2.MerchantName} Estate {result.Item1.EstateName}");
+            }
+        }
+
+        [When(@"I assign the following  operator to the merchants")]
+        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table){
+            List<(EstateDetails, Guid, AssignOperatorRequest)> requests = table.Rows.ToAssignOperatorRequests(this.TestingContext.Estates);
+
+            List<(EstateDetails, MerchantOperatorResponse)> results = await this.EstateManagementSteps.WhenIAssignTheFollowingOperatorToTheMerchants(this.TestingContext.AccessToken, requests);
+
+            foreach ((EstateDetails, MerchantOperatorResponse) result in results){
+                this.TestingContext.Logger.LogInformation($"Operator {result.Item2.Name} assigned to Estate {result.Item1.EstateName}");
+            }
+        }
+
+        [When(@"I click the Add New Contract button")]
+        public async Task WhenIClickTheAddNewContractButton(){
+            await this.EstateAdministrationUiSteps.ClickAddNewContractButton();
+        }
+
+        [When(@"I click the Add New Merchant button")]
+        public async Task WhenIClickTheAddNewMerchantButton(){
+            await this.EstateAdministrationUiSteps.ClickAddNewMerchantButton();
+        }
+
+        [When(@"I click the Add New Operator button")]
+        public async Task WhenIClickTheAddNewOperatorButton(){
+            await this.EstateAdministrationUiSteps.ClickAddNewOperatorButton();
+        }
+
+        [When(@"I click the Add New Product button")]
+        public async Task WhenIClickTheAddNewProductButton(){
+            await this.EstateAdministrationUiSteps.ClickAddNewProductButton();
+        }
+
+        [When(@"I click the Add New Transaction Fee button")]
+        public async Task WhenIClickTheAddNewTransactionFeeButton(){
+            await this.EstateAdministrationUiSteps.ClickAddNewTransactionFeeButton();
+        }
+
+        [When(@"I click the Create Contract button")]
+        public async Task WhenIClickTheCreateContractButton(){
+            await this.EstateAdministrationUiSteps.ClickTheCreateContractButton();
+        }
+
+        [When(@"I click the Create Merchant button")]
+        public async Task WhenIClickTheCreateMerchantButton(){
+            await this.EstateAdministrationUiSteps.ClickTheCreateMerchantButton();
+        }
+
+        [When(@"I click the Create Operator button")]
+        public async Task WhenIClickTheCreateOperatorButton(){
+            await this.EstateAdministrationUiSteps.ClickTheCreateOperatorButton();
+        }
+
+        [When(@"I click the Create Product button")]
+        public async Task WhenIClickTheCreateProductButton(){
+            await this.EstateAdministrationUiSteps.ClickTheCreateProductButton();
+        }
+
+        [When(@"I click the Create Transaction Fee button")]
+        public async Task WhenIClickTheCreateTransactionFeeButton(){
+            await this.EstateAdministrationUiSteps.ClickTheCreateTransactionFeeButton();
+        }
+
+        [When(@"I click the Make Deposit button for '(.*)' from the merchant list")]
+        public async Task WhenIClickTheMakeDepositButtonForFromTheMerchantList(String merchantName){
+            await this.EstateAdministrationUiSteps.ClickTheMakeDepositButtonForTheMerchant(merchantName);
+        }
+
+        [When(@"I click the Products Link for '(.*)'")]
+        public async Task WhenIClickTheProductsLinkFor(String contractDescription){
+            await this.EstateAdministrationUiSteps.ClickTheProductsLinkForContract(contractDescription);
+        }
+
+        [When(@"I click the Transaction Fees Link for '(.*)'")]
+        public async Task WhenIClickTheTransactionFeesLinkFor(String productName){
+            await this.EstateAdministrationUiSteps.ClickTheTransactionFeesLinkForTheProduct(productName);
+        }
+
+        [Given("I create the following merchants")]
+        [When(@"I create the following merchants")]
+        public async Task WhenICreateTheFollowingMerchants(Table table){
+            List<(EstateDetails estate, CreateMerchantRequest)> requests = table.Rows.ToCreateMerchantRequests(this.TestingContext.Estates);
+
+            List<MerchantResponse> verifiedMerchants = await this.EstateManagementSteps.WhenICreateTheFollowingMerchants(this.TestingContext.AccessToken, requests);
+
+            foreach (MerchantResponse verifiedMerchant in verifiedMerchants){
+                EstateDetails estateDetails = this.TestingContext.GetEstateDetails(verifiedMerchant.EstateId);
+                estateDetails.AddMerchant(verifiedMerchant);
+                this.TestingContext.Logger.LogInformation($"Merchant {verifiedMerchant.MerchantName} created with Id {verifiedMerchant.MerchantId} for Estate {estateDetails.EstateName}");
+            }
+        }
+
+        [When(@"I create the following security users")]
+        [Given("I have created the following security users")]
+        public async Task WhenICreateTheFollowingSecurityUsers(Table table){
+            List<CreateNewUserRequest> createUserRequests = table.Rows.ToCreateNewUserRequests(this.TestingContext.Estates);
+            await this.EstateManagementSteps.WhenICreateTheFollowingSecurityUsers(this.TestingContext.AccessToken, createUserRequests, this.TestingContext.Estates);
+        }
+
+        [When(@"I enter the following new contract details")]
+        public async Task WhenIEnterTheFollowingNewContractDetails(Table table){
+            TableRow tableRow = table.Rows.Single();
+
+            String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+
+            await this.EstateAdministrationUiSteps.EnterContractDetails(contractDescription,
+                                                                        operatorName);
+        }
+
+        [When(@"I enter the following new merchant details")]
+        public async Task WhenIEnterTheFollowingNewMerchantDetails(Table table){
+            TableRow tableRow = table.Rows.Single();
+
+            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String addressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1");
+            String town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town");
+            String region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region");
+            String postCode = SpecflowTableHelper.GetStringRowValue(tableRow, "PostCode");
+            String country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country");
+            String contactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName");
+            String contactEmail = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactEmail");
+            String contactPhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
+            String settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+
+            await this.EstateAdministrationUiSteps.EnterMerchantDetails(merchantName,
+                                                                        addressLine1,
+                                                                        town,
+                                                                        region,
+                                                                        postCode,
+                                                                        country,
+                                                                        contactName,
+                                                                        contactEmail,
+                                                                        contactPhoneNumber,
+                                                                        settlementSchedule);
+        }
+
+        [When(@"I enter the following new operator details")]
+        public async Task WhenIEnterTheFollowingNewOperatorDetails(Table table){
+            TableRow tableRow = table.Rows.Single();
+
+            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            await this.EstateAdministrationUiSteps.EnterOperatorDetails(operatorName);
+        }
+
+        [When(@"I enter the following new product details")]
+        public async Task WhenIEnterTheFollowingNewProductDetails(Table table){
+            TableRow productDetails = table.Rows.Single();
+            String productName = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductName");
+            String displayText = SpecflowTableHelper.GetStringRowValue(productDetails, "DisplayText");
+            String productValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+            String productType = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductType");
+
+            await this.EstateAdministrationUiSteps.EnterProductDetails(productName, displayText, productValue, productType);
+        }
+
+        [When(@"I enter the following new transaction fee details")]
+        public async Task WhenIEnterTheFollowingNewTransactionFeeDetails(Table table){
+            TableRow productDetails = table.Rows.Single();
+            String description = SpecflowTableHelper.GetStringRowValue(productDetails, "Description");
+            String calculationType = SpecflowTableHelper.GetStringRowValue(productDetails, "CalculationType");
+            String feeType = SpecflowTableHelper.GetStringRowValue(productDetails, "FeeType");
+            String feeValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+
+            await this.EstateAdministrationUiSteps.EnterTransactionFeeDetails(description, calculationType, feeType, feeValue);
+        }
+
+        [When(@"I login with the username '(.*)' and password '(.*)'")]
+        public async Task WhenILoginWithTheUsernameAndPassword(String userName, String password){
+
+            String username = userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+            await this.EstateAdministrationUiSteps.Login(username, password);
+        }
+
+        [When(@"I make the following deposit")]
+        public async Task WhenIMakeTheFollowingDeposit(Table table){
+            TableRow depositDetails = table.Rows.Single();
+            Decimal depositAmount = SpecflowTableHelper.GetDecimalValue(depositDetails, "DepositAmount");
+            String depositDateString = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositDate");
+            DateTime depositDate = SpecflowTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
+            String depositReference = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositReference");
+
+            await this.EstateAdministrationUiSteps.MakeMerchantDeposit(depositDate, depositAmount, depositReference);
+        }
+
+        [When(@"I select '(.*)' from the merchant list")]
+        public async Task WhenISelectFromTheMerchantList(String merchantName){
+            await this.EstateAdministrationUiSteps.ClickTheMerchantLinkForMerchant(merchantName);
+        }
+
         private async Task CreateIdentityResource(CreateIdentityResourceRequest createIdentityResourceRequest,
-                                                                             CancellationToken cancellationToken)
+                                                  CancellationToken cancellationToken)
         {
             CreateIdentityResourceResponse createIdentityResourceResponse = null;
 
@@ -881,9 +590,9 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             if (identityResourceList == null || identityResourceList.Any() == false)
             {
                 createIdentityResourceResponse = await this
-                                                                                 .TestingContext.DockerHelper.SecurityServiceClient
-                                                                                 .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
-                                                                                 .ConfigureAwait(false);
+                                                       .TestingContext.DockerHelper.SecurityServiceClient
+                                                       .CreateIdentityResource(createIdentityResourceRequest, cancellationToken)
+                                                       .ConfigureAwait(false);
                 createIdentityResourceResponse.ShouldNotBeNull();
                 createIdentityResourceResponse.IdentityResourceName.ShouldNotBeNullOrEmpty();
 
@@ -907,446 +616,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             }
         }
 
-        [Given(@"I create the following api scopes")]
-        public async Task GivenICreateTheFollowingApiScopes(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                CreateApiScopeRequest createApiScopeRequest = new CreateApiScopeRequest
-                                                              {
-                    Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                    Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
-                                                                  DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
-                                                              };
-                var createApiScopeResponse =
-                    await this.CreateApiScope(createApiScopeRequest, CancellationToken.None).ConfigureAwait(false);
-
-                createApiScopeResponse.ShouldNotBeNull();
-                createApiScopeResponse.ApiScopeName.ShouldNotBeNullOrEmpty();
-            }
-        }
-
-        private async Task<CreateApiScopeResponse> CreateApiScope(CreateApiScopeRequest createApiScopeRequest,
-                                                                  CancellationToken cancellationToken)
-        {
-            CreateApiScopeResponse createApiScopeResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateApiScope(createApiScopeRequest, cancellationToken).ConfigureAwait(false);
-            return createApiScopeResponse;
-        }
-
-        [Given(@"I create the following api resources")]
-        public async Task GivenICreateTheFollowingApiResources(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                // Get the scopes
-                String scopes = SpecflowTableHelper.GetStringRowValue(tableRow, "Scopes");
-                String userClaims = SpecflowTableHelper.GetStringRowValue(tableRow, "UserClaims");
-                scopes = scopes.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-                CreateApiResourceRequest createApiResourceRequest = new CreateApiResourceRequest
-                {
-                    Secret = SpecflowTableHelper.GetStringRowValue(tableRow, "Secret"),
-                    Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                    Scopes = string.IsNullOrEmpty(scopes) ? null : scopes.Split(",").ToList(),
-                    UserClaims = string.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
-                    Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
-                    DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
-                };
-                CreateApiResourceResponse createApiResourceResponse =
-                    await this.CreateApiResource(createApiResourceRequest, CancellationToken.None).ConfigureAwait(false);
-
-                createApiResourceResponse.ShouldNotBeNull();
-                createApiResourceResponse.ApiResourceName.ShouldNotBeNullOrEmpty();
-
-                this.TestingContext.ApiResources.Add(createApiResourceResponse.ApiResourceName);
-            }
-        }
-
-        [Given(@"I create the following users")]
-        public async Task GivenICreateTheFollowingUsers(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                // Get the claims
-                Dictionary<String, String> userClaims = null;
-                String claims = SpecflowTableHelper.GetStringRowValue(tableRow, "Claims");
-                if (string.IsNullOrEmpty(claims) == false)
-                {
-                    userClaims = new Dictionary<String, String>();
-                    String[] claimList = claims.Split(",");
-                    foreach (String claim in claimList)
-                    {
-                        // Split into claim name and value
-                        String[] c = claim.Split(":");
-                        userClaims.Add(c[0], c[1]);
-                    }
-                }
-
-                String roles = SpecflowTableHelper.GetStringRowValue(tableRow, "Roles");
-                roles = roles.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-                CreateUserRequest createUserRequest = new CreateUserRequest
-                {
-                    EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "Email Address").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                    FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "Family Name"),
-                    GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "Given Name"),
-                    PhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "Phone Number"),
-                    MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "Middle name"),
-                    Claims = userClaims,
-                    Roles = string.IsNullOrEmpty(roles) ? null : roles.Split(",").ToList(),
-                    Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
-                };
-                CreateUserResponse createUserResponse = await this.CreateUser(createUserRequest, CancellationToken.None).ConfigureAwait(false);
-
-                createUserResponse.ShouldNotBeNull();
-                createUserResponse.UserId.ShouldNotBe(Guid.Empty);
-
-                this.TestingContext.Users.Add(createUserRequest.EmailAddress, createUserResponse.UserId);
-            }
-        }
-
-        private async Task<CreateUserResponse> CreateUser(CreateUserRequest createUserRequest,
-                                                          CancellationToken cancellationToken)
-        {
-            CreateUserResponse createUserResponse = await this.TestingContext.DockerHelper.SecurityServiceClient.CreateUser(createUserRequest, cancellationToken).ConfigureAwait(false);
-            return createUserResponse;
-        }
-
-        [Given(@"I create the following clients")]
-        public async Task GivenICreateTheFollowingClients(Table table)
-        {
-            foreach (TableRow tableRow in table.Rows)
-            {
-                // Get the scopes
-                String scopes = SpecflowTableHelper.GetStringRowValue(tableRow, "Scopes");
-                // Get the grant types
-                String grantTypes = SpecflowTableHelper.GetStringRowValue(tableRow, "GrantTypes");
-                // Get the redirect uris
-                String redirectUris = SpecflowTableHelper.GetStringRowValue(tableRow, "RedirectUris");
-                // Get the post logout redirect uris
-                String postLogoutRedirectUris = SpecflowTableHelper.GetStringRowValue(tableRow, "PostLogoutRedirectUris");
-
-                redirectUris = redirectUris.Replace("[url]", "localhost");
-                redirectUris = redirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
-                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[url]", "localhost");
-                postLogoutRedirectUris = postLogoutRedirectUris.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
-
-                String clientUri = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientUri");
-                clientUri = clientUri.Replace("[url]", "localhost");
-                clientUri = clientUri.Replace("[port]", this.TestingContext.DockerHelper.EstateManagementUiPort.ToString());
-
-                CreateClientRequest createClientRequest = new CreateClientRequest
-                {
-                    ClientId = SpecflowTableHelper.GetStringRowValue(tableRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-                    Secret = SpecflowTableHelper.GetStringRowValue(tableRow, "Secret"),
-                    ClientName = SpecflowTableHelper.GetStringRowValue(tableRow, "Name"),
-                    AllowedScopes = string.IsNullOrEmpty(scopes) ? null : scopes.Split(",").ToList(),
-                    AllowedGrantTypes = string.IsNullOrEmpty(grantTypes) ? null : grantTypes.Split(",").ToList(),
-                    ClientRedirectUris = string.IsNullOrEmpty(redirectUris) ? null : redirectUris.Split(",").ToList(),
-                    ClientPostLogoutRedirectUris = string.IsNullOrEmpty(postLogoutRedirectUris) ? null : postLogoutRedirectUris.Split(",").ToList(),
-                    ClientDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
-                    RequireConsent = SpecflowTableHelper.GetBooleanValue(tableRow, "RequireConsent"),
-                    AllowOfflineAccess = SpecflowTableHelper.GetBooleanValue(tableRow, "AllowOfflineAccess"),
-                    ClientUri = clientUri
-                };
-                
-                CreateClientResponse createClientResponse = await this.CreateClient(createClientRequest, CancellationToken.None).ConfigureAwait(false);
-
-                createClientResponse.ShouldNotBeNull();
-                createClientResponse.ClientId.ShouldNotBeNullOrEmpty();
-
-                this.TestingContext.Clients.Add(ClientDetails.Create(createClientResponse.ClientId, createClientRequest.Secret, createClientRequest.AllowedGrantTypes));
-            }
-        }
-
-        [Given(@"I am on the application home page")]
-        public void GivenIAmOnTheApplicationHomePage()
-        {
-            this.WebDriver.Navigate().GoToUrl($"https://localhost:{this.TestingContext.DockerHelper.EstateManagementUiPort}");
-            this.WebDriver.Title.ShouldBe("Welcome");
-        }
-
-        [Given(@"I click on the Sign In Button")]
-        public async Task GivenIClickOnTheSignInButton()
-        {
-            await this.WebDriver.ClickButtonById("loginButton");
-        }
-
-        [Then(@"I am presented with a login screen")]
-        public async Task ThenIAmPresentedWithALoginScreen()
-        {
-            IWebElement loginButton = await this.WebDriver.FindButtonByText("Login", TimeSpan.FromMinutes(2));
-            loginButton.ShouldNotBeNull();
-        }
-
-        [When(@"I login with the username '(.*)' and password '(.*)'")]
-        public async Task WhenILoginWithTheUsernameAndPassword(String userName, String password)
-        {
-            await this.WebDriver.FillIn("Input.Username", userName.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")));
-            await this.WebDriver.FillIn("Input.Password", password);
-            await this.WebDriver.ClickButtonByText("Login");
-        }
-
-        [Then(@"I am presented with the Estate Administrator Dashboard")]
-        public async Task ThenIAmPresentedWithTheEstateAdministratorDashboard()
-        {
-            if (this.WebDriver.Title != "Dashboard")
-            {
-                //Console.WriteLine(this.WebDriver.PageSource);
-                var screenshot = this.WebDriver.TakeScreenshot();
-                var stringVersion = screenshot.AsBase64EncodedString;
-                Console.WriteLine(stringVersion);
-            }
-
-            await Retry.For(async () => {
-                                this.WebDriver.Title.ShouldBe("Dashboard");
-                            });
-
-        }
-
-        private async Task ClickElementInTable(String tableId,
-                                            String textToSearchFor,
-                                            String elementToClickId)
-        {
-            //await Task.Delay(20000).ConfigureAwait(false);
-
-            Boolean foundRow = false;
-            IWebElement itemrow = null;
-            await Retry.For(async () =>
-                            {
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id(tableId));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                                rows.ShouldNotBeNull();
-                                rows.Any().ShouldBeTrue();
-                                IList<IWebElement> rowTD;
-                                foreach (IWebElement row in rows)
-                                {
-                                    ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                    if (rowTH.Any())
-                                    {
-                                        // header row so skip
-                                        continue;
-                                    }
-
-                                    rowTD = row.FindElements(By.TagName("td"));
-
-                                    if (rowTD[0].Text == textToSearchFor)
-                                    {
-                                        itemrow = row;
-                                        foundRow = true;
-                                        break;
-                                    }
-                                }
-                            },
-                            TimeSpan.FromSeconds(120)).ConfigureAwait(false);
-
-            foundRow.ShouldBeTrue();
-            itemrow.ShouldNotBeNull();
-
-            await Retry.For(async () =>
-                            {
-                                IWebElement element = itemrow.FindElement(By.Id(elementToClickId));
-                                if (element.Displayed)
-                                {
-                                    element.Click();
-                                }
-                                else
-                                {
-                                    this.WebDriver.ExecuteJavaScript($"document.getElementById('{elementToClickId}').click();");
-                                }
-                            },
-                            TimeSpan.FromSeconds(120));
-        }
-
-        [When(@"I click the Products Link for '(.*)'")]
-        public async Task WhenIClickTheProductsLinkFor(String contractDescription)
-        {
-            await ClickElementInTable("contractList", contractDescription, "numberOfProductsLink");
-        }
-
-        [Then(@"I am presented with the Products List Screen")]
-        public void ThenIAmPresentedWithTheProductsListScreen()
-        {
-            this.WebDriver.Title.ShouldStartWith("Products for Contract - ");
-        }
-
-        [When(@"I click the Add New Product button")]
-        public async Task WhenIClickTheAddNewProductButton()
-        {
-            await this.WebDriver.ClickButtonById("newContractProductButton");
-        }
-
-        [Then(@"I am presented the new product screen")]
-        public void ThenIAmPresentedTheNewProductScreen()
-        {
-            this.WebDriver.Title.ShouldBe("New Contract Product Details");
-        }
-
-        [When(@"I enter the following new product details")]
-        public async Task WhenIEnterTheFollowingNewProductDetails(Table table)
-        {
-            TableRow productDetails = table.Rows.Single();
-            String productName = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductName");
-            String displayText = SpecflowTableHelper.GetStringRowValue(productDetails, "DisplayText");
-            String productValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
-            String productType = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductType");
-
-            await this.WebDriver.FillIn("productName", productName);
-            await this.WebDriver.FillIn("displayText", displayText);
-            await this.WebDriver.SelectDropDownItemByText("productTypeList", productType);
-
-            if (String.IsNullOrEmpty(productValue))
-            {
-                // Set the IsVariable flag
-                await this.WebDriver.FillIn("isVariable", "true");
-            }
-            else
-            {
-                // Set the product value
-                await this.WebDriver.FillIn("value", productValue);
-            }
-        }
-
-        [When(@"I click the Create Product button")]
-        public async Task WhenIClickTheCreateProductButton()
-        {
-            await this.WebDriver.ClickButtonById("createContractProductButton");
-        }
-
-        [Then(@"the following product details are in the list")]
-        public async Task ThenTheFollowingProductDetailsAreInTheList(Table table)
-        {
-            await Retry.For(async () =>
-            {
-                Int32 foundRowCount = 0;
-                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractProductList"));
-                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                rows.Count.ShouldBe(table.RowCount + 1);
-                foreach (TableRow tableRow in table.Rows)
-                {
-                    IList<IWebElement> rowTD;
-                    foreach (IWebElement row in rows)
-                    {
-                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                        if (rowTH.Any())
-                        {
-                            // header row so skip
-                            continue;
-                        }
-
-                        rowTD = row.FindElements(By.TagName("td"));
-
-                        String productName = SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName");
-
-                        if (rowTD[0].Text == productName)
-                        {
-                            // Compare other fields
-                            rowTD[0].Text.ShouldBe(productName);
-
-                            // We have found the row
-                            foundRowCount++;
-                            break;
-                        }
-                    }
-                }
-
-                foundRowCount.ShouldBe(table.RowCount);
-            }, TimeSpan.FromSeconds(120));
-        }
-
-        [When(@"I click the Transaction Fees Link for '(.*)'")]
-        public async Task WhenIClickTheTransactionFeesLinkFor(String productName)
-        {
-            await ClickElementInTable("contractProductList", productName, "numberOfTransactionFeesLink");
-        }
-
-        [When(@"I click the Create Transaction Fee button")]
-        public async Task WhenIClickTheCreateTransactionFeeButton()
-        {
-            await this.WebDriver.ClickButtonById("createTransactionFeeButton");
-        }
-
-        [Then(@"I am presented the new transaction fee screen")]
-        public void ThenIAmPresentedTheNewTransactionFeeScreen()
-        {
-            this.WebDriver.Title.ShouldBe("New Transaction Fee Details");
-        }
-
-        [When(@"I click the Add New Transaction Fee button")]
-        public async Task WhenIClickTheAddNewTransactionFeeButton()
-        {
-            await this.WebDriver.ClickButtonById("newContractProductTransactionFeeButton");
-        }
-
-
-        [When(@"I enter the following new transaction fee details")]
-        public async Task WhenIEnterTheFollowingNewTransactionFeeDetails(Table table)
-        {
-            TableRow productDetails = table.Rows.Single();
-            String description = SpecflowTableHelper.GetStringRowValue(productDetails, "Description");
-            String calculationType = SpecflowTableHelper.GetStringRowValue(productDetails, "CalculationType");
-            String feeType = SpecflowTableHelper.GetStringRowValue(productDetails, "FeeType");
-            String feeValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
-
-            await this.WebDriver.FillIn("feeDescription", description);
-            await this.WebDriver.SelectDropDownItemByText("calculationTypeList", calculationType);
-            await this.WebDriver.SelectDropDownItemByText("feeTypeList", feeType);
-            await this.WebDriver.FillIn("value", feeValue, true);
-        }
-
-        [Then(@"I am presented with the Transaction Fee List Screen")]
-        public void ThenIAmPresentedWithTheTransactionFeeListScreen()
-        {
-            this.WebDriver.Title.ShouldStartWith("Transaction Fees for Product - ");
-        }
-
-        [Then(@"the following fee details are in the list")]
-        public async Task ThenTheFollowingFeeDetailsAreInTheList(Table table)
-        {
-            await Retry.For(async () =>
-                            {
-                                Int32 foundRowCount = 0;
-                                IWebElement tableElement = this.WebDriver.FindElement(By.Id("contractProductTransactionFeeList"));
-                                IList<IWebElement> rows = tableElement.FindElements(By.TagName("tr"));
-
-                                rows.Count.ShouldBe(table.RowCount + 1);
-                                foreach (TableRow tableRow in table.Rows)
-                                {
-                                    IList<IWebElement> rowTD;
-                                    foreach (IWebElement row in rows)
-                                    {
-                                        ReadOnlyCollection<IWebElement> rowTH = row.FindElements(By.TagName("th"));
-
-                                        if (rowTH.Any())
-                                        {
-                                            // header row so skip
-                                            continue;
-                                        }
-
-                                        rowTD = row.FindElements(By.TagName("td"));
-
-                                        String feeDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "Description");
-
-                                        if (rowTD[0].Text == feeDescription)
-                                        {
-                                            // Compare other fields
-                                            rowTD[0].Text.ShouldBe(feeDescription);
-
-                                            // We have found the row
-                                            foundRowCount++;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                foundRowCount.ShouldBe(table.RowCount);
-                            }, TimeSpan.FromSeconds(120));
-        }
-
-
+        #endregion
     }
 }

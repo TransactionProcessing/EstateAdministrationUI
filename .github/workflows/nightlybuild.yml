@@ -91,6 +91,7 @@ jobs:
     - name: Run Integration Tests (Firefox)
       env:
         Browser: Firefox
+        IsCI: true
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
     - name: Create Issue on Failed workflow
@@ -151,6 +152,7 @@ jobs:
     - name: Run Integration Tests (Chrome)
       env:
         Browser: Chrome
+        IsCI: true
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
 
     - name: Create Issue on Failed workflow
@@ -212,6 +214,7 @@ jobs:
     - name: Run Integration Tests (Edge)
       env:
         Browser: Edge
+        IsCI: true
         DriverPath: C:\\SeleniumWebDrivers\\EdgeDriver\\
         DriverExe: msedgedriver.exe
       run: dotnet test "EstateAdministrationUI.IntegrationTests\EstateAdministrationUI.IntegrationTests.csproj" --filter Category=PRTest
