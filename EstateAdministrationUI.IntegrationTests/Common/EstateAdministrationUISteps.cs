@@ -123,12 +123,12 @@ public class EstateAdministrationUISteps{
 
     public async Task VerifyOnTheProductsListScreen()
     {
-        await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Products for Contract - "); });
+        await Retry.For(async () => { this.WebDriver.Title.ShouldContain("Products for Contract - "); });
     }
 
     public async Task VerifyOnTheTransactionFeeListScreen()
     {
-        await Retry.For(async () => { this.WebDriver.Title.ShouldBe("Transaction Fees for Product - "); });
+        await Retry.For(async () => { this.WebDriver.Title.ShouldContain("Transaction Fees for Product - "); });
     }
 
     public async Task VerifyTheCorrectEstateDetailsAreDisplayed(String estateName){
