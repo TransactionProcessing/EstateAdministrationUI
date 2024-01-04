@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using EstateManagement.Database.Contexts;
+    using EstateManagement.Database.Entities;
     using EstateManagement.DataTransferObjects.Requests;
     using EstateManagement.DataTransferObjects.Responses;
     using EstateManagement.IntegrationTesting.Helpers;
@@ -215,8 +217,19 @@
             List<EstateResponse> verifiedEstates = await this.EstateManagementSteps.WhenICreateTheFollowingEstates(this.TestingContext.AccessToken, requests);
 
             foreach (EstateResponse verifiedEstate in verifiedEstates){
-                this.TestingContext.AddEstateDetails(verifiedEstate.EstateId, verifiedEstate.EstateName, verifiedEstate.EstateReference);
-                this.TestingContext.Logger.LogInformation($"Estate {verifiedEstate.EstateName} created with Id {verifiedEstate.EstateId}");
+
+                await Retry.For(async () => {
+                                    String databaseName = $"EstateReportingReadModel{verifiedEstate.EstateId}";
+                                    var connString = Setup.GetLocalConnectionString(databaseName);
+                                    connString = $"{connString};Encrypt=false";
+                                    var ctx = new EstateManagementSqlServerContext(connString);
+
+                                    var estates = ctx.Estates.ToList();
+                                    estates.Count.ShouldBe(1);
+
+                                    this.TestingContext.AddEstateDetails(verifiedEstate.EstateId, verifiedEstate.EstateName, verifiedEstate.EstateReference);
+                                    this.TestingContext.Logger.LogInformation($"Estate {verifiedEstate.EstateName} created with Id {verifiedEstate.EstateId}");
+                                });
             }
         }
 
