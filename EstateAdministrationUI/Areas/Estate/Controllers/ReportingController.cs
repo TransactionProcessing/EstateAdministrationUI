@@ -88,10 +88,12 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
-            var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
-            
-            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(accessToken, estateId, comparisonDate, cancellationToken);
+            DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
+            String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+
+            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
             

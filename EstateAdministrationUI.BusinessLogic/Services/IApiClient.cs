@@ -166,24 +166,32 @@
         Task<TodaysSalesModel> GetTodaysSales(
             string accessToken,
             Guid estateId,
+            Guid? merchantId,
+            Guid? operatorId,
             DateTime comparisonDate,
             CancellationToken cancellationToken);
 
         Task<List<TodaysSalesCountByHourModel>> GetTodaysSalesCountByHour(
             string accessToken,
             Guid estateId,
+            Guid? merchantId,
+            Guid? operatorId,
             DateTime comparisonDate,
             CancellationToken cancellationToken);
 
         Task<List<TodaysSalesValueByHourModel>> GetTodaysSalesValueByHour(
             string accessToken,
             Guid estateId,
+            Guid? merchantId,
+            Guid? operatorId,
             DateTime comparisonDate,
             CancellationToken cancellationToken);
 
         Task<TodaysSettlementModel> GetTodaysSettlement(
             string accessToken,
             Guid estateId,
+            Guid? merchantId,
+            Guid? operatorId,
             DateTime comparisonDate,
             CancellationToken cancellationToken);
 

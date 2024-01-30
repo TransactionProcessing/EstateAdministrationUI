@@ -12,6 +12,10 @@
             <label for="ComparisonDateSelect">Select Comparison Date:</label>
             <select class="custom-select" id="ComparisonDateSelect" style="width: 250px"></select>
         </div>
+        <div class="form-group">
+            <label for="MerchantSelect">Select Merchant:</label>
+            <select class="custom-select" id="MerchantSelect" style="width: 250px"></select>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-3 col-sm-6 col-12">
@@ -64,35 +68,54 @@
     google.charts.setOnLoadCallback(drawCharts);
 
     $(document).ready(function () {
-        const select = document.getElementById('ComparisonDateSelect');
-        select.addEventListener("change", (event) => {                       
-            const selectedOption = select.options[select.selectedIndex];
+        const dateselect = document.getElementById('ComparisonDateSelect');
+        var dateSelectedText;
+        var dateSelectedValue;
+        var merchantSelectedText;
+        var merchantSelectedValue;
 
-            const selectedText = selectedOption.text;
-            const selectedValue = selectedOption.value;
+        dateselect.addEventListener("change", (event) => {
+            const selectedOption = dateselect.options[dateselect.selectedIndex];
 
-            dateComparisonChanged(selectedValue, selectedText);
+            dateSelectedText = selectedOption.text;
+            dateSelectedValue = selectedOption.value;
+
+            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
         });
-        initDatePicker();        
+
+        const merchantselect = document.getElementById('MerchantSelect');
+        merchantselect.addEventListener("change", (event) => {
+            const selectedOption = merchantselect.options[merchantselect.selectedIndex];
+
+            merchantSelectedText = selectedOption.text;
+            merchantSelectedValue = selectedOption.value;
+
+            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+        });
+
+        // Do the query here
+
+        initDatePicker();    
+        initMerchantList();
     });
 
-    function dateComparisonChanged(selectedValue, text){               
-        getComparisonDateTransactionsAsJson(selectedValue,text)
-        
-        //getTodaysSettlementAsJson();
-        getComparisonDateSettlementAsJson(selectedValue, text);
+    function getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+        console.log("in get data");
+        getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText)
+                
+        getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
 
-        drawCharts();
-    }
+        drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+    }            
     
-    function getComparisonDateTransactionsAsJson(comparisonDate, comparisonDateLabel) {
-        var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel;
+    function getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+        var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
         // make the http call
         makeHttpPOSTWithHandler(url, comparisonDateTransactionsResultHandler);
-    }              
-    
-    function getComparisonDateSettlementAsJson(comparisonDate, comparisonDateLabel) {
-        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate + "&comparisonDateLabel=" + comparisonDateLabel;
+    }
+
+    function getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
         makeHttpPOSTWithHandler(url, comparisonDateSettlementResultHandler);
     }
 
@@ -116,6 +139,26 @@
         });        
     }
 
+    function initMerchantList() {
+        const select = document.getElementById('MerchantSelect');
+        $.ajax({
+            url: '@Url.Action("GetMerchantListAsJson", "Home", new { Area = "Estate" })',
+            type: "POST",
+            dataType: 'json'
+        }).done(function (results) {
+            results.forEach(function (dateOption) {
+                const newOption = document.createElement('option');
+                newOption.value = dateOption.item1; // This will be a date
+                newOption.text = dateOption.item2;
+
+                select.appendChild(newOption);
+            });
+            select.selectedIndex = 0;
+            const changeEvent = new Event("change");
+            select.dispatchEvent(changeEvent);
+        });
+    }
+
     function convertJsonToArray(jsonData, type) {
         var data = JSON.parse(jsonData);
         
@@ -135,34 +178,27 @@
         return google.visualization.arrayToDataTable(dataArray);
     }
 
-    function drawCharts(){
-        // Get the comparison date
-        var comparisonDateSelect = document.getElementById("ComparisonDateSelect");;
-        const selectedOption = comparisonDateSelect.options[comparisonDateSelect.selectedIndex];
-
-        const comparisonDateLabel = selectedOption.text;
-        const comparisonDate = selectedOption.value;
-                
-        drawSalesValueByHourChart(comparisonDate, comparisonDateLabel);
-        drawSalesCountByHourChart(comparisonDate, comparisonDateLabel);
+    function drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {               
+        drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+        drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
     }
 
-    function drawSalesValueByHourChart(comparisonDate, comparisonDateLabel) {
-        var url = '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate;
+    function drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+        var url = '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
         var salesValueByHourJsonData = makeHttpPOST(url);
 
         var valueByHourData = convertJsonToArray(salesValueByHourJsonData, 1);
-        var options = setupChartOptions('Sales Value Comparison - Today vs ' + comparisonDateLabel, 'Hour');
+        var options = setupChartOptions('Sales Value Comparison - Today vs ' + dateSelectedText, 'Hour');
 
         drawLineChart(options, valueByHourData, document.getElementById('salesvaluebyhourchart'), "Sorry, not found any data for the selected date range.");
     }
 
-    function drawSalesCountByHourChart(comparisonDate, comparisonDateLabel) {
-        var url = '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + comparisonDate;       
+    function drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+        var url = '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
         var salesCountByHourJsonData = makeHttpPOST(url);
 
         var countByHourData = convertJsonToArray(salesCountByHourJsonData, 2);
-        var options = setupChartOptions('Sales Count Comparison - Today vs ' + comparisonDateLabel, 'Hour');
+        var options = setupChartOptions('Sales Count Comparison - Today vs ' + dateSelectedText, 'Hour');
 
         drawLineChart(options, countByHourData, document.getElementById('salescountbyhourchart'), "Sorry, not found any data for the selected date range.");
     }       
