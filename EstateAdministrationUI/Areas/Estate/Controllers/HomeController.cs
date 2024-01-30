@@ -66,25 +66,16 @@
         [HttpPost]
         public async Task<IActionResult> GetMerchantListAsJson(CancellationToken cancellationToken)
         {
-            //String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
-            //Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            //List<ComparisonDateModel> response =
-            //    await this.ApiClient.GetComparisonDates(accessToken, estateId, cancellationToken);
+            List<MerchantModel> response = await this.ApiClient.GetMerchants(accessToken, Guid.NewGuid(), estateId, cancellationToken);
 
-            //List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
-            List<(String value, String text)> viewModels = new List<(String value, String text)>{
-                                                                                                    (Guid.Empty.ToString(), "-- Select a Merchant --"),
-                                                                                                    ("A5B55C9A-12D6-4DE3-BF51-B111B5C8792C", "S7 Merchant"),
-                                                                                                    ("AB1C99FB-1C6C-4694-9A32-B71BE5D1DA33", "Test Merchant 1"),
-                                                                                                    ("AF4D7C7C-9B8D-4E58-A12A-28D3E0B89DF6", "Test Merchant 2"),
-                                                                                                    ("0D20A8B7-DA2E-421A-B591-53A08E694CEF", "Test Merchant 3"),
-                                                                                                    ("BF1BFE5E-075C-49D0-A254-B9181899133A", "Test Merchant 4"),
-                                                                                                    ("ADC939A8-315D-4019-9080-15259FA92324", "Test Merchant 5"),
-                                                                                                    ("8BC8434D-41F9-4CC3-83BC-E73F20C02E1D", "v28 Emulator Merchant"),
-                                                                                                    ("22549CD1-AFDD-44F9-882F-51C3EA71CCC0", "Xperia Merchant")
-                                                                                                };
+            var viewModels1 = ViewModelFactory.ConvertFrom(response);
+            var viewModels = ViewModelFactory.ConvertFrom(viewModels1);
+            viewModels = viewModels.OrderBy(v => v.text).ToList();
+            viewModels.Insert(0, (Guid.Empty.ToString(), "-- Select a Merchant --"));
             return this.Json(viewModels);
         }
 
