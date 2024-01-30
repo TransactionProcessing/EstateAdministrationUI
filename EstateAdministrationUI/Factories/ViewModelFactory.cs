@@ -69,6 +69,22 @@
             return viewModels;
         }
 
+        public static List<(String value, String text)> ConvertFrom(List<MerchantListViewModel> merchants)
+        {
+
+            if (merchants == null || merchants.Any() == false)
+            {
+                throw new ArgumentNullException(nameof(merchants));
+            }
+
+            List<(String value, String text)> viewModels = new List<(String value, String text)>();
+            foreach (MerchantListViewModel merchant in merchants)
+            {
+                viewModels.Add((merchant.MerchantId.ToString(), merchant.MerchantName));
+            }
+            return viewModels;
+        }
+
         public static List<(String value, String text)> ConvertFrom(List<ComparisonDateModel> comparisonDates, String dateFormat = "yyyy-MM-dd"){
 
             if (comparisonDates == null || comparisonDates.Any() == false)

@@ -27,4 +27,25 @@ public static class QueryStringHelper
 
         return result;
     }
+
+
+    public static Guid? GetGuidValueFromQueryString(String queryString, String fieldName)
+    {
+        String fieldValue = QueryStringHelper.GetValueFromQueryString(queryString, fieldName);
+
+        if (String.IsNullOrWhiteSpace(fieldValue) || fieldValue.Equals("undefined", StringComparison.OrdinalIgnoreCase) || fieldValue.Equals("00000000-0000-0000-0000-000000000000", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (Guid.TryParse(fieldValue, out Guid result))
+        {
+            return result;
+        }
+
+        // Handle invalid Guid format here if needed
+        // You can throw an exception, log an error, or take any other appropriate action
+
+        return null;
+    }
 }

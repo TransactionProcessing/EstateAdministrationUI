@@ -15,6 +15,7 @@
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.CodeAnalysis.Editing;
     using Services;
 
     /// <summary>
@@ -63,6 +64,22 @@
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetMerchantListAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            List<MerchantModel> response = await this.ApiClient.GetMerchants(accessToken, Guid.NewGuid(), estateId, cancellationToken);
+
+            var viewModels1 = ViewModelFactory.ConvertFrom(response);
+            var viewModels = ViewModelFactory.ConvertFrom(viewModels1);
+            viewModels = viewModels.OrderBy(v => v.text).ToList();
+            viewModels.Insert(0, (Guid.Empty.ToString(), "-- Select a Merchant --"));
+            return this.Json(viewModels);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetComparisonDateSettlementAsJson(CancellationToken cancellationToken){
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
@@ -70,9 +87,11 @@
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             TodaysSettlementModel response =
-                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -87,9 +106,11 @@
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             TodaysSalesModel response =
-                await this.ApiClient.GetTodaysSales(accessToken, estateId, comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSales(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -103,9 +124,11 @@
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             List<TodaysSalesCountByHourModel> response =
-                await this.ApiClient.GetTodaysSalesCountByHour(accessToken, estateId, comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSalesCountByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             List<HourCountViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
@@ -125,9 +148,11 @@
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             List<TodaysSalesValueByHourModel> response =
-                await this.ApiClient.GetTodaysSalesValueByHour(accessToken, estateId, comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSalesValueByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             List<HourValueViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(r => r.Hour).ToList();
@@ -145,8 +170,10 @@
             String accessToken = await this.HttpContext.GetTokenAsync("access_token");
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            TodaysSettlementModel response = await this.ApiClient.GetTodaysSettlement(accessToken, estateId, DateTime.Now, cancellationToken);
+            TodaysSettlementModel response = await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId, DateTime.Now, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response);
 
