@@ -19,7 +19,40 @@
     {
 
         #region Methods
-        
+
+        public static List<MerchantListModel> ConvertFrom(List<Merchant> source){
+            if (source == null || source.Any() == false)
+            {
+                return null;
+            }
+
+            List<MerchantListModel> result = new List<MerchantListModel>();
+            foreach (Merchant merchant in source){
+                result.Add(new MerchantListModel{
+                    MerchantId = merchant.MerchantId,
+                    MerchantName = merchant.Name
+                });
+            }
+            return result;
+        }
+
+        public static List<OperatorListModel> ConvertFrom(List<Operator> source)
+        {
+            if (source == null || source.Any() == false)
+            {
+                return null;
+            }
+
+            List<OperatorListModel> result = new List<OperatorListModel>();
+            foreach (Operator @operator in source){
+                result.Add(new OperatorListModel{
+                                                    OperatorId = @operator.OperatorId,
+                                                    OperatorName = @operator.Name
+                                                });
+            }
+            return result;
+        }
+
         public static EstateModel ConvertFrom(EstateResponse source)
         {
             if (source == null)
@@ -522,12 +555,15 @@
                                                                                     }));
             }
 
-            if (merchantResponse.Devices != null && merchantResponse.Devices.Any())
-            {
-                merchantModel.Devices = new Dictionary<Guid, String>();
+            if (merchantResponse.Devices != null && merchantResponse.Devices.Any()){
+                merchantModel.Devices = new List<MerchantDeviceModel>();
                 foreach (KeyValuePair<Guid, String> merchantResponseDevice in merchantResponse.Devices)
                 {
-                    merchantModel.Devices.Add(merchantResponseDevice.Key, merchantResponseDevice.Value);
+                    merchantModel.Devices.Add(
+                                              new MerchantDeviceModel{
+                                                                         DeviceId = merchantResponseDevice.Key,
+                                                                         DeviceIdentifier = merchantResponseDevice.Value
+                                              });
                 }
             }
 

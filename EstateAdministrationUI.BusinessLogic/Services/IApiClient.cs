@@ -129,6 +129,14 @@
                                                Guid estateId,
                                                CancellationToken cancellationToken);
 
+        Task<List<MerchantListModel>> GetMerchantsForReporting(String accessToken,
+                                                               Guid estateId,
+                                                               CancellationToken cancellationToken);
+
+        Task<List<OperatorListModel>> GetOperatorsForReporting(String accessToken,
+                                                               Guid estateId,
+                                                               CancellationToken cancellationToken);
+
         Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
                                                                    Guid actionId,
                                                                    Guid estateId,

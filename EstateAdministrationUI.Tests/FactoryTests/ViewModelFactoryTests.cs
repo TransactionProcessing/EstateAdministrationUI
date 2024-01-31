@@ -176,13 +176,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                    });
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
-            {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+            foreach (MerchantDeviceModel device in model.Devices){
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
-
+            
             viewModel.Operators.Count.ShouldBe(model.Operators.Count);
             model.Operators.ForEach(o =>
                                     {
@@ -236,12 +234,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             });
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
 
             viewModel.Operators.ShouldBeEmpty();
 
@@ -288,12 +285,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             });
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
 
             viewModel.Operators.ShouldBeEmpty();
 
@@ -373,7 +369,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         public void ViewModelFactory_ConvertFrom_MerchantModel_EmptyDevices_ModelIsConverted()
         {
             MerchantModel model = TestData.MerchantModel();
-            model.Devices = new Dictionary<Guid, String>();
+            model.Devices = new List<MerchantDeviceModel>();
 
             MerchantViewModel viewModel = ViewModelFactory.ConvertFrom(model);
 
@@ -447,12 +443,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             });
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
 
             viewModel.Operators.Count.ShouldBe(model.Operators.Count);
             model.Operators.ForEach(o =>
@@ -492,13 +487,12 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             });
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
-
+            
             viewModel.Operators.Count.ShouldBe(model.Operators.Count);
             model.Operators.ForEach(o =>
             {
@@ -528,12 +522,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             viewModel.Contacts.ShouldBeEmpty();
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
 
             viewModel.Operators.Count.ShouldBe(model.Operators.Count);
             model.Operators.ForEach(o =>
@@ -579,12 +572,11 @@ namespace EstateAdministrationUI.Tests.FactoryTests
             viewModel.Contacts.ShouldBeEmpty();
 
             viewModel.Devices.Count.ShouldBe(model.Devices.Count);
-            foreach (KeyValuePair<Guid, String> device in model.Devices)
+            foreach (MerchantDeviceModel device in model.Devices)
             {
-                model.Devices.ContainsKey(device.Key).ShouldBeTrue();
-                model.Devices.ContainsValue(device.Value).ShouldBeTrue();
+                viewModel.Devices.ContainsKey(device.DeviceId.ToString());
+                viewModel.Devices[device.DeviceId.ToString()].ShouldBe(device.DeviceIdentifier);
             }
-
 
             viewModel.Operators.Count.ShouldBe(model.Operators.Count);
             model.Operators.ForEach(o =>
@@ -828,7 +820,7 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                             {
                                                 TestData.MerchantModel()
                                             };
-            modelList.First().Devices = new Dictionary<Guid, String>();
+            modelList.First().Devices = new List<MerchantDeviceModel>();
 
             List<MerchantListViewModel> viewModelList = ViewModelFactory.ConvertFrom(modelList);
 

@@ -70,12 +70,24 @@
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            List<MerchantModel> response = await this.ApiClient.GetMerchants(accessToken, Guid.NewGuid(), estateId, cancellationToken);
+            List<MerchantListModel> response = await this.ApiClient.GetMerchantsForReporting(accessToken, estateId, cancellationToken);
 
-            var viewModels1 = ViewModelFactory.ConvertFrom(response);
-            var viewModels = ViewModelFactory.ConvertFrom(viewModels1);
-            viewModels = viewModels.OrderBy(v => v.text).ToList();
-            viewModels.Insert(0, (Guid.Empty.ToString(), "-- Select a Merchant --"));
+            List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(v => v.value).ToList();
+            return this.Json(viewModels);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            List<OperatorListModel> response = await this.ApiClient.GetOperatorsForReporting(accessToken, estateId, cancellationToken);
+
+            List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(v => v.value).ToList();
             return this.Json(viewModels);
         }
 

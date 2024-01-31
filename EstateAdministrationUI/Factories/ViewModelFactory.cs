@@ -69,18 +69,34 @@
             return viewModels;
         }
 
-        public static List<(String value, String text)> ConvertFrom(List<MerchantListViewModel> merchants)
+        public static List<(String value, String text)> ConvertFrom(List<MerchantListModel> source)
         {
 
-            if (merchants == null || merchants.Any() == false)
+            if (source == null || source.Any() == false)
             {
-                throw new ArgumentNullException(nameof(merchants));
+                throw new ArgumentNullException(nameof(source));
             }
 
             List<(String value, String text)> viewModels = new List<(String value, String text)>();
-            foreach (MerchantListViewModel merchant in merchants)
+            foreach (MerchantListModel merchant in source)
             {
                 viewModels.Add((merchant.MerchantId.ToString(), merchant.MerchantName));
+            }
+            return viewModels;
+        }
+
+        public static List<(String value, String text)> ConvertFrom(List<OperatorListModel> source)
+        {
+
+            if (source == null || source.Any() == false)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            List<(String value, String text)> viewModels = new List<(String value, String text)>();
+            foreach (OperatorListModel @operator in source)
+            {
+                viewModels.Add((@operator.OperatorId.ToString(), @operator.OperatorName));
             }
             return viewModels;
         }
@@ -493,6 +509,20 @@
             return viewModels;
         }
 
+        public static Dictionary<String, String> ConvertFrom(List<MerchantDeviceModel> merchantDevices){
+            Dictionary<String, String> viewModels = new Dictionary<String, String>();
+
+            if (merchantDevices == null || merchantDevices.Any() == false)
+            {
+                return viewModels;
+            }
+            
+            foreach (MerchantDeviceModel merchantDeviceModel in merchantDevices){
+                viewModels.Add(merchantDeviceModel.DeviceId.ToString(), merchantDeviceModel.DeviceIdentifier);
+            }
+            return viewModels;
+        }
+
         public static MerchantViewModel ConvertFrom(MerchantModel merchantModel)
         {
             if (merchantModel == null)
@@ -754,22 +784,22 @@
             return viewModel;
         }
 
-        private static Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
-        {
-            Dictionary<String, String> viewModels = new Dictionary<String, String>();
+        //private static Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
+        //{
+        //    Dictionary<String, String> viewModels = new Dictionary<String, String>();
 
-            if (deviceModels == null || deviceModels.Any() == false)
-            {
-                return viewModels;
-            }
+        //    if (deviceModels == null || deviceModels.Any() == false)
+        //    {
+        //        return viewModels;
+        //    }
 
-            foreach (KeyValuePair<Guid, String> model in deviceModels)
-            {
-                viewModels.Add(model.Key.ToString(), model.Value);
-            }
+        //    foreach (KeyValuePair<Guid, String> model in deviceModels)
+        //    {
+        //        viewModels.Add(model.Key.ToString(), model.Value);
+        //    }
 
-            return viewModels;
-        }
+        //    return viewModels;
+        //}
 
         private static List<AddressViewModel> ConvertFrom(List<AddressModel> addressModels)
         {

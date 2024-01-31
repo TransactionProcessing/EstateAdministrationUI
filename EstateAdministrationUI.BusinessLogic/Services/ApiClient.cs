@@ -374,6 +374,26 @@
             return await CallClientMethod<List<MerchantModel>>(ClientMethod, cancellationToken);
         }
 
+        public async Task<List<MerchantListModel>> GetMerchantsForReporting(String accessToken, Guid estateId, CancellationToken cancellationToken){
+            async Task<List<MerchantListModel>> ClientMethod()
+            {
+                List<Merchant> merchants = await this.EstateReportingApiClient.GetMerchants(accessToken, estateId, cancellationToken);
+
+                return ModelFactory.ConvertFrom(merchants);
+            }
+            return await CallClientMethod<List<MerchantListModel>>(ClientMethod, cancellationToken);
+        }
+
+        public async Task<List<OperatorListModel>> GetOperatorsForReporting(String accessToken, Guid estateId, CancellationToken cancellationToken){
+            async Task<List<OperatorListModel>> ClientMethod()
+            {
+                List<Operator> operators = await this.EstateReportingApiClient.GetOperators(accessToken, estateId, cancellationToken);
+
+                return ModelFactory.ConvertFrom(operators);
+            }
+            return await CallClientMethod<List<OperatorListModel>>(ClientMethod, cancellationToken);
+        }
+
         public async Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
                                                                                 Guid actionId,
                                                                                 Guid estateId,

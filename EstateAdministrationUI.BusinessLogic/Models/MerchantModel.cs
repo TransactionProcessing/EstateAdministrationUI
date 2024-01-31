@@ -16,7 +16,7 @@
 
         public List<ContactModel> Contacts { get; set; }
         
-        public Dictionary<Guid, String> Devices { get; set; }
+        public List<MerchantDeviceModel> Devices { get; set; }
         
         public Guid EstateId { get; set; }
         
@@ -30,6 +30,42 @@
 
         public Decimal AvailableBalance { get; set; }
         public Decimal Balance { get; set; }
+
+        #endregion
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class MerchantListModel
+    {
+        #region Properties
+        
+        public Guid MerchantId { get; set; }
+
+        public String MerchantName { get; set; }
+        
+        #endregion
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class OperatorListModel
+    {
+        #region Properties
+
+        public Guid OperatorId { get; set; }
+
+        public String OperatorName { get; set; }
+
+        #endregion
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class MerchantDeviceModel
+    {
+        #region Properties
+
+        public Guid DeviceId { get; set; }
+
+        public String DeviceIdentifier { get; set; }
 
         #endregion
     }
