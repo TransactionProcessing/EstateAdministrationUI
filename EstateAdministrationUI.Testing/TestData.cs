@@ -156,9 +156,12 @@
                                    ContactId = TestData.ContactId
                                }
                            },
-                Devices = new Dictionary<Guid, String>
+                Devices = new List<MerchantDeviceModel>()
                           {
-                              {TestData.DeviceId, TestData.DeviceIdentifier}
+                              new MerchantDeviceModel{
+                                                         DeviceId = TestData.DeviceId,
+                                                         DeviceIdentifier = TestData.DeviceIdentifier,
+                                                     }
                           },
                 Operators = new List<MerchantOperatorModel>
                             {

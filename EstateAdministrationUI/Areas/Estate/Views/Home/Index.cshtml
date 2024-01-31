@@ -6,15 +6,33 @@
     Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
 }
 
+@* <label asp-for="OperatorId" class="control-label">Operator</label>
+<select asp-for="OperatorId" id="operatorList" class="form-control" required>
+    <option value="" disabled selected>Select an Operator</option>
+</select> *@
+
 <div class="container-fluid">
     <div class="row">
         <div class="form-group">
-            <label for="ComparisonDateSelect">Select Comparison Date:</label>
+            <label for="ComparisonDateSelect" class="control-label">Select Comparison Date:</label>
             <select class="custom-select" id="ComparisonDateSelect" style="width: 250px"></select>
         </div>
         <div class="form-group">
-            <label for="MerchantSelect">Select Merchant:</label>
-            <select class="custom-select" id="MerchantSelect" style="width: 250px"></select>
+            <label for="MerchantSelect" class="control-label">Select Merchant:</label>
+            <select class="custom-select" id="MerchantSelect" style="width: 250px">
+                <option value="" disabled selected>Select a Merchant</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="OperatorSelect" class="control-label">Select Operator:</label>
+            <select class="custom-select" id="OperatorSelect" style="width: 250px">
+                <option value="" disabled selected>Select an Operator</option>
+            </select>
+        </div>
+        <div class="form-group">
+            @* <button class="btn btn-primary btn-circle btn-sm" onclick="resetSelectLists()">Reset Filters</button> *@
+            <a class="btn btn-primary btn-circle btn-sm" onclick="resetSelectLists()">Reset Filters</a>
+
         </div>
     </div>
     <div class="row">
@@ -73,6 +91,8 @@
         var dateSelectedValue;
         var merchantSelectedText;
         var merchantSelectedValue;
+        var operatorSelectedText;
+        var operatorSelectedValue;
 
         dateselect.addEventListener("change", (event) => {
             const selectedOption = dateselect.options[dateselect.selectedIndex];
@@ -93,29 +113,40 @@
             getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
         });
 
+        const operatorselect = document.getElementById('OperatorSelect');
+        operatorselect.addEventListener("change", (event) => {
+            const selectedOption = operatorselect.options[operatorselect.selectedIndex];
+
+            operatorSelectedText = selectedOption.text;
+            operatorSelectedValue = selectedOption.value;
+
+            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
+        });
+
         // Do the query here
 
         initDatePicker();    
         initMerchantList();
+        initOperatorList();
     });
 
-    function getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
+    function getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
         console.log("in get data");
-        getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText)
+        getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue)
                 
-        getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+        getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
 
-        drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+        drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
     }            
     
-    function getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
-        var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
+    function getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
+        var url = '@Url.Action("GetComparisonDateTransactionsAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
         // make the http call
         makeHttpPOSTWithHandler(url, comparisonDateTransactionsResultHandler);
     }
 
-    function getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
-        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
+    function getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
+        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
         makeHttpPOSTWithHandler(url, comparisonDateSettlementResultHandler);
     }
 
@@ -159,6 +190,26 @@
         });
     }
 
+    function initOperatorList() {
+        const select = document.getElementById('OperatorSelect');
+        $.ajax({
+            url: '@Url.Action("GetOperatorListAsJson", "Home", new { Area = "Estate" })',
+            type: "POST",
+            dataType: 'json'
+        }).done(function (results) {
+            results.forEach(function (dateOption) {
+                const newOption = document.createElement('option');
+                newOption.value = dateOption.item1; // This will be a date
+                newOption.text = dateOption.item2;
+
+                select.appendChild(newOption);
+            });
+            select.selectedIndex = 0;
+            const changeEvent = new Event("change");
+            select.dispatchEvent(changeEvent);
+        });
+    }
+
     function convertJsonToArray(jsonData, type) {
         var data = JSON.parse(jsonData);
         
@@ -178,13 +229,13 @@
         return google.visualization.arrayToDataTable(dataArray);
     }
 
-    function drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {               
-        drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
-        drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+    function drawCharts(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
+        drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
+        drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
     }
 
-    function drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
-        var url = '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
+    function drawSalesValueByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
+        var url = '@Url.Action("GetSalesValueByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
         var salesValueByHourJsonData = makeHttpPOST(url);
 
         var valueByHourData = convertJsonToArray(salesValueByHourJsonData, 1);
@@ -193,15 +244,32 @@
         drawLineChart(options, valueByHourData, document.getElementById('salesvaluebyhourchart'), "Sorry, not found any data for the selected date range.");
     }
 
-    function drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText) {
-        var url = '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue;
+    function drawSalesCountByHourChart(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
+        var url = '@Url.Action("GetSalesCountByHourAsJson", "Home", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
         var salesCountByHourJsonData = makeHttpPOST(url);
 
         var countByHourData = convertJsonToArray(salesCountByHourJsonData, 2);
         var options = setupChartOptions('Sales Count Comparison - Today vs ' + dateSelectedText, 'Hour');
 
         drawLineChart(options, countByHourData, document.getElementById('salescountbyhourchart'), "Sorry, not found any data for the selected date range.");
-    }       
+    }    
+    
+    function resetSelectLists() {
+        const dateselect = document.getElementById('ComparisonDateSelect');
+        const merchantselect = document.getElementById('MerchantSelect');
+        const operatorselect = document.getElementById('OperatorSelect');
+
+        // Set the default selected index for both select lists
+        dateselect.selectedIndex = 0;
+        merchantselect.selectedIndex = 0;
+        operatorselect.selectedIndex = 0;
+
+        // Manually dispatch the 'change' event for both select lists
+        var event = new Event('change');
+        dateselect.dispatchEvent(event);
+        merchantselect.dispatchEvent(event);
+        operatorselect.dispatchEvent(event);
+    }
 
     Date.prototype.yyyymmdd = function () {
         var yyyy = this.getFullYear();
