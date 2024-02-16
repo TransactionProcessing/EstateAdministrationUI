@@ -236,7 +236,14 @@
             int resultCount,
             CancellationToken cancellationToken);
 
-        
+        Task<LastSettlementModel> GetLastSettlement(
+            string accessToken,
+            Guid estateId,
+            Guid? merchantId,
+            Guid? operatorId,
+            CancellationToken cancellationToken);
+
+
 
         #endregion
     }

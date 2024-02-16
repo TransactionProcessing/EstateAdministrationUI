@@ -18,6 +18,19 @@
     {
         #region Methods
 
+        public static LastSettlementViewModel ConvertFrom(LastSettlementModel model){
+            if (model == null)
+                return null;
+
+            LastSettlementViewModel viewModel = new LastSettlementViewModel{
+                                                                               FeesValue = model.FeesValue,
+                                                                               SalesCount = model.SalesCount,
+                                                                               SalesValue = model.SalesValue,
+                                                                               SettlementDate = model.SettlementDate
+                                                                           };
+            return viewModel;
+        }
+
         public static TopBottomMerchantViewModelList ConvertFrom(List<TopBottomMerchantDataModel> models){
             if (models == null || models.Any() == false)
             {
