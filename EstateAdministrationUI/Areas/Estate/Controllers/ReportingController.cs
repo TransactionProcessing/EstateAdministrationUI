@@ -5,6 +5,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
@@ -57,6 +58,12 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
         public async Task<IActionResult> GetMerchantAnalysis(CancellationToken cancellationToken)
         {
             return this.View("MerchantAnalysis");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSettlementAnalysis(CancellationToken cancellationToken)
+        {
+            return this.View("SettlementAnalysis");
         }
 
         /// <summary>
@@ -206,6 +213,123 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
             return this.Json(viewModels);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMerchantListAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            List<MerchantListModel> response = await this.ApiClient.GetMerchantsForReporting(accessToken, estateId, cancellationToken);
+
+            List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(v => v.value).ToList();
+            return this.Json(viewModels);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetOperatorListAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            List<OperatorListModel> response = await this.ApiClient.GetOperatorsForReporting(accessToken, estateId, cancellationToken);
+
+            List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(v => v.value).ToList();
+            return this.Json(viewModels);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetComparisonDateSettlementAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
+            String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+
+            TodaysSettlementModel response =
+                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+
+            TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
+
+            return this.Json(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetSalesCountByHourAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+
+            List<TodaysSalesCountByHourModel> response =
+                await this.ApiClient.GetTodaysSalesCountByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+
+            List<HourCountViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(r => r.Hour).ToList();
+
+            var model = new
+            {
+                transactionHourViewModels = viewModels
+            };
+
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetSalesValueByHourAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+
+            List<TodaysSalesValueByHourModel> response =
+                await this.ApiClient.GetTodaysSalesValueByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+
+            List<HourValueViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
+            viewModels = viewModels.OrderBy(r => r.Hour).ToList();
+
+            var model = new
+            {
+                transactionHourViewModels = viewModels
+            };
+
+            return this.Json(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetLastSettlementAsJson(CancellationToken cancellationToken)
+        {
+            String accessToken = await this.HttpContext.GetTokenAsync("access_token");
+
+            Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
+
+            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+
+            LastSettlementModel response =
+                await this.ApiClient.GetLastSettlement(accessToken, estateId, merchantId, operatorId, cancellationToken);
+
+            LastSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response);
+            
+            return this.Json(viewModel);
+        }
+
         #endregion
     }
 }

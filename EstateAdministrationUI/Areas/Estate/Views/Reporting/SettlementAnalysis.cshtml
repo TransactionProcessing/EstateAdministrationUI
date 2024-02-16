@@ -1,0 +1,223 @@
+﻿@using Shared;
+@using Shared.General
+@using EstateAdministrationUI.Common
+@inject IConfigurationService Configuration
+
+@{
+    ViewBag.Title = "Settlement Analysis";
+    Layout = "~/Areas/Estate/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.0-beta/jsrender.min.js"></script>
+<script type="text/javascript" src="https://cdn.boldbi.com/embedded-sdk/v4.2.68/embed-js.js"></script>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="form-group">
+            <label for="ComparisonDateSelect" class="control-label">Select Comparison Date:</label>
+            <select class="custom-select" id="ComparisonDateSelect" style="width: 250px"></select>
+        </div>
+        <div class="form-group">
+            <label for="MerchantSelect" class="control-label">Select Merchant:</label>
+            <select class="custom-select" id="MerchantSelect" style="width: 250px">
+                <option value="" disabled selected>Select a Merchant</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="OperatorSelect" class="control-label">Select Operator:</label>
+            <select class="custom-select" id="OperatorSelect" style="width: 250px">
+                <option value="" disabled selected>Select an Operator</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <a class="btn btn-primary btn-circle btn-sm" onclick="resetSelectLists()">Reset Filters</a>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-12">
+            <div id="settlementKpi" class="info-box bg-gradient-info">
+                <span class="info-box-icon">
+                    <i class="fa fa-money-bill-wave"></i>
+                </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Today's Settlement</span>
+                    <span class="info-box-number" id="todaysSettlementLabel"></span>
+                    <span class="info-box-text" id="comparisonDateSettlementLabelText"></span>
+                    <span class="info-box-number" id="comparisonDateSettlementLabel"></span>
+                    <span class="info-box-text">Variance</span>
+                    <span class="info-box-number" id="settlementVarianceLabelText"></span>
+                </div>
+            </div>
+        </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div id="lastSettlementKpi" class="info-box bg-gradient-info">
+                    <span class="info-box-icon">
+                        <i class="fa fa-money-bill-wave"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Last Settlement</span>
+                        <span class="info-box-number" id="lastSettlementDateLabel"></span>
+                        Sales Value:<span class="info-box-number" id="lastSettlementSalesValueLabel"></span>
+                        Fee Value:<span class="info-box-number" id="lastSettlementFeesValueLabel"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/shared.js"></script>
+<script src="~/js/resulthandlers.js"></script>
+
+<script type="text/javascript">
+    var dateSelectedText;
+    var dateSelectedValue;
+    var merchantSelectedText;
+    var merchantSelectedValue;
+    var operatorSelectedText;
+    var operatorSelectedValue;
+    
+    $(document).ready(function () {
+
+        // Init the drop down lists
+        setupDateSelection();
+        setupMerchantSelection();
+        setupOperatorSelection();
+    });
+
+    function setupDateSelection() {
+        const dateselect = document.getElementById('ComparisonDateSelect');
+
+        dateselect.addEventListener("change", (event) => {
+            const selectedOption = dateselect.options[dateselect.selectedIndex];
+
+            dateSelectedText = selectedOption.text;
+            dateSelectedValue = selectedOption.value;
+
+                getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText);
+        });
+
+            $.ajax({
+                url: '@Url.Action("GetComparisonDatesAsJson", "Reporting", new { Area = "Estate" })',
+                type: "POST",
+                dataType: 'json'
+            }).done(function (results) {
+                results.forEach(function (dateOption) {
+                    const newOption = document.createElement('option');
+                    newOption.value = dateOption.item1; // This will be a date
+                    newOption.text = dateOption.item2;
+
+                    dateselect.appendChild(newOption);
+                });
+                dateselect.selectedIndex = 0;
+                const changeEvent = new Event("change");
+                dateselect.dispatchEvent(changeEvent);
+            })
+    }
+
+    function setupMerchantSelection(){
+        const merchantselect = document.getElementById('MerchantSelect');
+        merchantselect.addEventListener("change", (event) => {
+            const selectedOption = merchantselect.options[merchantselect.selectedIndex];
+
+            merchantSelectedText = selectedOption.text;
+            merchantSelectedValue = selectedOption.value;
+
+            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText);
+        });
+
+            $.ajax({
+                url: '@Url.Action("GetMerchantListAsJson", "Reporting", new { Area = "Estate" })',
+                type: "POST",
+                dataType: 'json'
+            }).done(function (results) {
+                results.forEach(function (dateOption) {
+                    const newOption = document.createElement('option');
+                    newOption.value = dateOption.item1; // This will be a date
+                    newOption.text = dateOption.item2;
+
+                    merchantselect.appendChild(newOption);
+                });
+                merchantselect.selectedIndex = 0;
+                const changeEvent = new Event("change");
+                merchantselect.dispatchEvent(changeEvent);
+            });
+    }
+
+    function setupOperatorSelection(){
+        const operatorselect = document.getElementById('OperatorSelect');
+        operatorselect.addEventListener("change", (event) => {
+            const selectedOption = operatorselect.options[operatorselect.selectedIndex];
+
+            operatorSelectedText = selectedOption.text;
+            operatorSelectedValue = selectedOption.value;
+
+            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText);
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetOperatorListAsJson", "Reporting", new { Area = "Estate" })',
+            type: "POST",
+            dataType: 'json'
+        }).done(function (results) {
+            results.forEach(function (dateOption) {
+                const newOption = document.createElement('option');
+                newOption.value = dateOption.item1; // This will be a date
+                newOption.text = dateOption.item2;
+
+                    operatorselect.appendChild(newOption);
+            });
+            operatorselect.selectedIndex = 0;
+            const changeEvent = new Event("change");
+            operatorselect.dispatchEvent(changeEvent);
+        });
+    }
+
+    function getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText) {
+            console.log("in get data");
+
+            // Get the comparison date settlement information
+            getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText);
+            // Get the last settlement date
+            getLastSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText);
+            // Any other data retrieval here
+    }
+
+    function getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText) {
+        var url = '@Url.Action("GetComparisonDateSettlementAsJson", "Reporting", new { Area = "Estate" })' + "?comparisonDate=" + dateSelectedValue + "&comparisonDateLabel=" + dateSelectedText + "&merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
+        makeHttpPOSTWithHandler(url, comparisonDateSettlementResultHandler);
+    }
+
+    function getLastSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedValue, operatorSelectedText) {
+        var url = '@Url.Action("GetLastSettlementAsJson", "Reporting", new { Area = "Estate" })' + "?merchantId=" + merchantSelectedValue + "&operatorId=" + operatorSelectedValue;
+        makeHttpPOSTWithHandler(url, lastSettlementResultHandler);
+    }
+
+    function resetSelectLists() {
+            const dateselect = document.getElementById('ComparisonDateSelect');
+            const merchantselect = document.getElementById('MerchantSelect');
+            const operatorselect = document.getElementById('OperatorSelect');
+
+            // Set the default selected index for both select lists
+            dateselect.selectedIndex = 0;
+            merchantselect.selectedIndex = 0;
+            operatorselect.selectedIndex = 0;
+
+            // Manually dispatch the 'change' event for both select lists
+            var event = new Event('change');
+            dateselect.dispatchEvent(event);
+            merchantselect.dispatchEvent(event);
+            operatorselect.dispatchEvent(event);
+        }
+
+        Date.prototype.yyyymmdd = function () {
+            var yyyy = this.getFullYear();
+            var mm = this.getMonth() < 9 ? "0" + (this.getMonth() + 1) : (this.getMonth() + 1); // getMonth() is zero-based
+            var dd = this.getDate() < 10 ? "0" + this.getDate() : this.getDate();
+
+            return "".concat(yyyy).concat('-').concat(mm).concat('-').concat(dd);
+        };
+</script>

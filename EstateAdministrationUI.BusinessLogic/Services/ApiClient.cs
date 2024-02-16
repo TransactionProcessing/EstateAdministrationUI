@@ -575,6 +575,17 @@
             return await CallClientMethod<List<TopBottomProductDataModel>>(ClientMethod, cancellationToken);
         }
 
+        public async Task<LastSettlementModel> GetLastSettlement(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, CancellationToken cancellationToken){
+            async Task<LastSettlementModel> ClientMethod()
+            {
+                LastSettlement apiResponse = await this.EstateReportingApiClient.GetLastSettlement(accessToken, estateId, cancellationToken);
+
+                return ModelFactory.ConvertFrom(apiResponse);
+            }
+
+            return await CallClientMethod(ClientMethod, cancellationToken);
+        }
+
         private async Task<T> CallClientMethod<T>(Func<Task<T>> clientMethod, CancellationToken cancellationToken){
             try{
                 return await clientMethod();
