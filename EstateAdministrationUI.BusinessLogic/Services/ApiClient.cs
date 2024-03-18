@@ -197,7 +197,7 @@
                                                      CancellationToken cancellationToken){
             async Task<ContractModel> ClientMethod()
             {
-                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, true, true, cancellationToken);
+                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, cancellationToken);
 
                 return ModelFactory.ConvertFrom(contract);
             }
@@ -212,7 +212,7 @@
                                                                    CancellationToken cancellationToken){
             async Task<ContractProductModel> ClientMethod()
             {
-                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, true, true, cancellationToken);
+                ContractResponse contract = await this.EstateClient.GetContract(accessToken, estateId, contractId, cancellationToken);
 
                 ContractModel contractModel = ModelFactory.ConvertFrom(contract);
 
