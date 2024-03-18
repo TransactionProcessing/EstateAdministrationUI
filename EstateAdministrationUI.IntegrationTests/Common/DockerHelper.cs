@@ -21,7 +21,6 @@ namespace EstateAdministrationUI.IntegrationTests.Common
     using Shared.HealthChecks;
     using Shared.IntegrationTesting;
     using Shouldly;
-    using TechTalk.SpecFlow.CommonModels;
 
     public class DockerHelper : global::Shared.IntegrationTesting.DockerHelper
     {
@@ -114,7 +113,23 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             proc.Start();
             proc.WaitForExit();
         }
-        
+
+        public override async Task CreateSubscriptions(){
+            List<(String streamName, String groupName, Int32 maxRetries)> subscriptions = new();
+            subscriptions.AddRange(MessagingService.IntegrationTesting.Helpers.SubscriptionsHelper.GetSubscriptions());
+            subscriptions.AddRange(EstateManagement.IntegrationTesting.Helpers.SubscriptionsHelper.GetSubscriptions());
+            subscriptions.AddRange(TransactionProcessor.IntegrationTesting.Helpers.SubscriptionsHelper.GetSubscriptions());
+
+            // TODO: Add File Processor Subscriptions
+
+            foreach ((String streamName, String groupName, Int32 maxRetries) subscription in subscriptions)
+            {
+                var x = subscription;
+                x.maxRetries = 2;
+                await this.CreatePersistentSubscription(x);
+            }
+        }
+
         /// <summary>
         /// Starts the containers for scenario run.
         /// </summary>
@@ -163,7 +178,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             Trace("About to Built Estate Management UI Container");
             ContainerBuilder containerBuilder = new Builder().UseContainer().WithName(this.EstateManagementUiContainerName)
                                                              .UseImageDetails(("estateadministrationui", false)).WithEnvironment(environmentVariables.ToArray())
-                                                             .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.HostTraceFolder)
+                                                             .UseNetwork(networkServices.ToArray()).ExposePort(5004).MountHostFolder(this.DockerPlatform, this.HostTraceFolder)
                                                              .SetDockerCredentials(this.DockerCredentials);
             Trace("About to Call .Start()");
             IContainerService builtContainer = containerBuilder.Build().Start().WaitForPort("5004/tcp", 30000);
@@ -193,7 +208,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             this.EstateManagementUiPort = builtContainer.ToHostExposedEndpoint($"5004/tcp").Port;
 
             Trace("Estate Management UI Started");
-            this.Containers.Add(builtContainer);
+            this.Containers.Add(((DockerServices)1024, builtContainer));
             //await Retry.For(async () =>
             //{
             //    String healthCheck =
@@ -233,7 +248,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
                                                                      .WithEnvironment(environmentVariables.ToArray())
                                                                      .UseImageDetails(this.GetImageDetails(ContainerType.SecurityService))
                                                                      .ExposePort(DockerPorts.SecurityServiceDockerPort, DockerPorts.SecurityServiceDockerPort)
-                                                                     .MountHostFolder(this.HostTraceFolder)
+                                                                     .MountHostFolder(this.DockerPlatform, this.HostTraceFolder)
                                                                      .SetDockerCredentials(this.DockerCredentials);
 
             // Now build and return the container                
@@ -243,11 +258,11 @@ namespace EstateAdministrationUI.IntegrationTests.Common
         /// <summary>
         /// Stops the containers for scenario run.
         /// </summary>
-        public override async Task StopContainersForScenarioRun()
+        public override async Task StopContainersForScenarioRun(DockerServices sharedDockerServices)
         {
             await this.RemoveEstateReadModel().ConfigureAwait(false);
 
-            await base.StopContainersForScenarioRun();
+            await base.StopContainersForScenarioRun(sharedDockerServices);
         }
 
         private async Task RemoveEstateReadModel()

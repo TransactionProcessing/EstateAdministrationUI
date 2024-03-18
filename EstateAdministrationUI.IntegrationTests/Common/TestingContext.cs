@@ -4,17 +4,17 @@
     using System.Collections.Generic;
     using System.Linq;
     using EstateManagement.IntegrationTesting.Helpers;
+    using Reqnroll;
     using SecurityService.DataTransferObjects.Responses;
     using Shared.IntegrationTesting;
     using Shared.Logger;
     using Shouldly;
-    using TechTalk.SpecFlow;
 
     public class TestingContext
     {
-        public EstateDetails GetEstateDetails(TableRow tableRow, Guid? testId = null)
+        public EstateDetails GetEstateDetails(DataTableRow tableRow, Guid? testId = null)
         {
-            String estateName = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", testId.Value.ToString("N"));
+            String estateName = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", testId.Value.ToString("N"));
 
             EstateDetails estateDetails = this.Estates.SingleOrDefault(e => e.EstateName == estateName);
 

@@ -12,13 +12,13 @@
     using EstateManagement.IntegrationTesting.Helpers;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.Extensions;
+    using Reqnroll;
     using SecurityService.DataTransferObjects;
     using SecurityService.DataTransferObjects.Requests;
     using SecurityService.DataTransferObjects.Responses;
     using SecurityService.IntegrationTesting.Helpers;
     using Shared.IntegrationTesting;
     using Shouldly;
-    using TechTalk.SpecFlow;
 
     [Binding]
     [Scope(Tag = "shared")]
@@ -82,7 +82,7 @@
         }
 
         [Given(@"I create the following api resources")]
-        public async Task GivenICreateTheFollowingApiResources(Table table){
+        public async Task GivenICreateTheFollowingApiResources(DataTable table){
             List<CreateApiResourceRequest> requests = table.Rows.ToCreateApiResourceRequests();
             await this.SecurityServiceSteps.GivenTheFollowingApiResourcesExist(requests);
 
@@ -92,13 +92,13 @@
         }
 
         [Given(@"I create the following api scopes")]
-        public async Task GivenICreateTheFollowingApiScopes(Table table){
+        public async Task GivenICreateTheFollowingApiScopes(DataTable table){
             List<CreateApiScopeRequest> requests = table.Rows.ToCreateApiScopeRequests();
             await this.SecurityServiceSteps.GivenICreateTheFollowingApiScopes(requests);
         }
 
         [Given(@"I create the following clients")]
-        public async Task GivenICreateTheFollowingClients(Table table){
+        public async Task GivenICreateTheFollowingClients(DataTable table){
             List<CreateClientRequest> requests = table.Rows.ToCreateClientRequests(this.TestingContext.DockerHelper.TestId, this.TestingContext.DockerHelper.EstateManagementUiPort);
             List<(String clientId, String secret, List<String> allowedGrantTypes)> clients = await this.SecurityServiceSteps.GivenTheFollowingClientsExist(requests);
             foreach ((String clientId, String secret, List<String> allowedGrantTypes) client in clients){
@@ -107,18 +107,18 @@
         }
 
         [Given(@"I create the following identity resources")]
-        public async Task GivenICreateTheFollowingIdentityResources(Table table){
-            foreach (TableRow tableRow in table.Rows)
+        public async Task GivenICreateTheFollowingIdentityResources(DataTable table){
+            foreach (DataTableRow tableRow in table.Rows)
             {
                 // Get the scopes
-                String userClaims = SpecflowTableHelper.GetStringRowValue(tableRow, "UserClaims");
+                String userClaims = ReqnrollTableHelper.GetStringRowValue(tableRow, "UserClaims");
 
                 CreateIdentityResourceRequest createIdentityResourceRequest = new CreateIdentityResourceRequest
                 {
-                    Name = SpecflowTableHelper.GetStringRowValue(tableRow, "Name"),
+                    Name = ReqnrollTableHelper.GetStringRowValue(tableRow, "Name"),
                     Claims = String.IsNullOrEmpty(userClaims) ? null : userClaims.Split(",").ToList(),
-                    Description = SpecflowTableHelper.GetStringRowValue(tableRow, "Description"),
-                    DisplayName = SpecflowTableHelper.GetStringRowValue(tableRow, "DisplayName")
+                    Description = ReqnrollTableHelper.GetStringRowValue(tableRow, "Description"),
+                    DisplayName = ReqnrollTableHelper.GetStringRowValue(tableRow, "DisplayName")
                 };
 
                 await this.CreateIdentityResource(createIdentityResourceRequest, CancellationToken.None).ConfigureAwait(false);
@@ -126,7 +126,7 @@
         }
 
         [Given(@"I create the following roles")]
-        public async Task GivenICreateTheFollowingRoles(Table table){
+        public async Task GivenICreateTheFollowingRoles(DataTable table){
             List<CreateRoleRequest> requests = table.Rows.ToCreateRoleRequests();
             List<(String, Guid)> responses = await this.SecurityServiceSteps.GivenICreateTheFollowingRoles(requests, CancellationToken.None);
 
@@ -136,7 +136,7 @@
         }
 
         [Given(@"I create the following users")]
-        public async Task GivenICreateTheFollowingUsers(Table table){
+        public async Task GivenICreateTheFollowingUsers(DataTable table){
             List<CreateUserRequest> requests = table.Rows.ToCreateUserRequests();
             foreach (CreateUserRequest createUserRequest in requests){
                 createUserRequest.EmailAddress = createUserRequest.EmailAddress.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
@@ -154,66 +154,21 @@
             {
                 this.TestingContext.Users.Add(response.Item1, response.Item2);
             }
-            //foreach (TableRow tableRow in table.Rows){
-            //    // Get the claims
-            //    Dictionary<String, String> userClaims = null;
-            //    String claims = SpecflowTableHelper.GetStringRowValue(tableRow, "Claims");
-            //    if (String.IsNullOrEmpty(claims) == false){
-            //        userClaims = new Dictionary<String, String>();
-            //        String[] claimList = claims.Split(",");
-            //        foreach (String claim in claimList){
-            //            // Split into claim name and value
-            //            String[] c = claim.Split(":");
-            //            userClaims.Add(c[0], c[1]);
-            //        }
-            //    }
-
-            //    String roles = SpecflowTableHelper.GetStringRowValue(tableRow, "Roles");
-            //    roles = roles.Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
-
-            //    CreateUserRequest createUserRequest = new CreateUserRequest{
-            //                                                                   EmailAddress = SpecflowTableHelper.GetStringRowValue(tableRow, "Email Address").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N")),
-            //                                                                   FamilyName = SpecflowTableHelper.GetStringRowValue(tableRow, "Family Name"),
-            //                                                                   GivenName = SpecflowTableHelper.GetStringRowValue(tableRow, "Given Name"),
-            //                                                                   PhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "Phone Number"),
-            //                                                                   MiddleName = SpecflowTableHelper.GetStringRowValue(tableRow, "Middle name"),
-            //                                                                   Claims = userClaims,
-            //                                                                   Roles = String.IsNullOrEmpty(roles) ? null : roles.Split(",").ToList(),
-            //                                                                   Password = SpecflowTableHelper.GetStringRowValue(tableRow, "Password")
-            //                                                               };
-            //    CreateUserResponse createUserResponse = await this.CreateUser(createUserRequest, CancellationToken.None).ConfigureAwait(false);
-
-            //    createUserResponse.ShouldNotBeNull();
-            //    createUserResponse.UserId.ShouldNotBe(Guid.Empty);
-
-            //    this.TestingContext.Users.Add(createUserRequest.EmailAddress, createUserResponse.UserId);
-            //}
         }
 
         [Given(@"I have a token to access the estate management resource")]
-        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(Table table){
-            TableRow firstRow = table.Rows.First();
-            String clientId = SpecflowTableHelper.GetStringRowValue(firstRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+        public async Task GivenIHaveATokenToAccessTheEstateManagementResource(DataTable table){
+            DataTableRow firstRow = table.Rows.First();
+            String clientId = ReqnrollTableHelper.GetStringRowValue(firstRow, "ClientId").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
             ClientDetails clientDetails = this.TestingContext.GetClientDetails(clientId);
 
             this.TestingContext.AccessToken = await this.SecurityServiceSteps.GetClientToken(clientDetails.ClientId, clientDetails.ClientSecret, CancellationToken.None);
         }
 
         [Given(@"I have created the following estates")]
-        public async Task GivenIHaveCreatedTheFollowingEstates(Table table){
+        public async Task GivenIHaveCreatedTheFollowingEstates(DataTable table){
             List<CreateEstateRequest> requests = table.Rows.ToCreateEstateRequests();
-
-            foreach (CreateEstateRequest request in requests){
-                // Setup the subscriptions for the estate
-                await Retry.For(async () => {
-                                    await this.TestingContext.DockerHelper
-                                              .CreateEstateSubscriptions(request.EstateName)
-                                              .ConfigureAwait(false);
-                                },
-                                retryFor:TimeSpan.FromMinutes(2),
-                                retryInterval:TimeSpan.FromSeconds(30));
-            }
-
+            
             List<EstateResponse> verifiedEstates = await this.EstateManagementSteps.WhenICreateTheFollowingEstates(this.TestingContext.AccessToken, requests);
 
             foreach (EstateResponse verifiedEstate in verifiedEstates){
@@ -234,7 +189,7 @@
         }
 
         [Given(@"I have created the following operators")]
-        public async Task GivenIHaveCreatedTheFollowingOperators(Table table){
+        public async Task GivenIHaveCreatedTheFollowingOperators(DataTable table){
             List<(EstateDetails estate, CreateOperatorRequest request)> requests = table.Rows.ToCreateOperatorRequests(this.TestingContext.Estates);
 
             List<(Guid, EstateOperatorResponse)> results = await this.EstateManagementSteps.WhenICreateTheFollowingOperators(this.TestingContext.AccessToken, requests);
@@ -320,9 +275,9 @@
         }
 
         [Then(@"My Estate Details will be shown")]
-        public async Task ThenMyEstateDetailsWillBeShown(Table table){
-            TableRow tableRow = table.Rows.Single();
-            String estateName  = SpecflowTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+        public async Task ThenMyEstateDetailsWillBeShown(DataTable table){
+            DataTableRow tableRow = table.Rows.Single();
+            String estateName  = ReqnrollTableHelper.GetStringRowValue(tableRow, "EstateName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
             await this.EstateAdministrationUiSteps.VerifyTheCorrectEstateDetailsAreDisplayed(estateName);
         }
 
@@ -332,29 +287,29 @@
         }
 
         [Then(@"the following contract details are in the list")]
-        public async Task ThenTheFollowingContractDetailsAreInTheList(Table table){
+        public async Task ThenTheFollowingContractDetailsAreInTheList(DataTable table){
             List<String> contractDescriptions = new List<String>();
-            foreach (TableRow tableRow in table.Rows){
-                contractDescriptions.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription"));
+            foreach (DataTableRow tableRow in table.Rows){
+                contractDescriptions.Add(ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription"));
             }
 
             await this.EstateAdministrationUiSteps.VerifyTheContractDetailsAreInTheList(contractDescriptions);
         }
 
         [Then(@"the following fee details are in the list")]
-        public async Task ThenTheFollowingFeeDetailsAreInTheList(Table table){
+        public async Task ThenTheFollowingFeeDetailsAreInTheList(DataTable table){
             List<String> feeDescriptions = new List<String>();
-            foreach (TableRow tableRow in table.Rows){
-                feeDescriptions.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "Description"));
+            foreach (DataTableRow tableRow in table.Rows){
+                feeDescriptions.Add(ReqnrollTableHelper.GetStringRowValue(tableRow, "Description"));
             }
 
             await this.EstateAdministrationUiSteps.VerifyTheFeeDetailsAreInTheList(feeDescriptions);
         }
 
         [Then(@"the following merchants details are in the list")]
-        public async Task ThenTheFollowingMerchantsDetailsAreInTheList(Table table){
+        public async Task ThenTheFollowingMerchantsDetailsAreInTheList(DataTable table){
             List<EstateAdministrationUISteps.MerchantDetails> merchantDetailsList = new List<EstateAdministrationUISteps.MerchantDetails>();
-            foreach (TableRow tableRow in table.Rows){
+            foreach (DataTableRow tableRow in table.Rows){
                 EstateAdministrationUISteps.MerchantDetails m = new EstateAdministrationUISteps.MerchantDetails(tableRow["MerchantName"],
                                                                                                                 tableRow["ContactName"],
                                                                                                                 tableRow["AddressLine1"],
@@ -369,22 +324,22 @@
         }
 
         [Then(@"the following operator details are in the list")]
-        public async Task ThenTheFollowingOperatorDetailsAreInTheList(Table table){
+        public async Task ThenTheFollowingOperatorDetailsAreInTheList(DataTable table){
             List<String> operatorsList = new List<String>();
-            foreach (TableRow tableRow in table.Rows)
+            foreach (DataTableRow tableRow in table.Rows)
             {
-                operatorsList.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName"));
+                operatorsList.Add(ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName"));
             }
 
             await this.EstateAdministrationUiSteps.VerifyOperatorDetailsAreInTheList(operatorsList);
         }
 
         [Then(@"the following product details are in the list")]
-        public async Task ThenTheFollowingProductDetailsAreInTheList(Table table){
+        public async Task ThenTheFollowingProductDetailsAreInTheList(DataTable table){
             List<String> productsList = new List<String>();
-            foreach (TableRow tableRow in table.Rows)
+            foreach (DataTableRow tableRow in table.Rows)
             {
-                productsList.Add(SpecflowTableHelper.GetStringRowValue(tableRow, "ProductName"));
+                productsList.Add(ReqnrollTableHelper.GetStringRowValue(tableRow, "ProductName"));
             }
 
             await this.EstateAdministrationUiSteps.VerifyProductDetailsAreInTheList(productsList);
@@ -396,7 +351,7 @@
         }
 
         [When(@"I add the following devices to the merchant")]
-        public async Task WhenIAddTheFollowingDevicesToTheMerchant(Table table){
+        public async Task WhenIAddTheFollowingDevicesToTheMerchant(DataTable table){
             List<(EstateDetails, Guid, AddMerchantDeviceRequest)> requests = table.Rows.ToAddMerchantDeviceRequests(this.TestingContext.Estates);
 
             List<(EstateDetails, MerchantResponse, String)> results = await this.EstateManagementSteps.GivenIHaveAssignedTheFollowingDevicesToTheMerchants(this.TestingContext.AccessToken, requests);
@@ -406,7 +361,7 @@
         }
 
         [When(@"I assign the following  operator to the merchants")]
-        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(Table table){
+        public async Task WhenIAssignTheFollowingOperatorToTheMerchants(DataTable table){
             List<(EstateDetails, Guid, AssignOperatorRequest)> requests = table.Rows.ToAssignOperatorRequests(this.TestingContext.Estates);
 
             List<(EstateDetails, MerchantOperatorResponse)> results = await this.EstateManagementSteps.WhenIAssignTheFollowingOperatorToTheMerchants(this.TestingContext.AccessToken, requests);
@@ -483,7 +438,7 @@
 
         [Given("I create the following merchants")]
         [When(@"I create the following merchants")]
-        public async Task WhenICreateTheFollowingMerchants(Table table){
+        public async Task WhenICreateTheFollowingMerchants(DataTable table){
             List<(EstateDetails estate, CreateMerchantRequest)> requests = table.Rows.ToCreateMerchantRequests(this.TestingContext.Estates);
 
             List<MerchantResponse> verifiedMerchants = await this.EstateManagementSteps.WhenICreateTheFollowingMerchants(this.TestingContext.AccessToken, requests);
@@ -497,36 +452,36 @@
 
         [When(@"I create the following security users")]
         [Given("I have created the following security users")]
-        public async Task WhenICreateTheFollowingSecurityUsers(Table table){
+        public async Task WhenICreateTheFollowingSecurityUsers(DataTable table){
             List<CreateNewUserRequest> createUserRequests = table.Rows.ToCreateNewUserRequests(this.TestingContext.Estates);
             await this.EstateManagementSteps.WhenICreateTheFollowingSecurityUsers(this.TestingContext.AccessToken, createUserRequests, this.TestingContext.Estates);
         }
 
         [When(@"I enter the following new contract details")]
-        public async Task WhenIEnterTheFollowingNewContractDetails(Table table){
-            TableRow tableRow = table.Rows.Single();
+        public async Task WhenIEnterTheFollowingNewContractDetails(DataTable table){
+            DataTableRow tableRow = table.Rows.Single();
 
-            String contractDescription = SpecflowTableHelper.GetStringRowValue(tableRow, "ContractDescription");
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
+            String contractDescription = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContractDescription");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName").Replace("[id]", this.TestingContext.DockerHelper.TestId.ToString("N"));
 
             await this.EstateAdministrationUiSteps.EnterContractDetails(contractDescription,
                                                                         operatorName);
         }
 
         [When(@"I enter the following new merchant details")]
-        public async Task WhenIEnterTheFollowingNewMerchantDetails(Table table){
-            TableRow tableRow = table.Rows.Single();
+        public async Task WhenIEnterTheFollowingNewMerchantDetails(DataTable table){
+            DataTableRow tableRow = table.Rows.Single();
 
-            String merchantName = SpecflowTableHelper.GetStringRowValue(tableRow, "MerchantName");
-            String addressLine1 = SpecflowTableHelper.GetStringRowValue(tableRow, "AddressLine1");
-            String town = SpecflowTableHelper.GetStringRowValue(tableRow, "Town");
-            String region = SpecflowTableHelper.GetStringRowValue(tableRow, "Region");
-            String postCode = SpecflowTableHelper.GetStringRowValue(tableRow, "PostCode");
-            String country = SpecflowTableHelper.GetStringRowValue(tableRow, "Country");
-            String contactName = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactName");
-            String contactEmail = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactEmail");
-            String contactPhoneNumber = SpecflowTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
-            String settlementSchedule = SpecflowTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
+            String merchantName = ReqnrollTableHelper.GetStringRowValue(tableRow, "MerchantName");
+            String addressLine1 = ReqnrollTableHelper.GetStringRowValue(tableRow, "AddressLine1");
+            String town = ReqnrollTableHelper.GetStringRowValue(tableRow, "Town");
+            String region = ReqnrollTableHelper.GetStringRowValue(tableRow, "Region");
+            String postCode = ReqnrollTableHelper.GetStringRowValue(tableRow, "PostCode");
+            String country = ReqnrollTableHelper.GetStringRowValue(tableRow, "Country");
+            String contactName = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContactName");
+            String contactEmail = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContactEmail");
+            String contactPhoneNumber = ReqnrollTableHelper.GetStringRowValue(tableRow, "ContactPhoneNumber");
+            String settlementSchedule = ReqnrollTableHelper.GetStringRowValue(tableRow, "SettlementSchedule");
 
             await this.EstateAdministrationUiSteps.EnterMerchantDetails(merchantName,
                                                                         addressLine1,
@@ -541,31 +496,31 @@
         }
 
         [When(@"I enter the following new operator details")]
-        public async Task WhenIEnterTheFollowingNewOperatorDetails(Table table){
-            TableRow tableRow = table.Rows.Single();
+        public async Task WhenIEnterTheFollowingNewOperatorDetails(DataTable table){
+            DataTableRow tableRow = table.Rows.Single();
 
-            String operatorName = SpecflowTableHelper.GetStringRowValue(tableRow, "OperatorName");
+            String operatorName = ReqnrollTableHelper.GetStringRowValue(tableRow, "OperatorName");
             await this.EstateAdministrationUiSteps.EnterOperatorDetails(operatorName);
         }
 
         [When(@"I enter the following new product details")]
-        public async Task WhenIEnterTheFollowingNewProductDetails(Table table){
-            TableRow productDetails = table.Rows.Single();
-            String productName = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductName");
-            String displayText = SpecflowTableHelper.GetStringRowValue(productDetails, "DisplayText");
-            String productValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
-            String productType = SpecflowTableHelper.GetStringRowValue(productDetails, "ProductType");
+        public async Task WhenIEnterTheFollowingNewProductDetails(DataTable table){
+            DataTableRow productDetails = table.Rows.Single();
+            String productName = ReqnrollTableHelper.GetStringRowValue(productDetails, "ProductName");
+            String displayText = ReqnrollTableHelper.GetStringRowValue(productDetails, "DisplayText");
+            String productValue = ReqnrollTableHelper.GetStringRowValue(productDetails, "Value");
+            String productType = ReqnrollTableHelper.GetStringRowValue(productDetails, "ProductType");
 
             await this.EstateAdministrationUiSteps.EnterProductDetails(productName, displayText, productValue, productType);
         }
 
         [When(@"I enter the following new transaction fee details")]
-        public async Task WhenIEnterTheFollowingNewTransactionFeeDetails(Table table){
-            TableRow productDetails = table.Rows.Single();
-            String description = SpecflowTableHelper.GetStringRowValue(productDetails, "Description");
-            String calculationType = SpecflowTableHelper.GetStringRowValue(productDetails, "CalculationType");
-            String feeType = SpecflowTableHelper.GetStringRowValue(productDetails, "FeeType");
-            String feeValue = SpecflowTableHelper.GetStringRowValue(productDetails, "Value");
+        public async Task WhenIEnterTheFollowingNewTransactionFeeDetails(DataTable table){
+            DataTableRow productDetails = table.Rows.Single();
+            String description = ReqnrollTableHelper.GetStringRowValue(productDetails, "Description");
+            String calculationType = ReqnrollTableHelper.GetStringRowValue(productDetails, "CalculationType");
+            String feeType = ReqnrollTableHelper.GetStringRowValue(productDetails, "FeeType");
+            String feeValue = ReqnrollTableHelper.GetStringRowValue(productDetails, "Value");
 
             await this.EstateAdministrationUiSteps.EnterTransactionFeeDetails(description, calculationType, feeType, feeValue);
         }
@@ -578,12 +533,12 @@
         }
 
         [When(@"I make the following deposit")]
-        public async Task WhenIMakeTheFollowingDeposit(Table table){
-            TableRow depositDetails = table.Rows.Single();
-            Decimal depositAmount = SpecflowTableHelper.GetDecimalValue(depositDetails, "DepositAmount");
-            String depositDateString = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositDate");
-            DateTime depositDate = SpecflowTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
-            String depositReference = SpecflowTableHelper.GetStringRowValue(depositDetails, "DepositReference");
+        public async Task WhenIMakeTheFollowingDeposit(DataTable table){
+            DataTableRow depositDetails = table.Rows.Single();
+            Decimal depositAmount = ReqnrollTableHelper.GetDecimalValue(depositDetails, "DepositAmount");
+            String depositDateString = ReqnrollTableHelper.GetStringRowValue(depositDetails, "DepositDate");
+            DateTime depositDate = ReqnrollTableHelper.GetDateForDateString(depositDateString, DateTime.Now);
+            String depositReference = ReqnrollTableHelper.GetStringRowValue(depositDetails, "DepositReference");
 
             await this.EstateAdministrationUiSteps.MakeMerchantDeposit(depositDate, depositAmount, depositReference);
         }
@@ -613,7 +568,7 @@
             }
             else
             {
-                if (identityResourceList.Where(i => i.Name == createIdentityResourceRequest.Name).Any())
+                if (identityResourceList.Any(i => i.Name == createIdentityResourceRequest.Name))
                 {
                     return;
                 }

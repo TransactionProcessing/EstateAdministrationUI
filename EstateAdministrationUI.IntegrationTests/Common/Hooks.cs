@@ -8,8 +8,8 @@
     using OpenQA.Selenium.Chrome;
     using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
+    using Reqnroll;
     using Shared.IntegrationTesting;
-    using TechTalk.SpecFlow;
 
     [Binding]
     public class Hooks
