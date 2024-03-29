@@ -1,36 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net7.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <!--<DebugType>None</DebugType>-->
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EstateManagement.Client" Version="2024.3.5-build77" />
-    <PackageReference Include="EstateManagement.Database" Version="2024.3.5-build77" />
-    <PackageReference Include="EstateManagement.IntegrationTesting.Helpers" Version="2024.3.5-build77" />
-    <PackageReference Include="EstateReportingAPI.Client" Version="2024.1.3-build34" />
+    <PackageReference Include="EstateManagement.Client" Version="2024.3.6-build80" />
+    <PackageReference Include="EstateManagement.Database" Version="2024.3.6-build80" />
+    <PackageReference Include="EstateManagement.IntegrationTesting.Helpers" Version="2024.3.6-build80" />
+    <PackageReference Include="EstateReportingAPI.Client" Version="2024.3.2-build37" />
     <PackageReference Include="EventStoreProjections" Version="2023.12.3" />
-    <PackageReference Include="MessagingService.IntegrationTesting.Helpers" Version="2023.11.2-build53" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MessagingService.IntegrationTesting.Helpers" Version="2024.3.2-build55" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Reqnroll.Tools.MsBuild.Generation" Version="1.0.1" />
     <PackageReference Include="Reqnroll.xUnit" Version="1.0.1" />
-    <PackageReference Include="SecurityService.Client" Version="2023.12.2-build58" />
-    <PackageReference Include="SecurityService.IntegrationTesting.Helpers" Version="2023.12.2-build58" />
-    <PackageReference Include="Selenium.Support" Version="4.15.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
+    <PackageReference Include="SecurityService.Client" Version="2024.3.2-build59" />
+    <PackageReference Include="SecurityService.IntegrationTesting.Helpers" Version="2024.3.2-build59" />
+    <PackageReference Include="Selenium.Support" Version="4.19.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.19.0" />
 	  <PackageReference Include="Ductus.FluentDocker" Version="2.10.59" />
-	  <PackageReference Include="Shared.IntegrationTesting" Version="2024.3.3" />
-    <PackageReference Include="TransactionProcessor.Client" Version="2024.3.3-build95" />
-    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2024.3.3-build95" />
-    <PackageReference Include="xunit" Version="2.6.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4">
+	  <PackageReference Include="Shared.IntegrationTesting" Version="2024.4.2" />
+    <PackageReference Include="TransactionProcessor.Client" Version="2024.3.4-build97" />
+    <PackageReference Include="TransactionProcessor.IntegrationTesting.Helpers" Version="2024.3.4-build97" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

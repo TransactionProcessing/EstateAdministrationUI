@@ -10,7 +10,6 @@
     using Common;
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
-    using LamarCodeGeneration.Frames;
     using NuGet.Protocol.Core.Types;
     using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
     
