@@ -4,7 +4,13 @@
     using System.Linq;
     using EstateAdministrationUI.Factories;
     using EstateManagement.DataTransferObjects.Requests;
-    using EstateManagement.DataTransferObjects.Responses;
+    using EstateManagement.DataTransferObjects.Requests.Contract;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using EstateManagement.DataTransferObjects.Requests.Operator;
+    using EstateManagement.DataTransferObjects.Responses.Contract;
+    using EstateManagement.DataTransferObjects.Responses.Estate;
+    using EstateManagement.DataTransferObjects.Responses.Merchant;
+    using EstateManagement.DataTransferObjects.Responses.Operator;
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
     using Factories;
@@ -14,9 +20,13 @@
     using Testing;
     using TransactionProcessor.DataTransferObjects;
     using Xunit;
-    using CalculationType = EstateManagement.DataTransferObjects.CalculationType;
-    using FeeType = EstateManagement.DataTransferObjects.FeeType;
+    using AddressResponse = EstateManagement.DataTransferObjects.Responses.AddressResponse;
+    using CalculationType = EstateManagement.DataTransferObjects.Responses.Contract.CalculationType;
+    using FeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
+    using MerchantOperatorResponse = EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse;
+    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
+    using SettlementSchedule = EstateManagement.DataTransferObjects.Responses.SettlementSchedule;
 
     public class ModelFactoryTests{
         #region Methods
@@ -771,11 +781,11 @@
         }
 
         [Theory]
-        [InlineData(SettlementSchedule.Immediate, EstateManagement.DataTransferObjects.SettlementSchedule.Immediate)]
-        [InlineData(SettlementSchedule.Weekly, EstateManagement.DataTransferObjects.SettlementSchedule.Weekly)]
-        [InlineData(SettlementSchedule.Monthly, EstateManagement.DataTransferObjects.SettlementSchedule.Monthly)]
-        public void ModelFactory_ConvertFrom_CreateMerchantModel_ModelIsConverted(SettlementSchedule settlementSchedule,
-                                                                                  EstateManagement.DataTransferObjects.SettlementSchedule expectedSettlementSchedule){
+        [InlineData(EstateAdministrationUI.BusinessLogic.Models.SettlementSchedule.Immediate, EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate)]
+        [InlineData(EstateAdministrationUI.BusinessLogic.Models.SettlementSchedule.Weekly, EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly)]
+        [InlineData(EstateAdministrationUI.BusinessLogic.Models.SettlementSchedule.Monthly, EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly)]
+        public void ModelFactory_ConvertFrom_CreateMerchantModel_ModelIsConverted(EstateAdministrationUI.BusinessLogic.Models.SettlementSchedule settlementSchedule,
+                                                                                  EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule expectedSettlementSchedule){
             CreateMerchantModel model = TestData.CreateMerchantModel(settlementSchedule);
 
             CreateMerchantRequest request = ModelFactory.ConvertFrom(model);
@@ -814,8 +824,6 @@
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.EstateId.ShouldBe(response.EstateId);
-            model.AddressId.ShouldBe(response.AddressId);
-            model.ContactId.ShouldBe(response.ContactId);
         }
 
         [Fact]
@@ -1143,9 +1151,9 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyAddress_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
-            response.Addresses = new List<AddressResponse>();
+            response.Addresses = new List<EstateManagement.DataTransferObjects.Responses.Merchant.AddressResponse>();
 
             MerchantModel model = ModelFactory.ConvertFrom(response, merchantBalanceResponse);
 
@@ -1184,7 +1192,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyContacts_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Contacts = new List<ContactResponse>();
 
@@ -1230,7 +1238,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyDevices_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Devices = new Dictionary<Guid, String>();
 
@@ -1280,9 +1288,9 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_EmptyOperators_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
-            response.Operators = new List<MerchantOperatorResponse>();
+            response.Operators = new List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantOperatorResponse>();
 
             MerchantModel model = ModelFactory.ConvertFrom(response, merchantBalanceResponse);
 
@@ -1325,12 +1333,12 @@
         }
 
         [Theory]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Immediate, SettlementSchedule.Immediate)]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Weekly, SettlementSchedule.Weekly)]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Monthly, SettlementSchedule.Monthly)]
-        public void ModelFactory_ConvertFrom_MerchantResponse_ModelIsConverted(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule,
-                                                                               SettlementSchedule expectedSettlementSchedule){
-            MerchantResponse response = TestData.MerchantResponse(settlementSchedule);
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate, Models.SettlementSchedule.Immediate)]
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly, Models.SettlementSchedule.Weekly)]
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly, Models.SettlementSchedule.Monthly)]
+        public void ModelFactory_ConvertFrom_MerchantResponse_ModelIsConverted(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule,
+                                                                               Models.SettlementSchedule expectedSettlementSchedule){
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse(settlementSchedule);
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
 
             MerchantModel model = ModelFactory.ConvertFrom(response, merchantBalanceResponse);
@@ -1384,7 +1392,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullAddress_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Addresses = null;
 
@@ -1425,7 +1433,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullBalance_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = null;
 
             MerchantModel model = ModelFactory.ConvertFrom(response, merchantBalanceResponse);
@@ -1478,7 +1486,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullContacts_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Contacts = null;
 
@@ -1524,7 +1532,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullDevices_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Devices = null;
 
@@ -1574,7 +1582,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullOperators_ModelIsConverted(){
-            MerchantResponse response = TestData.MerchantResponse();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = TestData.MerchantResponse();
             MerchantBalanceResponse merchantBalanceResponse = TestData.MerchantBalanceResponse;
             response.Operators = null;
 
@@ -1620,23 +1628,23 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponse_NullResponse_ErrorThrown(){
-            MerchantResponse response = null;
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = null;
 
             Should.Throw<ArgumentNullException>(() => { ModelFactory.ConvertFrom(response, null); });
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponseList_ModelIsConverted(){
-            List<MerchantResponse> responseList = new List<MerchantResponse>{
-                                                                                TestData.MerchantResponse()
-                                                                            };
+            List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse> responseList = new List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse>{
+                                                                                                                                                                                                TestData.MerchantResponse()
+                                                                                                                                                                                            };
 
             List<MerchantModel> modelList = ModelFactory.ConvertFrom(responseList);
 
             modelList.ShouldNotBeNull();
             modelList.ShouldNotBeEmpty();
             MerchantModel model = modelList.Single();
-            MerchantResponse response = responseList.Single();
+            EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse response = responseList.Single();
 
             model.MerchantId.ShouldBe(response.MerchantId);
             model.MerchantName.ShouldBe(response.MerchantName);
@@ -1684,7 +1692,7 @@
 
         [Fact]
         public void ModelFactory_ConvertFrom_MerchantResponseList_NullResponse_ErrorThrown(){
-            List<MerchantResponse> responseList = null;
+            List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse> responseList = null;
 
             Should.Throw<ArgumentNullException>(() => { ModelFactory.ConvertFrom(responseList); });
         }
@@ -1706,12 +1714,12 @@
         }
 
         [Theory]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Immediate, Models.SettlementSchedule.Immediate)]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Monthly, Models.SettlementSchedule.Monthly)]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.NotSet, Models.SettlementSchedule.Immediate)]
-        [InlineData(EstateManagement.DataTransferObjects.SettlementSchedule.Weekly, Models.SettlementSchedule.Weekly)]
-        public void ModelFactory_ConvertFrom_SettlementSchedule_IsConverted(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule, Models.SettlementSchedule expectedResult){
-            SettlementSchedule result = ModelFactory.ConvertFrom(settlementSchedule);
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate, Models.SettlementSchedule.Immediate)]
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Monthly, Models.SettlementSchedule.Monthly)]
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.NotSet, Models.SettlementSchedule.Immediate)]
+        [InlineData(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Weekly, Models.SettlementSchedule.Weekly)]
+        public void ModelFactory_ConvertFrom_SettlementSchedule_IsConverted(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule, Models.SettlementSchedule expectedResult){
+            Models.SettlementSchedule result = ModelFactory.ConvertFrom(settlementSchedule);
             result.ShouldBe(expectedResult);
         }
 

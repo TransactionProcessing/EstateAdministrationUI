@@ -223,21 +223,30 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  await testRunner.AndAsync("I have created the following operators", ((string)(null)), table33, "And ");
 #line hidden
             Reqnroll.Table table34 = new Reqnroll.Table(new string[] {
+                        "EstateName",
+                        "OperatorName"});
+            table34.AddRow(new string[] {
+                        "Test Estate",
+                        "Test Operator"});
+#line 46
+ await testRunner.AndAsync("I have assigned the following operators to the estates", ((string)(null)), table34, "And ");
+#line hidden
+            Reqnroll.Table table35 = new Reqnroll.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "EstateName"});
-            table34.AddRow(new string[] {
+            table35.AddRow(new string[] {
                         "estateuser@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate"});
-#line 46
- await testRunner.AndAsync("I have created the following security users", ((string)(null)), table34, "And ");
+#line 50
+ await testRunner.AndAsync("I have created the following security users", ((string)(null)), table35, "And ");
 #line hidden
-            Reqnroll.Table table35 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table36 = new Reqnroll.Table(new string[] {
                         "MerchantName",
                         "SettlementSchedule",
                         "AddressLine1",
@@ -247,7 +256,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "ContactName",
                         "EmailAddress",
                         "EstateName"});
-            table35.AddRow(new string[] {
+            table36.AddRow(new string[] {
                         "Test Merchant 1",
                         "Immediate",
                         "Address Line 1",
@@ -257,7 +266,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Contact 1",
                         "testcontact1@merchant1.co.uk",
                         "Test Estate"});
-            table35.AddRow(new string[] {
+            table36.AddRow(new string[] {
                         "Test Merchant 2",
                         "Weekly",
                         "Address Line 1",
@@ -267,7 +276,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Contact 1",
                         "testcontact1@merchant2.co.uk",
                         "Test Estate"});
-            table35.AddRow(new string[] {
+            table36.AddRow(new string[] {
                         "Test Merchant 3",
                         "Monthly",
                         "Address Line 1",
@@ -277,99 +286,99 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
                         "Test Contact 1",
                         "testcontact1@merchant3.co.uk",
                         "Test Estate"});
-#line 50
- await testRunner.GivenAsync("I create the following merchants", ((string)(null)), table35, "Given ");
+#line 54
+ await testRunner.GivenAsync("I create the following merchants", ((string)(null)), table36, "Given ");
 #line hidden
-            Reqnroll.Table table36 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table37 = new Reqnroll.Table(new string[] {
                         "OperatorName",
                         "MerchantName",
                         "MerchantNumber",
                         "TerminalNumber",
                         "EstateName"});
-            table36.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Test Operator",
                         "Test Merchant 1",
                         "00000001",
                         "10000001",
                         "Test Estate"});
-            table36.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Test Operator",
                         "Test Merchant 2",
                         "00000001",
                         "10000001",
                         "Test Estate"});
-            table36.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Test Operator",
                         "Test Merchant 3",
                         "00000001",
                         "10000001",
                         "Test Estate"});
-#line 56
- await testRunner.WhenAsync("I assign the following  operator to the merchants", ((string)(null)), table36, "When ");
+#line 60
+ await testRunner.WhenAsync("I assign the following  operator to the merchants", ((string)(null)), table37, "When ");
 #line hidden
-            Reqnroll.Table table37 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table38 = new Reqnroll.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "MerchantName",
                         "EstateName"});
-            table37.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "merchantuser1@testmerchant1.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 1",
                         "Test Estate"});
-            table37.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "merchantuser1@testmerchant2.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 2",
                         "Test Estate"});
-            table37.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "merchantuser1@testmerchant3.co.uk",
                         "123456",
                         "TestMerchant",
                         "User1",
                         "Test Merchant 3",
                         "Test Estate"});
-#line 62
- await testRunner.WhenAsync("I create the following security users", ((string)(null)), table37, "When ");
+#line 66
+ await testRunner.WhenAsync("I create the following security users", ((string)(null)), table38, "When ");
 #line hidden
-            Reqnroll.Table table38 = new Reqnroll.Table(new string[] {
+            Reqnroll.Table table39 = new Reqnroll.Table(new string[] {
                         "DeviceIdentifier",
                         "MerchantName",
                         "EstateName"});
-            table38.AddRow(new string[] {
+            table39.AddRow(new string[] {
                         "TestDevice1",
                         "Test Merchant 1",
                         "Test Estate"});
-            table38.AddRow(new string[] {
+            table39.AddRow(new string[] {
                         "TestDevice2",
                         "Test Merchant 2",
                         "Test Estate"});
-            table38.AddRow(new string[] {
+            table39.AddRow(new string[] {
                         "TestDevice3",
                         "Test Merchant 3",
                         "Test Estate"});
-#line 68
- await testRunner.WhenAsync("I add the following devices to the merchant", ((string)(null)), table38, "When ");
-#line hidden
-#line 74
- await testRunner.GivenAsync("I am on the application home page", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 76
- await testRunner.AndAsync("I click on the Sign In Button", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
+#line 72
+ await testRunner.WhenAsync("I add the following devices to the merchant", ((string)(null)), table39, "When ");
 #line hidden
 #line 78
- await testRunner.ThenAsync("I am presented with a login screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.GivenAsync("I am on the application home page", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 80
- await testRunner.WhenAsync("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+ await testRunner.AndAsync("I click on the Sign In Button", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 82
+ await testRunner.ThenAsync("I am presented with a login screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 84
+ await testRunner.WhenAsync("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 86
  await testRunner.ThenAsync("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
         }
@@ -381,7 +390,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Dashboard", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 84
+#line 88
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -407,7 +416,7 @@ await this.FeatureBackgroundAsync();
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Make Merchant Deposit", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 87
+#line 91
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -420,13 +429,13 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 88
+#line 92
  await testRunner.GivenAsync("I click on the My Merchants sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 89
+#line 93
  await testRunner.ThenAsync("I am presented with the Merchants List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table39 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table40 = new Reqnroll.Table(new string[] {
                             "MerchantName",
                             "ContactName",
                             "AddressLine1",
@@ -434,7 +443,7 @@ await this.FeatureBackgroundAsync();
                             "NumberOfUsers",
                             "NumberOfDevices",
                             "NumberOfOperators"});
-                table39.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Test Merchant 1",
                             "Test Contact 1",
                             "Address Line 1",
@@ -442,7 +451,7 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-                table39.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Test Merchant 2",
                             "Test Contact 1",
                             "Address Line 1",
@@ -450,7 +459,7 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-                table39.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Test Merchant 3",
                             "Test Contact 1",
                             "Address Line 1",
@@ -458,45 +467,45 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-#line 90
- await testRunner.AndAsync("the following merchants details are in the list", ((string)(null)), table39, "And ");
+#line 94
+ await testRunner.AndAsync("the following merchants details are in the list", ((string)(null)), table40, "And ");
 #line hidden
-#line 95
+#line 99
  await testRunner.WhenAsync("I click the Make Deposit button for \'Test Merchant 1\' from the merchant list", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 96
+#line 100
  await testRunner.ThenAsync("I am presented the make merchant deposit screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table40 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table41 = new Reqnroll.Table(new string[] {
                             "DepositAmount",
                             "DepositDate",
                             "DepositReference"});
-                table40.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "1000",
                             "Today",
                             "Test Deposit 1"});
-#line 97
- await testRunner.WhenAsync("I make the following deposit", ((string)(null)), table40, "When ");
-#line hidden
-#line 100
- await testRunner.ThenAsync("I am presented with the Merchants List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
 #line 101
- await testRunner.WhenAsync("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 102
- await testRunner.ThenAsync("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 103
- await testRunner.AndAsync("the available balance for the merchant should be 1000.00", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
+ await testRunner.WhenAsync("I make the following deposit", ((string)(null)), table41, "When ");
 #line hidden
 #line 104
- await testRunner.GivenAsync("I click on the My Merchants sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 105
  await testRunner.ThenAsync("I am presented with the Merchants List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table41 = new Reqnroll.Table(new string[] {
+#line 105
+ await testRunner.WhenAsync("I select \'Test Merchant 1\' from the merchant list", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 106
+ await testRunner.ThenAsync("I am presented the merchant details screen for \'Test Merchant 1\'", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 107
+ await testRunner.AndAsync("the available balance for the merchant should be 1000.00", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 108
+ await testRunner.GivenAsync("I click on the My Merchants sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 109
+ await testRunner.ThenAsync("I am presented with the Merchants List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+                Reqnroll.Table table42 = new Reqnroll.Table(new string[] {
                             "MerchantName",
                             "ContactName",
                             "AddressLine1",
@@ -504,7 +513,7 @@ await this.FeatureBackgroundAsync();
                             "NumberOfUsers",
                             "NumberOfDevices",
                             "NumberOfOperators"});
-                table41.AddRow(new string[] {
+                table42.AddRow(new string[] {
                             "Test Merchant 1",
                             "Test Contact 1",
                             "Address Line 1",
@@ -512,7 +521,7 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-                table41.AddRow(new string[] {
+                table42.AddRow(new string[] {
                             "Test Merchant 2",
                             "Test Contact 1",
                             "Address Line 1",
@@ -520,7 +529,7 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-                table41.AddRow(new string[] {
+                table42.AddRow(new string[] {
                             "Test Merchant 3",
                             "Test Contact 1",
                             "Address Line 1",
@@ -528,16 +537,16 @@ await this.FeatureBackgroundAsync();
                             "0",
                             "1",
                             "1"});
-#line 106
- await testRunner.AndAsync("the following merchants details are in the list", ((string)(null)), table41, "And ");
+#line 110
+ await testRunner.AndAsync("the following merchants details are in the list", ((string)(null)), table42, "And ");
 #line hidden
-#line 111
+#line 115
  await testRunner.WhenAsync("I click the Add New Merchant button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 112
+#line 116
  await testRunner.ThenAsync("I am presented the new merchant screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table42 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table43 = new Reqnroll.Table(new string[] {
                             "MerchantName",
                             "SettlementSchedule",
                             "AddressLine1",
@@ -548,7 +557,7 @@ await this.FeatureBackgroundAsync();
                             "ContactName",
                             "ContactEmail",
                             "ContactPhoneNumber"});
-                table42.AddRow(new string[] {
+                table43.AddRow(new string[] {
                             "Test Merchant 4",
                             "Monthly",
                             "Address Line 1",
@@ -559,16 +568,16 @@ await this.FeatureBackgroundAsync();
                             "Test Contact 4",
                             "testcontact@testmerchant4.co.uk",
                             "0123456789"});
-#line 113
- await testRunner.WhenAsync("I enter the following new merchant details", ((string)(null)), table42, "When ");
+#line 117
+ await testRunner.WhenAsync("I enter the following new merchant details", ((string)(null)), table43, "When ");
 #line hidden
-#line 116
+#line 120
  await testRunner.WhenAsync("I click the Create Merchant button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 117
+#line 121
  await testRunner.ThenAsync("I am presented the merchant details screen for \'Test Merchant 4\'", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 118
+#line 122
  await testRunner.AndAsync("the merchants settlement schedule is \'Monthly\'", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
 #line hidden
             }

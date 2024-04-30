@@ -11,7 +11,7 @@
     public interface IApiClient{
         #region Methods
 
-        Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
+        Task AddDeviceToMerchant(String accessToken,
                                                                  Guid actionId,
                                                                  Guid estateId,
                                                                  Guid merchantId,
@@ -34,7 +34,7 @@
                                                                                                      addTransactionFeeToContractProductModel,
                                                                                                  CancellationToken cancellationToken);
 
-        Task<AssignOperatorToMerchantResponseModel> AssignOperatorToMerchant(String accessToken,
+        Task AssignOperatorToMerchant(String accessToken,
                                                                              Guid actionId,
                                                                              Guid estateId,
                                                                              Guid merchantId,

@@ -10,7 +10,13 @@
     using BusinessLogic.Models;
     using EstateManagement.Client;
     using EstateManagement.DataTransferObjects.Requests;
-    using EstateManagement.DataTransferObjects.Responses;
+    using EstateManagement.DataTransferObjects.Requests.Contract;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using EstateManagement.DataTransferObjects.Requests.Operator;
+    using EstateManagement.DataTransferObjects.Responses.Contract;
+    using EstateManagement.DataTransferObjects.Responses.Estate;
+    using EstateManagement.DataTransferObjects.Responses.Merchant;
+    using EstateManagement.DataTransferObjects.Responses.Operator;
     using EstateReportingAPI.Client;
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
@@ -21,6 +27,7 @@
     using Shared.Logger;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;
+    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
     using TopBottom = BusinessLogic.Models.TopBottom;
 
     /// <summary>
@@ -57,23 +64,19 @@
 
         #region Methods
 
-        public async Task<AddMerchantDeviceResponseModel> AddDeviceToMerchant(String accessToken,
+        public async Task AddDeviceToMerchant(String accessToken,
                                                                               Guid actionId,
                                                                               Guid estateId,
                                                                               Guid merchantId,
                                                                               AddMerchantDeviceModel merchantDeviceModel,
                                                                               CancellationToken cancellationToken){
-            async Task<AddMerchantDeviceResponseModel> ClientMethod()
+            async Task ClientMethod()
             {
                 AddMerchantDeviceRequest apiRequest = ModelFactory.ConvertFrom(merchantDeviceModel);
 
-                AddMerchantDeviceResponse apiResponse = await this.EstateClient.AddDeviceToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
-
-                AddMerchantDeviceResponseModel addMerchantDeviceResponseModel = ModelFactory.ConvertFrom(apiResponse);
-
-                return addMerchantDeviceResponseModel;
+                await this.EstateClient.AddDeviceToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
             }
-            return await CallClientMethod<AddMerchantDeviceResponseModel>(ClientMethod, cancellationToken);
+            await CallClientMethod(ClientMethod, cancellationToken);
         }
 
         public async Task<AddProductToContractResponseModel> AddProductToContract(String accessToken,
@@ -117,23 +120,19 @@
             return await CallClientMethod<AddTransactionFeeToContractProductResponseModel>(ClientMethod, cancellationToken);
         }
 
-        public async Task<AssignOperatorToMerchantResponseModel> AssignOperatorToMerchant(String accessToken,
+        public async Task AssignOperatorToMerchant(String accessToken,
                                                                                           Guid actionId,
                                                                                           Guid estateId,
                                                                                           Guid merchantId,
                                                                                           AssignOperatorToMerchantModel assignOperatorToMerchantModel,
                                                                                           CancellationToken cancellationToken){
-            async Task<AssignOperatorToMerchantResponseModel> ClientMethod()
+            async Task ClientMethod()
             {
                 AssignOperatorRequest apiRequest = ModelFactory.ConvertFrom(assignOperatorToMerchantModel);
 
-                AssignOperatorResponse apiResponse = await this.EstateClient.AssignOperatorToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
-
-                AssignOperatorToMerchantResponseModel assignOperatorToMerchantResponseModel = ModelFactory.ConvertFrom(apiResponse);
-
-                return assignOperatorToMerchantResponseModel;
+                await this.EstateClient.AssignOperatorToMerchant(accessToken, estateId, merchantId, apiRequest, cancellationToken);
             }
-            return await CallClientMethod<AssignOperatorToMerchantResponseModel>(ClientMethod, cancellationToken);
+            await CallClientMethod(ClientMethod, cancellationToken);
         }
 
         public async Task<CreateContractResponseModel> CreateContract(String accessToken,
@@ -177,17 +176,19 @@
                                                                       Guid estateId,
                                                                       CreateOperatorModel createOperatorModel,
                                                                       CancellationToken cancellationToken){
-            async Task<CreateOperatorResponseModel> ClientMethod()
-            {
-                CreateOperatorRequest apiRequest = ModelFactory.ConvertFrom(createOperatorModel);
+            //async Task<CreateOperatorResponseModel> ClientMethod()
+            //{
+            //    CreateOperatorRequest apiRequest = ModelFactory.ConvertFrom(createOperatorModel);
 
-                CreateOperatorResponse apiResponse = await this.EstateClient.CreateOperator(accessToken, estateId, apiRequest, cancellationToken);
+            //    CreateOperatorResponse apiResponse = await this.EstateClient.CreateOperator(accessToken, estateId, apiRequest, cancellationToken);
 
-                CreateOperatorResponseModel createOperatorResponseModel = ModelFactory.ConvertFrom(apiResponse);
+            //    CreateOperatorResponseModel createOperatorResponseModel = ModelFactory.ConvertFrom(apiResponse);
 
-                return createOperatorResponseModel;
-            }
-            return await CallClientMethod<CreateOperatorResponseModel>(ClientMethod, cancellationToken);
+            //    return createOperatorResponseModel;
+            //}
+            //return await CallClientMethod<CreateOperatorResponseModel>(ClientMethod, cancellationToken);
+            // TODO: upgarde this as part of UI changes for create/assign operators
+            return null;
         }
 
         public async Task<ContractModel> GetContract(String accessToken,
@@ -319,7 +320,7 @@
                                                      CancellationToken cancellationToken){
             async Task<MerchantModel> ClientMethod()
             {
-                MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
+                EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse merchant = await this.EstateClient.GetMerchant(accessToken, estateId, merchantId, cancellationToken);
                 MerchantBalanceResponse merchantBalance = await this.TransactionProcessorClient.GetMerchantBalance(accessToken, estateId, merchantId, cancellationToken);
 
                 return ModelFactory.ConvertFrom(merchant, merchantBalance);
@@ -367,7 +368,7 @@
                                                             CancellationToken cancellationToken){
             async Task<List<MerchantModel>> ClientMethod()
             {
-                List<MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
+                List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse> merchants = await this.EstateClient.GetMerchants(accessToken, estateId, cancellationToken);
 
                 return ModelFactory.ConvertFrom(merchants);
             }
@@ -589,6 +590,19 @@
         private async Task<T> CallClientMethod<T>(Func<Task<T>> clientMethod, CancellationToken cancellationToken){
             try{
                 return await clientMethod();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+                throw;
+            }
+        }
+
+        private async Task CallClientMethod(Func<Task> clientMethod, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await clientMethod();
             }
             catch (Exception e)
             {

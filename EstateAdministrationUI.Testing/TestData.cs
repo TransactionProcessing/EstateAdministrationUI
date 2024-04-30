@@ -5,14 +5,20 @@
     using Areas.Estate.Models;
     using BusinessLogic.Models;
     using EstateManagement.DataTransferObjects;
-    using EstateManagement.DataTransferObjects.Responses;
+    using EstateManagement.DataTransferObjects.Responses.Contract;
+    using EstateManagement.DataTransferObjects.Responses.Estate;
+    using EstateManagement.DataTransferObjects.Responses.Merchant;
+    using EstateManagement.DataTransferObjects.Responses.Operator;
     using FileProcessor.DataTransferObjects.Responses;
     using TransactionProcessor.DataTransferObjects;
-    using DTOCalculationType = EstateManagement.DataTransferObjects.CalculationType;
-    using DTOFeeType = EstateManagement.DataTransferObjects.FeeType;
+    using AddressResponse = EstateManagement.DataTransferObjects.Responses.AddressResponse;
+    using DTOCalculationType = EstateManagement.DataTransferObjects.Responses.Contract.CalculationType;
+    using DTOFeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
     using CalculationType = BusinessLogic.Models.CalculationType;
     using FileLineProcessingResult = FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult;
+    using MerchantOperatorResponse = EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse;
+    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
     using SettlementSchedule = BusinessLogic.Models.SettlementSchedule;
 
     public class TestData
@@ -275,9 +281,7 @@
             new CreateMerchantResponse
             {
                 MerchantId = TestData.MerchantId,
-                EstateId = TestData.EstateId,
-                ContactId = TestData.ContactId,
-                AddressId = TestData.AddressId
+                EstateId = TestData.EstateId
             };
 
         public static MerchantBalanceResponse MerchantBalanceResponse =>
@@ -288,8 +292,8 @@
                                               MerchantId = TestData.MerchantId
                                           };
 
-        public static MerchantResponse MerchantResponse(EstateManagement.DataTransferObjects.SettlementSchedule settlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule.Immediate) =>
-            new MerchantResponse
+        public static EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse MerchantResponse(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule = EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule.Immediate) =>
+            new EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse
             {
                 MerchantId = TestData.MerchantId,
                 SettlementSchedule = settlementSchedule,
@@ -309,9 +313,9 @@
                           {
                               {TestData.DeviceId, TestData.DeviceIdentifier}
                           },
-                Operators = new List<MerchantOperatorResponse>
+                Operators = new List<EstateManagement.DataTransferObjects.Responses.Merchant.MerchantOperatorResponse>
                             {
-                                new MerchantOperatorResponse
+                                new EstateManagement.DataTransferObjects.Responses.Merchant.MerchantOperatorResponse
                                 {
                                     OperatorId = TestData.OperatorId,
                                     MerchantNumber = TestData.MerchantNumber,
@@ -319,9 +323,9 @@
                                     Name = TestData.MerchantName
                                 }
                             },
-                Addresses = new List<AddressResponse>
+                Addresses = new List<EstateManagement.DataTransferObjects.Responses.Merchant.AddressResponse>
                             {
-                                new AddressResponse
+                                new EstateManagement.DataTransferObjects.Responses.Merchant.AddressResponse
                                 {
                                     AddressLine4 = TestData.MerchantAddressLine4,
                                     AddressLine1 = TestData.MerchantAddressLine1,

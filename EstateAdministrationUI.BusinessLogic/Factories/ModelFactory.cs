@@ -5,7 +5,13 @@
     using System.Linq;
     using EstateManagement.DataTransferObjects;
     using EstateManagement.DataTransferObjects.Requests;
-    using EstateManagement.DataTransferObjects.Responses;
+    using EstateManagement.DataTransferObjects.Requests.Contract;
+    using EstateManagement.DataTransferObjects.Requests.Merchant;
+    using EstateManagement.DataTransferObjects.Requests.Operator;
+    using EstateManagement.DataTransferObjects.Responses.Contract;
+    using EstateManagement.DataTransferObjects.Responses.Estate;
+    using EstateManagement.DataTransferObjects.Responses.Merchant;
+    using EstateManagement.DataTransferObjects.Responses.Operator;
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
     using FileProcessor.DataTransferObjects.Responses;
@@ -13,8 +19,12 @@
     using Microsoft.EntityFrameworkCore.Internal;
     using Models;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
-    using SettlementSchedule = EstateManagement.DataTransferObjects.SettlementSchedule;
+    using SettlementSchedule = EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule;
     using TransactionProcessor.DataTransferObjects;
+    using CalculationType = EstateManagement.DataTransferObjects.Responses.Contract.CalculationType;
+    using FeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
+    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.Merchant.MerchantResponse;
+
     public static class ModelFactory
     {
 
@@ -242,8 +252,8 @@
                 throw new ArgumentNullException(nameof(source));
             }
 
-            EstateManagement.DataTransferObjects.CalculationType calculationType = Enum.Parse<EstateManagement.DataTransferObjects.CalculationType>(source.CalculationType.ToString(), true);
-            EstateManagement.DataTransferObjects.FeeType feeType = Enum.Parse<EstateManagement.DataTransferObjects.FeeType>(source.FeeType.ToString(), true);
+            CalculationType calculationType = Enum.Parse<CalculationType>(source.CalculationType.ToString(), true);
+            FeeType feeType = Enum.Parse<FeeType>(source.FeeType.ToString(), true);
             AddTransactionFeeForProductToContractRequest addTransactionFeeForProductToContractRequest = new AddTransactionFeeForProductToContractRequest
                                                                                                         {
                                                                                                             Value = source.Value,
@@ -518,14 +528,13 @@
             {
                 throw new ArgumentNullException(nameof(merchantResponse));
             }
-
+            
             MerchantModel merchantModel = new MerchantModel
                                           {
                                               EstateId = merchantResponse.EstateId,
                                               MerchantId = merchantResponse.MerchantId,
                                               MerchantName = merchantResponse.MerchantName,
-
-                                              SettlementSchedule = ConvertFrom(merchantResponse.SettlementSchedule)
+                                              SettlementSchedule = ConvertFrom(merchantResponse.SettlementSchedule),
                                           };
 
             if (merchantResponse.Addresses != null && merchantResponse.Addresses.Any())
@@ -598,8 +607,6 @@
 
             return new CreateMerchantResponseModel
                    {
-                       AddressId = source.AddressId,
-                       ContactId = source.ContactId,
                        MerchantId = source.MerchantId,
                        EstateId = source.EstateId
                    };
@@ -648,7 +655,7 @@
             };
         }
 
-        public static Models.SettlementSchedule ConvertFrom(SettlementSchedule settlementSchedule)
+        public static Models.SettlementSchedule ConvertFrom(EstateManagement.DataTransferObjects.Responses.Merchant.SettlementSchedule settlementSchedule)
         {
             return settlementSchedule switch
             {
