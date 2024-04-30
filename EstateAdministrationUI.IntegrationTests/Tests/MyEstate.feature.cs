@@ -19,46 +19,43 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "1.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [Xunit.TraitAttribute("Category", "base")]
-    [Xunit.TraitAttribute("Category", "shared")]
-    public partial class MyEstateFeature : object, Xunit.IClassFixture<MyEstateFeature.FixtureData>, Xunit.IAsyncLifetime
+    [NUnit.Framework.TestFixtureAttribute()]
+    [NUnit.Framework.DescriptionAttribute("MyEstate")]
+    [NUnit.Framework.CategoryAttribute("base")]
+    [NUnit.Framework.CategoryAttribute("shared")]
+    public partial class MyEstateFeature
     {
         
-        private static Reqnroll.ITestRunner testRunner;
+        private Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
                 "base",
                 "shared"};
         
-        private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
-        
 #line 1 "MyEstate.feature"
 #line hidden
         
-        public MyEstateFeature(MyEstateFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        [NUnit.Framework.OneTimeSetUpAttribute()]
+        public virtual async System.Threading.Tasks.Task FeatureSetupAsync()
         {
-            this._testOutputHelper = testOutputHelper;
-        }
-        
-        public static async System.Threading.Tasks.Task FeatureSetupAsync()
-        {
-            testRunner = Reqnroll.TestRunnerManager.GetTestRunnerForAssembly(null, Reqnroll.xUnit.ReqnrollPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
+            testRunner = Reqnroll.TestRunnerManager.GetTestRunnerForAssembly(null, NUnit.Framework.TestContext.CurrentContext.WorkerId);
             Reqnroll.FeatureInfo featureInfo = new Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Tests", "MyEstate", null, ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
         }
         
-        public static async System.Threading.Tasks.Task FeatureTearDownAsync()
+        [NUnit.Framework.OneTimeTearDownAttribute()]
+        public virtual async System.Threading.Tasks.Task FeatureTearDownAsync()
         {
-            string testWorkerId = testRunner.TestWorkerId;
             await testRunner.OnFeatureEndAsync();
             testRunner = null;
-            Reqnroll.xUnit.ReqnrollPlugin.XUnitParallelWorkerTracker.Instance.ReleaseWorker(testWorkerId);
         }
         
+        [NUnit.Framework.SetUpAttribute()]
         public async System.Threading.Tasks.Task TestInitializeAsync()
         {
         }
         
+        [NUnit.Framework.TearDownAttribute()]
         public async System.Threading.Tasks.Task TestTearDownAsync()
         {
             await testRunner.OnScenarioEndAsync();
@@ -67,7 +64,7 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
         public void ScenarioInitialize(Reqnroll.ScenarioInfo scenarioInfo)
         {
             testRunner.OnScenarioInitialize(scenarioInfo);
-            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<Xunit.Abstractions.ITestOutputHelper>(_testOutputHelper);
+            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<NUnit.Framework.TestContext>(NUnit.Framework.TestContext.CurrentContext);
         }
         
         public async System.Threading.Tasks.Task ScenarioStartAsync()
@@ -224,56 +221,56 @@ namespace EstateAdministrationUI.IntegrationTests.Tests
  await testRunner.AndAsync("I have created the following operators", ((string)(null)), table8, "And ");
 #line hidden
             Reqnroll.Table table9 = new Reqnroll.Table(new string[] {
+                        "EstateName",
+                        "OperatorName"});
+            table9.AddRow(new string[] {
+                        "Test Estate",
+                        "Test Operator"});
+#line 45
+ await testRunner.AndAsync("I have assigned the following operators to the estates", ((string)(null)), table9, "And ");
+#line hidden
+            Reqnroll.Table table10 = new Reqnroll.Table(new string[] {
                         "EmailAddress",
                         "Password",
                         "GivenName",
                         "FamilyName",
                         "EstateName"});
-            table9.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "estateuser@testestate1.co.uk",
                         "123456",
                         "TestEstate",
                         "User1",
                         "Test Estate"});
-#line 45
- await testRunner.AndAsync("I have created the following security users", ((string)(null)), table9, "And ");
-#line hidden
 #line 49
- await testRunner.GivenAsync("I am on the application home page", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 51
- await testRunner.AndAsync("I click on the Sign In Button", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
+ await testRunner.AndAsync("I have created the following security users", ((string)(null)), table10, "And ");
 #line hidden
 #line 53
- await testRunner.ThenAsync("I am presented with a login screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.GivenAsync("I am on the application home page", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 55
- await testRunner.WhenAsync("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+ await testRunner.AndAsync("I click on the Sign In Button", ((string)(null)), ((Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 57
+ await testRunner.ThenAsync("I am presented with a login screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 59
+ await testRunner.WhenAsync("I login with the username \'estateuser@testestate1.co.uk\' and password \'123456\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 61
  await testRunner.ThenAsync("I am presented with the Estate Administrator Dashboard", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
         }
         
-        async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
-        {
-            await this.TestInitializeAsync();
-        }
-        
-        async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
-        {
-            await this.TestTearDownAsync();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Create New Operator")]
-        [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
-        [Xunit.TraitAttribute("Description", "Create New Operator")]
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Create New Operator")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         public async System.Threading.Tasks.Task CreateNewOperator()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Create New Operator", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 73
+#line 79
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -286,81 +283,80 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 74
+#line 80
  await testRunner.GivenAsync("I click on the My Estate sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 75
+#line 81
  await testRunner.ThenAsync("I am presented with the Estate Details Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table10 = new Reqnroll.Table(new string[] {
-                            "EstateName"});
-                table10.AddRow(new string[] {
-                            "Test Estate"});
-#line 76
- await testRunner.AndAsync("My Estate Details will be shown", ((string)(null)), table10, "And ");
-#line hidden
-#line 79
- await testRunner.GivenAsync("I click on the My Operators sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 80
- await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
                 Reqnroll.Table table11 = new Reqnroll.Table(new string[] {
-                            "OperatorName"});
+                            "EstateName"});
                 table11.AddRow(new string[] {
-                            "Test Operator"});
-#line 81
- await testRunner.AndAsync("the following operator details are in the list", ((string)(null)), table11, "And ");
-#line hidden
-#line 84
- await testRunner.WhenAsync("I click the Add New Operator button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+                            "Test Estate"});
+#line 82
+ await testRunner.AndAsync("My Estate Details will be shown", ((string)(null)), table11, "And ");
 #line hidden
 #line 85
- await testRunner.ThenAsync("I am presented the new operator screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.GivenAsync("I click on the My Operators sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 86
+ await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table12 = new Reqnroll.Table(new string[] {
                             "OperatorName"});
                 table12.AddRow(new string[] {
-                            "Test New Operator"});
-#line 86
- await testRunner.WhenAsync("I enter the following new operator details", ((string)(null)), table12, "When ");
-#line hidden
-#line 89
- await testRunner.WhenAsync("I click the Create Operator button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+                            "Test Operator"});
+#line 87
+ await testRunner.AndAsync("the following operator details are in the list", ((string)(null)), table12, "And ");
 #line hidden
 #line 90
- await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.WhenAsync("I click the Add New Operator button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 91
- await testRunner.GivenAsync("I click on the My Operators sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 92
- await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I am presented the new operator screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table13 = new Reqnroll.Table(new string[] {
                             "OperatorName"});
                 table13.AddRow(new string[] {
-                            "Test Operator"});
-                table13.AddRow(new string[] {
                             "Test New Operator"});
-#line 93
- await testRunner.AndAsync("the following operator details are in the list", ((string)(null)), table13, "And ");
+#line 92
+ await testRunner.WhenAsync("I enter the following new operator details", ((string)(null)), table13, "When ");
+#line hidden
+#line 95
+ await testRunner.WhenAsync("I click the Create Operator button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 96
+ await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 97
+ await testRunner.GivenAsync("I click on the My Operators sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 98
+ await testRunner.ThenAsync("I am presented with the Operators List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+                Reqnroll.Table table14 = new Reqnroll.Table(new string[] {
+                            "OperatorName"});
+                table14.AddRow(new string[] {
+                            "Test Operator"});
+                table14.AddRow(new string[] {
+                            "Test New Operator"});
+#line 99
+ await testRunner.AndAsync("the following operator details are in the list", ((string)(null)), table14, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Create New Contract")]
-        [Xunit.TraitAttribute("FeatureTitle", "MyEstate")]
-        [Xunit.TraitAttribute("Description", "Create New Contract")]
-        [Xunit.TraitAttribute("Category", "PRTest")]
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Create New Contract")]
+        [NUnit.Framework.CategoryAttribute("PRTest")]
         public async System.Threading.Tasks.Task CreateNewContract()
         {
             string[] tagsOfScenario = new string[] {
                     "PRTest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             Reqnroll.ScenarioInfo scenarioInfo = new Reqnroll.ScenarioInfo("Create New Contract", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 99
+#line 105
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -373,222 +369,206 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 100
+#line 106
  await testRunner.GivenAsync("I click on the My Contracts sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 101
+#line 107
  await testRunner.ThenAsync("I am presented with the Contracts List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 103
- await testRunner.WhenAsync("I click the Add New Contract button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 104
- await testRunner.ThenAsync("I am presented the new contract screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-                Reqnroll.Table table14 = new Reqnroll.Table(new string[] {
-                            "OperatorName",
-                            "ContractDescription"});
-                table14.AddRow(new string[] {
-                            "Test Operator",
-                            "Test Contract"});
-#line 105
- await testRunner.WhenAsync("I enter the following new contract details", ((string)(null)), table14, "When ");
-#line hidden
-#line 108
- await testRunner.WhenAsync("I click the Create Contract button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 109
- await testRunner.ThenAsync("I am presented with the Contracts List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.WhenAsync("I click the Add New Contract button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 110
+ await testRunner.ThenAsync("I am presented the new contract screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table15 = new Reqnroll.Table(new string[] {
+                            "OperatorName",
                             "ContractDescription"});
                 table15.AddRow(new string[] {
+                            "Test Operator",
                             "Test Contract"});
-#line 110
- await testRunner.AndAsync("the following contract details are in the list", ((string)(null)), table15, "And ");
+#line 111
+ await testRunner.WhenAsync("I enter the following new contract details", ((string)(null)), table15, "When ");
 #line hidden
 #line 114
- await testRunner.WhenAsync("I click the Products Link for \'Test Contract\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+ await testRunner.WhenAsync("I click the Create Contract button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 115
- await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 116
- await testRunner.WhenAsync("I click the Add New Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 117
- await testRunner.ThenAsync("I am presented the new product screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I am presented with the Contracts List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table16 = new Reqnroll.Table(new string[] {
+                            "ContractDescription"});
+                table16.AddRow(new string[] {
+                            "Test Contract"});
+#line 116
+ await testRunner.AndAsync("the following contract details are in the list", ((string)(null)), table16, "And ");
+#line hidden
+#line 120
+ await testRunner.WhenAsync("I click the Products Link for \'Test Contract\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 121
+ await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 122
+ await testRunner.WhenAsync("I click the Add New Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 123
+ await testRunner.ThenAsync("I am presented the new product screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+                Reqnroll.Table table17 = new Reqnroll.Table(new string[] {
                             "ProductName",
                             "DisplayText",
                             "Value",
                             "ProductType"});
-                table16.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "100 KES Topup",
                             "100 KES",
                             "100.00",
                             "Mobile Topup"});
-#line 118
- await testRunner.WhenAsync("I enter the following new product details", ((string)(null)), table16, "When ");
-#line hidden
-#line 121
- await testRunner.WhenAsync("I click the Create Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 122
- await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-                Reqnroll.Table table17 = new Reqnroll.Table(new string[] {
-                            "ProductName"});
-                table17.AddRow(new string[] {
-                            "100 KES Topup"});
-#line 123
- await testRunner.AndAsync("the following product details are in the list", ((string)(null)), table17, "And ");
+#line 124
+ await testRunner.WhenAsync("I enter the following new product details", ((string)(null)), table17, "When ");
 #line hidden
 #line 127
- await testRunner.WhenAsync("I click the Transaction Fees Link for \'100 KES Topup\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+ await testRunner.WhenAsync("I click the Create Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 128
- await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 129
- await testRunner.WhenAsync("I click the Add New Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 130
- await testRunner.ThenAsync("I am presented the new transaction fee screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table18 = new Reqnroll.Table(new string[] {
+                            "ProductName"});
+                table18.AddRow(new string[] {
+                            "100 KES Topup"});
+#line 129
+ await testRunner.AndAsync("the following product details are in the list", ((string)(null)), table18, "And ");
+#line hidden
+#line 133
+ await testRunner.WhenAsync("I click the Transaction Fees Link for \'100 KES Topup\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 134
+ await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 135
+ await testRunner.WhenAsync("I click the Add New Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 136
+ await testRunner.ThenAsync("I am presented the new transaction fee screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+                Reqnroll.Table table19 = new Reqnroll.Table(new string[] {
                             "Description",
                             "CalculationType",
                             "FeeType",
                             "Value"});
-                table18.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Merchant Commission",
                             "Percentage",
                             "Merchant",
                             "0.05"});
-#line 131
- await testRunner.WhenAsync("I enter the following new transaction fee details", ((string)(null)), table18, "When ");
-#line hidden
-#line 134
- await testRunner.WhenAsync("I click the Create Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 135
- await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-                Reqnroll.Table table19 = new Reqnroll.Table(new string[] {
-                            "Description"});
-                table19.AddRow(new string[] {
-                            "Merchant Commission"});
-#line 136
- await testRunner.AndAsync("the following fee details are in the list", ((string)(null)), table19, "And ");
+#line 137
+ await testRunner.WhenAsync("I enter the following new transaction fee details", ((string)(null)), table19, "When ");
 #line hidden
 #line 140
- await testRunner.GivenAsync("I click on the My Contracts sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
+ await testRunner.WhenAsync("I click the Create Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 141
- await testRunner.ThenAsync("I am presented with the Contracts List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table20 = new Reqnroll.Table(new string[] {
-                            "ContractDescription"});
+                            "Description"});
                 table20.AddRow(new string[] {
-                            "Test Contract"});
+                            "Merchant Commission"});
 #line 142
- await testRunner.AndAsync("the following contract details are in the list", ((string)(null)), table20, "And ");
+ await testRunner.AndAsync("the following fee details are in the list", ((string)(null)), table20, "And ");
 #line hidden
-#line 145
- await testRunner.WhenAsync("I click the Products Link for \'Test Contract\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line 146
+ await testRunner.GivenAsync("I click on the My Contracts sidebar option", ((string)(null)), ((Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 147
- await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 148
- await testRunner.WhenAsync("I click the Add New Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+ await testRunner.ThenAsync("I am presented with the Contracts List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table21 = new Reqnroll.Table(new string[] {
-                            "ProductName",
-                            "DisplayText",
-                            "Value",
-                            "ProductType"});
+                            "ContractDescription"});
                 table21.AddRow(new string[] {
-                            "Custom Value Topup",
-                            "Custom",
-                            "",
-                            "Mobile Topup"});
-#line 149
- await testRunner.WhenAsync("I enter the following new product details", ((string)(null)), table21, "When ");
+                            "Test Contract"});
+#line 148
+ await testRunner.AndAsync("the following contract details are in the list", ((string)(null)), table21, "And ");
 #line hidden
-#line 152
- await testRunner.WhenAsync("I click the Create Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line 151
+ await testRunner.WhenAsync("I click the Products Link for \'Test Contract\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 153
  await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table22 = new Reqnroll.Table(new string[] {
-                            "ProductName"});
-                table22.AddRow(new string[] {
-                            "100 KES Topup"});
-                table22.AddRow(new string[] {
-                            "Custom Value Topup"});
 #line 154
- await testRunner.AndAsync("the following product details are in the list", ((string)(null)), table22, "And ");
+ await testRunner.WhenAsync("I click the Add New Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+                Reqnroll.Table table22 = new Reqnroll.Table(new string[] {
+                            "ProductName",
+                            "DisplayText",
+                            "Value",
+                            "ProductType"});
+                table22.AddRow(new string[] {
+                            "Custom Value Topup",
+                            "Custom",
+                            "",
+                            "Mobile Topup"});
+#line 155
+ await testRunner.WhenAsync("I enter the following new product details", ((string)(null)), table22, "When ");
+#line hidden
+#line 158
+ await testRunner.WhenAsync("I click the Create Product button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 159
- await testRunner.WhenAsync("I click the Transaction Fees Link for \'Custom Value Topup\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 160
- await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 161
- await testRunner.WhenAsync("I click the Add New Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 162
- await testRunner.ThenAsync("I am presented the new transaction fee screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I am presented with the Products List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
                 Reqnroll.Table table23 = new Reqnroll.Table(new string[] {
+                            "ProductName"});
+                table23.AddRow(new string[] {
+                            "100 KES Topup"});
+                table23.AddRow(new string[] {
+                            "Custom Value Topup"});
+#line 160
+ await testRunner.AndAsync("the following product details are in the list", ((string)(null)), table23, "And ");
+#line hidden
+#line 165
+ await testRunner.WhenAsync("I click the Transaction Fees Link for \'Custom Value Topup\'", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 166
+ await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 167
+ await testRunner.WhenAsync("I click the Add New Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 168
+ await testRunner.ThenAsync("I am presented the new transaction fee screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
+#line hidden
+                Reqnroll.Table table24 = new Reqnroll.Table(new string[] {
                             "Description",
                             "CalculationType",
                             "FeeType",
                             "Value"});
-                table23.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Merchant Commission",
                             "Percentage",
                             "Merchant",
                             "0.05"});
-#line 163
- await testRunner.WhenAsync("I enter the following new transaction fee details", ((string)(null)), table23, "When ");
+#line 169
+ await testRunner.WhenAsync("I enter the following new transaction fee details", ((string)(null)), table24, "When ");
 #line hidden
-#line 166
+#line 172
  await testRunner.WhenAsync("I click the Create Transaction Fee button", ((string)(null)), ((Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 167
+#line 173
  await testRunner.ThenAsync("I am presented with the Transaction Fee List Screen", ((string)(null)), ((Reqnroll.Table)(null)), "Then ");
 #line hidden
-                Reqnroll.Table table24 = new Reqnroll.Table(new string[] {
+                Reqnroll.Table table25 = new Reqnroll.Table(new string[] {
                             "Description"});
-                table24.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "Merchant Commission"});
-#line 168
- await testRunner.AndAsync("the following fee details are in the list", ((string)(null)), table24, "And ");
+#line 174
+ await testRunner.AndAsync("the following fee details are in the list", ((string)(null)), table25, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "1.0.0.0")]
-        [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-        public class FixtureData : object, Xunit.IAsyncLifetime
-        {
-            
-            async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
-            {
-                await MyEstateFeature.FeatureSetupAsync();
-            }
-            
-            async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
-            {
-                await MyEstateFeature.FeatureTearDownAsync();
-            }
         }
     }
 }

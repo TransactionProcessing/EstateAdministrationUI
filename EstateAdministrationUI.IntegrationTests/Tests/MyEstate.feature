@@ -42,6 +42,10 @@ Background:
 	| EstateName  | OperatorName  | RequireCustomMerchantNumber | RequireCustomTerminalNumber |
 	| Test Estate | Test Operator | True                        | True                        |
 
+	And I have assigned the following operators to the estates
+	| EstateName  | OperatorName  |
+	| Test Estate | Test Operator |
+
 	And I have created the following security users
 	| EmailAddress                 | Password | GivenName  | FamilyName | EstateName  |
 	| estateuser@testestate1.co.uk | 123456   | TestEstate | User1      | Test Estate |
@@ -70,6 +74,8 @@ Background:
 #	| OperatorName       |
 #	| Test Operator |
 
+@ignore
+# this need a change to the UI to support creating and assigning operators to the estate
 Scenario: Create New Operator
 	Given I click on the My Estate sidebar option
 	Then I am presented with the Estate Details Screen

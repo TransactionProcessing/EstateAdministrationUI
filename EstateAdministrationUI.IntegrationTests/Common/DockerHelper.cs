@@ -220,7 +220,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
 
             return builtContainer;
         }
-
+        
         public override ContainerBuilder SetupSecurityServiceContainer()
         {
             this.Trace("About to Start Security Container");
@@ -284,7 +284,8 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             //                    retryInterval: TimeSpan.FromSeconds(30));
             //}
         }
-        
+
+
         #endregion
     }
 }
