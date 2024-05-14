@@ -11,14 +11,11 @@
     using EstateManagement.DataTransferObjects.Responses.Operator;
     using FileProcessor.DataTransferObjects.Responses;
     using TransactionProcessor.DataTransferObjects;
-    using AddressResponse = EstateManagement.DataTransferObjects.Responses.AddressResponse;
     using DTOCalculationType = EstateManagement.DataTransferObjects.Responses.Contract.CalculationType;
     using DTOFeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
     using FeeType = BusinessLogic.Models.FeeType;
     using CalculationType = BusinessLogic.Models.CalculationType;
     using FileLineProcessingResult = FileProcessor.DataTransferObjects.Responses.FileLineProcessingResult;
-    using MerchantOperatorResponse = EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse;
-    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
     using SettlementSchedule = BusinessLogic.Models.SettlementSchedule;
 
     public class TestData

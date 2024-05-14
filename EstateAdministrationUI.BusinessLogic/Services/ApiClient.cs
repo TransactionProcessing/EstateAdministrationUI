@@ -27,7 +27,6 @@
     using Shared.Logger;
     using TransactionProcessor.Client;
     using TransactionProcessor.DataTransferObjects;
-    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
     using TopBottom = BusinessLogic.Models.TopBottom;
 
     /// <summary>

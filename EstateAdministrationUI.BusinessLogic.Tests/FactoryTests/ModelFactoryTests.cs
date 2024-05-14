@@ -20,13 +20,9 @@
     using Testing;
     using TransactionProcessor.DataTransferObjects;
     using Xunit;
-    using AddressResponse = EstateManagement.DataTransferObjects.Responses.AddressResponse;
     using CalculationType = EstateManagement.DataTransferObjects.Responses.Contract.CalculationType;
     using FeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
-    using MerchantOperatorResponse = EstateManagement.DataTransferObjects.Responses.MerchantOperatorResponse;
-    using MerchantResponse = EstateManagement.DataTransferObjects.Responses.MerchantResponse;
-    using SettlementSchedule = EstateManagement.DataTransferObjects.Responses.SettlementSchedule;
 
     public class ModelFactoryTests{
         #region Methods
