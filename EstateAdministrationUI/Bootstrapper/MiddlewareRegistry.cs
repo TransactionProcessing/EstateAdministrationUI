@@ -19,63 +19,72 @@
         public MiddlewareRegistry()
         {
             this.AddHealthChecks().AddSecurityService(this.ApiEndpointHttpHandler).AddEstateManagementService();
-            
-            this.AddAuthentication(options =>
-                                   {
+
+            this.AddAuthentication(options => {
                                        options.DefaultScheme = "Cookies";
                                        options.DefaultChallengeScheme = "oidc";
                                    })
                 .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                                          {
-                                              HttpClientHandler handler = new HttpClientHandler();
-                                              handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                                              options.BackchannelHttpHandler = handler;
+                .AddOpenIdConnect("oidc",
+                                  options => {
+                                      String authority = ConfigurationReader.GetValue("Authority");
+                                      String securityServiceLocalPort = ConfigurationReader.GetValue("SecurityServiceLocalPort");
+                                      String securityServicePort = ConfigurationReader.GetValue("SecurityServicePort");
 
-                                              options.Authority = ConfigurationReader.GetValue("Authority");
-                                              options.TokenValidationParameters = new TokenValidationParameters
-                                                                                  {
-                                                                                      ValidateAudience = false,
-                                                                                      NameClaimType = JwtClaimTypes.Name,
-                                                                                      RoleClaimType = JwtClaimTypes.Role,
-                                                                                  };
+                                      if (String.IsNullOrEmpty(securityServiceLocalPort)){
+                                          securityServiceLocalPort = "5001";
+                                      }
 
-                                              options.ClientSecret =
-                                                  ConfigurationReader.GetValue("ClientSecret");
-                                              options.ClientId = ConfigurationReader.GetValue("ClientId");
+                                      if (String.IsNullOrEmpty(securityServicePort)){
+                                          securityServicePort = "5001";
+                                      }
 
-                                              options.MetadataAddress = $"{ConfigurationReader.GetValue("Authority")}/.well-known/openid-configuration";
+                                      HttpClientHandler handler = new HttpClientHandler();
+                                      handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                                      options.BackchannelHttpHandler = handler;
 
-                                              options.ResponseType = "code id_token";
+                                      options.Authority = $"{authority}:{securityServiceLocalPort}";
+                                      options.TokenValidationParameters = new TokenValidationParameters{
+                                                                                                           ValidateAudience = false,
+                                                                                                           NameClaimType = JwtClaimTypes.Name,
+                                                                                                           RoleClaimType = JwtClaimTypes.Role,
+                                                                                                       };
 
-                                              options.Scope.Clear();
-                                              options.Scope.Add("openid");
-                                              options.Scope.Add("profile");
-                                              options.Scope.Add("email");
-                                              options.Scope.Add("offline_access");
+                                      options.ClientSecret =
+                                          ConfigurationReader.GetValue("ClientSecret");
+                                      options.ClientId = ConfigurationReader.GetValue("ClientId");
 
-                                              options.Scope.Add("estateManagement");
-                                              options.Scope.Add("fileProcessor");
-                                              options.Scope.Add("transactionProcessor");
+                                      options.MetadataAddress = $"{authority}:{securityServiceLocalPort}/.well-known/openid-configuration";
 
-                                              options.ClaimActions.MapAllExcept("iss",
-                                                                                "nbf",
-                                                                                "exp",
-                                                                                "aud",
-                                                                                "nonce",
-                                                                                "iat",
-                                                                                "c_hash");
+                                      options.ResponseType = "code id_token";
 
-                                              options.GetClaimsFromUserInfoEndpoint = true;
-                                              options.SaveTokens = true;
+                                      options.Scope.Clear();
+                                      options.Scope.Add("openid");
+                                      options.Scope.Add("profile");
+                                      options.Scope.Add("email");
+                                      options.Scope.Add("offline_access");
 
-                                              options.Events.OnRedirectToIdentityProvider = context =>
-                                                                                            {
-                                                                                                // Intercept the redirection so the browser navigates to the right URL in your host
-                                                                                                context.ProtocolMessage.IssuerAddress = $"{ConfigurationReader.GetValue("Authority")}/connect/authorize";
-                                                                                                return Task.CompletedTask;
-                                                                                            };
-                                          });
+                                      options.Scope.Add("estateManagement");
+                                      options.Scope.Add("fileProcessor");
+                                      options.Scope.Add("transactionProcessor");
+
+                                      options.ClaimActions.MapAllExcept("iss",
+                                                                        "nbf",
+                                                                        "exp",
+                                                                        "aud",
+                                                                        "nonce",
+                                                                        "iat",
+                                                                        "c_hash");
+
+                                      options.GetClaimsFromUserInfoEndpoint = true;
+                                      options.SaveTokens = true;
+
+                                      options.Events.OnRedirectToIdentityProvider = context => {
+                                                                                        // Intercept the redirection so the browser navigates to the right URL in your host
+                                                                                        context.ProtocolMessage.IssuerAddress = $"{authority}:{securityServicePort}/connect/authorize";
+                                                                                        return Task.CompletedTask;
+                                                                                    };
+                                  });
         }
 
         private HttpClientHandler ApiEndpointHttpHandler(IServiceProvider serviceProvider)
