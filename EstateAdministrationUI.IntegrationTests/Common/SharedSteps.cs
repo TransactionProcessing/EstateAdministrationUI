@@ -49,7 +49,6 @@
         #region Constructors
 
         public SharedSteps(ScenarioContext scenarioContext, TestingContext testingContext, IObjectContainer container){
-
             var webDriver = scenarioContext.ScenarioContainer.Resolve<IWebDriver>(scenarioContext.ScenarioInfo.Title.Replace(" ", ""));
             
             this.TestingContext = testingContext;

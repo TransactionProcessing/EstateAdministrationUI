@@ -15,7 +15,8 @@
     public class Hooks
     {
         private readonly IObjectContainer ObjectContainer;
-        private IWebDriver WebDriver;
+        private ScenarioContext ScenarioContext;
+
 
         public Hooks(IObjectContainer objectContainer)
         {
@@ -23,21 +24,24 @@
         }
 
         [BeforeScenario(Order = 0)]
-        public async Task BeforeScenario(ScenarioContext scenarioContext)
-        {
+        public async Task BeforeScenario(ScenarioContext scenarioContext){
+            this.ScenarioContext = scenarioContext;
             String scenarioName = scenarioContext.ScenarioInfo.Title.Replace(" ", "");
-            this.WebDriver = await this.CreateWebDriver();
-            this.WebDriver.Manage().Window.Maximize();
+            IWebDriver webDriver = await this.CreateWebDriver();
+            
+            webDriver.Manage().Window.Maximize();
             //this.ObjectContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
-            scenarioContext.ScenarioContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
+            scenarioContext.ScenarioContainer.RegisterInstanceAs(webDriver, scenarioName);
         }
 
         [AfterScenario(Order = 0)]
         public void AfterScenario()
         {
-            if (this.WebDriver != null)
+            String scenarioName = ScenarioContext.ScenarioInfo.Title.Replace(" ", "");
+            IWebDriver webDriver = ScenarioContext.ScenarioContainer.Resolve<IWebDriver>(ScenarioContext.ScenarioInfo.Title.Replace(" ", ""));
+            if (webDriver != null)
             {
-                this.WebDriver.Quit(); //.Dispose();
+                webDriver.Quit(); //.Dispose();
             }
         }
 
@@ -54,6 +58,7 @@
                 case "Chrome":
                 {
                     ChromeOptions options = new ChromeOptions();
+                    
                     options = options.WithNoSandBox()
                                      .WithAcceptInsecureCertificate()
                                      .WithDisableDevShmUsage()
