@@ -23,10 +23,12 @@
         }
 
         [BeforeScenario(Order = 0)]
-        public async Task BeforeScenario(){
+        public async Task BeforeScenario(ScenarioContext scenarioContext)
+        {
+            String scenarioName = scenarioContext.ScenarioInfo.Title.Replace(" ", "");
             this.WebDriver = await this.CreateWebDriver();
             this.WebDriver.Manage().Window.Maximize();
-            this.ObjectContainer.RegisterInstanceAs(this.WebDriver, Guid.NewGuid().ToString("N"));
+            this.ObjectContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
         }
 
         [AfterScenario(Order = 0)]
