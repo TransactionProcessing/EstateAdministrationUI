@@ -28,7 +28,8 @@
             String scenarioName = scenarioContext.ScenarioInfo.Title.Replace(" ", "");
             this.WebDriver = await this.CreateWebDriver();
             this.WebDriver.Manage().Window.Maximize();
-            this.ObjectContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
+            //this.ObjectContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
+            scenarioContext.ScenarioContainer.RegisterInstanceAs(this.WebDriver, scenarioName);
         }
 
         [AfterScenario(Order = 0)]

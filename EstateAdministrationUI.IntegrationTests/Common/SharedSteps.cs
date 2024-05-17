@@ -50,7 +50,7 @@
 
         public SharedSteps(ScenarioContext scenarioContext, TestingContext testingContext, IObjectContainer container){
 
-            var webDriver = container.Resolve<IWebDriver>(scenarioContext.ScenarioInfo.Title.Replace(" ", ""));
+            var webDriver = scenarioContext.ScenarioContainer.Resolve<IWebDriver>(scenarioContext.ScenarioInfo.Title.Replace(" ", ""));
             
             this.TestingContext = testingContext;
             //this.WebDriver = webDriver;
