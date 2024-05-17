@@ -26,7 +26,7 @@
         public async Task BeforeScenario(){
             this.WebDriver = await this.CreateWebDriver();
             this.WebDriver.Manage().Window.Maximize();
-            this.ObjectContainer.RegisterInstanceAs(this.WebDriver,Guid.NewGuid().ToString("N"), true);
+            this.ObjectContainer.RegisterInstanceAs(this.WebDriver);
         }
 
         [AfterScenario(Order = 0)]
