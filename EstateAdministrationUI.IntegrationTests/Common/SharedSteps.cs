@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using BoDi;
     using EstateManagement.Database.Contexts;
     using EstateManagement.Database.Entities;
     using EstateManagement.DataTransferObjects.Requests;
@@ -47,9 +48,11 @@
 
         #region Constructors
 
-        public SharedSteps(TestingContext testingContext, IWebDriver webDriver){
+        public SharedSteps(ScenarioContext scenarioContext, TestingContext testingContext, IObjectContainer container){
+            var webDriver = scenarioContext.ScenarioContainer.Resolve<IWebDriver>(scenarioContext.ScenarioInfo.Title.Replace(" ", ""));
+            
             this.TestingContext = testingContext;
-            this.WebDriver = webDriver;
+            //this.WebDriver = webDriver;
             this.SecurityServiceSteps = new SecurityServiceSteps(this.TestingContext.DockerHelper.SecurityServiceClient);
             this.EstateManagementSteps = new EstateManagementSteps(this.TestingContext.DockerHelper.EstateClient, this.TestingContext.DockerHelper.HttpClient);
             this.EstateAdministrationUiSteps = new EstateAdministrationUISteps(webDriver, this.TestingContext.DockerHelper.EstateManagementUiPort);
