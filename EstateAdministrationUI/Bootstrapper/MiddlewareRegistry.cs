@@ -1,6 +1,9 @@
-﻿namespace EstateAdministrationUI.Bootstrapper
+﻿using Microsoft.Extensions.Logging;
+
+namespace EstateAdministrationUI.Bootstrapper
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -12,6 +15,7 @@
     using Microsoft.IdentityModel.Tokens;
     using Shared.Extensions;
     using Shared.General;
+    using Shared.Middleware;
 
     [ExcludeFromCodeCoverage]
     public class MiddlewareRegistry :ServiceRegistry
@@ -85,6 +89,15 @@
                                                                                         return Task.CompletedTask;
                                                                                     };
                                   });
+
+            bool logRequests = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
+            bool logResponses = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
+            LogLevel middlewareLogLevel = ConfigurationReaderExtensions.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
+
+            RequestResponseMiddlewareLoggingConfig config =
+                new RequestResponseMiddlewareLoggingConfig(middlewareLogLevel, logRequests, logResponses);
+
+            this.AddSingleton(config);
         }
 
         private HttpClientHandler ApiEndpointHttpHandler(IServiceProvider serviceProvider)
@@ -99,6 +112,28 @@
                                                                        return true;
                                                                    }
                    };
+        }
+    }
+
+    public static class ConfigurationReaderExtensions
+    {
+        public static T GetValueOrDefault<T>(String sectionName, String keyName, T defaultValue)
+        {
+            try
+            {
+                var value = ConfigurationReader.GetValue(sectionName, keyName);
+
+                if (String.IsNullOrEmpty(value))
+                {
+                    return defaultValue;
+                }
+
+                return (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch (KeyNotFoundException kex)
+            {
+                return defaultValue;
+            }
         }
     }
 }
