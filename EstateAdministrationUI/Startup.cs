@@ -75,21 +75,14 @@ namespace EstateAdministrationUI
         {
             String nlogConfigFilename = "nlog.config";
 
-            loggerFactory.ConfigureNLog(Path.Combine(Startup.WebHostEnvironment.ContentRootPath, nlogConfigFilename));
-            loggerFactory.AddNLog();
-
-            Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("EstateAdministrationUI");
-
-            Logger.Initialise(logger);
-
-            Action<String> loggerAction = message =>
-                                          {
-                                              Logger.LogInformation(message);
-                                          };
-            Startup.Configuration.LogConfiguration(loggerAction);
-
             if (env.IsDevelopment())
             {
+                var developmentNlogConfigFilename = "nlog.development.config";
+                if (File.Exists(Path.Combine(env.ContentRootPath, developmentNlogConfigFilename)))
+                {
+                    nlogConfigFilename = developmentNlogConfigFilename;
+                }
+
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
@@ -97,6 +90,15 @@ namespace EstateAdministrationUI
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            loggerFactory.ConfigureNLog(Path.Combine(Startup.WebHostEnvironment.ContentRootPath, nlogConfigFilename));
+            loggerFactory.AddNLog();
+
+            Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("EstateAdministrationUI");
+
+            Logger.Initialise(logger);
+            Startup.Configuration.LogConfiguration(Logger.LogWarning);
+            
             app.UseStaticFiles();
 
             app.UseRouting();
