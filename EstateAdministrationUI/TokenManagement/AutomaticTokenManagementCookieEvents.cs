@@ -73,21 +73,21 @@
             IEnumerable<AuthenticationToken> tokens = context.Properties.GetTokens();
             if (tokens == null || !tokens.Any())
             {
-                this.Logger.LogDebug("No tokens found in cookie properties. SaveTokens must be enabled for automatic token refresh.");
+                this.Logger.LogInformation("No tokens found in cookie properties. SaveTokens must be enabled for automatic token refresh.");
                 return;
             }
 
             AuthenticationToken refreshToken = tokens.SingleOrDefault(t => t.Name == OpenIdConnectParameterNames.RefreshToken);
             if (refreshToken == null)
             {
-                this.Logger.LogWarning("No refresh token found in cookie properties. A refresh token must be requested and SaveTokens must be enabled.");
+                this.Logger.LogInformation("No refresh token found in cookie properties. A refresh token must be requested and SaveTokens must be enabled.");
                 return;
             }
 
             AuthenticationToken expiresAt = tokens.SingleOrDefault(t => t.Name == "expires_at");
             if (expiresAt == null)
             {
-                this.Logger.LogWarning("No expires_at value found in cookie properties.");
+                this.Logger.LogInformation("No expires_at value found in cookie properties.");
                 return;
             }
 
@@ -138,21 +138,21 @@
 
             if (!result.Succeeded)
             {
-                this.Logger.LogDebug("Can't find cookie for default scheme. Might have been deleted already.");
+                this.Logger.LogInformation("Can't find cookie for default scheme. Might have been deleted already.");
                 return;
             }
 
             IEnumerable<AuthenticationToken> tokens = result.Properties.GetTokens();
             if (tokens == null || !tokens.Any())
             {
-                this.Logger.LogDebug("No tokens found in cookie properties. SaveTokens must be enabled for automatic token revocation.");
+                this.Logger.LogInformation("No tokens found in cookie properties. SaveTokens must be enabled for automatic token revocation.");
                 return;
             }
 
             AuthenticationToken refreshToken = tokens.SingleOrDefault(t => t.Name == OpenIdConnectParameterNames.RefreshToken);
             if (refreshToken == null)
             {
-                this.Logger.LogWarning("No refresh token found in cookie properties. A refresh token must be requested and SaveTokens must be enabled.");
+                this.Logger.LogInformation("No refresh token found in cookie properties. A refresh token must be requested and SaveTokens must be enabled.");
                 return;
             }
 

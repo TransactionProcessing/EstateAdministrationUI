@@ -472,7 +472,7 @@
         public async Task<TodaysSalesModel> GetTodaysSales(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, DateTime comparisonDate, CancellationToken cancellationToken){
             async Task<TodaysSalesModel> ClientMethod()
             {
-                TodaysSales apiResponse = await this.EstateReportingApiClient.GetTodaysSales(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+                TodaysSales apiResponse = await this.EstateReportingApiClient.GetTodaysSales(accessToken, estateId, 0, 0, comparisonDate, cancellationToken);
 
                 return ModelFactory.ConvertFrom(apiResponse);
             }
@@ -483,7 +483,7 @@
         public async Task<List<TodaysSalesCountByHourModel>> GetTodaysSalesCountByHour(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, DateTime comparisonDate, CancellationToken cancellationToken){
             async Task<List<TodaysSalesCountByHourModel>> ClientMethod()
             {
-                List<TodaysSalesCountByHour> apiResponse = await this.EstateReportingApiClient.GetTodaysSalesCountByHour(accessToken, estateId,merchantId, operatorId, comparisonDate, cancellationToken);
+                List<TodaysSalesCountByHour> apiResponse = await this.EstateReportingApiClient.GetTodaysSalesCountByHour(accessToken, estateId,0, 0, comparisonDate, cancellationToken);
 
                 return ModelFactory.ConvertFrom(apiResponse);
             }
@@ -494,7 +494,7 @@
         public async Task<List<TodaysSalesValueByHourModel>> GetTodaysSalesValueByHour(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, DateTime comparisonDate, CancellationToken cancellationToken){
             async Task<List<TodaysSalesValueByHourModel>> ClientMethod()
             {
-                List<TodaysSalesValueByHour> apiResponse = await this.EstateReportingApiClient.GetTodaysSalesValueByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+                List<TodaysSalesValueByHour> apiResponse = await this.EstateReportingApiClient.GetTodaysSalesValueByHour(accessToken, estateId, 0, 0, comparisonDate, cancellationToken);
 
                 return ModelFactory.ConvertFrom(apiResponse);
             }
@@ -505,7 +505,7 @@
         public async Task<TodaysSettlementModel> GetTodaysSettlement(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, DateTime comparisonDate, CancellationToken cancellationToken){
             async Task<TodaysSettlementModel> ClientMethod()
             {
-                TodaysSettlement apiResponse = await this.EstateReportingApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId,comparisonDate, cancellationToken);
+                TodaysSettlement apiResponse = await this.EstateReportingApiClient.GetTodaysSettlement(accessToken, estateId, 0, 0,comparisonDate, cancellationToken);
 
                 return ModelFactory.ConvertFrom(apiResponse);
             }
@@ -527,7 +527,7 @@
         public async Task<TodaysSalesModel> GetTodaysFailedSales(String accessToken, Guid estateId, String responseCode, DateTime comparisonDate, CancellationToken cancellationToken){
             async Task<TodaysSalesModel> ClientMethod()
             {
-                TodaysSales apiResponse = await this.EstateReportingApiClient.GetTodaysFailedSales(accessToken, estateId, null, null, responseCode, comparisonDate, cancellationToken);
+                TodaysSales apiResponse = await this.EstateReportingApiClient.GetTodaysFailedSales(accessToken, estateId, 0, 0, responseCode, comparisonDate, cancellationToken);
 
                 return ModelFactory.ConvertFrom(apiResponse);
             }
