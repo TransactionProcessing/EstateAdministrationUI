@@ -167,7 +167,7 @@ namespace EstateAdministrationUI.IntegrationTests.Common
             Trace("About to Start Estate Management UI Container");
 
             List<String> environmentVariables = this.GetCommonEnvironmentVariables();
-            environmentVariables.Add($"AppSettings:Authority=https://{this.SecurityServiceContainerName}");
+            environmentVariables.Add($"AppSettings:Authority=https://{this.SecurityServiceContainerName}:0");  // The port is set to 0 to stop defaulting to 443
             environmentVariables.Add($"AppSettings:SecurityServiceLocalPort={securityServiceLocalPort}");
             environmentVariables.Add($"AppSettings:SecurityServicePort={securityServiceContainerPort}");
             //environmentVariables.Add($"AppSettings:IsIntegrationTest=true");
