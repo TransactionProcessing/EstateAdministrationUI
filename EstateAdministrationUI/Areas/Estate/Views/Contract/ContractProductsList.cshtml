@@ -96,5 +96,20 @@
             ],
             "order": [[4, "asc"]]
         });
+
+        var reloadTimeout = 0;
+        $.ajax({
+            url: '@Html.Raw(@Url.Action("GetRetryTimeout", "DataReloadConfiguration", new { Area = "Estate", sectionName = "Contract", screenName = "ContractProductList" }))',
+            type: "GET",
+            dataType: 'json'
+        }).done(function (results) {
+            reloadTimeout = JSON.parse(results);
+            if (reloadTimeout > 0) {
+                setInterval(function () {
+                    var table = $("#contractProductList").DataTable();
+                    table.ajax.reload();
+                }, reloadTimeout);
+            }
+        });
     });
 </script>

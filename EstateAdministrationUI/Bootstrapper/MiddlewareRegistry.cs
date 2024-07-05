@@ -32,22 +32,16 @@ namespace EstateAdministrationUI.Bootstrapper
                 .AddOpenIdConnect("oidc",
                                   options => {
                                       String authority = ConfigurationReader.GetValue("Authority");
-                                      String securityServiceLocalPort = ConfigurationReader.GetValue("SecurityServiceLocalPort");
-                                      String securityServicePort = ConfigurationReader.GetValue("SecurityServicePort");
+                                      String securityServiceLocalPort = ConfigurationReader.GetValueOrDefault<String>("AppSettings", "SecurityServiceLocalPort", null);
+                                      String securityServicePort = ConfigurationReader.GetValueOrDefault<String>("AppSettings", "SecurityServicePort", null);
 
-                                      if (String.IsNullOrEmpty(securityServiceLocalPort)){
-                                          securityServiceLocalPort = "5001";
-                                      }
-
-                                      if (String.IsNullOrEmpty(securityServicePort)){
-                                          securityServicePort = "5001";
-                                      }
+                                      (string authorityAddress, string issuerAddress) results = Helpers.GetSecurityServiceAddresses(authority, securityServiceLocalPort, securityServicePort);
 
                                       HttpClientHandler handler = new HttpClientHandler();
                                       handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                                       options.BackchannelHttpHandler = handler;
 
-                                      options.Authority = $"{authority}:{securityServiceLocalPort}";
+                                      options.Authority = results.authorityAddress;
                                       options.TokenValidationParameters = new TokenValidationParameters{
                                                                                                            ValidateAudience = false,
                                                                                                            NameClaimType = JwtClaimTypes.Name,
@@ -58,7 +52,7 @@ namespace EstateAdministrationUI.Bootstrapper
                                           ConfigurationReader.GetValue("ClientSecret");
                                       options.ClientId = ConfigurationReader.GetValue("ClientId");
 
-                                      options.MetadataAddress = $"{authority}:{securityServiceLocalPort}/.well-known/openid-configuration";
+                                      options.MetadataAddress = $"{results.authorityAddress}/.well-known/openid-configuration";
 
                                       options.ResponseType = "code id_token";
 
@@ -85,21 +79,21 @@ namespace EstateAdministrationUI.Bootstrapper
 
                                       options.Events.OnRedirectToIdentityProvider = context => {
                                                                                         // Intercept the redirection so the browser navigates to the right URL in your host
-                                                                                        context.ProtocolMessage.IssuerAddress = $"{authority}:{securityServicePort}/connect/authorize";
+                                                                                        context.ProtocolMessage.IssuerAddress = $"{results.issuerAddress}/connect/authorize";
                                                                                         return Task.CompletedTask;
                                                                                     };
                                   });
 
-            bool logRequests = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
-            bool logResponses = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
-            LogLevel middlewareLogLevel = ConfigurationReaderExtensions.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
+            bool logRequests = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
+            bool logResponses = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
+            LogLevel middlewareLogLevel = ConfigurationReader.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
 
             RequestResponseMiddlewareLoggingConfig config =
                 new RequestResponseMiddlewareLoggingConfig(middlewareLogLevel, logRequests, logResponses);
 
             this.AddSingleton(config);
         }
-
+        
         private HttpClientHandler ApiEndpointHttpHandler(IServiceProvider serviceProvider)
         {
             return new HttpClientHandler
@@ -115,25 +109,51 @@ namespace EstateAdministrationUI.Bootstrapper
         }
     }
 
-    public static class ConfigurationReaderExtensions
+    public static class Helpers
     {
-        public static T GetValueOrDefault<T>(String sectionName, String keyName, T defaultValue)
+        public static (String authorityAddress, String issuerAddress) GetSecurityServiceAddresses(String authority, String securityServiceLocalPort, String securityServicePort)
         {
-            try
-            {
-                var value = ConfigurationReader.GetValue(sectionName, keyName);
+            Console.WriteLine($"authority is {authority}");
+            Console.WriteLine($"securityServiceLocalPort is {securityServiceLocalPort}");
+            Console.WriteLine($"securityServicePort is {securityServicePort}");
 
-                if (String.IsNullOrEmpty(value))
-                {
-                    return defaultValue;
-                }
-
-                return (T)Convert.ChangeType(value, typeof(T));
-            }
-            catch (KeyNotFoundException kex)
+            if (String.IsNullOrEmpty(securityServiceLocalPort))
             {
-                return defaultValue;
+                securityServiceLocalPort = "5001";
             }
+
+            if (String.IsNullOrEmpty(securityServicePort))
+            {
+                securityServicePort = "5001";
+            }
+            
+            Uri u = new Uri(authority);
+
+            var authorityAddress = u.Port switch
+            {
+                _ when u.Port.ToString() != securityServiceLocalPort => $"{u.Scheme}://{u.Host}:{securityServiceLocalPort}{u.AbsolutePath}",
+                _ => authority
+            };
+            
+            var issuerAddress = u.Port switch
+            {
+                _ when u.Port.ToString() != securityServicePort => $"{u.Scheme}://{u.Host}:{securityServicePort}{u.AbsolutePath}",
+                _ => authority
+            };
+
+            if (authorityAddress.EndsWith("/"))
+            {
+                authorityAddress = $"{authorityAddress.Substring(0, authorityAddress.Length - 1)}";
+            }
+            if (issuerAddress.EndsWith("/"))
+            {
+                issuerAddress = $"{issuerAddress.Substring(0, issuerAddress.Length - 1)}";
+            }
+
+            Console.WriteLine($"authorityAddress is {authorityAddress}");
+            Console.WriteLine($"issuerAddress is {issuerAddress}");
+
+            return (authorityAddress, issuerAddress);
         }
     }
 }
