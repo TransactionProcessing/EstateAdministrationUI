@@ -59,45 +59,60 @@
                 $("#alert").html(html);
             })
             .DataTable({
-                "processing": true, // for show progress bar
-                "serverSide": true, // for process server side
-                "filter": true, // this is for disable filter (search box)
-                "orderMulti": false, // for disable multiple column at once
-                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                "ajax": {
-                    "url": "GetMerchantListAsJson",
-                    "type": "POST",
-                    "datatype": "json"
+                processing: true, // for show progress bar
+                serverSide: true, // for process server side
+                filter: true, // this is for disable filter (search box)
+                orderMulti: false, // for disable multiple column at once
+                lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "All"]],
+                ajax: {
+                    url: "GetMerchantListAsJson",
+                    type: "POST",
+                    datatype: "json"
                 },
-                "columnDefs":
+                columnDefs:
                 [{
-                        "targets": [0],
-                        "visible": false,
-                        "searchable": false
+                        targets: [0],
+                        visible: false,
+                        searchable: false
                     },
                     {
-                        "targets": [1],
-                        "visible": false,
-                        "searchable": false  }],
-                "columns": [
-                    { "data": "estateId", "name": "estateId", "autoWidth": true },
-                    { "data": "merchantId", "name": "merchantId", "autoWidth": true },
-                    { "data": "merchantName", "name": "merchantName", "autoWidth": true },
-                    { "data": "contactName", "name": "contactName", "autoWidth": true },
-                    { "data": "addressLine1", "name": "addressLine1", "autoWidth": true },
-                    { "data": "town", "name": "town", "autoWidth": true },
+                        targets: [1],
+                        visible: false,
+                        searchable: false  }],
+                columns: [
+                    { data: "estateId", "name": "estateId", "autoWidth": true },
+                    { data: "merchantId", "name": "merchantId", "autoWidth": true },
+                    { data: "merchantName", "name": "merchantName", "autoWidth": true },
+                    { data: "contactName", "name": "contactName", "autoWidth": true },
+                    { data: "addressLine1", "name": "addressLine1", "autoWidth": true },
+                    { data: "town", "name": "town", "autoWidth": true },
                     //{ "data": "numberOfUsers", "name": "numberOfUsers", "autoWidth": true },
                     //{ "data": "numberOfDevices", "name": "numberOfDevices", "autoWidth": true },
                     //{ "data": "numberOfOperators", "name": "numberOfOperators", "autoWidth": true },
                     {
-                        "render": function(data, type, full, meta)
+                        render: function(data, type, full, meta)
                         {
                             return '<a class="btn btn-info" id="editMerchantLink" href="GetMerchant?merchantId=' + full.merchantId + '"><i class="fa fa-edit"></i></a>' + 
                                 '<a class="btn btn-info" id="makeDepositLink" href="MakeMerchantDeposit?merchantId=' + full.merchantId + '&merchantName=' + full.merchantName + '"><i class="fa fa-money-bill"></i></a>';
                         }
                     }
                 ],
-                "order": [[2, "asc"]]
+                order: [[2, "asc"]]
             });
+
+        var reloadTimeout = 0;
+        $.ajax({
+            url: '@Html.Raw(@Url.Action("GetRetryTimeout", "DataReloadConfiguration", new { Area = "Estate" ,sectionName = "Merchant", screenName = "MerchantList" }))',
+            type: "GET",
+            dataType: 'json'
+        }).done(function (results) {
+            reloadTimeout = JSON.parse(results);
+             if (reloadTimeout > 0) {
+                 setInterval(function () {
+                     var table = $("#merchantList").DataTable();
+                     table.ajax.reload();
+                 }, reloadTimeout);
+             }
+        });        
     });
 </script>

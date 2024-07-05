@@ -452,7 +452,7 @@
 
             return this.View("MakeMerchantDeposit", viewModel);
         }
-
+        
         /// <summary>
         /// Creates the merchant.
         /// </summary>
@@ -529,6 +529,8 @@
         {
             return this.ModelState.IsValid;
         }
+
+
 
         #endregion
     }

@@ -32,8 +32,9 @@ namespace EstateAdministrationUI.Bootstrapper
                 .AddOpenIdConnect("oidc",
                                   options => {
                                       String authority = ConfigurationReader.GetValue("Authority");
-                                      String securityServiceLocalPort = ConfigurationReader.GetValue("SecurityServiceLocalPort");
-                                      String securityServicePort = ConfigurationReader.GetValue("SecurityServicePort");
+                                      
+                                      String securityServiceLocalPort = ConfigurationReader.GetValueOrDefault<String>("AppSettings","SecurityServiceLocalPort", null);
+                                      String securityServicePort = ConfigurationReader.GetValueOrDefault<String>("AppSettings", "SecurityServicePort", null);
 
                                       if (String.IsNullOrEmpty(securityServiceLocalPort)){
                                           securityServiceLocalPort = "5001";
@@ -43,11 +44,24 @@ namespace EstateAdministrationUI.Bootstrapper
                                           securityServicePort = "5001";
                                       }
 
+                                      Uri u = new Uri(authority);
+                                      String authorityAddress = u.Port switch
+                                      {
+                                          0 => $"{authority}:{securityServiceLocalPort}",
+                                          _ => authority
+                                      };
+
+                                      String issuerAddress = u.Port switch
+                                      {
+                                          0 => $"{authority}:{securityServicePort}",
+                                          _ => authority
+                                      };
+
                                       HttpClientHandler handler = new HttpClientHandler();
                                       handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                                       options.BackchannelHttpHandler = handler;
 
-                                      options.Authority = $"{authority}:{securityServiceLocalPort}";
+                                      options.Authority = authorityAddress;
                                       options.TokenValidationParameters = new TokenValidationParameters{
                                                                                                            ValidateAudience = false,
                                                                                                            NameClaimType = JwtClaimTypes.Name,
@@ -58,7 +72,7 @@ namespace EstateAdministrationUI.Bootstrapper
                                           ConfigurationReader.GetValue("ClientSecret");
                                       options.ClientId = ConfigurationReader.GetValue("ClientId");
 
-                                      options.MetadataAddress = $"{authority}:{securityServiceLocalPort}/.well-known/openid-configuration";
+                                      options.MetadataAddress = $"{authorityAddress}/.well-known/openid-configuration";
 
                                       options.ResponseType = "code id_token";
 
@@ -85,14 +99,14 @@ namespace EstateAdministrationUI.Bootstrapper
 
                                       options.Events.OnRedirectToIdentityProvider = context => {
                                                                                         // Intercept the redirection so the browser navigates to the right URL in your host
-                                                                                        context.ProtocolMessage.IssuerAddress = $"{authority}:{securityServicePort}/connect/authorize";
+                                                                                        context.ProtocolMessage.IssuerAddress = $"{issuerAddress}/connect/authorize";
                                                                                         return Task.CompletedTask;
                                                                                     };
                                   });
 
-            bool logRequests = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
-            bool logResponses = ConfigurationReaderExtensions.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
-            LogLevel middlewareLogLevel = ConfigurationReaderExtensions.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
+            bool logRequests = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogRequests", true);
+            bool logResponses = ConfigurationReader.GetValueOrDefault<Boolean>("MiddlewareLogging", "LogResponses", true);
+            LogLevel middlewareLogLevel = ConfigurationReader.GetValueOrDefault<LogLevel>("MiddlewareLogging", "MiddlewareLogLevel", LogLevel.Warning);
 
             RequestResponseMiddlewareLoggingConfig config =
                 new RequestResponseMiddlewareLoggingConfig(middlewareLogLevel, logRequests, logResponses);
@@ -112,28 +126,6 @@ namespace EstateAdministrationUI.Bootstrapper
                                                                        return true;
                                                                    }
                    };
-        }
-    }
-
-    public static class ConfigurationReaderExtensions
-    {
-        public static T GetValueOrDefault<T>(String sectionName, String keyName, T defaultValue)
-        {
-            try
-            {
-                var value = ConfigurationReader.GetValue(sectionName, keyName);
-
-                if (String.IsNullOrEmpty(value))
-                {
-                    return defaultValue;
-                }
-
-                return (T)Convert.ChangeType(value, typeof(T));
-            }
-            catch (KeyNotFoundException kex)
-            {
-                return defaultValue;
-            }
         }
     }
 }
