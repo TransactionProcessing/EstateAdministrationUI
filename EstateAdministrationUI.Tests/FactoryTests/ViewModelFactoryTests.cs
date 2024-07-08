@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using EstateAdministrationUI.Areas.Estate.Controllers;
+using SimpleResults;
 
 namespace EstateAdministrationUI.Tests.FactoryTests
 {
@@ -21,7 +23,6 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ModelFactory_ConvertFrom_TodaysSettlement_IsConverted()
         {
-
             TodaysSettlementModel model = new TodaysSettlementModel()
                                      {
                                          ComparisonSettlementCount = 100,
@@ -29,17 +30,37 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                          TodaysSettlementCount = 200,
                                          TodaysSettlementValue = 202.00m
                                      };
-            var result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.ComparisonSettlementValue.ShouldBe(model.ComparisonSettlementValue);
-            result.TodaysSettlementValue.ShouldBe(model.TodaysSettlementValue);
+            Result<TodaysSettlementModel> result = Result.Success(model);
+
+            TodaysSettlementViewModel output  = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.ComparisonSettlementValue.ShouldBe(model.ComparisonSettlementValue);
+            output.TodaysSettlementValue.ShouldBe(model.TodaysSettlementValue);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_TodaysSettlementModel_ModelIsNull_ErrorThrown()
         {
             TodaysSettlementModel model = null;
-            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
+            Result<TodaysSettlementModel> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.ComparisonSettlementValue.ShouldBe(0);
+            output.TodaysSettlementValue.ShouldBe(0);
+            output.Label.ShouldBeNull();
+            output.Variance.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSettlementModel_ResultFailed_ErrorThrown()
+        {
+            Result<TodaysSettlementModel> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.ComparisonSettlementValue.ShouldBe(0);
+            output.TodaysSettlementValue.ShouldBe(0);
+            output.Label.ShouldBeNull();
+            output.Variance.ShouldBe(0);
         }
 
         [Fact]
@@ -77,21 +98,45 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                     TodaysSalesCount = 20,
                                     TodaysSalesValue = 200.00m
                                 };
+            Result<TodaysSalesModel> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result, String.Empty);
 
-            var result = ViewModelFactory.ConvertFrom(model, String.Empty);
-
-            result.ShouldNotBeNull();
-            result.ComparisonValueOfTransactions.ShouldBe(model.ComparisonSalesValue);
-            result.TodaysValueOfTransactions.ShouldBe(model.TodaysSalesValue);
-            result.Label.ShouldBe($" Sales");
-            result.Variance.ShouldBe(0.5m);
+            output.ShouldNotBeNull();
+            output.ComparisonValueOfTransactions.ShouldBe(model.ComparisonSalesValue);
+            output.TodaysValueOfTransactions.ShouldBe(model.TodaysSalesValue);
+            output.Label.ShouldBe($" Sales");
+            output.Variance.ShouldBe(0.5m);
         }
 
         [Fact]
         public void ModelFactory_ConvertFrom_TodaysSalesModel_ModelIsNull_ErrorThrown()
         {
             TodaysSalesModel model = null;
-            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model, String.Empty); });
+            var result = Result.Success(model);
+            TodaysSalesViewModel output = ViewModelFactory.ConvertFrom(result, String.Empty);
+            output.ShouldNotBeNull();
+            output.ComparisonCountOfTransactions.ShouldBe(0);
+            output.ComparisonValueOfTransactions.ShouldBe(0);
+            output.CountVariance.ShouldBe(0);
+            output.Label.ShouldBeNull();
+            output.TodaysCountOfTransactions.ShouldBe(0);
+            output.TodaysValueOfTransactions.ShouldBe(0);
+            output.Variance.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_TodaysSalesModel_FailedResult_ErrorThrown()
+        {
+            Result<TodaysSalesModel> result = Result.Failure();
+            TodaysSalesViewModel output = ViewModelFactory.ConvertFrom(result, String.Empty);
+            output.ShouldNotBeNull();
+            output.ComparisonCountOfTransactions.ShouldBe(0);
+            output.ComparisonValueOfTransactions.ShouldBe(0);
+            output.CountVariance.ShouldBe(0);
+            output.Label.ShouldBeNull();
+            output.TodaysCountOfTransactions.ShouldBe(0);
+            output.TodaysValueOfTransactions.ShouldBe(0);
+            output.Variance.ShouldBe(0);
         }
 
         [Fact]
@@ -1692,12 +1737,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                                                                             OrderValue = 2
                                                                                                         }
                                                                            };
-            var result = ViewModelFactory.ConvertFrom(model);
+            Result<List<ComparisonDateModel>> result = Result.Success(model);
+            var output  = ViewModelFactory.ConvertFrom(result);
 
-            result.Count.ShouldBe(model.Count);
+            output.Count.ShouldBe(model.Count);
             foreach (var comparisonDate in model)
             {
-                var d = result.SingleOrDefault(r => r.text == comparisonDate.Description);
+                var d = output.SingleOrDefault(r => r.text == comparisonDate.Description);
                 d.value.ShouldBe(comparisonDate.Date.ToString("yyyy-MM-dd"));
             }
         }
@@ -1705,20 +1751,26 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         [Fact]
         public void ViewModelFactory_ConvertFrom_ComparisonDate_NullModel_ErrorThrown(){
             List<ComparisonDateModel> model = null;
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            Result<List<ComparisonDateModel>> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
 
         [Fact]
         public void ViewModelFactory_ConvertFrom_ComparisonDate_EmptyModel_ErrorThrown()
         {
             List<ComparisonDateModel> model = new List<ComparisonDateModel>();
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(model);
-                                                });
+            Result<List<ComparisonDateModel>> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_ComparisonDate_ResultFailed_ErrorThrown()
+        {
+            Result<List<ComparisonDateModel>> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1737,13 +1789,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                            Hour = 2,
                            TodaysSalesValue = 202
                        });
+            Result<List<TodaysSalesValueByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
 
-            var result = ViewModelFactory.ConvertFrom(models);
-
-            result.Count.ShouldBe(models.Count);
-            foreach (var todaysSalesValueByHour in models)
+            output.Count.ShouldBe(models.Count);
+            foreach (var todaysSalesValueByHour in result.Data)
             {
-                var d = result.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
+                var d = output.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
                 d.ShouldNotBeNull();
                 d.ComparisonValue.ShouldBe(todaysSalesValueByHour.ComparisonSalesValue);
                 d.TodaysValue.ShouldBe(todaysSalesValueByHour.TodaysSalesValue);
@@ -1755,22 +1807,18 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         public void ViewModelFactory_ConvertFrom_TodaysSalesValueByHourModel_ModelIsNull_ErrorThrown()
         {
             List<TodaysSalesValueByHourModel> models = null;
-
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(models);
-                                                });
+            Result<List<TodaysSalesValueByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
 
         [Fact]
         public void ViewModelFactory_ConvertFrom_TodaysSalesValueByHourModel_ModelIsEmpty_ErrorThrown()
         {
             List<TodaysSalesValueByHourModel> models = new List<TodaysSalesValueByHourModel>();
-
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(models);
-                                                });
+            Result<List<TodaysSalesValueByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1789,13 +1837,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                            Hour = 2,
                            TodaysSalesCount = 202
                        });
+            Result<List<TodaysSalesCountByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(models);
 
-            var result = ViewModelFactory.ConvertFrom(models);
-
-            result.Count.ShouldBe(models.Count);
-            foreach (var todaysSalesValueByHour in models)
+            output.Count.ShouldBe(models.Count);
+            foreach (var todaysSalesValueByHour in result.Data)
             {
-                var d = result.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
+                var d = output.SingleOrDefault(r => r.Hour == todaysSalesValueByHour.Hour);
                 d.ShouldNotBeNull();
                 d.ComparisonCount.ShouldBe(todaysSalesValueByHour.ComparisonSalesCount);
                 d.TodaysCount.ShouldBe(todaysSalesValueByHour.TodaysSalesCount);
@@ -1803,25 +1851,20 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
-        public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ModelIsNull_ErrorThrown()
-        {
+        public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ModelIsNull_ErrorThrown() {
             List<TodaysSalesCountByHourModel> models = null;
-
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(models);
-                                                });
+            Result<List<TodaysSalesCountByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
 
         [Fact]
         public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ModelIsEmpty_ErrorThrown()
         {
             List<TodaysSalesCountByHourModel> models = new List<TodaysSalesCountByHourModel>();
-
-            Should.Throw<ArgumentNullException>(() =>
-                                                {
-                                                    ViewModelFactory.ConvertFrom(models);
-                                                });
+            Result<List<TodaysSalesCountByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
         }
     }
 }

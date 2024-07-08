@@ -1,4 +1,6 @@
-﻿namespace EstateAdministrationUI.Factories
+﻿using Microsoft.AspNetCore.Routing.Constraints;
+
+namespace EstateAdministrationUI.Factories
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +13,7 @@
     using EstateReportingAPI.DataTransferObjects;
     using EstateReportingAPI.DataTrasferObjects;
     using NuGet.Protocol.Core.Types;
+    using SimpleResults;
     using FileLineProcessingResult = Areas.Estate.Models.FileLineProcessingResult;
     
     public static class ViewModelFactory
@@ -81,63 +84,58 @@
             return viewModels;
         }
 
-        public static List<(String value, String text)> ConvertFrom(List<MerchantListModel> source)
+        public static List<(String value, String text)> ConvertFrom(Result<List<MerchantListModel>> source)
         {
-
-            if (source == null || source.Any() == false)
-            {
-                throw new ArgumentNullException(nameof(source));
+            if (source.IsFailed || source.Data == null || source.Data.Any() == false) {
+                return new List<(String value, String text)>();
             }
 
             List<(String value, String text)> viewModels = new List<(String value, String text)>();
-            foreach (MerchantListModel merchant in source)
+            foreach (MerchantListModel merchant in source.Data)
             {
-                viewModels.Add((merchant.MerchantId.ToString(), merchant.MerchantName));
+                viewModels.Add((merchant.MerchantReportingId.ToString(), merchant.MerchantName));
             }
             return viewModels;
         }
 
-        public static List<(String value, String text)> ConvertFrom(List<OperatorListModel> source)
+        public static List<(String value, String text)> ConvertFrom(Result<List<OperatorListModel>> source)
         {
-
-            if (source == null || source.Any() == false)
+            if (source.IsFailed || source.Data == null || source.Data.Any() == false)
             {
-                throw new ArgumentNullException(nameof(source));
+                return new List<(String value, String text)>();
             }
 
             List<(String value, String text)> viewModels = new List<(String value, String text)>();
-            foreach (OperatorListModel @operator in source)
+            foreach (OperatorListModel @operator in source.Data)
             {
-                viewModels.Add((@operator.OperatorId.ToString(), @operator.OperatorName));
+                viewModels.Add((@operator.OperatorReportingId.ToString(), @operator.OperatorName));
             }
             return viewModels;
         }
 
-        public static List<(String value, String text)> ConvertFrom(List<ComparisonDateModel> comparisonDates, String dateFormat = "yyyy-MM-dd"){
+        public static List<(String value, String text)> ConvertFrom(Result<List<ComparisonDateModel>> comparisonDates, String dateFormat = "yyyy-MM-dd"){
 
-            if (comparisonDates == null || comparisonDates.Any() == false)
-            {
-                throw new ArgumentNullException(nameof(comparisonDates));
+            if (comparisonDates.IsFailed || comparisonDates.Data == null || comparisonDates.Data.Any() == false) {
+                return new List<(String value, String text)>();
             }
 
-            List<(String value, String text)> viewModels = new List<(String value, String text)>();
-            foreach (ComparisonDateModel comparisonDate in comparisonDates)
+            List<(String value, String text)> viewModels = new();
+            foreach (ComparisonDateModel comparisonDate in comparisonDates.Data)
             {
                 viewModels.Add((comparisonDate.Date.ToString(dateFormat), comparisonDate.Description));
             }
             return viewModels;
         }
 
-        public static List<HourValueViewModel> ConvertFrom(List<TodaysSalesValueByHourModel> salesValueByHourModels)
+        public static List<HourValueViewModel> ConvertFrom(Result<List<TodaysSalesValueByHourModel>> salesValueByHourModels)
         {
-            if (salesValueByHourModels == null || salesValueByHourModels.Any() == false)
-            {
-                throw new ArgumentNullException(nameof(salesValueByHourModels));
+            if (salesValueByHourModels.IsFailed || salesValueByHourModels.Data == null || salesValueByHourModels.Data.Any() == false) {
+                return new List<HourValueViewModel>();
             }
 
             List<HourValueViewModel> viewModels = new List<HourValueViewModel>();
 
-            salesValueByHourModels.ForEach(s => viewModels.Add(new HourValueViewModel{
+            salesValueByHourModels.Data.ForEach(s => viewModels.Add(new HourValueViewModel{
                                                                                          ComparisonValue = s.ComparisonSalesValue,
                                                                                          Hour = s.Hour,
                                                                                          TodaysValue = s.TodaysSalesValue
@@ -145,16 +143,15 @@
             return viewModels;
         }
 
-        public static List<HourCountViewModel> ConvertFrom(List<TodaysSalesCountByHourModel> salesCountByHourModels)
+        public static List<HourCountViewModel> ConvertFrom(Result<List<TodaysSalesCountByHourModel>> salesCountByHourModels)
         {
-            if (salesCountByHourModels == null || salesCountByHourModels.Any() == false)
-            {
-                throw new ArgumentNullException(nameof(salesCountByHourModels));
+            if (salesCountByHourModels.IsFailed ||  salesCountByHourModels.Data == null || salesCountByHourModels.Data.Any() == false) {
+                return new List<HourCountViewModel>();
             }
 
             List<HourCountViewModel> viewModels = new List<HourCountViewModel>();
 
-            salesCountByHourModels.ForEach(s => viewModels.Add(new HourCountViewModel
+            salesCountByHourModels.Data.ForEach(s => viewModels.Add(new HourCountViewModel
             {
                                                     ComparisonCount = s.ComparisonSalesCount,
                                                     Hour = s.Hour,
@@ -163,20 +160,19 @@
             return viewModels;
         }
 
-        public static TodaysSalesViewModel ConvertFrom(TodaysSalesModel todaysSales, String comparisonLabel)
+        public static TodaysSalesViewModel ConvertFrom(Result<TodaysSalesModel> todaysSales, String comparisonLabel)
         {
-            if (todaysSales == null)
-            {
-                throw new ArgumentNullException(nameof(todaysSales));
+            if (todaysSales.IsFailed || todaysSales.Data == null) {
+                return new TodaysSalesViewModel();
             }
 
             TodaysSalesViewModel viewModel = new TodaysSalesViewModel{
-                                                                         ComparisonValueOfTransactions = todaysSales.ComparisonSalesValue,
-                                                                         ComparisonCountOfTransactions = todaysSales.ComparisonSalesCount,
-                                                                         TodaysValueOfTransactions = todaysSales.TodaysSalesValue,
-                                                                         TodaysCountOfTransactions = todaysSales.TodaysSalesCount,
-                                                                         Variance = (todaysSales.TodaysSalesValue - todaysSales.ComparisonSalesValue).SafeDivision(todaysSales.TodaysSalesValue),
-                                                                         CountVariance = (todaysSales.TodaysSalesCount - todaysSales.ComparisonSalesCount).SafeDivision(todaysSales.TodaysSalesCount),
+                                                                         ComparisonValueOfTransactions = todaysSales.Data.ComparisonSalesValue,
+                                                                         ComparisonCountOfTransactions = todaysSales.Data.ComparisonSalesCount,
+                                                                         TodaysValueOfTransactions = todaysSales.Data.TodaysSalesValue,
+                                                                         TodaysCountOfTransactions = todaysSales.Data.TodaysSalesCount,
+                                                                         Variance = (todaysSales.Data.TodaysSalesValue - todaysSales.Data.ComparisonSalesValue).SafeDivision(todaysSales.Data.TodaysSalesValue),
+                                                                         CountVariance = (todaysSales.Data.TodaysSalesCount - todaysSales.Data.ComparisonSalesCount).SafeDivision(todaysSales.Data.TodaysSalesCount),
                 Label = $"{comparisonLabel} Sales"
                                                                      };
             return viewModel;
@@ -199,15 +195,15 @@
 
         }
 
-        public static TodaysSettlementViewModel ConvertFrom(TodaysSettlementModel todaysSettlement, String comparisonLabel= null){
-            if (todaysSettlement == null){
-                throw new ArgumentNullException(nameof(todaysSettlement));
+        public static TodaysSettlementViewModel ConvertFrom(Result<TodaysSettlementModel> todaysSettlement, String comparisonLabel= null){
+            if (todaysSettlement.IsFailed || todaysSettlement.Data == null) {
+                return new TodaysSettlementViewModel();
             }
 
             TodaysSettlementViewModel viewModel = new TodaysSettlementViewModel{
-                                                                                   ComparisonSettlementValue = todaysSettlement.ComparisonSettlementValue,
-                                                                                   TodaysSettlementValue = todaysSettlement.TodaysSettlementValue,
-                                                                                   Variance = (todaysSettlement.TodaysSettlementValue - todaysSettlement.ComparisonSettlementValue).SafeDivision(todaysSettlement.TodaysSettlementValue),
+                                                                                   ComparisonSettlementValue = todaysSettlement.Data.ComparisonSettlementValue,
+                                                                                   TodaysSettlementValue = todaysSettlement.Data.TodaysSettlementValue,
+                                                                                   Variance = (todaysSettlement.Data.TodaysSettlementValue - todaysSettlement.Data.ComparisonSettlementValue).SafeDivision(todaysSettlement.Data.TodaysSettlementValue),
                                                                                    Label = $"{comparisonLabel} Settlement",
                                                                                };
             return viewModel;
