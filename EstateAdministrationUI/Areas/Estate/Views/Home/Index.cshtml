@@ -95,30 +95,36 @@
         dateselect.addEventListener("change", (event) => {
             const selectedOption = dateselect.options[dateselect.selectedIndex];
 
-            dateSelectedText = selectedOption.text;
-            dateSelectedValue = selectedOption.value;
+            if (selectedOption !== undefined) {
+                dateSelectedText = selectedOption.text;
+                dateSelectedValue = selectedOption.value;
 
-            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+                getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+            }
         });
 
         const merchantselect = document.getElementById('MerchantSelect');
         merchantselect.addEventListener("change", (event) => {
             const selectedOption = merchantselect.options[merchantselect.selectedIndex];
 
-            merchantSelectedText = selectedOption.text;
-            merchantSelectedValue = selectedOption.value;
+            if (selectedOption !== undefined) {
+                merchantSelectedText = selectedOption.text;
+                merchantSelectedValue = selectedOption.value;
 
-            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+                getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText);
+            }
         });
 
         const operatorselect = document.getElementById('OperatorSelect');
         operatorselect.addEventListener("change", (event) => {
             const selectedOption = operatorselect.options[operatorselect.selectedIndex];
 
-            operatorSelectedText = selectedOption.text;
-            operatorSelectedValue = selectedOption.value;
+            if (selectedOption !== undefined) {
+                operatorSelectedText = selectedOption.text;
+                operatorSelectedValue = selectedOption.value;
 
-            getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
+                getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);
+            }
         });
 
         // Do the query here
@@ -129,7 +135,6 @@
     });
 
     function getData(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue) {
-        console.log("in get data");
         getComparisonDateTransactionsAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue)
                 
         getComparisonDateSettlementAsJson(dateSelectedValue, dateSelectedText, merchantSelectedValue, merchantSelectedText, operatorSelectedText, operatorSelectedValue);

@@ -38,7 +38,8 @@
     public class MerchantListModel
     {
         #region Properties
-        
+        public Int32 MerchantReportingId { get; set; }
+
         public Guid MerchantId { get; set; }
 
         public String MerchantName { get; set; }
@@ -50,7 +51,7 @@
     public class OperatorListModel
     {
         #region Properties
-
+        public Int32 OperatorReportingId { get; set; }
         public Guid OperatorId { get; set; }
 
         public String OperatorName { get; set; }

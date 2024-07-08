@@ -1,4 +1,5 @@
 ﻿using EstateAdministrationUI.BusinessLogic.Models;
+using SimpleResults;
 
 namespace EstateAdministrationUI.Areas.Estate.Controllers
 {
@@ -97,10 +98,10 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
-            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
-            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+            Int32? merchantReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Int32? operatorReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            TodaysSalesModel response = await this.ApiClient.GetTodaysSales(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+            Result<TodaysSalesModel> response = await this.ApiClient.GetTodaysSales(accessToken, estateId, merchantReportingId, operatorReportingId, comparisonDate, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
             
@@ -207,9 +208,8 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             List<(String value, String text)> datesList = new List<(String, String)>();
 
-            List<ComparisonDateModel> response =
-                await this.ApiClient.GetComparisonDates(accessToken, estateId, cancellationToken);
-
+            Result<List<ComparisonDateModel>> response = await this.ApiClient.GetComparisonDates(accessToken, estateId, cancellationToken);
+            
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
             return this.Json(viewModels);
         }
@@ -221,7 +221,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            List<MerchantListModel> response = await this.ApiClient.GetMerchantsForReporting(accessToken, estateId, cancellationToken);
+            Result<List<MerchantListModel>> response = await this.ApiClient.GetMerchantsForReporting(accessToken, estateId, cancellationToken);
 
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(v => v.value).ToList();
@@ -235,7 +235,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            List<OperatorListModel> response = await this.ApiClient.GetOperatorsForReporting(accessToken, estateId, cancellationToken);
+            Result<List<OperatorListModel>> response = await this.ApiClient.GetOperatorsForReporting(accessToken, estateId, cancellationToken);
 
             List<(String value, String text)> viewModels = ViewModelFactory.ConvertFrom(response);
             viewModels = viewModels.OrderBy(v => v.value).ToList();
@@ -254,7 +254,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
             Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            TodaysSettlementModel response =
+            Result<TodaysSettlementModel> response =
                 await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
@@ -273,7 +273,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
             Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            List<TodaysSalesCountByHourModel> response =
+            Result<List<TodaysSalesCountByHourModel>> response =
                 await this.ApiClient.GetTodaysSalesCountByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             List<HourCountViewModel> viewModels = ViewModelFactory.ConvertFrom(response);
@@ -298,7 +298,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
             Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            List<TodaysSalesValueByHourModel> response =
+            Result<List<TodaysSalesValueByHourModel>> response =
                 await this.ApiClient.GetTodaysSalesValueByHour(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
 
             List<HourValueViewModel> viewModels = ViewModelFactory.ConvertFrom(response);

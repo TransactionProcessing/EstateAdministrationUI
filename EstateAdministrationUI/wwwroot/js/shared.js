@@ -84,7 +84,6 @@ function setDivClassBasedOnVariance(myDiv, variance, lessisgood) {
 function translateSalesValueByHour(data) {
     var dataArray = [];
     if (data === null) {
-        console.log('here');
         return [];
     }
 
@@ -140,7 +139,7 @@ function drawLineChart(options, data, chartElement, emptyMessage) {
         chart.draw(data, google.charts.Line.convertOptions(options));
     }
     else {
-        chartElement.empty();
+        chartElement.innerHTML = "";
         chartElement.append(emptyMessage);
     }
 }
@@ -151,7 +150,7 @@ function drawBarChart(options, data, chartElement, emptyMessage) {
         chart.draw(data, google.charts.Bar.convertOptions(options));
     }
     else {
-        chartElement.empty();
+        chartElement.innerHTML = "";
         chartElement.append(emptyMessage);
     }
 }

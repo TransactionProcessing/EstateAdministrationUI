@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using BusinessLogic.Models;
+    using SimpleResults;
 
     /// <summary>
     /// 
@@ -129,13 +130,12 @@
                                                Guid estateId,
                                                CancellationToken cancellationToken);
 
-        Task<List<MerchantListModel>> GetMerchantsForReporting(String accessToken,
+        Task<Result<List<MerchantListModel>>> GetMerchantsForReporting(String accessToken,
                                                                Guid estateId,
                                                                CancellationToken cancellationToken);
 
-        Task<List<OperatorListModel>> GetOperatorsForReporting(String accessToken,
-                                                               Guid estateId,
-                                                               CancellationToken cancellationToken);
+        Task<Result<List<OperatorListModel>>> GetOperatorsForReporting(String accessToken, Guid estateId,
+                                                                       CancellationToken cancellationToken);
 
         Task<MakeMerchantDepositResponseModel> MakeMerchantDeposit(String accessToken,
                                                                    Guid actionId,
@@ -166,42 +166,35 @@
             Guid estateId,
             CancellationToken cancellationToken);
 
-        Task<List<ComparisonDateModel>> GetComparisonDates(
-            string accessToken,
-            Guid estateId,
-            CancellationToken cancellationToken);
+        Task<Result<List<ComparisonDateModel>>> GetComparisonDates(String accessToken, Guid estateId, CancellationToken cancellationToken);
 
-        Task<TodaysSalesModel> GetTodaysSales(
-            string accessToken,
-            Guid estateId,
-            Guid? merchantId,
-            Guid? operatorId,
-            DateTime comparisonDate,
-            CancellationToken cancellationToken);
+        Task<Result<TodaysSalesModel>> GetTodaysSales(String accessToken,
+                                                      Guid estateId,
+                                                      Int32? merchantReportingId,
+                                                      Int32? operatorReportingId,
+                                                      DateTime comparisonDate,
+                                                      CancellationToken cancellationToken);
 
-        Task<List<TodaysSalesCountByHourModel>> GetTodaysSalesCountByHour(
-            string accessToken,
-            Guid estateId,
-            Guid? merchantId,
-            Guid? operatorId,
-            DateTime comparisonDate,
-            CancellationToken cancellationToken);
+        Task<Result<List<TodaysSalesCountByHourModel>>> GetTodaysSalesCountByHour(String accessToken,
+                                                                                  Guid estateId,
+                                                                                  Guid? merchantId,
+                                                                                  Guid? operatorId,
+                                                                                  DateTime comparisonDate,
+                                                                                  CancellationToken cancellationToken);
 
-        Task<List<TodaysSalesValueByHourModel>> GetTodaysSalesValueByHour(
-            string accessToken,
-            Guid estateId,
-            Guid? merchantId,
-            Guid? operatorId,
-            DateTime comparisonDate,
-            CancellationToken cancellationToken);
+        Task<Result<List<TodaysSalesValueByHourModel>>> GetTodaysSalesValueByHour(String accessToken,
+                                                                                  Guid estateId,
+                                                                                  Guid? merchantId,
+                                                                                  Guid? operatorId,
+                                                                                  DateTime comparisonDate,
+                                                                                  CancellationToken cancellationToken);
 
-        Task<TodaysSettlementModel> GetTodaysSettlement(
-            string accessToken,
-            Guid estateId,
-            Guid? merchantId,
-            Guid? operatorId,
-            DateTime comparisonDate,
-            CancellationToken cancellationToken);
+        Task<Result<TodaysSettlementModel>> GetTodaysSettlement(String accessToken,
+                                                                Guid estateId,
+                                                                Guid? merchantId,
+                                                                Guid? operatorId,
+                                                                DateTime comparisonDate,
+                                                                CancellationToken cancellationToken);
 
         Task<MerchantKpiModel> GetMerchantKpi(
             string accessToken,

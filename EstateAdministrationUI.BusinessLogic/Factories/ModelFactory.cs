@@ -53,6 +53,7 @@
             List<MerchantListModel> result = new List<MerchantListModel>();
             foreach (Merchant merchant in source){
                 result.Add(new MerchantListModel{
+                    MerchantReportingId = merchant.MerchantReportingId,
                     MerchantId = merchant.MerchantId,
                     MerchantName = merchant.Name
                 });
@@ -71,7 +72,8 @@
             foreach (Operator @operator in source){
                 result.Add(new OperatorListModel{
                                                     OperatorId = @operator.OperatorId,
-                                                    OperatorName = @operator.Name
+                                                    OperatorName = @operator.Name,
+                                                    OperatorReportingId = @operator.OperatorReportingId
                                                 });
             }
             return result;
