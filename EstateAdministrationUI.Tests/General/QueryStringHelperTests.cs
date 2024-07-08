@@ -26,10 +26,9 @@ namespace EstateAdministrationUI.Tests.General
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void QueryStringHelper_GetValueFromQueryString_NullOrEmpty_ValueReturned(String queryString){
-            Should.Throw<ArgumentNullException>(() => {
-                                                    QueryStringHelper.GetValueFromQueryString(queryString, "value1");
-                                                });
+        public void QueryStringHelper_GetValueFromQueryString_NullOrEmpty_ValueReturned(String queryString) {
+            var result = QueryStringHelper.GetValueFromQueryString(queryString, "value1");
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -44,11 +43,32 @@ namespace EstateAdministrationUI.Tests.General
         [Theory]
         [InlineData("")]
         [InlineData(null)]
+        [InlineData("abcdef")]
+        [InlineData("undefined")]
         public void QueryStringHelper_GetDateTimeValueFromQueryString_NullOrEmpty_ValueReturned(String queryString)
         {
-            Should.Throw<ArgumentNullException>(() => {
-                                                    QueryStringHelper.GetDateTimeValueFromQueryString(queryString, "value1");
-                                                });
+            var result = QueryStringHelper.GetDateTimeValueFromQueryString(queryString, "value1");
+            result.ShouldBe(DateTime.MinValue);
+        }
+
+        [Fact]
+        public void QueryStringHelper_GetIntegerValueFromQueryString_ValueReturned()
+        {
+            String queryString = "?value1=2";
+
+            var value1 = QueryStringHelper.GetIntegerValueFromQueryString(queryString, "value1");
+            value1.ShouldBe(2);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("abcdef")]
+        [InlineData("undefined")]
+        public void QueryStringHelper_GetIntegerValueFromQueryString_InvalidValues_ValueReturned(String queryString)
+        {
+            var result = QueryStringHelper.GetIntegerValueFromQueryString(queryString, "value1");
+            result.ShouldBeNull();
         }
     }
 }
