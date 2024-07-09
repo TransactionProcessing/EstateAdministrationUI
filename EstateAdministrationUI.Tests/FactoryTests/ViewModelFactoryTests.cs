@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using EstateAdministrationUI.Areas.Estate.Controllers;
+using JasperFx.Core;
 using SimpleResults;
 
 namespace EstateAdministrationUI.Tests.FactoryTests
@@ -20,6 +21,150 @@ namespace EstateAdministrationUI.Tests.FactoryTests
 
     public class ViewModelFactoryTests
     {
+        [Fact]
+        public void ModelFactory_ConvertFrom_LastSettlementModel_IsConverted() {
+            LastSettlementModel model = new LastSettlementModel() { FeesValue = 5.99m, SalesCount = 100, SalesValue = 599.99m, SettlementDate = new DateTime(2024, 1, 1) };
+
+            Result<LastSettlementModel> result = Result.Success(model);
+
+            LastSettlementViewModel output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.SettlementDate.ShouldBe(model.SettlementDate);
+            output.FeesValue.ShouldBe(model.FeesValue);
+            output.SalesCount.ShouldBe(model.SalesCount);
+            output.SalesValue.ShouldBe(model.SalesValue);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_LastSettlementModel_ModelIsNull_ErrorThrown()
+        {
+            LastSettlementModel model = null;
+            Result<LastSettlementModel> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.SettlementDate.ShouldBe(DateTime.MinValue);
+            output.FeesValue.ShouldBe(0);
+            output.SalesCount.ShouldBe(0);
+            output.SalesValue.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_LastSettlementModel_FailedResult_ErrorThrown()
+        {
+            Result<LastSettlementModel> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.SettlementDate.ShouldBe(DateTime.MinValue);
+            output.FeesValue.ShouldBe(0);
+            output.SalesCount.ShouldBe(0);
+            output.SalesValue.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantListModel_IsConverted() {
+            List<MerchantListModel> model = new();
+            model.Add(new MerchantListModel {
+                MerchantId = Guid.Parse("2DAF94DE-9D38-4E94-8BE4-FABEA3DC6618"),
+                MerchantName = "Test Merchant 1",
+                MerchantReportingId = 1
+            });
+            model.Add(new MerchantListModel
+            {
+                MerchantId = Guid.Parse("80E6DF86-3C4A-47ED-9B2C-D855F11684CB"),
+                MerchantName = "Test Merchant 2",
+                MerchantReportingId = 2
+            });
+
+            Result<List<MerchantListModel>> result = Result.Success(model);
+
+            List<(String value, String text)> output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            foreach (MerchantListModel merchantListModel in model) {
+                output.Contains((merchantListModel.MerchantReportingId.ToString(), merchantListModel.MerchantName)).ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantListModel_ModelIsNull_ErrorThrown()
+        {
+            List<MerchantListModel> model = null;
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantListModel_ModelIsEmpty_ErrorThrown()
+        {
+            List<MerchantListModel> model = new();
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantListModel_FailedResult_ErrorThrown()
+        {
+            List<MerchantListModel> model = new();
+            Result<List<MerchantListModel>> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorListModel_IsConverted()
+        {
+            List<OperatorListModel> model = new();
+            model.Add(new OperatorListModel
+            {
+                OperatorId = Guid.Parse("2DAF94DE-9D38-4E94-8BE4-FABEA3DC6618"),
+                OperatorName = "Test Operator 1",
+                OperatorReportingId = 1
+            });
+            model.Add(new OperatorListModel
+            {
+                OperatorId = Guid.Parse("80E6DF86-3C4A-47ED-9B2C-D855F11684CB"),
+                OperatorName = "Test Merchant 2",
+                OperatorReportingId = 2
+            });
+
+            Result<List<OperatorListModel>> result = Result.Success(model);
+
+            List<(String value, String text)> output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            foreach (OperatorListModel operatorListModel in model)
+            {
+                output.Contains((operatorListModel.OperatorReportingId.ToString(), operatorListModel.OperatorName)).ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorListModel_ModelIsNull_ErrorThrown()
+        {
+            List<OperatorListModel> model = null;
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorListModel_ModelIsEmpty_ErrorThrown()
+        {
+            List<OperatorListModel> model = new();
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorListModel_FailedResult_ErrorThrown()
+        {
+            List<OperatorListModel> model = new();
+            Result<List<MerchantListModel>> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
         [Fact]
         public void ModelFactory_ConvertFrom_TodaysSettlement_IsConverted()
         {
@@ -73,11 +218,12 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                     MerchantsWithNoSaleToday = 2,
                                     MerchantsWithSaleInLastHour = 3
                                 };
-            var result = ViewModelFactory.ConvertFrom(model);
+            Result<MerchantKpiModel> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(model);
             result.ShouldNotBeNull();
-            result.MerchantsWithNoSaleInLast7Days.ShouldBe(model.MerchantsWithNoSaleInLast7Days);
-            result.MerchantsWithNoSaleToday.ShouldBe(model.MerchantsWithNoSaleToday);
-            result.MerchantsWithSaleInLastHour.ShouldBe(model.MerchantsWithSaleInLastHour);
+            result.Data.MerchantsWithNoSaleInLast7Days.ShouldBe(model.MerchantsWithNoSaleInLast7Days);
+            result.Data.MerchantsWithNoSaleToday.ShouldBe(model.MerchantsWithNoSaleToday);
+            result.Data.MerchantsWithSaleInLastHour.ShouldBe(model.MerchantsWithSaleInLastHour);
         }
 
         [Fact]
@@ -85,7 +231,23 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
 
             MerchantKpiModel model = null;
-            Should.Throw<ArgumentNullException>(() => { ViewModelFactory.ConvertFrom(model); });
+            Result<MerchantKpiModel> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.MerchantsWithNoSaleInLast7Days.ShouldBe(0);
+            output.MerchantsWithNoSaleToday.ShouldBe(0);
+            output.MerchantsWithSaleInLastHour.ShouldBe(0);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantKpiModel_FailedResult_ErrorThrown()
+        {
+            Result<MerchantKpiModel> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.MerchantsWithNoSaleInLast7Days.ShouldBe(0);
+            output.MerchantsWithNoSaleToday.ShouldBe(0);
+            output.MerchantsWithSaleInLastHour.ShouldBe(0);
         }
 
         [Fact]
@@ -1602,12 +1764,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                                                                                             SalesValue = 200
                                                                                                                         }
                                                                                          };
-            var result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Operators.Count.ShouldBe(model.Count);
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Operators.Count.ShouldBe(model.Count);
             foreach (TopBottomOperatorDataModel topBottomOperatorData in model)
             {
-                var d = result.Operators.SingleOrDefault(r => r.OperatorName == topBottomOperatorData.OperatorName);
+                var d = output.Operators.SingleOrDefault(r => r.OperatorName == topBottomOperatorData.OperatorName);
                 d.ShouldNotBeNull();
                 d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
             }
@@ -1618,9 +1781,10 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<TopBottomOperatorDataModel> model = null;
 
-            TopBottomOperatorViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Operators.ShouldBeEmpty();
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Operators.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1628,9 +1792,21 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<TopBottomOperatorDataModel> model = new List<TopBottomOperatorDataModel>();
 
-            TopBottomOperatorViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Operators.ShouldBeEmpty();
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Operators.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomOperatorDataModel_FailedResult_EmptyResult()
+        {
+            List<TopBottomOperatorDataModel> model = new List<TopBottomOperatorDataModel>();
+
+            Result<List<TopBottomOperatorDataModel>> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Operators.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1646,12 +1822,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                                                                                                  SalesValue = 200
                                                                                                                              }
                                                                                          };
-            var result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Merchants.Count.ShouldBe(model.Count);
+            Result<List<TopBottomMerchantDataModel>> result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Merchants.Count.ShouldBe(model.Count);
             foreach (TopBottomMerchantDataModel topBottomOperatorData in model)
             {
-                var d = result.Merchants.SingleOrDefault(r => r.MerchantName == topBottomOperatorData.MerchantName);
+                var d = result.Data.SingleOrDefault(r => r.MerchantName == topBottomOperatorData.MerchantName);
                 d.ShouldNotBeNull();
                 d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
             }
@@ -1661,20 +1838,29 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_NullModel_EmptyResult()
         {
             List<TopBottomMerchantDataModel> model = null;
-
-            TopBottomMerchantViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Merchants.ShouldBeEmpty();
+            Result<List<TopBottomMerchantDataModel>> result = Result.Success(model);
+            TopBottomMerchantViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Merchants.ShouldBeEmpty();
         }
 
         [Fact]
         public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_EmptyModel_EmptyResult()
         {
             List<TopBottomMerchantDataModel> model = new List<TopBottomMerchantDataModel>();
+            Result<List<TopBottomMerchantDataModel>> result = Result.Success(model);
+            TopBottomMerchantViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Merchants.ShouldBeEmpty();
+        }
 
-            TopBottomMerchantViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Merchants.ShouldBeEmpty();
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomMerchantDataModel_FailedResult_EmptyResult()
+        {
+            Result<List<TopBottomMerchantDataModel>> result = Result.Failure();
+            TopBottomMerchantViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Merchants.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1690,12 +1876,13 @@ namespace EstateAdministrationUI.Tests.FactoryTests
                                                                                                                               SalesValue = 200
                                                                                                                           }
                                                                                        };
-            var result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Products.Count.ShouldBe(model.Count);
+            var result = Result.Success(model);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Products.Count.ShouldBe(model.Count);
             foreach (TopBottomProductDataModel topBottomOperatorData in model)
             {
-                var d = result.Products.SingleOrDefault(r => r.ProductName == topBottomOperatorData.ProductName);
+                var d = output.Products.SingleOrDefault(r => r.ProductName == topBottomOperatorData.ProductName);
                 d.ShouldNotBeNull();
                 d.SalesValue.ShouldBe(topBottomOperatorData.SalesValue);
             }
@@ -1705,10 +1892,10 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_NullModel_EmptyResult()
         {
             List<TopBottomProductDataModel> model = null;
-
-            TopBottomProductViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Products.ShouldBeEmpty();
+            Result<List<TopBottomProductDataModel>> result = Result.Success(model);
+            TopBottomProductViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Products.ShouldBeEmpty();
         }
 
         [Fact]
@@ -1716,11 +1903,20 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<TopBottomProductDataModel> model = new List<TopBottomProductDataModel>();
 
-            TopBottomProductViewModelList result = ViewModelFactory.ConvertFrom(model);
-            result.ShouldNotBeNull();
-            result.Products.ShouldBeEmpty();
+            Result<List<TopBottomProductDataModel>> result = Result.Success(model);
+            TopBottomProductViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Products.ShouldBeEmpty();
         }
 
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TopBottomProductDataModel_FailedResult_EmptyResult()
+        {
+            Result<List<TopBottomProductDataModel>> result = Result.Failure();
+            TopBottomProductViewModelList output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldNotBeNull();
+            output.Products.ShouldBeEmpty();
+        }
 
         [Fact]
         public void ViewModelFactory_ConvertFrom_ComparisonDate_IsConverted()
@@ -1822,6 +2018,14 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         }
 
         [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesValueByHourModel_ResultFailed_ErrorThrown()
+        {
+            Result<List<TodaysSalesValueByHourModel>> result = Result.Failure();
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
         public void ModelFactory_ConvertFrom_TodaysSalesCountByHourModel_IsConverted()
         {
             List<TodaysSalesCountByHourModel> models = new List<TodaysSalesCountByHourModel>();
@@ -1863,6 +2067,14 @@ namespace EstateAdministrationUI.Tests.FactoryTests
         {
             List<TodaysSalesCountByHourModel> models = new List<TodaysSalesCountByHourModel>();
             Result<List<TodaysSalesCountByHourModel>> result = Result.Success(models);
+            var output = ViewModelFactory.ConvertFrom(result);
+            output.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ViewModelFactory_ConvertFrom_TodaysSalesCountByHourModel_ResultFailure_ErrorThrown()
+        {
+            Result<List<TodaysSalesCountByHourModel>> result = Result.Failure();
             var output = ViewModelFactory.ConvertFrom(result);
             output.ShouldBeEmpty();
         }

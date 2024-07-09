@@ -196,40 +196,37 @@
                                                                 DateTime comparisonDate,
                                                                 CancellationToken cancellationToken);
 
-        Task<MerchantKpiModel> GetMerchantKpi(
-            string accessToken,
-            Guid estateId,
-            CancellationToken cancellationToken);
+        Task<Result<MerchantKpiModel>> GetMerchantKpi(String accessToken, Guid estateId, CancellationToken cancellationToken);
 
-        Task<TodaysSalesModel> GetTodaysFailedSales(
+        Task<Result<TodaysSalesModel>> GetTodaysFailedSales(
             string accessToken,
             Guid estateId,
             string responseCode,
             DateTime comparisonDate,
             CancellationToken cancellationToken);
 
-        Task<List<TopBottomOperatorDataModel>> GetTopBottomOperatorData(
+        Task<Result<List<TopBottomOperatorDataModel>>> GetTopBottomOperatorData(
             string accessToken,
             Guid estateId,
             TopBottom topBottom,
             int resultCount,
             CancellationToken cancellationToken);
 
-        Task<List<TopBottomMerchantDataModel>> GetTopBottomMerchantData(
+        Task<Result<List<TopBottomMerchantDataModel>>> GetTopBottomMerchantData(
             string accessToken,
             Guid estateId,
             TopBottom topBottom,
             int resultCount,
             CancellationToken cancellationToken);
 
-        Task<List<TopBottomProductDataModel>> GetTopBottomProductData(
+        Task<Result<List<TopBottomProductDataModel>>> GetTopBottomProductData(
             string accessToken,
             Guid estateId,
             TopBottom topBottom,
             int resultCount,
             CancellationToken cancellationToken);
 
-        Task<LastSettlementModel> GetLastSettlement(
+        Task<Result<LastSettlementModel>> GetLastSettlement(
             string accessToken,
             Guid estateId,
             Guid? merchantId,

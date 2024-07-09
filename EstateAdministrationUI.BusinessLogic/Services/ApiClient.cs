@@ -414,8 +414,8 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<MerchantKpiModel> GetMerchantKpi(String accessToken, Guid estateId, CancellationToken cancellationToken) {
-        async Task<MerchantKpiModel> ClientMethod() {
+    public async Task<Result<MerchantKpiModel>> GetMerchantKpi(String accessToken, Guid estateId, CancellationToken cancellationToken) {
+        async Task<Result<MerchantKpiModel>> ClientMethod() {
             MerchantKpi apiResponse = await this.EstateReportingApiClient.GetMerchantKpi(accessToken, estateId, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
@@ -424,7 +424,7 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<TodaysSalesModel> GetTodaysFailedSales(String accessToken, Guid estateId, String responseCode, DateTime comparisonDate, CancellationToken cancellationToken) {
+    public async Task<Result<TodaysSalesModel>> GetTodaysFailedSales(String accessToken, Guid estateId, String responseCode, DateTime comparisonDate, CancellationToken cancellationToken) {
         async Task<TodaysSalesModel> ClientMethod() {
             TodaysSales apiResponse = await this.EstateReportingApiClient.GetTodaysFailedSales(accessToken, estateId, 0, 0, responseCode, comparisonDate, cancellationToken);
 
@@ -435,8 +435,8 @@ public class ApiClient : IApiClient {
     }
 
 
-    public async Task<List<TopBottomOperatorDataModel>> GetTopBottomOperatorData(String accessToken, Guid estateId, TopBottom topBottom, Int32 resultCount, CancellationToken cancellationToken) {
-        async Task<List<TopBottomOperatorDataModel>> ClientMethod() {
+    public async Task<Result<List<TopBottomOperatorDataModel>>> GetTopBottomOperatorData(String accessToken, Guid estateId, TopBottom topBottom, Int32 resultCount, CancellationToken cancellationToken) {
+        async Task<Result<List<TopBottomOperatorDataModel>>> ClientMethod() {
             List<TopBottomOperatorData> apiResponse = await this.EstateReportingApiClient.GetTopBottomOperatorData(accessToken, estateId, this.Convert(topBottom), resultCount, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
@@ -445,8 +445,12 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<List<TopBottomMerchantDataModel>> GetTopBottomMerchantData(String accessToken, Guid estateId, TopBottom topBottom, Int32 resultCount, CancellationToken cancellationToken) {
-        async Task<List<TopBottomMerchantDataModel>> ClientMethod() {
+    public async Task<Result<List<TopBottomMerchantDataModel>>> GetTopBottomMerchantData(string accessToken,
+                                                                                         Guid estateId,
+                                                                                         TopBottom topBottom,
+                                                                                         int resultCount,
+                                                                                         CancellationToken cancellationToken) {
+        async Task<Result<List<TopBottomMerchantDataModel>>> ClientMethod() {
             List<TopBottomMerchantData> apiResponse = await this.EstateReportingApiClient.GetTopBottomMerchantData(accessToken, estateId, this.Convert(topBottom), resultCount, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
@@ -455,8 +459,12 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<List<TopBottomProductDataModel>> GetTopBottomProductData(String accessToken, Guid estateId, TopBottom topBottom, Int32 resultCount, CancellationToken cancellationToken) {
-        async Task<List<TopBottomProductDataModel>> ClientMethod() {
+    public async Task<Result<List<TopBottomProductDataModel>>> GetTopBottomProductData(string accessToken,
+                                                                                       Guid estateId,
+                                                                                       TopBottom topBottom,
+                                                                                       int resultCount,
+                                                                                       CancellationToken cancellationToken) {
+        async Task<Result<List<TopBottomProductDataModel>>> ClientMethod() {
             List<TopBottomProductData> apiResponse = await this.EstateReportingApiClient.GetTopBottomProductData(accessToken, estateId, this.Convert(topBottom), resultCount, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
@@ -465,8 +473,8 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<LastSettlementModel> GetLastSettlement(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, CancellationToken cancellationToken) {
-        async Task<LastSettlementModel> ClientMethod() {
+    public async Task<Result<LastSettlementModel>> GetLastSettlement(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, CancellationToken cancellationToken) {
+        async Task<Result<LastSettlementModel>> ClientMethod() {
             LastSettlement apiResponse = await this.EstateReportingApiClient.GetLastSettlement(accessToken, estateId, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
@@ -486,7 +494,8 @@ public class ApiClient : IApiClient {
     {
         try
         {
-            return await clientMethod();
+            Result<T> clientResult = await clientMethod();
+            return Result.Success(clientResult);
         }
         catch (Exception e)
         {

@@ -26,6 +26,7 @@ namespace EstateAdministrationUI.Tests.General
         [Theory]
         [InlineData("")]
         [InlineData(null)]
+        [InlineData("?value1=undefined")]
         public void QueryStringHelper_GetValueFromQueryString_NullOrEmpty_ValueReturned(String queryString) {
             var result = QueryStringHelper.GetValueFromQueryString(queryString, "value1");
             result.ShouldBeEmpty();
@@ -63,11 +64,32 @@ namespace EstateAdministrationUI.Tests.General
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        [InlineData("abcdef")]
-        [InlineData("undefined")]
+        [InlineData("?value1=abcdef")]
+        [InlineData("?value1=undefined")]
         public void QueryStringHelper_GetIntegerValueFromQueryString_InvalidValues_ValueReturned(String queryString)
         {
             var result = QueryStringHelper.GetIntegerValueFromQueryString(queryString, "value1");
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void QueryStringHelper_GetGuidValueFromQueryString_ValueReturned()
+        {
+            String queryString = "?value1=B3294DF6-3731-4A61-8103-4F8569AB1055";
+
+            var value1 = QueryStringHelper.GetGuidValueFromQueryString(queryString, "value1");
+            value1.ShouldBe(Guid.Parse("B3294DF6-3731-4A61-8103-4F8569AB1055"));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("?value1=abcdef")]
+        [InlineData("?value1=undefined")]
+        [InlineData("?value1=00000000-0000-0000-0000-000000000000")]
+        public void QueryStringHelper_GetGuidValueFromQueryString_InvalidValues_ValueReturned(String queryString)
+        {
+            var result = QueryStringHelper.GetGuidValueFromQueryString(queryString, "value1");
             result.ShouldBeNull();
         }
     }

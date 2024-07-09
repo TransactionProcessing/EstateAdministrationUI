@@ -24,8 +24,117 @@
     using FeeType = EstateManagement.DataTransferObjects.Responses.Contract.FeeType;
     using FileLineProcessingResult = Models.FileLineProcessingResult;
 
-    public class ModelFactoryTests{
+    public class ModelFactoryTests {
         #region Methods
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_LastSettlement_IsConverted() {
+            LastSettlement model = new LastSettlement {
+                FeesValue = 59.99m, SalesCount = 100, SalesValue = 599.99m, SettlementDate = new DateTime(2024, 1, 1)
+            };
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            result.FeesValue.ShouldBe(model.FeesValue);
+            result.SalesCount.ShouldBe(model.SalesCount);
+            result.SalesValue.ShouldBe(model.SalesValue);
+            result.SettlementDate.ShouldBe(model.SettlementDate);
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_LastSettlement_ModelIsNull_IsConverted() {
+            LastSettlement model = null;
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantList_IsConverted() {
+            List<Merchant> model = new List<Merchant> {
+                new Merchant {
+                    MerchantReportingId = 1,
+                    Name = "Test Merchant 1",
+                    MerchantId = Guid.Parse("E0139807-DC6C-4237-B51A-1EE1977DE812")
+                },
+                new Merchant {
+                    MerchantReportingId = 2,
+                    Name = "Test Merchant 2",
+                    MerchantId = Guid.Parse("83A4FA81-1FD8-42A6-A6F9-70967AFB1BE9")
+                }
+            };
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            foreach (Merchant merchant in model) {
+                var m = result.SingleOrDefault(m => m.MerchantId == merchant.MerchantId);
+                m.ShouldNotBeNull();
+                m.MerchantName.ShouldBe(merchant.Name);
+                m.MerchantReportingId.ShouldBe(merchant.MerchantReportingId);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantList_NullModel_IsConverted() {
+            List<Merchant> model = null;
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_MerchantList_EmptyModel_IsConverted()
+        {
+            List<Merchant> model = new List<Merchant>();
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorList_IsConverted()
+        {
+            List<Operator> model = new List<Operator> {
+                new Operator {
+                    OperatorReportingId = 1,
+                    Name = "Test Operator 1",
+                    OperatorId = Guid.Parse("E0139807-DC6C-4237-B51A-1EE1977DE812")
+                },
+                new Operator {
+                    OperatorReportingId = 2,
+                    Name = "Test Operator 2",
+                    OperatorId = Guid.Parse("83A4FA81-1FD8-42A6-A6F9-70967AFB1BE9")
+                }
+            };
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldNotBeNull();
+            foreach (Operator @operator in model)
+            {
+                var o = result.SingleOrDefault(o => o.OperatorId == @operator.OperatorId);
+                o.ShouldNotBeNull();
+                o.OperatorName.ShouldBe(@operator.Name);
+                o.OperatorReportingId.ShouldBe(@operator.OperatorReportingId);
+            }
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorList_NullModel_IsConverted()
+        {
+            List<Operator> model = null;
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ModelFactory_ConvertFrom_OperatorList_EmptyModel_IsConverted()
+        {
+            List<Operator> model = new List<Operator>();
+
+            var result = ModelFactory.ConvertFrom(model);
+            result.ShouldBeNull();
+        }
 
         [Fact]
         public void ModelFactory_ConvertFrom_TopBottomOperatorData_IsConverted()

@@ -59,8 +59,7 @@ function setDivClassBasedOnVariance(myDiv, variance, lessisgood) {
         // > 0 is success
         // 0 is info
         // > 0 and >= 20 - warning
-        // < 20 - danger
-        console.log(variance);
+        // < 20 - danger        
         switch (true) {
             case variance > 0:
                 myDiv.classList.add('bg-gradient-success');
