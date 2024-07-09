@@ -251,11 +251,11 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             DateTime comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(this.Request.QueryString.Value, "comparisonDate", "yyyy-MM-dd");
             String comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(this.Request.QueryString.Value, "comparisonDateLabel");
-            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
-            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+            Int32? merchantReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Int32? operatorReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             Result<TodaysSettlementModel> response =
-                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantId, operatorId, comparisonDate, cancellationToken);
+                await this.ApiClient.GetTodaysSettlement(accessToken, estateId, merchantReportingId, operatorReportingId, comparisonDate, cancellationToken);
 
             TodaysSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
 
@@ -319,11 +319,11 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
-            Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
+            Int32? merchantReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "merchantId");
+            Int32? operatorReportingId = QueryStringHelper.GetIntegerValueFromQueryString(Request.QueryString.Value, "operatorId");
 
             Result<LastSettlementModel> response =
-                await this.ApiClient.GetLastSettlement(accessToken, estateId, merchantId, operatorId, cancellationToken);
+                await this.ApiClient.GetLastSettlement(accessToken, estateId, merchantReportingId, operatorReportingId, cancellationToken);
 
             LastSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response);
             

@@ -401,12 +401,12 @@ public class ApiClient : IApiClient {
 
     public async Task<Result<TodaysSettlementModel>> GetTodaysSettlement(String accessToken,
                                                                          Guid estateId,
-                                                                         Guid? merchantId,
-                                                                         Guid? operatorId,
+                                                                         Int32? merchantReportingId,
+                                                                         Int32? operatorReportingId,
                                                                          DateTime comparisonDate,
                                                                          CancellationToken cancellationToken) {
         async Task<Result<TodaysSettlementModel>> ClientMethod() {
-            TodaysSettlement apiResponse = await this.EstateReportingApiClient.GetTodaysSettlement(accessToken, estateId, 0, 0, comparisonDate, cancellationToken);
+            TodaysSettlement apiResponse = await this.EstateReportingApiClient.GetTodaysSettlement(accessToken, estateId, merchantReportingId.GetValueOrDefault(0), operatorReportingId.GetValueOrDefault(0), comparisonDate, cancellationToken);
 
             return ModelFactory.ConvertFrom(apiResponse);
         }
@@ -473,7 +473,7 @@ public class ApiClient : IApiClient {
         return await this.CallClientMethod(ClientMethod, cancellationToken);
     }
 
-    public async Task<Result<LastSettlementModel>> GetLastSettlement(String accessToken, Guid estateId, Guid? merchantId, Guid? operatorId, CancellationToken cancellationToken) {
+    public async Task<Result<LastSettlementModel>> GetLastSettlement(String accessToken, Guid estateId, Int32? merchantReportingId, Int32? operatorReportingId, CancellationToken cancellationToken) {
         async Task<Result<LastSettlementModel>> ClientMethod() {
             LastSettlement apiResponse = await this.EstateReportingApiClient.GetLastSettlement(accessToken, estateId, cancellationToken);
 
