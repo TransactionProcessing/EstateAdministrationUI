@@ -65,7 +65,6 @@ function lastSettlementResultHandler(results) {
     const formattedFeesValueLabel = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(results.feesValue);
     const dateObject = new Date(results.settlementDate);
     const formattedDate = `${dateObject.getUTCDate().toString().padStart(2, '0')}-${(dateObject.getUTCMonth() + 1).toString().padStart(2, '0')}-${dateObject.getUTCFullYear()}`;
-    console.log(formattedDate); // Output: "14-02-2024"
 
     setInnerHtml(document.getElementById("lastSettlementDateLabel"), formattedDate);
     setInnerHtml(document.getElementById("lastSettlementSalesValueLabel"), formattedSalesValueLabel);

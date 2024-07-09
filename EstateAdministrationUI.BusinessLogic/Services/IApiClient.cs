@@ -191,8 +191,8 @@
 
         Task<Result<TodaysSettlementModel>> GetTodaysSettlement(String accessToken,
                                                                 Guid estateId,
-                                                                Guid? merchantId,
-                                                                Guid? operatorId,
+                                                                Int32? merchantReportingId,
+                                                                Int32? operatorReportingId,
                                                                 DateTime comparisonDate,
                                                                 CancellationToken cancellationToken);
 
@@ -229,8 +229,8 @@
         Task<Result<LastSettlementModel>> GetLastSettlement(
             string accessToken,
             Guid estateId,
-            Guid? merchantId,
-            Guid? operatorId,
+            Int32? merchantReportingId,
+            Int32? operatorReportingId,
             CancellationToken cancellationToken);
 
 
