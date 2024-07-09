@@ -20,21 +20,21 @@ namespace EstateAdministrationUI.Factories
     {
         #region Methods
 
-        public static LastSettlementViewModel ConvertFrom(LastSettlementModel model){
-            if (model == null)
-                return null;
+        public static LastSettlementViewModel ConvertFrom(Result<LastSettlementModel> model){
+            if (model.IsFailed || model.Data == null)
+                return new LastSettlementViewModel();
 
             LastSettlementViewModel viewModel = new LastSettlementViewModel{
-                                                                               FeesValue = model.FeesValue,
-                                                                               SalesCount = model.SalesCount,
-                                                                               SalesValue = model.SalesValue,
-                                                                               SettlementDate = model.SettlementDate
+                                                                               FeesValue = model.Data.FeesValue,
+                                                                               SalesCount = model.Data.SalesCount,
+                                                                               SalesValue = model.Data.SalesValue,
+                                                                               SettlementDate = model.Data.SettlementDate
                                                                            };
             return viewModel;
         }
 
-        public static TopBottomMerchantViewModelList ConvertFrom(List<TopBottomMerchantDataModel> models){
-            if (models == null || models.Any() == false)
+        public static TopBottomMerchantViewModelList ConvertFrom(Result<List<TopBottomMerchantDataModel>> models){
+            if (models.IsFailed || models.Data == null || models.Data.Any() == false)
             {
                 return new TopBottomMerchantViewModelList();
             }
@@ -42,23 +42,23 @@ namespace EstateAdministrationUI.Factories
             TopBottomMerchantViewModelList viewModels = new TopBottomMerchantViewModelList();
             viewModels.Merchants = new List<TopBottomMerchantViewModel>();
 
-            models.ForEach(m => viewModels.Merchants.Add(new TopBottomMerchantViewModel{
+            models.Data.ForEach(m => viewModels.Merchants.Add(new TopBottomMerchantViewModel{
                                                                                            MerchantName = m.MerchantName,
                                                                                            SalesValue = m.SalesValue
                                                                                        }));
             return viewModels;
         }
 
-        public static TopBottomProductViewModelList ConvertFrom(List<TopBottomProductDataModel> models)
+        public static TopBottomProductViewModelList ConvertFrom(Result<List<TopBottomProductDataModel>> models)
         {
-            if (models == null || models.Any() == false){
+            if (models.IsFailed || models.Data == null || models.Data.Any() == false){
                 return new TopBottomProductViewModelList();
             }
 
             TopBottomProductViewModelList viewModels = new TopBottomProductViewModelList();
             viewModels.Products = new List<TopBottomProductViewModel>();
 
-            models.ForEach(m => viewModels.Products.Add(new TopBottomProductViewModel()
+            models.Data.ForEach(m => viewModels.Products.Add(new TopBottomProductViewModel()
             {
                                                              ProductName = m.ProductName,
                                                              SalesValue = m.SalesValue
@@ -66,9 +66,9 @@ namespace EstateAdministrationUI.Factories
             return viewModels;
         }
 
-        public static TopBottomOperatorViewModelList ConvertFrom(List<TopBottomOperatorDataModel> models)
+        public static TopBottomOperatorViewModelList ConvertFrom(Result<List<TopBottomOperatorDataModel>> models)
         {
-            if (models == null || models.Any() == false)
+            if (models.IsFailed || models.Data == null || models.Data.Any() == false)
             {
                 return new TopBottomOperatorViewModelList();
             }
@@ -76,7 +76,7 @@ namespace EstateAdministrationUI.Factories
             TopBottomOperatorViewModelList viewModels = new TopBottomOperatorViewModelList();
             viewModels.Operators = new List<TopBottomOperatorViewModel>();
 
-            models.ForEach(m => viewModels.Operators.Add(new TopBottomOperatorViewModel()
+            models.Data.ForEach(m => viewModels.Operators.Add(new TopBottomOperatorViewModel()
                                                          {
                                                              OperatorName = m.OperatorName,
                                                              SalesValue = m.SalesValue
@@ -179,17 +179,16 @@ namespace EstateAdministrationUI.Factories
 
         }
 
-        public static MerchantKpiViewModel ConvertFrom(MerchantKpiModel merchantKpiModel)
+        public static MerchantKpiViewModel ConvertFrom(Result<MerchantKpiModel> merchantKpiModel)
         {
-            if (merchantKpiModel == null)
-            {
-                throw new ArgumentNullException(nameof(merchantKpiModel));
+            if (merchantKpiModel.IsFailed || merchantKpiModel.Data == null) {
+                return new MerchantKpiViewModel();
             }
 
             MerchantKpiViewModel viewModel = new MerchantKpiViewModel{
-                                                                         MerchantsWithNoSaleInLast7Days = merchantKpiModel.MerchantsWithNoSaleInLast7Days,
-                                                                         MerchantsWithNoSaleToday = merchantKpiModel.MerchantsWithNoSaleToday,
-                                                                         MerchantsWithSaleInLastHour = merchantKpiModel.MerchantsWithSaleInLastHour,
+                                                                         MerchantsWithNoSaleInLast7Days = merchantKpiModel.Data.MerchantsWithNoSaleInLast7Days,
+                                                                         MerchantsWithNoSaleToday = merchantKpiModel.Data.MerchantsWithNoSaleToday,
+                                                                         MerchantsWithSaleInLastHour = merchantKpiModel.Data.MerchantsWithSaleInLastHour,
                                                                      };
             return viewModel;
 
@@ -791,23 +790,6 @@ namespace EstateAdministrationUI.Factories
 
             return viewModel;
         }
-
-        //private static Dictionary<String, String> ConvertFrom(Dictionary<Guid, String> deviceModels)
-        //{
-        //    Dictionary<String, String> viewModels = new Dictionary<String, String>();
-
-        //    if (deviceModels == null || deviceModels.Any() == false)
-        //    {
-        //        return viewModels;
-        //    }
-
-        //    foreach (KeyValuePair<Guid, String> model in deviceModels)
-        //    {
-        //        viewModels.Add(model.Key.ToString(), model.Value);
-        //    }
-
-        //    return viewModels;
-        //}
 
         private static List<AddressViewModel> ConvertFrom(List<AddressModel> addressModels)
         {

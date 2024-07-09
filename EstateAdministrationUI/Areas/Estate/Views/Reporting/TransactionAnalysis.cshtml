@@ -216,9 +216,6 @@
     }
 
     function convertJsonToArray(jsonData, type) {
-        console.log(jsonData);
-        console.log(type);
-        
         var data = JSON.parse(jsonData);
         var dataArray = [];
                 
@@ -242,7 +239,6 @@
 
     function translateBottom3MerchantsBySalesValue(data) {
         var dataArray = [];
-        console.log(data);
         if (data === null) {
             return [];
         }
@@ -263,7 +259,7 @@
             };
             dataArray.push(item);
         });
-        console.log(dataArray);
+        
         return dataArray;
     }
 

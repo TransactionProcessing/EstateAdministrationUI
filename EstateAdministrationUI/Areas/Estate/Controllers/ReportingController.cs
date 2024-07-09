@@ -118,7 +118,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             var comparisonDate = QueryStringHelper.GetDateTimeValueFromQueryString(Request.QueryString.Value, "comparisonDate");
             var comparisonDateLabel = QueryStringHelper.GetValueFromQueryString(Request.QueryString.Value, "comparisonDateLabel");
 
-            TodaysSalesModel response =
+            Result<TodaysSalesModel> response =
                 await this.ApiClient.GetTodaysFailedSales(accessToken, estateId, "1009", comparisonDate, cancellationToken);
 
             TodaysSalesViewModel viewModel = ViewModelFactory.ConvertFrom(response, comparisonDateLabel);
@@ -133,7 +133,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             Guid estateId = Helpers.GetClaimValue<Guid>(this.User.Identity as ClaimsIdentity, Helpers.EstateIdClaimType);
 
-            MerchantKpiModel response =
+            Result<MerchantKpiModel> response =
                 await this.ApiClient.GetMerchantKpi(accessToken, estateId, cancellationToken);
 
             MerchantKpiViewModel viewModel = ViewModelFactory.ConvertFrom(response);
@@ -148,7 +148,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             List<BottomMerchantModel> merchants = new List<BottomMerchantModel>();
             
-            List<TopBottomMerchantDataModel> response =
+            Result<List<TopBottomMerchantDataModel>> response =
                 await this.ApiClient.GetTopBottomMerchantData(accessToken, estateId
                                                               , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
@@ -168,7 +168,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             List<BottomOperatorModel> operators = new List<BottomOperatorModel>();
 
-            var response =
+            Result<List<TopBottomOperatorDataModel>> response =
                 await this.ApiClient.GetTopBottomOperatorData(accessToken, estateId
                                                               , BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
@@ -188,7 +188,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
 
             List<BottomProductModel> products = new List<BottomProductModel>();
 
-            var response =
+            Result<List<TopBottomProductDataModel>> response =
                 await this.ApiClient.GetTopBottomProductData(accessToken, estateId, BusinessLogic.Models.TopBottom.Bottom, 3, cancellationToken);
 
             var viewModel = ViewModelFactory.ConvertFrom(response);
@@ -322,7 +322,7 @@ namespace EstateAdministrationUI.Areas.Estate.Controllers
             Guid? merchantId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "merchantId");
             Guid? operatorId = QueryStringHelper.GetGuidValueFromQueryString(Request.QueryString.Value, "operatorId");
 
-            LastSettlementModel response =
+            Result<LastSettlementModel> response =
                 await this.ApiClient.GetLastSettlement(accessToken, estateId, merchantId, operatorId, cancellationToken);
 
             LastSettlementViewModel viewModel = ViewModelFactory.ConvertFrom(response);
